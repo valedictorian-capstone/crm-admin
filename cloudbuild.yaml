@@ -4,4 +4,4 @@ steps:
 - name: 'gcr.io/cloud-builders/npm'
   args: ['run', 'build', '--prod']
 - name: 'gcr.io/$PROJECT_ID/firebase'
-  args: ['deploy', '--debug','--only', 'hosting', '--token', '$_FIREBASE_TOKEN']
+  args: ['deploy', '--project=$PROJECT_ID', '--app=$_APP_ID', '--only=hosting', '--token=$_FIREBASE_TOKEN']
