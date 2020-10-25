@@ -1,7 +1,7 @@
 steps:
-- name: 'crm-admin/angular-cli'
-  args: ['npm', 'install']
-- name: 'crm-admin/angular-cli'
-  args: ['ng', 'build', '--prod']
-- name: 'crm-admin/firebase-tools'
-  args: ['firebase', 'deploy', '--only', 'hosting']
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['install']
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['build', '--prod']
+- name: 'gcr.io/cloud-builders/firebase'
+  args: ['run', 'deploy']
