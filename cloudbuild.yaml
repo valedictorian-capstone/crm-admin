@@ -2,6 +2,6 @@ steps:
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
 - name: 'gcr.io/cloud-builders/npm'
-  args: ['build', '--prod']
-- name: 'gcr.io/cloud-builders/firebase'
-  args: ['run', 'deploy']
+  args: ['run', 'build', '--prod']
+- name: 'gcr.io/$_FIREBASE_TOKEN/firebase'
+  args: ['deploy', '--only', 'hosting']
