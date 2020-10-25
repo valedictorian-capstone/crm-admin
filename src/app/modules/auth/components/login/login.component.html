@@ -1,0 +1,29 @@
+<div class="over-lay">
+    <div class="main-login">
+        <div class="form-login">
+            <!-- <div class="image">
+                <img src="../../../../../assets/coding.png" alt="Coding" />
+            </div> -->
+            <div *ngIf="!isConfirm" class="form" [formGroup]="form">
+                <span class="title"><span style="border-top: 5px solid #17a2b8;">Login</span> as a User</span>
+                <nb-form-field style="position: relative;">
+                    <b nbPrefix>+84</b>
+                    <input type="text" nbInput fullWidth fieldSize="large" shape="round" [status]="getStatus('phone')" formControlName="phone" placeholder="Your Phone Number" />
+                    <nb-icon nbSuffix icon="phone-outline" pack="eva"></nb-icon>
+                    <span [class.error]="getStatus('phone') === 'danger'">Please fill your phone</span>
+                </nb-form-field>
+                <button id="sign-in-button" (click)="useSubmit()" [disabled]="!form.valid" nbButton fullWidth [class.error]="getStatus('phone') === 'danger'" status="primary" shape="round" size="large">Login</button>
+                <span class="text-center terms">Terms of use. Privacy policy</span>
+            </div>
+            <div *ngIf="isConfirm" class="form" [formGroup]="formConfirm">
+                <span class="title"><span style="border-top: 5px solid #17a2b8;">Login</span> as a User</span>
+                <nb-form-field style="position: relative;">
+                    <input type="text" nbInput fullWidth fieldSize="large" shape="round" [status]="getStatus('code')" formControlName="code" placeholder="Your Verify Code" />
+                    <span [class.error]="getStatus('code') === 'danger'">Please fill your phone</span>
+                </nb-form-field>
+                <button (click)="useVerify()" [disabled]="!formConfirm.valid" nbButton fullWidth [class.error]="getStatus('code') === 'danger'" status="primary" shape="round" size="large">Verify</button>
+                <span class="text-center terms">Terms of use. Privacy policy</span>
+            </div>
+        </div>
+    </div>
+</div>

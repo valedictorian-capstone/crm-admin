@@ -1,0 +1,54 @@
+.palette {
+    position: fixed;
+    top: 4.5rem;
+    max-width: calc(100vw - 5.5rem);
+    width: 79.6rem;
+    overflow: hidden;
+    border-radius: 25px;
+    right: 3rem;
+    height: 6rem;
+    align-items: center;
+    display: flex;
+    background: white;
+    border: 1px solid silver;
+    z-index: 3;
+    .palette-container {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0.8rem 1.5rem 1rem 1.5rem;
+        .palette-box {
+            height: 4rem;
+            width: 4rem;
+            background: white;
+            margin-right: 0.5rem;
+            display: inline-block;
+            box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+            text-align: center;
+            // padding: 1rem;
+            cursor: pointer;
+        }
+    }
+}
+
+.tool {
+    position: fixed;
+    top: 4.5rem;
+    right: 1rem;
+}
+
+.work-flow-main {
+    height: 100%;
+    width: 100%;
+    .work-flow-main-header {
+        height: 10%;
+        width: 100%;
+    }
+    .work-flow-main-diagram {
+        height: 90%;
+        width: 100%;
+    }
+}

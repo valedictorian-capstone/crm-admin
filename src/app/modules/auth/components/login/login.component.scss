@@ -1,0 +1,109 @@
+.over-lay {
+    background-image: url('../../../../../assets/login-bg.jpg');
+    background-size: cover;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    justify-content: center;
+    align-self: center;
+    .main-login {
+        margin: auto;
+        .form-login {
+            width: 35rem;
+            height: 35rem;
+            margin: 1rem 0 1rem 0;
+            border-radius: 25px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            background: white;
+            padding: 3rem;
+            overflow: hidden;
+            .image {
+                width: 50%;
+                height: 100%;
+                float: left;
+                border-right: 2px solid #e4e4e4;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img {
+                    width: 50%;
+                    height: 50%;
+                }
+            }
+            .form {
+                width: 100%;
+                height: 100%;
+                float: left;
+                padding: 6rem 0 0 0;
+                position: relative;
+                nb-form-field {
+                    margin-bottom: 1.5rem;
+                    position: relative;
+                    margin-top: 4rem;
+                    span {
+                        font-weight: 600;
+                        color: #dc3545;
+                        position: absolute;
+                        top: 2rem;
+                        font-family: cursive;
+                        left: 0.5rem;
+                        opacity: 0;
+                        transition: all .2s ease-in-out;
+                    }
+                    span.error {
+                        top: 3rem;
+                        left: 0.5rem;
+                        opacity: 1;
+                    }
+                }
+                button {
+                    margin-bottom: 0.5rem;
+                    font-family: system-ui;
+                    letter-spacing: 0.3rem;
+                }
+                button.error {
+                    border: 1px solid #dc3545;
+                    color: #dc3545;
+                }
+                .terms {
+                    color: #b1b0b8;
+                    display: block;
+                    position: absolute;
+                    font-weight: 700;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    width: 100%;
+                    bottom: 0.1rem;
+                }
+                .title {
+                    display: block;
+                    font-size: 1.4rem;
+                    font-weight: 800;
+                    color: #838287;
+                    padding-left: 0.5rem;
+                    margin-bottom: 1rem;
+                    font-family: monospace;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 35rem) {
+    .main-login {
+        .form-login {
+            padding: 2.5rem !important;
+            width: 25rem !important;
+        }
+    }
+}
+
+@media (max-width: 25rem) {
+    .main-login {
+        .form-login {
+            padding: 2rem !important;
+            width: 20rem !important;
+        }
+    }
+}

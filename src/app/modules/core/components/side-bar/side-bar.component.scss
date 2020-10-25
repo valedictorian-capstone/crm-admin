@@ -1,0 +1,54 @@
+.side-bar-menu {
+    position: fixed;
+    height: 100vh;
+    max-height: calc(100vh - 64px);
+    background: white;
+    top: 64px;
+    left: 0;
+    z-index: 2;
+    overflow: auto;
+    transition: transform 0.5s ease-in-out;
+    padding-top: 38px;
+    box-shadow: 6px 0 5px rgba(50, 50, 93, 0.25);
+    width: 18rem;
+    transform: translateX(-18rem);
+    &:hover {
+        transform: translateY(0);
+    }
+    .side-bar-menu-item {
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        align-items: center;
+        height: 40px;
+        padding: 10px 0 10px 0;
+        &:hover {
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+        }
+        &.stick {
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+            &:hover {
+                box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+            }
+        }
+        .side-bar-menu-item-data {
+            text-align: left;
+            padding-left: 2.5rem;
+        }
+        .side-bar-menu-item-icon {
+            text-align: center;
+            i {
+                vertical-align: unset;
+            }
+        }
+    }
+    &.stick {
+        transform: translateX(0);
+    }
+}
+
+@media (min-width: 1010px) {
+    .side-bar-menu {
+        transform: translateX(-12rem);
+    }
+}

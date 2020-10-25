@@ -1,0 +1,7 @@
+steps:
+- name: 'crm-admin/angular-cli'
+  args: ['npm', 'install']
+- name: 'crm-admin/angular-cli'
+  args: ['ng', 'build', '--prod']
+- name: 'crm-admin/firebase-tools'
+  args: ['firebase', 'deploy', '--only', 'hosting']

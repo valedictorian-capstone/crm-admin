@@ -1,0 +1,10 @@
+<div class="side-bar-menu" [class.stick]="stick">
+    <div nz-row class="side-bar-menu-item" *ngFor="let item of categories" [class.stick]="active === item.value" (click)="useLinkPage(item.value)">
+        <div nz-col class="side-bar-menu-item-data" [nzSpan]="16">
+            {{item.label}}
+        </div>
+        <div nz-col class="side-bar-menu-item-icon" [nzSpan]="8">
+            <i nz-icon nzType="{{item.icon}}" nzTheme="outline"></i>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="main" (click)="useClickOutside.emit()">
+    <p-progressBar *ngIf="status" [mode]="'indeterminate'" [style]="{'height': '4px'}"></p-progressBar>
+    <div class="main-header">
+    </div>
+    <div class="main-body">
+        <ng-content select="router-outlet"></ng-content>
+    </div>
+</div>

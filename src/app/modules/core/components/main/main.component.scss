@@ -1,0 +1,26 @@
+.main {
+    height: calc(100% - 4rem);
+    width: 100%;
+    background: #e5e5e5;
+    .main-header {
+        height: 3rem;
+        background: white;
+        border: 1px solid #eceff1;
+        border-top: none;
+        &.stick {
+            box-shadow: 0 0 10px rgb(193 176 176 / 50%);
+        }
+    }
+    .main-body {
+        padding: 3rem 2rem 0 2rem;
+        width: 100%;
+        height: calc(100% - 3rem);
+    }
+}
+
+@media (min-width: 1010px) {
+    .main {
+        width: calc(100vw - 6rem);
+        margin-left: calc(6rem);
+    }
+}

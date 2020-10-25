@@ -1,0 +1,31 @@
+<div #header class="header">
+    <div #left class="header-left">
+        <i nz-icon nzType="menu" nzTheme="outline"></i>
+    </div>
+    <div #search class="header-search" [class.focus]="searchFocus">
+        <input placeholder="Fill anything to search..." />
+        <i nz-icon nzType="search" nzTheme="outline"></i>
+    </div>
+    <div #right class="header-right">
+        <div class="header-right-name"><i nz-icon nzType="smile" nzTheme="outline"></i> {{name}}</div>
+        <div class="header-right-avatar"><img [src]="avatar" /></div>
+        <div class="header-right-menu" [class.open]="rightFocus">
+            <div class="header-right-menu-item">
+                <span class="header-right-menu-item-icon"><i nz-icon nzType="profile" nzTheme="outline"></i> </span>
+                <span class="header-right-menu-item-content">Profile</span>
+            </div>
+            <div class="header-right-menu-item">
+                <span class="header-right-menu-item-icon"><i nz-icon nzType="setting" nzTheme="outline"></i> </span>
+                <span class="header-right-menu-item-content">Setting</span>
+            </div>
+            <div class="header-right-menu-item">
+                <span class="header-right-menu-item-icon"><i nz-icon nzType="logout" nzTheme="outline"></i> </span>
+                <span class="header-right-menu-item-content">Logout</span>
+            </div>
+        </div>
+    </div>
+    <div #bell class="header-bell" [class.open]="bellFocus">
+        <i nz-icon nzType="bell" nzTheme="outline"></i>
+        <div class="header-bell-badge">99+</div>
+    </div>
+</div>
