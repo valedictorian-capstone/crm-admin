@@ -5,5 +5,5 @@ steps:
   args: ['run', 'build', '--prod']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/firebase', './dockerfiles/firebase']
-- name: 'gcr.io/$PROJECT_ID/firebase'
-  args: ['deploy', '--only' , 'hosting', '--token', '$_FIREBASE_TOKEN', '--app', '$_APP_ID']
+- name: 'gcr.io/m-crm-admin/firebase'
+  args: ['deploy', '--only' , 'hosting', '--token', '$_FIREBASE_TOKEN']
