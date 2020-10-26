@@ -6,4 +6,6 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/firebase', './dockerfiles/firebase']
 - name: 'gcr.io/$PROJECT_ID/firebase'
+  args: ['target:apply', 'hosting', '$_TARGET', '$_SITE_NAME']
+- name: 'gcr.io/$PROJECT_ID/firebase'
   args: ['deploy', '--only' , 'hosting:$_TARGET', '--token', '$_FIREBASE_TOKEN']
