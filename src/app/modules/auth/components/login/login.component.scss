@@ -1,5 +1,5 @@
 .over-lay {
-    background-image: url('../../../../../assets/login-bg.jpg');
+    background-image: url('../../../../../assets/login-bg.jpeg');
     background-size: cover;
     display: flex;
     width: 100%;
@@ -40,7 +40,6 @@
                 nb-form-field {
                     margin-bottom: 1.5rem;
                     position: relative;
-                    margin-top: 4rem;
                     span {
                         font-weight: 600;
                         color: #dc3545;
@@ -82,7 +81,7 @@
                     font-weight: 800;
                     color: #838287;
                     padding-left: 0.5rem;
-                    margin-bottom: 1rem;
+                    margin-bottom: 4rem;
                     font-family: monospace;
                 }
             }

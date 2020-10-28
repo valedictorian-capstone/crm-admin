@@ -95,11 +95,11 @@ export const NEBULAR_MODULES = [
   NbTimepickerModule,
   NbToastrModule,
   NbToggleModule,
-  NbTooltipModule,
   NbTreeGridModule,
   NbUserModule,
   NbWindowModule,
   NbEvaIconsModule,
+  NbTooltipModule
 ];
 
 @NgModule({
@@ -117,6 +117,20 @@ export class NebularModule {
         ...NbDialogModule.forRoot().providers,
         ...NbWindowModule.forRoot().providers,
         ...NbToastrModule.forRoot().providers,
+      ]
+    };
+  }
+  static forChild(): ModuleWithProviders<NebularModule> {
+    return {
+      ngModule: NebularModule,
+      providers: [
+        // ...NbThemeModule.forRoot({ name: 'default' }).providers,
+        // ...NbSidebarModule.forRoot().providers,
+        // ...NbMenuModule.forRoot().providers,
+        // ...NbDatepickerModule.forRoot().providers,
+        ...NbDialogModule.forChild().providers,
+        ...NbWindowModule.forChild().providers,
+        // ...NbToastrModule.forRoot().providers,
       ]
     };
   }

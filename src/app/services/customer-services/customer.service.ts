@@ -14,9 +14,15 @@ export class CustomerService {
   public readonly findAll = (): Observable<CustomerVM[]> => {
     return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api['customer-api'].customer.main}`);
   }
-
+  public readonly findAllByType = (type: string): Observable<CustomerVM[]> => {
+    return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api['customer-api'].customer.main}/type?type=${type}`);
+  }
   public readonly findById = (id: string): Observable<CustomerVM> => {
     return this.httpClient.get<CustomerVM>(`${environment.apiEndpont}${environment.api['customer-api'].customer.getById}${id}`);
+  }
+
+  public readonly import = (data: CustomerCM[]): Observable<CustomerVM[]> => {
+    return this.httpClient.post<CustomerVM[]>(`${environment.apiEndpont}${environment.api['customer-api'].customer.main}/import`, data);
   }
 
   public readonly insert = (data: CustomerCM): Observable<CustomerVM> => {

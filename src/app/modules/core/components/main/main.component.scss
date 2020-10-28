@@ -1,5 +1,4 @@
 .main {
-    height: calc(100% - 4rem);
     width: 100%;
     background: #e5e5e5;
     .main-header {
@@ -12,9 +11,9 @@
         }
     }
     .main-body {
-        padding: 3rem 2rem 0 2rem;
         width: 100%;
-        height: calc(100% - 3rem);
+        height: calc(100vh - 7rem);
+        overflow: hidden;
     }
 }
 

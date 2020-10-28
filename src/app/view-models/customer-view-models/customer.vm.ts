@@ -7,6 +7,7 @@ export interface CustomerVM {
   readonly code: string;
   readonly fullname: string;
   readonly avatar: string;
+  readonly type: string;
   readonly address: string;
   readonly gender: boolean;
   readonly groups: GroupVM[];
@@ -26,6 +27,7 @@ export interface CustomerCM {
   avatar: string;
   address: string;
   gender: boolean;
+  type: string;
 }
 
 export interface CustomerUM {
@@ -37,4 +39,5 @@ export interface CustomerUM {
   avatar: string;
   address: string;
   gender: boolean;
+  type: string;
 }

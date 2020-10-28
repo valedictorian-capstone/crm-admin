@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -13,13 +14,18 @@ export class HeaderComponent implements OnInit {
   @ViewChild('right') right: ElementRef;
   @ViewChild('bell') bell: ElementRef;
   @ViewChild('header') header: ElementRef;
+  @ViewChild('profile') profile: ElementRef;
+  @ViewChild('setting') setting: ElementRef;
+  @ViewChild('logout') logout: ElementRef;
   searchFocus = false;
   rightFocus = false;
   leftFocus = false;
   bellFocus = false;
   avatar = '../../../../../assets/avatars/avatar.jpg';
   name = 'Elias';
-  constructor() { }
+  constructor(
+    protected readonly router: Router,
+  ) { }
 
   ngOnInit() {
     window.onclick = (event) => {
@@ -36,7 +42,15 @@ export class HeaderComponent implements OnInit {
         this.searchFocus = false;
       }
       if (this.right.nativeElement.contains(event.target)) {
-        this.rightFocus = true;
+        if (
+          this.profile.nativeElement.contains(event.target)
+          || this.logout.nativeElement.contains(event.target)
+          || this.setting.nativeElement.contains(event.target
+          )) {
+            this.rightFocus = false;
+        } else {
+          this.rightFocus = true;
+        }
       } else {
         this.rightFocus = false;
       }
@@ -48,4 +62,14 @@ export class HeaderComponent implements OnInit {
     };
   }
 
+  useProfile = () => {
+
+  }
+  useSetting = () => {
+
+  }
+  useLogout = () => {
+    localStorage.clear();
+    this.router.navigate(['']);
+  }
 }

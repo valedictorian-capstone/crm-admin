@@ -6,7 +6,8 @@ import { Subject } from 'rxjs';
 })
 export class LoadingService {
   public readonly loadingSubject$ = new Subject<boolean>();
-  constructor() { }
+  constructor(
+  ) { }
 
   destroy = () => {
     this.loadingSubject$.unsubscribe();
@@ -14,4 +15,5 @@ export class LoadingService {
   next = (status: boolean) => {
     this.loadingSubject$.next(status);
   }
+
 }

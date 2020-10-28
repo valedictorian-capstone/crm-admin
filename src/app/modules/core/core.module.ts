@@ -21,7 +21,7 @@ const PAGES = [
 @NgModule({
   imports: [
     CoreRoutes,
-    ExtrasModule.forRoot(),
+    ExtrasModule.forChild(),
   ],
   declarations: [...PAGES, ...COMPONENTS]
 })

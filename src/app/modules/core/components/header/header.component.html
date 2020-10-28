@@ -1,31 +1,32 @@
 <div #header class="header">
     <div #left class="header-left">
-        <i nz-icon nzType="menu" nzTheme="outline"></i>
+        <nb-icon icon="menu-outline" status="basic"></nb-icon>
     </div>
     <div #search class="header-search" [class.focus]="searchFocus">
         <input placeholder="Fill anything to search..." />
-        <i nz-icon nzType="search" nzTheme="outline"></i>
+        <nb-icon icon="search-outline" status="basic"></nb-icon>
     </div>
     <div #right class="header-right">
-        <div class="header-right-name"><i nz-icon nzType="smile" nzTheme="outline"></i> {{name}}</div>
+        <div class="header-right-name">
+            <nb-icon icon="smiling-face-outline" status="basic"></nb-icon> {{name}}</div>
         <div class="header-right-avatar"><img [src]="avatar" /></div>
         <div class="header-right-menu" [class.open]="rightFocus">
-            <div class="header-right-menu-item">
-                <span class="header-right-menu-item-icon"><i nz-icon nzType="profile" nzTheme="outline"></i> </span>
+            <div class="header-right-menu-item" #profile (click)="useProfile()">
+                <span class="header-right-menu-item-icon"><nb-icon icon="credit-card-outline" status="basic"></nb-icon> </span>
                 <span class="header-right-menu-item-content">Profile</span>
             </div>
-            <div class="header-right-menu-item">
-                <span class="header-right-menu-item-icon"><i nz-icon nzType="setting" nzTheme="outline"></i> </span>
+            <div class="header-right-menu-item" #setting (click)="useSetting()">
+                <span class="header-right-menu-item-icon"><nb-icon icon="settings-outline" status="basic"></nb-icon> </span>
                 <span class="header-right-menu-item-content">Setting</span>
             </div>
-            <div class="header-right-menu-item">
-                <span class="header-right-menu-item-icon"><i nz-icon nzType="logout" nzTheme="outline"></i> </span>
+            <div class="header-right-menu-item" #logout (click)="useLogout()">
+                <span class="header-right-menu-item-icon"><nb-icon icon="log-out-outline" status="basic"></nb-icon> </span>
                 <span class="header-right-menu-item-content">Logout</span>
             </div>
         </div>
     </div>
     <div #bell class="header-bell" [class.open]="bellFocus">
-        <i nz-icon nzType="bell" nzTheme="outline"></i>
+        <nb-icon icon="bell-outline" status="basic"></nb-icon>
         <div class="header-bell-badge">99+</div>
     </div>
 </div>

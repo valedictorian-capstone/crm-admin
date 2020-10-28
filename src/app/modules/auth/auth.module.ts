@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
+import { ExtrasModule } from '@extras/extras.module';
 import { AuthRoutes } from './auth.routing';
 import { LoginComponent, NavigateComponent } from './components';
-import { ExtrasModule } from '@extras/extras.module';
 
 const COMPONENTS = [
   LoginComponent,
@@ -11,7 +11,7 @@ const COMPONENTS = [
 @NgModule({
   imports: [
     AuthRoutes,
-    ExtrasModule.forRoot(),
+    ExtrasModule.forChild(),
   ],
   declarations: [...COMPONENTS],
 })

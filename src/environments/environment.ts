@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiEndpont: 'http://localhost:8080/',
+  token: 'crm-token',
   // 'apiEndpont': 'https://crm-capstione-be.azurewebsites.net/',
   api: {
     'basic-api': {
@@ -53,6 +54,9 @@ export const environment = {
         deactive: 'api/v1/Auth/Deactive',
         authenticate: 'api/v1/Auth/Authentication',
         login: 'api/v1/Auth/Login',
+      },
+      email: {
+        main: 'api/v1/Email',
       },
     },
     'bpmn-api': {
@@ -176,65 +180,142 @@ export const environment = {
   },
   categories: [
     {
-      label: 'Trang chủ',
+      label: 'Dashboard',
       value: 'dashboard',
       icon: 'home',
+      type: 'item'
     },
     {
-      label: 'Nhóm',
-      value: 'group',
-      icon: 'team',
+      label: 'Tracking',
+      type: 'group',
+      icon: 'activity',
+      values: [],
+      value: 'tracking-group',
+      items: [
+
+      ],
     },
     {
-      label: 'Khách hàng',
-      value: 'customer',
-      icon: 'phone'
+      label: 'Customer',
+      type: 'group',
+      icon: 'wifi',
+      values: ['group', 'lead', 'opportunity', 'contact', 'account'],
+      value: 'customer-group',
+      items: [
+        {
+          label: 'Group',
+          value: 'group',
+          icon: 'layers',
+          type: 'item'
+        },
+        {
+          label: 'Lead',
+          value: 'lead',
+          icon: 'paper-plane',
+          type: 'item'
+        },
+        {
+          label: 'Opportunity',
+          value: 'opportunity',
+          icon: 'person-add',
+          type: 'item'
+        },
+        {
+          label: 'Contact',
+          value: 'contact',
+          icon: 'phone',
+          type: 'item'
+        },
+        {
+          label: 'Account',
+          value: 'account',
+          icon: 'person-done',
+          type: 'item'
+        },
+      ],
     },
     {
-      label: 'Sản phẩm/dịch vụ',
-      value: 'product',
-      icon: 'skin',
+      label: 'Employee',
+      icon: 'monitor',
+      type: 'group',
+      values: ['department', 'employee', 'role'],
+      value: 'employee-group',
+      items: [
+        {
+          label: 'Department',
+          value: 'department',
+          icon: 'cube',
+          type: 'item'
+        },
+        {
+          label: 'Employee',
+          value: 'employee',
+          icon: 'mic',
+          type: 'item'
+        },
+        {
+          label: 'Role',
+          value: 'role',
+          icon: 'pin',
+          type: 'item'
+        },
+      ],
     },
     {
-      label: 'Nhân sự',
-      value: 'account',
-      icon: 'user',
+      label: 'Bpmn',
+      icon: 'settings-2',
+      type: 'group',
+      values: ['instace', 'process', 'form'],
+      value: 'bpmn-group',
+      items: [
+        {
+          label: 'Form',
+          value: 'form',
+          icon: 'book',
+          type: 'item',
+        },
+        {
+          label: 'Process',
+          value: 'process',
+          icon: 'browser',
+          type: 'item',
+        },
+        {
+          label: 'Instance',
+          value: 'instance',
+          icon: 'sync',
+          type: 'item',
+        },
+      ],
     },
     {
-      label: 'Phòng ban',
-      value: 'department',
-      icon: 'solution',
+      label: 'Main',
+      icon: 'tv',
+      type: 'group',
+      values: ['service', 'strategy', 'event'],
+      value: 'main-group',
+      items: [
+        {
+          label: 'Service',
+          value: 'service',
+          icon: 'smartphone',
+          type: 'item'
+        },
+        {
+          label: 'Strategy',
+          value: 'strategy',
+          icon: 'volume-up',
+          type: 'item'
+        },
+        {
+          label: 'Event',
+          value: 'event',
+          icon: 'calendar',
+          type: 'item'
+        },
+      ]
     },
-    {
-      label: 'Điều kiện',
-      value: 'condition',
-      icon: 'tag',
-    },
-    {
-      label: 'Khuôn mẫu',
-      value: 'pattern',
-      icon: 'layout',
-    },
-    {
-      label: 'Biểu mẫu',
-      value: 'form',
-      icon: 'profile',
-    },
-    {
-      label: 'Chiến lược',
-      value: 'strategy',
-      icon: 'project',
-    },
-    {
-      label: 'Quy trình',
-      value: 'work-flow',
-      icon: 'partition',
-    },
-    {
-      label: 'Tiến trình',
-      value: 'process',
-      icon: 'sync',
-    },
+
   ],
   firebase: {
     config: {

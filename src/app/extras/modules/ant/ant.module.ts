@@ -100,7 +100,7 @@ const ANT_MODULES = [
   NzMentionModule,
   NzMenuModule,
   NzMessageModule,
-  NzModalModule,
+  // NzModalModule,
   NzNotificationModule,
   NzPageHeaderModule,
   NzPaginationModule,

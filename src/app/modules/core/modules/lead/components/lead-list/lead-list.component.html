@@ -1,0 +1,177 @@
+<!-- <div class="list">
+    <div nz-row class="header">
+        <div nz-col [nzMd]="24" [nzLg]="{span: 12, offset: 6}" class="data">
+            <div nz-row class="item">
+                <div nz-col [nzSm]="24" [nzMd]="12" class="phone"></div>
+                <div nz-col [nzSm]="0" [nzMd]="12" class="name"></div>
+            </div>
+        </div>
+    </div>
+    <div nz-row class="content">
+        <div nz-col [nzMd]="24" [nzLg]="{span: 12, offset: 6}" class="data">
+            <div nz-row class="item" *ngFor="let lead of leads">
+                <div nz-col [nzSm]="24" [nzMd]="12" class="phone"></div>
+                <div nz-col [nzSm]="0" [nzMd]="12" class="name"></div>
+            </div>
+        </div>
+    </div>
+    <div nz-row class="footer">
+        <div nz-col [nzMd]="24" [nzLg]="{span: 12, offset: 6}" class="data">
+            <div nz-row class="item">
+                <div nz-col [nzSm]="24" [nzMd]="12" class="phone"></div>
+                <div nz-col [nzSm]="0" [nzMd]="12" class="name"></div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="header">
+    <div class="content">
+        <div class="add">
+            <app-lead-create (useDone)="useCreate($event)"></app-lead-create>
+        </div>
+        <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
+            <nb-form-field>
+                <nb-icon class="text-danger" nbPrefix icon="close-circle-outline" (click)="showSearch = false; search = ''; useFilter()"></nb-icon>
+                <input [(ngModel)]="search" (ngModelChange)="useFilter()" style="height: 3.5rem" type="text" nbInput fullWidth status="info" placeholder="Fill phone or fullname to search" />
+            </nb-form-field>
+        </div>
+        <div class="action">
+            <button nbTooltip="Search" nbTooltipStatus="info" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem" (click)="showSearch = true">
+        <nb-icon icon="search"></nb-icon>
+      </button>
+            <input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" #fileImport (change)="import($event, fileImport);" type="file" style="height: 0; width: 0; position: absolute; overflow: hidden;" />
+            <button nbTooltip="Import Excel" nbTooltipStatus="success" nbButton size="small" status="success" (click)="useExport(example, fileImport)" shape="round" style="margin-right: 0.5rem">
+        <nb-icon icon="cloud-upload"></nb-icon>
+      </button>
+            <button nbTooltip="Export Excel" nbTooltipStatus="warning" (click)="export(table)" nbButton size="small" status="warning" shape="round" style="margin-right: 0.5rem">
+        <nb-icon icon="cloud-download"></nb-icon>
+      </button>
+        </div>
+    </div>
+</div>
+<div class="list">
+    <div class="content">
+        <div nz-row class="data">
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let lead of leadFilter; let i = index">
+                <div class="top">
+                    <div class="right">
+                        <button nbTooltip="Shutdown" nbTooltipStatus="danger" nbButton size="small" status="danger" (click)="useRemove(lead)" shape="round">
+              <nb-icon icon="power"></nb-icon>
+            </button>
+                    </div>
+                    <div class="image">
+                        <img [src]="
+                lead.avatar
+                  ? lead.avatar
+                  : '../../../../../../../assets/user.png'
+              " />
+                    </div>
+                    <div class="name">{{ getShortName(lead.fullname) }}</div>
+                </div>
+                <div class="body"></div>
+                <div class="bottom">
+                    <div class="action">
+                        <button nbTooltip="Get Phone" nbTooltipStatus="success" (click)="copyPhone(lead.phone)" nbButton size="small" status="success" shape="round" style="margin-right: 0.5rem">
+                          <nb-icon icon="phone"></nb-icon>
+                      </button>
+                        <app-lead-mail [lead]="lead"></app-lead-mail>
+                        <app-lead-update [lead]="lead" (useDone)="useUpdate($event, i)"></app-lead-update>
+                        <button nbTooltip="Change Type" nbTooltipStatus="primary" nbButton size="small" status="primary" shape="round">
+              <nb-icon icon="car"></nb-icon>
+            </button>
+                    </div>
+                </div>
+            </div>
+            <div nz-col [nzSpan]="24" style="height: 3.5rem"></div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="content">
+        <div class="pagination">
+            <button [disabled]="active === 1" (click)="goto(active - 1)" nbButton size="small" status="primary" shape="round" outline style="margin-right: 0.5rem">
+        <nb-icon icon="arrow-left"></nb-icon>
+      </button>
+            <button [disabled]="active === min + 1" (click)="goto(min + 1)" *ngIf="leadFilter.length >= count * min" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 1" style="margin-right: 0.5rem">
+        {{ min + 1 }}
+      </button>
+            <button [disabled]="active === min + 2" (click)="goto(min + 2)" *ngIf="leadFilter.length >= count * (min + 1)" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 2" style="margin-right: 0.5rem">
+        {{ min + 2 }}
+      </button>
+            <button [disabled]="active === min + 3" (click)="goto(min + 3)" *ngIf="leadFilter.length >= count * (min + 2)" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 3" style="margin-right: 0.5rem">
+        {{ min + 3 }}
+      </button>
+            <button [disabled]="active === getMax() || getMax() === 1" (click)="goto(active + 1)" nbButton size="small" status="primary" shape="round" outline>
+        <nb-icon icon="arrow-right"></nb-icon>
+      </button>
+        </div>
+        <div class="select">
+            <button [nbPopover]="selectRef" [nbPopoverPlacement]="'top'" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
+        <nb-icon icon="more-horizontal"></nb-icon>
+      </button>
+            <ng-template #selectRef>
+                <div style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 0.5rem;
+          ">
+                    <nb-radio-group [(ngModel)]="count" (ngModelChange)="useChangeCount()">
+                        <nb-radio [value]="20">20</nb-radio>
+                        <nb-radio [value]="50">50</nb-radio>
+                        <nb-radio [value]="100">100</nb-radio>
+                        <nb-radio [value]="200">200</nb-radio>
+                        <nb-radio [value]="500">500</nb-radio>
+                        <nb-radio [value]="1000">1000</nb-radio>
+                    </nb-radio-group>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<table #table style="height: 0; width: 0; overflow: hidden" class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>code</th>
+            <th>fullname</th>
+            <th>email</th>
+            <th>phone</th>
+            <th>gender</th>
+            <th>address</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let lead of leads">
+            <td>{{ lead.code }}</td>
+            <td>{{ lead.fullname }}</td>
+            <td>{{ lead.email }}</td>
+            <td>'{{ lead.phone }}</td>
+            <td>{{ lead.gender ? 'Male' : 'Female' }}</td>
+            <td>{{ lead.address }}</td>
+        </tr>
+    </tbody>
+</table>
+<table #example style="height: 0; width: 0; overflow: hidden" class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>code</th>
+            <th>fullname</th>
+            <th>email</th>
+            <th>phone</th>
+            <th>gender</th>
+            <th>address</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>SE00000</td>
+            <td>John Doe</td>
+            <td>no-reply@gmail.com</td>
+            <td>'0123456789</td>
+            <td>Male</td>
+            <td>Sydney</td>
+        </tr>
+    </tbody>
+</table>

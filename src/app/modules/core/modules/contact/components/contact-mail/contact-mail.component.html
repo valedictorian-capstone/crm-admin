@@ -1,0 +1,36 @@
+<button nbTooltip="Email" nbTooltipStatus="warning" nbButton size="small" status="warning" shape="round" style="margin-right: 0.5rem" (click)="open(dialog)">
+  <nb-icon icon="email"></nb-icon>
+</button>
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>
+            <div class="mail-modal-header">
+                <button nbButton size="small" style="float: right" shape="round" status="danger">
+          <nb-icon icon="close" (click)="ref.close()"></nb-icon>
+        </button>
+                <button nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="primary" (click)="send(ref)"><nb-icon icon="navigation-2"></nb-icon></button>
+            </div>
+        </nb-card-header>
+        <nb-card-body>
+            <div class="mail-modal-body">
+                <div nz-row style="width: 100%">
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem">
+                            <nb-icon class="" nbPrefix icon="email-outline"></nb-icon>
+                            <input disabled type="text" nbInput fullWidth placeholder="Subject" [value]="contact.email" />
+                        </nb-form-field>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem">
+                            <nb-icon class="" nbPrefix icon="attach-outline"></nb-icon>
+                            <input [(ngModel)]="subject" type="text" nbInput fullWidth placeholder="Subject" />
+                        </nb-form-field>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <p-editor [(ngModel)]="text" [style]="{ height: '15rem' }"></p-editor>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</ng-template>

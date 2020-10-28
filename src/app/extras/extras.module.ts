@@ -31,7 +31,15 @@ export class ExtrasModule {
     return {
       ngModule: ExtrasModule,
       providers: [
-        ...NebularModule.forRoot().providers,
+        // ...NebularModule.forRoot().providers,
+      ]
+    };
+  }
+  static forChild(name: string = 'default'): ModuleWithProviders<ExtrasModule> {
+    return {
+      ngModule: ExtrasModule,
+      providers: [
+        ...NebularModule.forChild().providers,
       ]
     };
   }
