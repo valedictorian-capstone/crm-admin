@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   apiEndpont: 'http://localhost:8080/',
   token: 'crm-token',
-  // 'apiEndpont': 'https://crm-capstione-be.azurewebsites.net/',
+  // apiEndpont: 'https://crm-capstione-be.azurewebsites.net/',
   api: {
     'basic-api': {
       role: {

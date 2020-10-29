@@ -14,3 +14,4 @@ export * from './process/process.module';
 export * from './role/role.module';
 export * from './service/service.module';
 export * from './strategy/strategy.module';
+export * from './error/error.module';

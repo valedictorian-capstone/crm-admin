@@ -27,7 +27,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <app-opportunity-create (useDone)="useCreate($event)"></app-opportunity-create>
+            <app-opportunity-create [groups]="groups" (useDone)="useCreate($event)"></app-opportunity-create>
         </div>
         <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
             <nb-form-field>
@@ -75,10 +75,27 @@
                         <nb-icon icon="phone"></nb-icon>
                     </button>
                         <app-opportunity-mail [opportunity]="opportunity"></app-opportunity-mail>
-                        <app-opportunity-update [opportunity]="opportunity" (useDone)="useUpdate($event, i)"></app-opportunity-update>
-                        <button nbTooltip="Change Type" nbTooltipStatus="primary" nbButton size="small" status="primary" shape="round">
+                        <app-opportunity-update [groups]="groups" [opportunity]="opportunity" (useDone)="useUpdate($event, i)"></app-opportunity-update>
+                        <button [nbPopover]="typeRef" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
             <nb-icon icon="car"></nb-icon>
           </button>
+                        <ng-template #typeRef>
+                            <span style="display: block; text-align: center; font-weight: 500;">Change Type</span>
+                            <div style="
+                              display: flex;
+                              justify-content: center;
+                              width: 100%;
+                              height: 100%;
+                              padding: 0.1rem 0.5rem 0 0.5rem;
+                              ">
+                                <nb-radio-group [value]="opportunity.type" (valueChange)="useChangeType(opportunity, $event)">
+                                    <nb-radio [value]="'opportunity'">Lead</nb-radio>
+                                    <nb-radio [value]="'opportunity'">Opportunity</nb-radio>
+                                    <nb-radio [value]="'contact'">Contact</nb-radio>
+                                    <nb-radio [value]="'account'">Account</nb-radio>
+                                </nb-radio-group>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
             </div>

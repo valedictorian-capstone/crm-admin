@@ -1,10 +1,11 @@
-<button nbTooltip="Email" nbTooltipStatus="warning" nbButton size="small" status="warning" shape="round" style="margin-right: 0.5rem" (click)="open(dialog)">
+<button nbTooltip="Email" nbTooltipStatus="danger" nbButton size="small" status="danger" shape="round" style="margin-right: 0.5rem" (click)="open(dialog)">
   <nb-icon icon="email"></nb-icon>
 </button>
 <ng-template #dialog let-data let-ref="dialogRef">
     <nb-card>
         <nb-card-header>
             <div class="mail-modal-header">
+                New Mail
                 <button nbButton size="small" style="float: right" shape="round" status="danger">
           <nb-icon icon="close" (click)="ref.close()"></nb-icon>
         </button>

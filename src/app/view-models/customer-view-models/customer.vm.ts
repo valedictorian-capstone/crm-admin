@@ -27,6 +27,7 @@ export interface CustomerCM {
   avatar: string;
   address: string;
   gender: boolean;
+  groups: GroupVM[];
   type: string;
 }
 
@@ -38,6 +39,7 @@ export interface CustomerUM {
   fullname: string;
   avatar: string;
   address: string;
+  groups: GroupVM[];
   gender: boolean;
   type: string;
 }

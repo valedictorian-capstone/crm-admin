@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@an
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerVM, GroupVM } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-contact-update',
@@ -12,6 +12,7 @@ import swal from 'sweetalert2';
 export class ContactUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() contact: CustomerVM;
+  @Input() groups: GroupVM[] = [];
   form: FormGroup;
   visible = false;
   constructor(
@@ -23,10 +24,10 @@ export class ContactUpdateComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]],
       fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      type: 'contact',
       address: '',
       avatar: undefined,
       gender: true,
+      groups: [],
     });
   }
 
@@ -40,20 +41,22 @@ export class ContactUpdateComponent implements OnInit {
       fullname: this.contact.fullname,
       phone: this.contact.phone,
       email: this.contact.email,
-      type: this.contact.type,
       address: this.contact.address,
       gender: this.contact.gender,
       avatar: this.contact.avatar,
+      groups: this.contact.groups.map((group) => (group.id)),
     });
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
+    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
   submit = (ref: NbDialogRef<any>) => {
     if (this.form.valid) {
-      this.service.update({ ...this.contact, ...this.form.value }).subscribe(
+      this.service.update({
+        ...this.contact, ...this.form.value, groups: this.form.value.groups.map((id) => ({ id }))
+      }).subscribe(
         () => {
           ref.close();
           swal.fire('Notification', 'Update ' + this.contact.code + ' successfully!!', 'success');
-          this.useDone.emit({ ...this.contact, ...this.form.value });
+          this.useDone.emit({ ...this.contact, ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) });
         },
         (error) => {
           swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');

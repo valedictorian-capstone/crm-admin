@@ -19,6 +19,10 @@ export class AccountService {
     return this.httpClient.get<AccountVM>(`${environment.apiEndpont}${environment.api['account-api'].account.getById}${id}`);
   }
 
+  public readonly import = (data: AccountCM[]): Observable<AccountVM[]> => {
+    return this.httpClient.post<AccountVM[]>(`${environment.apiEndpont}${environment.api['account-api'].account.main}/import`, data);
+  }
+
   public readonly insert = (data: AccountCM): Observable<AccountVM> => {
     return this.httpClient.post<AccountVM>(`${environment.apiEndpont}${environment.api['account-api'].account.main}`, data);
   }

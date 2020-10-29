@@ -24,7 +24,7 @@ export class AccountMailComponent implements OnInit {
   open(dialog: TemplateRef<any>) {
     this.text = '';
     this.subject = '';
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
+    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
   send = (ref: NbDialogRef<any>) => {
     this.emailService.sendMail({

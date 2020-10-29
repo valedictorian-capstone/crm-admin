@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerService, GroupService } from '@services';
+import { CustomerVM, GroupVM } from '@view-models';
 import swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -13,6 +13,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 })
 export class AccountListComponent implements OnInit {
   accounts: CustomerVM[] = [];
+  groups: GroupVM[] = [];
   accountFilter: CustomerVM[] = [];
   min = 0;
   active = 1;
@@ -25,6 +26,7 @@ export class AccountListComponent implements OnInit {
     protected readonly deviceService: DeviceDetectorService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
+    protected readonly groupService: GroupService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -32,6 +34,9 @@ export class AccountListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.groupService.findAll().subscribe((data) => {
+      this.groups = data;
+    });
     this.service.findAllByType('account').subscribe((data) => {
       this.accounts = data;
       this.search = '';
@@ -127,7 +132,8 @@ export class AccountListComponent implements OnInit {
     }
   }
   useChangeCount = () => {
-
+    this.search = '';
+    this.useFilter();
   }
   getMax = () => {
     return parseInt((this.accountFilter.length / this.count) + '', 0) + (this.accountFilter.length % this.count > 0 ? 1 : 0);
@@ -169,7 +175,7 @@ export class AccountListComponent implements OnInit {
                   gender: e.gender ? ((e.gender + '').toLowerCase() === 'female' ? false : true) : undefined
                 }
               ))).subscribe((data) => {
-                this.accounts.concat(data);
+                this.accounts = this.accounts.concat(data);
                 this.search = '';
                 this.useFilter();
                 swal.fire('Notification', 'Import ' + rs.length + ' accounts successfully!!', 'success');
@@ -194,12 +200,34 @@ export class AccountListComponent implements OnInit {
     }).then((res) => {
       if (res.isConfirmed) {
         input.click();
-      } else {
+      }
+      if ((res.dismiss as any) === 'cancel') {
         const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
         ws['!cols'] = [{ width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 50 }];
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Account List');
         XLSX.writeFile(wb, 'example-accounts.xlsx');
+      }
+    });
+  }
+  useChangeType = (data: CustomerVM, type: string) => {
+    swal.fire({
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Change',
+      title: 'Confirm change customer type',
+      icon: 'question',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.service.update({ ...data, type }).subscribe(() => {
+          this.accounts = this.accounts.filter((account) => account.id !== data.id);
+          this.useFilter();
+          swal.fire('Notification', 'Change successfully!', 'success');
+        });
+      }
+      if ((res.dismiss as any) === 'cancel') {
+        this.useFilter();
+        console.log(this.accountFilter);
       }
     });
   }

@@ -1,8 +1,8 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerVM, GroupVM } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-account-create',
@@ -11,6 +11,7 @@ import swal from 'sweetalert2';
 })
 export class AccountCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
+  @Input() groups: GroupVM[] = [];
   form: FormGroup;
   visible = false;
   constructor(
@@ -27,6 +28,7 @@ export class AccountCreateComponent implements OnInit {
       address: '',
       avatar: undefined,
       gender: true,
+      groups: [],
     });
   }
 
@@ -37,7 +39,9 @@ export class AccountCreateComponent implements OnInit {
   }
 
   newForm = () => {
-    this.form.reset({ fullname: '', phone: '', email: '', code: '', type: 'account', address: '', gender: true, avatar: undefined });
+    this.form.reset({
+      fullname: '', phone: '', email: '', code: '', type: 'account', address: '', gender: true, avatar: undefined, groups: []
+    });
   }
 
   open(dialog: TemplateRef<any>) {
@@ -46,7 +50,7 @@ export class AccountCreateComponent implements OnInit {
   }
   submit = (ref: NbDialogRef<any>) => {
     if (this.form.valid) {
-      this.service.insert(this.form.value).subscribe(
+      this.service.insert({ ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) }).subscribe(
         (data) => {
           ref.close();
           swal.fire('Notification', 'Create new account successfully!!', 'success');

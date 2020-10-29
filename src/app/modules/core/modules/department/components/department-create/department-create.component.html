@@ -1,3 +1,34 @@
-<p>
-  department-create works!
-</p>
+<button nbButton status="success" (click)="open(dialog)" size="small">Add Department</button>
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>
+            <div class="create-modal-header">
+                <span>Create new department</span>
+                <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="ref.close()"></nb-icon></button>
+                <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
+            </div>
+        </nb-card-header>
+        <nb-card-body>
+            <div class="create-modal-body">
+                <div nz-row style="width: 100%" [formGroup]="form">
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem;">
+                            <nb-icon [class]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
+                            <input type="text" nbInput fullWidth [formControl]="form.get('name')" [status]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'danger' : 'info'" status="info" placeholder="Fill department name" />
+                            <nb-icon class="text-danger" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                        </nb-form-field>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid">
+                          Name must be required
+                        </span>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem;">
+                            <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
+                            <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill department description"></textarea>
+                        </nb-form-field>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</ng-template>

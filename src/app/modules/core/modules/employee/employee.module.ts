@@ -3,7 +3,8 @@ import { ExtrasModule } from '@extras/extras.module';
 import {
   EmployeeCreateComponent,
   EmployeeListComponent,
-  EmployeeUpdateComponent
+  EmployeeUpdateComponent,
+  EmployeeMailComponent
 } from './components';
 import { EmployeeRoutes } from './employee.routing';
 import {
@@ -14,6 +15,7 @@ const COMPONENTS = [
   EmployeeCreateComponent,
   EmployeeListComponent,
   EmployeeUpdateComponent,
+  EmployeeMailComponent,
 ];
 const PAGES = [
   EmployeeMainComponent,

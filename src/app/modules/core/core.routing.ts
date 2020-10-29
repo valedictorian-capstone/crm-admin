@@ -7,7 +7,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard' },
       { path: 'account', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.AccountModule) },
       { path: 'contact', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ContactModule) },
-      { path: 'customer', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.CustomerModule) },
+      // { path: 'customer', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.CustomerModule) },
       { path: 'dashboard', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.DashboardModule) },
       { path: 'department', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.DepartmentModule) },
       { path: 'employee', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.EmployeeModule) },
@@ -21,6 +21,8 @@ const routes: Routes = [
       { path: 'process', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ProcessModule) },
       { path: 'role', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.RoleModule) },
       { path: 'strategy', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.StrategyModule) },
+      { path: '404', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ErrorModule) },
+      { path: '**', redirectTo: '404' }
     ],
   },
 ];

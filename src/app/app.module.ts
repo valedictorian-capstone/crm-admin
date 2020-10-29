@@ -9,6 +9,14 @@ import { AppComponent } from './app.component';
 import { AppRoutes } from './app.routing';
 import { ExtrasModule } from './extras/extras.module';
 import { InterceptorService } from '@services';
+import * as Hammer from 'hammerjs';
+import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+export class HammerConfig extends HammerGestureConfig {
+  // tslint:disable-next-line: no-angle-bracket-type-assertion
+  overrides = <any> {
+    swipe: { direction: Hammer.DIRECTION_ALL }
+  };
+}
 @NgModule({
   declarations: [
     AppComponent
@@ -34,6 +42,10 @@ import { InterceptorService } from '@services';
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,
       multi: true
+    },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: HammerConfig,
     }
   ],
   bootstrap: [AppComponent]

@@ -1,3 +1,4 @@
+import { RoleVM } from '../basic-view-models';
 
 export interface AccountVM {
   readonly id: string;
@@ -7,7 +8,8 @@ export interface AccountVM {
   readonly fullname: string;
   readonly avatar: string;
   readonly address: string;
-  readonly gender: string;
+  readonly gender: boolean;
+  readonly roles: RoleVM[];
   readonly currentValidateCode: string;
   readonly isDelete: boolean;
   readonly createdBy: string;
@@ -23,8 +25,9 @@ export interface AccountCM {
   fullname: string;
   avatar: string;
   address: string;
-  gender: string;
+  gender: boolean;
   password: string;
+  roles: RoleVM[];
   currentValidateCode: string;
 }
 
@@ -36,7 +39,8 @@ export interface AccountUM {
   fullname: string;
   avatar: string;
   address: string;
-  gender: string;
+  gender: boolean;
   password: string;
+  roles: RoleVM[];
   currentValidateCode: string;
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerService, GroupService } from '@services';
+import { CustomerVM, GroupVM } from '@view-models';
 import swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -13,6 +13,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 })
 export class LeadListComponent implements OnInit {
   leads: CustomerVM[] = [];
+  groups: GroupVM[] = [];
   leadFilter: CustomerVM[] = [];
   min = 0;
   active = 1;
@@ -25,6 +26,7 @@ export class LeadListComponent implements OnInit {
     protected readonly deviceService: DeviceDetectorService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
+    protected readonly groupService: GroupService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -32,6 +34,9 @@ export class LeadListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.groupService.findAll().subscribe((data) => {
+      this.groups = data;
+    });
     this.service.findAllByType('lead').subscribe((data) => {
       this.leads = data;
       this.search = '';
@@ -127,7 +132,8 @@ export class LeadListComponent implements OnInit {
     }
   }
   useChangeCount = () => {
-
+    this.search = '';
+    this.useFilter();
   }
   getMax = () => {
     return parseInt((this.leadFilter.length / this.count) + '', 0) + (this.leadFilter.length % this.count > 0 ? 1 : 0);
@@ -169,7 +175,7 @@ export class LeadListComponent implements OnInit {
                   gender: e.gender ? ((e.gender + '').toLowerCase() === 'female' ? false : true) : undefined
                 }
               ))).subscribe((data) => {
-                this.leads.concat(data);
+                this.leads = this.leads.concat(data);
                 this.search = '';
                 this.useFilter();
                 swal.fire('Notification', 'Import ' + rs.length + ' leads successfully!!', 'success');
@@ -194,12 +200,34 @@ export class LeadListComponent implements OnInit {
     }).then((res) => {
       if (res.isConfirmed) {
         input.click();
-      } else {
+      }
+      if ((res.dismiss as any) === 'cancel') {
         const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
         ws['!cols'] = [{ width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 50 }];
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Lead List');
         XLSX.writeFile(wb, 'example-leads.xlsx');
+      }
+    });
+  }
+  useChangeType = (data: CustomerVM, type: string) => {
+    swal.fire({
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Change',
+      title: 'Confirm change customer type',
+      icon: 'question',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.service.update({ ...data, type }).subscribe(() => {
+          this.leads = this.leads.filter((lead) => lead.id !== data.id);
+          this.useFilter();
+          swal.fire('Notification', 'Change successfully!', 'success');
+        });
+      }
+      if ((res.dismiss as any) === 'cancel') {
+        this.useFilter();
+        console.log(this.leadFilter);
       }
     });
   }

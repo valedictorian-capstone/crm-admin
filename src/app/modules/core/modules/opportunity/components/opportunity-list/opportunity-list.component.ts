@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerService, GroupService } from '@services';
+import { CustomerVM, GroupVM } from '@view-models';
 import swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -13,6 +13,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 })
 export class OpportunityListComponent implements OnInit {
   opportunitys: CustomerVM[] = [];
+  groups: GroupVM[] = [];
   opportunityFilter: CustomerVM[] = [];
   min = 0;
   active = 1;
@@ -25,6 +26,7 @@ export class OpportunityListComponent implements OnInit {
     protected readonly deviceService: DeviceDetectorService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
+    protected readonly groupService: GroupService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -32,6 +34,9 @@ export class OpportunityListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.groupService.findAll().subscribe((data) => {
+      this.groups = data;
+    });
     this.service.findAllByType('opportunity').subscribe((data) => {
       this.opportunitys = data;
       this.search = '';
@@ -127,7 +132,8 @@ export class OpportunityListComponent implements OnInit {
     }
   }
   useChangeCount = () => {
-
+    this.search = '';
+    this.useFilter();
   }
   getMax = () => {
     return parseInt((this.opportunityFilter.length / this.count) + '', 0) + (this.opportunityFilter.length % this.count > 0 ? 1 : 0);
@@ -169,7 +175,7 @@ export class OpportunityListComponent implements OnInit {
                   gender: e.gender ? ((e.gender + '').toLowerCase() === 'female' ? false : true) : undefined
                 }
               ))).subscribe((data) => {
-                this.opportunitys.concat(data);
+                this.opportunitys = this.opportunitys.concat(data);
                 this.search = '';
                 this.useFilter();
                 swal.fire('Notification', 'Import ' + rs.length + ' opportunitys successfully!!', 'success');
@@ -194,12 +200,34 @@ export class OpportunityListComponent implements OnInit {
     }).then((res) => {
       if (res.isConfirmed) {
         input.click();
-      } else {
+      }
+      if ((res.dismiss as any) === 'cancel') {
         const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
         ws['!cols'] = [{ width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 50 }];
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Opportunity List');
         XLSX.writeFile(wb, 'example-opportunitys.xlsx');
+      }
+    });
+  }
+  useChangeType = (data: CustomerVM, type: string) => {
+    swal.fire({
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Change',
+      title: 'Confirm change customer type',
+      icon: 'question',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.service.update({ ...data, type }).subscribe(() => {
+          this.opportunitys = this.opportunitys.filter((opportunity) => opportunity.id !== data.id);
+          this.useFilter();
+          swal.fire('Notification', 'Change successfully!', 'success');
+        });
+      }
+      if ((res.dismiss as any) === 'cancel') {
+        this.useFilter();
+        console.log(this.opportunityFilter);
       }
     });
   }

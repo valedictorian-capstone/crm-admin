@@ -1,4 +1,4 @@
-<button nbButton status="success" (click)="open(dialog)">Add Account</button>
+<button nbButton status="success" (click)="open(dialog)" size="small">Add Account</button>
 <ng-template #dialog let-data let-ref="dialogRef">
     <nb-card>
         <nb-card-header>
@@ -81,6 +81,14 @@
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon class="text-info" nbPrefix icon="pin-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('address')" status="info" placeholder="Fill account address" />
+                        </nb-form-field>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem; width: 100%; max-width: 100% !important">
+                            <nb-icon class="text-info" nbPrefix icon="car-outline"></nb-icon>
+                            <nb-select multiple [status]="'info'" fullWidth placeholder="Select group" [formControl]="form.get('groups')">
+                                <nb-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</nb-option>
+                            </nb-select>
                         </nb-form-field>
                     </div>
                     <div nz-col [nzSpan]="24">

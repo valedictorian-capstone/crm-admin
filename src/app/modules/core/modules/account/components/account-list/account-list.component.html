@@ -27,7 +27,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <app-account-create (useDone)="useCreate($event)"></app-account-create>
+            <app-account-create [groups]="groups" (useDone)="useCreate($event)"></app-account-create>
         </div>
         <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
             <nb-form-field>
@@ -37,15 +37,15 @@
         </div>
         <div class="action">
             <button nbTooltip="Search" nbTooltipStatus="info" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem" (click)="showSearch = true">
-      <nb-icon icon="search"></nb-icon>
-    </button>
+    <nb-icon icon="search"></nb-icon>
+  </button>
             <input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" #fileImport (change)="import($event, fileImport);" type="file" style="height: 0; width: 0; position: absolute; overflow: hidden;" />
             <button nbTooltip="Import Excel" nbTooltipStatus="success" nbButton size="small" status="success" (click)="useExport(example, fileImport)" shape="round" style="margin-right: 0.5rem">
-      <nb-icon icon="cloud-upload"></nb-icon>
-    </button>
+    <nb-icon icon="cloud-upload"></nb-icon>
+  </button>
             <button nbTooltip="Export Excel" nbTooltipStatus="warning" (click)="export(table)" nbButton size="small" status="warning" shape="round" style="margin-right: 0.5rem">
-      <nb-icon icon="cloud-download"></nb-icon>
-    </button>
+    <nb-icon icon="cloud-download"></nb-icon>
+  </button>
         </div>
     </div>
 </div>
@@ -56,15 +56,15 @@
                 <div class="top">
                     <div class="right">
                         <button nbTooltip="Shutdown" nbTooltipStatus="danger" nbButton size="small" status="danger" (click)="useRemove(account)" shape="round">
-            <nb-icon icon="power"></nb-icon>
-          </button>
+          <nb-icon icon="power"></nb-icon>
+        </button>
                     </div>
                     <div class="image">
                         <img [src]="
-              account.avatar
-                ? account.avatar
-                : '../../../../../../../assets/user.png'
-            " />
+            account.avatar
+              ? account.avatar
+              : '../../../../../../../assets/user.png'
+          " />
                     </div>
                     <div class="name">{{ getShortName(account.fullname) }}</div>
                 </div>
@@ -72,13 +72,30 @@
                 <div class="bottom">
                     <div class="action">
                         <button nbTooltip="Get Phone" nbTooltipStatus="success" (click)="copyPhone(account.phone)" nbButton size="small" status="success" shape="round" style="margin-right: 0.5rem">
-                        <nb-icon icon="phone"></nb-icon>
-                    </button>
+                      <nb-icon icon="phone"></nb-icon>
+                  </button>
                         <app-account-mail [account]="account"></app-account-mail>
-                        <app-account-update [account]="account" (useDone)="useUpdate($event, i)"></app-account-update>
-                        <button nbTooltip="Change Type" nbTooltipStatus="primary" nbButton size="small" status="primary" shape="round">
-            <nb-icon icon="car"></nb-icon>
-          </button>
+                        <app-account-update [groups]="groups" [account]="account" (useDone)="useUpdate($event, i)"></app-account-update>
+                        <button [nbPopover]="typeRef" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
+          <nb-icon icon="car"></nb-icon>
+        </button>
+                        <ng-template #typeRef>
+                            <span style="display: block; text-align: center; font-weight: 500;">Change Type</span>
+                            <div style="
+                            display: flex;
+                            justify-content: center;
+                            width: 100%;
+                            height: 100%;
+                            padding: 0.1rem 0.5rem 0 0.5rem;
+                            ">
+                                <nb-radio-group [value]="account.type" (valueChange)="useChangeType(account, $event)">
+                                    <nb-radio [value]="'account'">Lead</nb-radio>
+                                    <nb-radio [value]="'opportunity'">Opportunity</nb-radio>
+                                    <nb-radio [value]="'account'">Contact</nb-radio>
+                                    <nb-radio [value]="'account'">Account</nb-radio>
+                                </nb-radio-group>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
             </div>
@@ -90,34 +107,34 @@
     <div class="content">
         <div class="pagination">
             <button [disabled]="active === 1" (click)="goto(active - 1)" nbButton size="small" status="primary" shape="round" outline style="margin-right: 0.5rem">
-      <nb-icon icon="arrow-left"></nb-icon>
-    </button>
+    <nb-icon icon="arrow-left"></nb-icon>
+  </button>
             <button [disabled]="active === min + 1" (click)="goto(min + 1)" *ngIf="accountFilter.length >= count * min" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 1" style="margin-right: 0.5rem">
-      {{ min + 1 }}
-    </button>
+    {{ min + 1 }}
+  </button>
             <button [disabled]="active === min + 2" (click)="goto(min + 2)" *ngIf="accountFilter.length >= count * (min + 1)" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 2" style="margin-right: 0.5rem">
-      {{ min + 2 }}
-    </button>
+    {{ min + 2 }}
+  </button>
             <button [disabled]="active === min + 3" (click)="goto(min + 3)" *ngIf="accountFilter.length >= count * (min + 2)" nbButton size="small" status="primary" shape="round" [outline]="active !== min + 3" style="margin-right: 0.5rem">
-      {{ min + 3 }}
-    </button>
+    {{ min + 3 }}
+  </button>
             <button [disabled]="active === getMax() || getMax() === 1" (click)="goto(active + 1)" nbButton size="small" status="primary" shape="round" outline>
-      <nb-icon icon="arrow-right"></nb-icon>
-    </button>
+    <nb-icon icon="arrow-right"></nb-icon>
+  </button>
         </div>
         <div class="select">
             <button [nbPopover]="selectRef" [nbPopoverPlacement]="'top'" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
-      <nb-icon icon="more-horizontal"></nb-icon>
-    </button>
+    <nb-icon icon="more-horizontal"></nb-icon>
+  </button>
             <ng-template #selectRef>
                 <div style="
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: 100%;
-          padding: 0.5rem;
-        ">
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem;
+      ">
                     <nb-radio-group [(ngModel)]="count" (ngModelChange)="useChangeCount()">
                         <nb-radio [value]="20">20</nb-radio>
                         <nb-radio [value]="50">50</nb-radio>

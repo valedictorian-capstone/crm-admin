@@ -22,7 +22,10 @@
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
                         "allowedCommonJsDependencies": [
-                            "lodash"
+                            "lodash",
+                            "xlsx",
+                            "@ant-design/colors",
+                            "chart.js"
                         ],
                         "outputPath": "dist/crm-admin",
                         "index": "src/index.html",
