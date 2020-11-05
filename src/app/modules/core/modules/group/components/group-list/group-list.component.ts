@@ -1,4 +1,6 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, TemplateRef } from '@angular/core';
+import { ActionMenuItem } from '@extras/models';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { GroupService } from '@services';
 import { GroupVM } from '@view-models';
 import swal from 'sweetalert2';
@@ -17,12 +19,30 @@ export class GroupListComponent implements OnInit {
   showSearch = false;
   search = '';
   count = 20;
+  actions: ActionMenuItem[] = [
+    {
+      label: 'Edit group\'s information',
+      value: 'edit',
+      icon: {
+        icon: 'edit-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+    {
+      label: 'Disabled group',
+      value: 'remove',
+      icon: {
+        icon: 'trash-2-outline',
+        status: 'danger'
+      },
+      textColor: 'text-danger',
+    }
+  ];
   constructor(
     protected readonly service: GroupService,
-  ) {
-
-  }
-
+    protected readonly dialogService: NbDialogService,
+  ) { }
   ngOnInit() {
     this.service.findAll().subscribe((data) => {
       this.groups = data;
@@ -30,26 +50,27 @@ export class GroupListComponent implements OnInit {
       this.useFilter();
     });
   }
-
   useFilter = () => {
     this.groupFilter = this.groups.filter((group, i) =>
       group.name.toLowerCase().includes(this.search.toLowerCase()) &&
       (i < ((this.min + 1) * this.count) - 1 && i >= this.min * this.count)
     );
   }
-  useCreate = (data: GroupVM) => {
+  useCreate = (dialog: NbDialogRef<any>, data: GroupVM) => {
     this.groups.push(data);
     this.search = data.name;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useUpdate = (data: GroupVM, index: number) => {
+  useUpdate = (dialog: NbDialogRef<any>, data: GroupVM, index: number) => {
     this.groups[index] = data;
     this.search = data.name;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useRemove = (data: GroupVM) => {
+  useRemove = (data: GroupVM, index: number) => {
     swal.fire({
       showCancelButton: true,
       cancelButtonText: 'Not Sure',
@@ -61,7 +82,7 @@ export class GroupListComponent implements OnInit {
       if (res.isConfirmed) {
         this.service.remove(data.id).subscribe(
           () => {
-            this.groups = this.groups.filter((group) => group.id !== data.id);
+            this.groups.splice(index, 1);
             this.useFilter();
             swal.fire('Notification', 'Delete ' + data.name + ' successfully!!', 'success');
           },
@@ -72,10 +93,10 @@ export class GroupListComponent implements OnInit {
       }
     });
   }
-  goto = (index: number) => {
+  useGo = (index: number) => {
     if (
       this.active !== index
-      && index <= this.getMax()
+      && index <= this.useMax()
       && index >= 0
     ) {
       if (index > this.min + 3) {
@@ -92,14 +113,27 @@ export class GroupListComponent implements OnInit {
     this.search = '';
     this.useFilter();
   }
-  getMax = () => {
+  useMax = () => {
     return parseInt((this.groupFilter.length / this.count) + '', 0) + (this.groupFilter.length % this.count > 0 ? 1 : 0);
   }
-  export = (table: ElementRef<any>) => {
+  useExport = (table: ElementRef<any>) => {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
     ws['!cols'] = [{ width: 20 }];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Lead List');
     XLSX.writeFile(wb, 'groups.xlsx');
+  }
+  useAction = (action: ActionMenuItem, template: TemplateRef<any>, data: GroupVM, index: number) => {
+    switch (action.value) {
+      case 'edit':
+        this.useDialog(template, 'update-modal');
+        return;
+      case 'remove':
+        this.useRemove(data, index);
+        return;
+    }
+  }
+  useDialog(template: TemplateRef<any>, dialogClass: string) {
+    this.dialogService.open(template, { dialogClass });
   }
 }

@@ -77,6 +77,7 @@ const ANT_MODULES = [
   NzBreadCrumbModule,
   NzCalendarModule,
   NzCardModule,
+  NzDropDownModule,
   NzCarouselModule,
   NzCascaderModule,
   NzCheckboxModule,

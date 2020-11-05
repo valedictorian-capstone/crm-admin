@@ -55,6 +55,10 @@
     max-height: 100vh !important;
 }
 
+.l-1 {
+    left: 1rem !important;
+}
+
 @for $size from 1 through 100 {
     .h-#{$size} {
         height: $size + vh;

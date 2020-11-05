@@ -1,6 +1,5 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GroupService } from '@services';
 import { GroupVM } from '@view-models';
 import swal from 'sweetalert2';
@@ -11,11 +10,11 @@ import swal from 'sweetalert2';
 })
 export class GroupCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<GroupVM> = new EventEmitter<GroupVM>();
+  @Output() useClose: EventEmitter<GroupVM> = new EventEmitter<GroupVM>();
   form: FormGroup;
   visible = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: GroupService,
   ) {
     this.form = fb.group({
@@ -25,22 +24,18 @@ export class GroupCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.useForm();
+    console.log('new');
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({ name: '', description: '' });
   }
 
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
       this.service.insert(this.form.value).subscribe(
         (data) => {
-          ref.close();
           swal.fire('Notification', 'Create new group successfully!!', 'success');
           this.useDone.emit(data);
         },

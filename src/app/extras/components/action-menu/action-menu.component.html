@@ -1,0 +1,10 @@
+<div class="actions" [ngStyle]="{'min-width': template ? template['clientWidth'] + 'px' : 'unset'}" nz-menu>
+    <div class="action" *ngFor="let action of actions" (click)="useSelectItem.emit(action)" nz-menu-item>
+        <span class="action-icon">
+          <nb-icon [icon]="action.icon.icon" [pack]="action.icon.pack" [options]="action.icon.options" [status]="action.icon.status"></nb-icon>
+        </span>
+        <span class="action-label {{action.textColor}}">
+          {{action.label}}
+        </span>
+    </div>
+</div>

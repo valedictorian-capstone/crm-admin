@@ -6,24 +6,13 @@
         <input placeholder="Fill anything to search..." />
         <nb-icon icon="search-outline" status="basic"></nb-icon>
     </div>
-    <div #right class="header-right">
+    <div #right class="header-right" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-2'" nz-dropdown [nzDropdownMenu]="dropdown">
         <div class="header-right-name">
-            <nb-icon icon="smiling-face-outline" status="basic"></nb-icon> {{name}}</div>
+            {{name}}</div>
         <div class="header-right-avatar"><img [src]="avatar" /></div>
-        <div class="header-right-menu" [class.open]="rightFocus">
-            <div class="header-right-menu-item" #profile (click)="useProfile()">
-                <span class="header-right-menu-item-icon"><nb-icon icon="credit-card-outline" status="basic"></nb-icon> </span>
-                <span class="header-right-menu-item-content">Profile</span>
-            </div>
-            <div class="header-right-menu-item" #setting (click)="useSetting()">
-                <span class="header-right-menu-item-icon"><nb-icon icon="settings-outline" status="basic"></nb-icon> </span>
-                <span class="header-right-menu-item-content">Setting</span>
-            </div>
-            <div class="header-right-menu-item" #logout (click)="useLogout()">
-                <span class="header-right-menu-item-icon"><nb-icon icon="log-out-outline" status="basic"></nb-icon> </span>
-                <span class="header-right-menu-item-content">Logout</span>
-            </div>
-        </div>
+        <nz-dropdown-menu #dropdown="nzDropdownMenu">
+            <app-action-menu [actions]="actions" (useSelectItem)="useAction($event)"></app-action-menu>
+        </nz-dropdown-menu>
     </div>
     <div #bell class="header-bell" [class.open]="bellFocus">
         <nb-icon icon="bell-outline" status="basic"></nb-icon>

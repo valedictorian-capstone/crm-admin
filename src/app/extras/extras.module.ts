@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AntModule, FormModule, NebularModule, PrimeModule } from './modules';
-
+import { ActionMenuComponent } from './components';
+import { LengthPipe } from './pipes';
 export const EXTRA_MODULES = [
   FormModule,
   AntModule,
@@ -15,15 +16,27 @@ export const ANGULAR_MODULES = [
   ReactiveFormsModule,
   CommonModule
 ];
+
+export const COMPONENTS = [
+  ActionMenuComponent
+];
+export const PIPES = [
+  LengthPipe
+];
 @NgModule({
   imports: [
     ...ANGULAR_MODULES,
     ...EXTRA_MODULES,
   ],
-  declarations: [],
+  declarations: [
+    ...COMPONENTS,
+    ...PIPES
+  ],
   exports: [
     ...ANGULAR_MODULES,
     ...EXTRA_MODULES,
+    ...COMPONENTS,
+    ...PIPES
   ],
 })
 export class ExtrasModule {
