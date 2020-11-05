@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@an
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM, GroupVM } from '@view-models';
+import { CustomerVM, District, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-opportunity-create',
@@ -12,8 +12,10 @@ import swal from 'sweetalert2';
 export class OpportunityCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() groups: GroupVM[] = [];
+  @Input() provinces: Province[] = [];
   form: FormGroup;
   visible = false;
+  districts: District[] = [];
   constructor(
     protected readonly fb: FormBuilder,
     protected readonly dialogService: NbDialogService,
@@ -25,7 +27,9 @@ export class OpportunityCreateComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       code: ['', [Validators.required]],
       type: 'opportunity',
-      address: '',
+      province: undefined,
+      district: undefined,
+      birthDate: undefined,
       avatar: undefined,
       gender: true,
       groups: [],
@@ -40,8 +44,19 @@ export class OpportunityCreateComponent implements OnInit {
 
   newForm = () => {
     this.form.reset({
-      fullname: '', phone: '', email: '', code: '', type: 'opportunity', address: '', gender: true, avatar: undefined, groups: []
+      fullname: '',
+      phone: '',
+      email: '',
+      code: '',
+      type: 'opportunity',
+      province: undefined,
+      district: undefined,
+      birthDate: undefined,
+      gender: true,
+      avatar: undefined,
+      groups: []
     });
+    this.districts = [];
   }
 
   open(dialog: TemplateRef<any>) {
@@ -92,4 +107,9 @@ export class OpportunityCreateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
+  selectProvince = (id: number) => {
+    this.districts = this.provinces.find((province) => province.id === id)
+      ? this.provinces.find((province) => province.id === id).huyen : [];
+    this.form.get('district').setValue(undefined);
+  }
 }

@@ -1,4 +1,4 @@
-import { GroupVM, WorkFlowStepInstanceVM } from '..';
+import { GroupVM, ProcessStepInstanceVM } from '..';
 
 export interface CustomerVM {
   readonly id: string;
@@ -6,12 +6,14 @@ export interface CustomerVM {
   readonly email: string;
   readonly code: string;
   readonly fullname: string;
+  readonly birthDate: Date;
   readonly avatar: string;
   readonly type: string;
-  readonly address: string;
+  readonly province: string;
+  readonly district: string;
   readonly gender: boolean;
   readonly groups: GroupVM[];
-  readonly workFlowStepInstances: WorkFlowStepInstanceVM[];
+  readonly processStepInstances: ProcessStepInstanceVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;
@@ -25,7 +27,9 @@ export interface CustomerCM {
   code: string;
   fullname: string;
   avatar: string;
-  address: string;
+  province: string;
+  birthDate: Date;
+  district: string;
   gender: boolean;
   groups: GroupVM[];
   type: string;
@@ -38,7 +42,9 @@ export interface CustomerUM {
   code: string;
   fullname: string;
   avatar: string;
-  address: string;
+  birthDate: Date;
+  province: string;
+  district: string;
   groups: GroupVM[];
   gender: boolean;
   type: string;

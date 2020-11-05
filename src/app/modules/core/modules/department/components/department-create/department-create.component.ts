@@ -1,5 +1,5 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output, TemplateRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { DepartmentService } from '@services';
 import { DepartmentVM } from '@view-models';
@@ -13,6 +13,7 @@ export class DepartmentCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<DepartmentVM> = new EventEmitter<DepartmentVM>();
   form: FormGroup;
   visible = false;
+  search = '';
   constructor(
     protected readonly fb: FormBuilder,
     protected readonly dialogService: NbDialogService,
@@ -25,7 +26,6 @@ export class DepartmentCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-
   }
 
   newForm = () => {
@@ -52,5 +52,8 @@ export class DepartmentCreateComponent implements OnInit {
       this.form.markAsTouched();
     }
     // ref.close();
+  }
+  useFilter = () => {
+
   }
 }

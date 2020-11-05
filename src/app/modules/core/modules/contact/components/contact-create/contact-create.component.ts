@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@an
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM, GroupVM } from '@view-models';
+import { CustomerVM, District, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-contact-create',
@@ -12,8 +12,10 @@ import swal from 'sweetalert2';
 export class ContactCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() groups: GroupVM[] = [];
+  @Input() provinces: Province[] = [];
   form: FormGroup;
   visible = false;
+  districts: District[] = [];
   constructor(
     protected readonly fb: FormBuilder,
     protected readonly dialogService: NbDialogService,
@@ -25,8 +27,10 @@ export class ContactCreateComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       code: ['', [Validators.required]],
       type: 'contact',
-      address: '',
+      province: undefined,
+      district: undefined,
       avatar: undefined,
+      birthDate: undefined,
       gender: true,
       groups: [],
     });
@@ -40,8 +44,19 @@ export class ContactCreateComponent implements OnInit {
 
   newForm = () => {
     this.form.reset({
-      fullname: '', phone: '', email: '', code: '', type: 'contact', address: '', gender: true, avatar: undefined, groups: []
+      fullname: '',
+      phone: '',
+      email: '',
+      code: '',
+      type: 'contact',
+      province: undefined,
+      district: undefined,
+      gender: true,
+      avatar: undefined,
+      birthDate: undefined,
+      groups: []
     });
+    this.districts = [];
   }
 
   open(dialog: TemplateRef<any>) {
@@ -92,4 +107,9 @@ export class ContactCreateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
+  selectProvince = (id: number) => {
+    this.districts = this.provinces.find((province) => province.id === id)
+      ? this.provinces.find((province) => province.id === id).huyen : [];
+    this.form.get('district').setValue(undefined);
+  }
 }

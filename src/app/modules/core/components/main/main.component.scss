@@ -1,25 +1,25 @@
-.main {
-    width: 100%;
-    background: #e5e5e5;
-    .main-header {
-        height: 3rem;
-        background: white;
-        border: 1px solid #eceff1;
-        border-top: none;
-        &.stick {
-            box-shadow: 0 0 10px rgb(193 176 176 / 50%);
+    .main {
+        width: 100%;
+        background: #e5e5e5;
+        .main-header {
+            height: 3rem;
+            background: white;
+            border: 1px solid #eceff1;
+            border-top: none;
+            &.stick {
+                box-shadow: 0 0 10px rgb(193 176 176 / 50%);
+            }
+        }
+        .main-body {
+            width: 100%;
+            height: calc(100vh - 7rem);
+            overflow: hidden;
         }
     }
-    .main-body {
-        width: 100%;
-        height: calc(100vh - 7rem);
-        overflow: hidden;
-    }
-}
 
-@media (min-width: 1010px) {
-    .main {
-        width: calc(100vw - 6rem);
-        margin-left: calc(6rem);
+    @media (min-width: 1010px) {
+        .main {
+            width: calc(100vw - 6rem);
+            margin-left: calc(6rem);
+        }
     }
-}

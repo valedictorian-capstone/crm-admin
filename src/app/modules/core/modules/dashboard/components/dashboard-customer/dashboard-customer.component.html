@@ -5,7 +5,7 @@
                 <nb-accordion-item-header>Customer Type Chart</nb-accordion-item-header>
                 <nb-accordion-item-body>
                     <nz-spin nzTip="Loading..." [nzSpinning]="!type">
-                        <div [ngStyle]="{'opacity': type ? '1' : '0'}" echarts [options]="type" style="height: 30rem;; width: 100%">
+                        <div [ngStyle]="{'opacity': type ? '1' : '0'}" echarts [options]="type" class="chart">
                         </div>
                     </nz-spin>
                 </nb-accordion-item-body>
@@ -18,7 +18,7 @@
                 <nb-accordion-item-header>Customer Group Chart</nb-accordion-item-header>
                 <nb-accordion-item-body>
                     <nz-spin nzTip="Loading..." [nzSpinning]="!group">
-                        <div [ngStyle]="{'opacity': group ? '1' : '0'}" echarts [options]="group" style="height: 30rem;; width: 100%">
+                        <div [ngStyle]="{'opacity': group ? '1' : '0'}" echarts [options]="group" class="chart">
                         </div>
                     </nz-spin>
                 </nb-accordion-item-body>

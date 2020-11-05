@@ -1,11 +1,10 @@
-import { AccountVM, PermissionVM } from '..';
+import { AccountVM } from '..';
 
 export interface RoleVM {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly accounts: AccountVM[];
-  readonly permissions: PermissionVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

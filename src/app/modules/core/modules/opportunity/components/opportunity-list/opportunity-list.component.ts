@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { CustomerService, GroupService } from '@services';
-import { CustomerVM, GroupVM } from '@view-models';
+import { CustomerService, GroupService, MockService } from '@services';
+import { CustomerVM, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -21,12 +21,14 @@ export class OpportunityListComponent implements OnInit {
   search = '';
   count = 20;
   env = 'desktop';
+  provinces: Province[] = [];
   constructor(
     protected readonly service: CustomerService,
     protected readonly deviceService: DeviceDetectorService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
     protected readonly groupService: GroupService,
+    protected readonly mockService: MockService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -34,6 +36,7 @@ export class OpportunityListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.mockService.getProvinces().subscribe((data) => this.provinces = data);
     this.groupService.findAll().subscribe((data) => {
       this.groups = data;
     });

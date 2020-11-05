@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@an
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM, GroupVM } from '@view-models';
+import { CustomerVM, District, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-contact-update',
@@ -13,6 +13,8 @@ export class ContactUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() contact: CustomerVM;
   @Input() groups: GroupVM[] = [];
+  @Input() provinces: Province[] = [];
+  districts: District[] = [];
   form: FormGroup;
   visible = false;
   constructor(
@@ -24,7 +26,9 @@ export class ContactUpdateComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]],
       fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      address: '',
+      province: undefined,
+      district: undefined,
+      birthDate: undefined,
       avatar: undefined,
       gender: true,
       groups: [],
@@ -41,11 +45,15 @@ export class ContactUpdateComponent implements OnInit {
       fullname: this.contact.fullname,
       phone: this.contact.phone,
       email: this.contact.email,
-      address: this.contact.address,
+      province: this.contact.province ? parseInt(this.contact.province, 0) : undefined,
+      district: this.contact.district ? parseInt(this.contact.district, 0) : undefined,
+      birthDate: this.contact.birthDate,
       gender: this.contact.gender,
       avatar: this.contact.avatar,
       groups: this.contact.groups.map((group) => (group.id)),
     });
+    this.districts = this.form.get('province').value ? (this.provinces.find((province) => province.id === this.form.get('province').value)
+    ? this.provinces.find((province) => province.id === this.form.get('province').value).huyen : []) : [];
     this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
   submit = (ref: NbDialogRef<any>) => {
@@ -94,4 +102,9 @@ export class ContactUpdateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
+  selectProvince = (id: number) => {
+    this.districts = this.provinces.find((province) => province.id === id)
+      ? this.provinces.find((province) => province.id === id).huyen : [];
+    this.form.get('district').setValue(undefined);
+  }
 }

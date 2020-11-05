@@ -1,6 +1,5 @@
 export * from './auto-complete/auto-complete.component';
 export * from './check-box/check-box.component';
-export * from './check-box-group/check-box-group.component';
 export * from './date-picker/date-picker.component';
 export * from './date-range/date-range.component';
 export * from './file-upload/file-upload.component';
@@ -13,5 +12,6 @@ export * from './rate/rate.component';
 export * from './select/select.component';
 export * from './slider/slider.component';
 export * from './switch/switch.component';
+export * from './radio/radio.component';
 export * from './text-area/text-area.component';
 export * from './time-picker/time-picker.component';

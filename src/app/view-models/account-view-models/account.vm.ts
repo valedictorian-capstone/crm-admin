@@ -1,4 +1,5 @@
 import { RoleVM } from '../basic-view-models';
+import { AccountDepartmentVM } from './account-department.vm';
 
 export interface AccountVM {
   readonly id: string;
@@ -10,6 +11,7 @@ export interface AccountVM {
   readonly address: string;
   readonly gender: boolean;
   readonly roles: RoleVM[];
+  readonly accountDepartments: AccountDepartmentVM[];
   readonly currentValidateCode: string;
   readonly isDelete: boolean;
   readonly createdBy: string;

@@ -1,4 +1,3 @@
-import { PatternVM, FormValueVM } from '..';
 
 export interface FormControlVM {
   readonly id: string;
@@ -11,7 +10,7 @@ export interface FormControlVM {
   readonly type: string;
   readonly subType: string;
   readonly position: number;
-  readonly width: number;
+  readonly width: string;
   readonly xs: number;
   readonly sm: number;
   readonly md: number;
@@ -22,8 +21,7 @@ export interface FormControlVM {
   readonly isCapitialize: boolean;
   readonly tooltip: string;
   readonly color: string;
-  readonly patterns: PatternVM[];
-  readonly formValues: FormValueVM[];
+  readonly validator: any;
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;
@@ -41,7 +39,7 @@ export interface FormControlCM {
   options: { value: string, label: string }[] | any;
   type: string;
   subType: string;
-  width: number;
+  width: string;
   xs: number;
   sm: number;
   md: number;
@@ -66,7 +64,7 @@ export interface FormControlUM {
   options: { value: string, label: string }[] | any;
   type: string;
   subType: string;
-  width: number;
+  width: string;
   xs: number;
   sm: number;
   md: number;

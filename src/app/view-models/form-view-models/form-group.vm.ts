@@ -1,4 +1,4 @@
-import { FormControlCM, FormControlUM, FormControlVM, WorkFlowStepVM, FormDataVM } from '..';
+import { FormControlCM, FormControlUM, FormControlVM, ProcessStepVM, FormDataVM } from '..';
 
 export interface FormGroupVM {
   readonly id: string;
@@ -7,7 +7,7 @@ export interface FormGroupVM {
   readonly description: string;
   readonly formControls: FormControlVM[];
   readonly formDatas: FormDataVM[];
-  readonly workFlowSteps: WorkFlowStepVM[];
+  readonly processSteps: ProcessStepVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

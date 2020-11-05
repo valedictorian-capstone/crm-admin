@@ -1,10 +1,10 @@
-import { WorkFlowVM } from '..';
+import { ProcessVM } from '..';
 
 export interface ConditionVM {
   readonly id: string;
   readonly name: string;
   readonly value: string;
-  readonly workFlows: WorkFlowVM[];
+  readonly processs: ProcessVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

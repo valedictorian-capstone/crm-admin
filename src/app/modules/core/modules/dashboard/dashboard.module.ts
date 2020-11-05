@@ -29,6 +29,7 @@ const PAGES = [
     NgxEchartsModule.forRoot({
       echarts
     }),
+    NgxChartsModule,
   ],
   declarations: [...COMPONENTS, ...PAGES]
 })

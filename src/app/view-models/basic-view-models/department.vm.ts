@@ -1,11 +1,10 @@
-import { AccountVM } from '..';
+import { AccountDepartmentVM } from '..';
 
 export interface DepartmentVM {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly departmentParent: DepartmentVM | string;
-  readonly accounts: AccountVM[];
+  readonly accountDepartments: AccountDepartmentVM[];
   readonly childrens: DepartmentVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
@@ -17,12 +16,11 @@ export interface DepartmentVM {
 export interface DepartmentCM {
   name: string;
   description: string;
-  departmentParent: DepartmentVM | string;
 }
 
 export interface DepartmentUM {
   id: string;
   name: string;
   description: string;
-  departmentParent: DepartmentVM | string;
+  accountDepartments: AccountDepartmentVM[];
 }

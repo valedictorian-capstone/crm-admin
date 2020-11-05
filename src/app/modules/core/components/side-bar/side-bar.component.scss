@@ -14,7 +14,6 @@
     width: 18rem;
     transform: translateX(-18rem);
     &:hover {
-        transform: translateY(0);
         .menu-child {
             .menu-item {
                 .menu-item-icon {
@@ -243,5 +242,8 @@
 @media (min-width: 1010px) {
     .side-bar-menu {
         transform: translateX(-12rem);
+        &:hover {
+            transform: translateY(0);
+        }
     }
 }

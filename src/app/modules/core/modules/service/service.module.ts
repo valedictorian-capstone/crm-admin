@@ -10,6 +10,8 @@ import {
   ServiceMainComponent,
   ServiceDetailComponent
 } from './pages';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 const COMPONENTS = [
   ServiceCreateComponent,
@@ -24,6 +26,7 @@ const PAGES = [
   imports: [
     ExtrasModule.forRoot(),
     ServiceRoutes,
+    NgxMaskModule.forRoot(options),
   ],
   declarations: [...COMPONENTS, ...PAGES]
 })

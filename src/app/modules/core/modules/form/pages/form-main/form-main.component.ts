@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-form-main',
+  selector: 'app-form-group-main',
   templateUrl: './form-main.component.html',
   styleUrls: ['./form-main.component.scss']
 })

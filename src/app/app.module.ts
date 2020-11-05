@@ -11,6 +11,7 @@ import { ExtrasModule } from './extras/extras.module';
 import { InterceptorService } from '@services';
 import * as Hammer from 'hammerjs';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 export class HammerConfig extends HammerGestureConfig {
   // tslint:disable-next-line: no-angle-bracket-type-assertion
   overrides = <any> {
@@ -35,7 +36,6 @@ export class HammerConfig extends HammerGestureConfig {
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
-
   ],
   providers: [
     {
@@ -46,7 +46,8 @@ export class HammerConfig extends HammerGestureConfig {
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: HammerConfig,
-    }
+    },
+    { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]
 })

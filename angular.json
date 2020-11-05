@@ -25,7 +25,8 @@
                             "lodash",
                             "xlsx",
                             "@ant-design/colors",
-                            "chart.js"
+                            "chart.js",
+                            "echarts"
                         ],
                         "outputPath": "dist/crm-admin",
                         "index": "src/index.html",

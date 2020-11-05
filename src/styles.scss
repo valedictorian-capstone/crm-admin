@@ -3,6 +3,11 @@
 //         display: none;
 //     }
 // }
+@import "assets/bpmn/css/bpmn.css";
+* {
+    font-family: Open Sans, sans-serif;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -44,6 +49,10 @@
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
+}
+
+.ant-spin-show-text {
+    max-height: 100vh !important;
 }
 
 @for $size from 1 through 100 {
@@ -246,5 +255,29 @@
     }
     .border-radius-per-#{$size} {
         border-radius: percentage($number: -$size/100);
+    }
+}
+
+nb-form-field {
+    label {
+        position: absolute;
+        top: -0.6rem;
+        text-transform: capitalize;
+        background: aliceblue!important;
+        left: 1rem;
+        font-weight: 600;
+        z-index: 1;
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
     }
 }

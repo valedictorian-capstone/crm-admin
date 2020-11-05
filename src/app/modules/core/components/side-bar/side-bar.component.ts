@@ -45,6 +45,7 @@ export class SideBarComponent implements OnInit {
   ) => {
     if (item.type === 'item') {
       this.active = item.value;
+      this.stick = false;
       this.loadingService.next(true);
       setTimeout(() => {
         this.router.navigate(['core/' + item.value]);

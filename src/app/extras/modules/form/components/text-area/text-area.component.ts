@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { FormControlVM } from '@view-models';
 
 @Component({
   selector: 'app-text-area',
@@ -6,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./text-area.component.scss']
 })
 export class TextAreaComponent implements OnInit {
-
+  @Input() control: FormControl;
+  @Input() group: FormGroup;
+  @Input() item: FormControlVM;
+  @Input() isDesign?: boolean;
   constructor() { }
 
   ngOnInit() {

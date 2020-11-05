@@ -3,7 +3,7 @@
     <nb-card>
         <nb-card-header>
             <div class="update-modal-header">
-                <span>Update {{employee.code}}</span>
+                <span>Update employee</span>
                 <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="ref.close()"></nb-icon></button>
                 <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
             </div>
@@ -22,6 +22,12 @@
                             </div>
                         </div>
                     </div> -->
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem;">
+                            <nb-icon [class]="'text-info'" nbPrefix icon="code-outline"></nb-icon>
+                            <input disabled type="text" nbInput fullWidth [value]="employee.code" [status]="'info'" />
+                        </nb-form-field>
+                    </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="phone-outline"></nb-icon>

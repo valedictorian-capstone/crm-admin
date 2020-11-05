@@ -78,10 +78,17 @@
                   </span>
                     </div>
                     <div nz-col [nzSpan]="24">
-                        <nb-form-field style="margin-bottom: 0.5rem;">
-                            <nb-icon class="text-info" nbPrefix icon="pin-outline"></nb-icon>
-                            <input type="text" nbInput fullWidth [formControl]="form.get('address')" status="info" placeholder="Fill contact address" />
-                        </nb-form-field>
+                        <nz-date-picker [nzSize]="'large'" style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [formControl]="form.get('birthDate')"></nz-date-picker>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nz-select [nzSize]="'large'" nzShowSearch style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [nzNotFoundContent]="''" nzPlaceHolder="Select province" [formControl]="form.get('province')" (ngModelChange)="selectProvince($event)">
+                            <nz-option *ngFor="let province of provinces" [nzLabel]="province.name" [nzValue]="province.id"></nz-option>
+                        </nz-select>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nz-select [nzDisabled]="districts.length === 0" [nzSize]="'large'" nzShowSearch style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [nzNotFoundContent]="''" nzPlaceHolder="Select district" [formControl]="form.get('district')">
+                            <nz-option *ngFor="let district of districts" [nzLabel]="district.name" [nzValue]="district.id"></nz-option>
+                        </nz-select>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem; width: 100%; max-width: 100% !important">

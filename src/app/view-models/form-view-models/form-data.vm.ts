@@ -1,10 +1,9 @@
-import { FormValueVM } from '..';
 
 export interface FormDataVM {
   readonly id: string;
   readonly workFlowStepInstanceId: string;
   readonly formGroupId: string;
-  readonly formValues: FormValueVM[];
+  readonly value: string;
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   AutoCompleteComponent,
   CheckBoxComponent,
-  CheckBoxGroupComponent,
   DatePickerComponent,
   DateRangeComponent,
   FileUploadComponent,
@@ -18,13 +16,20 @@ import {
   SwitchComponent,
   TextAreaComponent,
   TimePickerComponent,
+  RadioComponent
 } from './components';
 import { ControlDirective } from './directives';
 import { GroupComponent } from './pages';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AntModule } from '../ant/ant.module';
+import { NebularModule } from '../nebular/nebular.module';
+import { PrimeModule } from '../prime/prime.module';
+import { CommonModule } from '@angular/common';
+
+
 const COMPONENTS = [
   AutoCompleteComponent,
   CheckBoxComponent,
-  CheckBoxGroupComponent,
   DatePickerComponent,
   DateRangeComponent,
   FileUploadComponent,
@@ -39,6 +44,7 @@ const COMPONENTS = [
   SwitchComponent,
   TextAreaComponent,
   TimePickerComponent,
+  RadioComponent
 ];
 
 const DIRECTIVES = [
@@ -52,6 +58,11 @@ const PAGES = [
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AntModule,
+    PrimeModule,
+    NebularModule.forChild(),
   ],
   declarations: [...COMPONENTS, ...DIRECTIVES, ...PAGES],
   exports: [...COMPONENTS, ...DIRECTIVES, ...PAGES],

@@ -1,3 +1,316 @@
-<p>
-  form-create works!
-</p>
+<button nbButton status="success" (click)="open(dialog)" size="small">
+  Add Form
+</button>
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>
+            <div class="create-modal-header">
+                <span>Create new form</span>
+                <button nbButton size="small" style="float: right" shape="round" status="danger">
+          <nb-icon icon="close" (click)="ref.close()"></nb-icon>
+        </button>
+                <button [disabled]="form.invalid" nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="success" (click)="submit(ref)">
+          <nb-icon icon="checkmark"></nb-icon>
+        </button>
+                <button nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="primary">
+          <nb-icon [icon]="!tool ? 'settings-2-outline' : 'eye-outline'" (click)="tool = !tool"></nb-icon>
+        </button>
+            </div>
+        </nb-card-header>
+        <nb-card-body style="max-height: 90vh">
+            <div class="create-modal-body">
+                <div style="width: 100%" [formGroup]="form">
+                    <nb-accordion style="width: 100%;">
+                        <nb-accordion-item [expanded]="true">
+                            <nb-accordion-item-header>Information</nb-accordion-item-header>
+                            <nb-accordion-item-body>
+                                <div nz-row>
+                                    <div nz-col [nzSpan]="24">
+                                        <nb-form-field style="margin-bottom: 0.5rem">
+                                            <nb-icon [class]="
+                          (form.get('code').dirty || form.get('code').touched) &&
+                          form.get('code').invalid
+                            ? 'text-danger'
+                            : 'text-info'
+                        " nbPrefix icon="code-outline"></nb-icon>
+                                            <input type="text" nbInput fullWidth [formControl]="form.get('code')" [status]="
+                          (form.get('code').dirty || form.get('code').touched) &&
+                          form.get('code').invalid
+                            ? 'danger'
+                            : 'info'
+                        " placeholder="Fill form code" />
+                                            <nb-icon class="text-danger" *ngIf="
+                          (form.get('code').dirty || form.get('code').touched) &&
+                          form.get('code').invalid
+                        " nbSuffix icon="slash-outline"></nb-icon>
+                                        </nb-form-field>
+                                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf="
+                        (form.get('code').dirty || form.get('code').touched) &&
+                        form.get('code').errors?.required
+                      ">
+                      Code must be required
+                    </span>
+                                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf="
+                        (form.get('code').dirty || form.get('code').touched) &&
+                        form.get('code').errors?.unique
+                      ">
+                      Code must be unique
+                    </span>
+                                    </div>
+                                    <div nz-col [nzSpan]="24">
+                                        <nb-form-field style="margin-bottom: 0.5rem">
+                                            <nb-icon [class]="
+                          (form.get('name').dirty || form.get('name').touched) &&
+                          form.get('name').invalid
+                            ? 'text-danger'
+                            : 'text-info'
+                        " nbPrefix icon="smiling-face-outline"></nb-icon>
+                                            <input type="text" nbInput fullWidth [formControl]="form.get('name')" [status]="
+                          (form.get('name').dirty || form.get('name').touched) &&
+                          form.get('name').invalid
+                            ? 'danger'
+                            : 'info'
+                        " status="info" placeholder="Fill form name" />
+                                            <nb-icon class="text-danger" *ngIf="
+                          (form.get('name').dirty || form.get('name').touched) &&
+                          form.get('name').invalid
+                        " nbSuffix icon="slash-outline"></nb-icon>
+                                        </nb-form-field>
+                                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf="
+                        (form.get('name').dirty || form.get('name').touched) &&
+                        form.get('name').invalid
+                      ">
+                      Name must be required
+                    </span>
+                                    </div>
+                                    <div nz-col [nzSpan]="24">
+                                        <nb-form-field style="margin-bottom: 0.5rem">
+                                            <nb-icon style="position: absolute; top: 0.5rem" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
+                                            <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill form description"></textarea>
+                                        </nb-form-field>
+                                    </div>
+                                </div>
+                            </nb-accordion-item-body>
+                        </nb-accordion-item>
+                        <nb-accordion-item>
+                            <nb-accordion-item-header>
+                                <span>{{tool ? 'Setting Controls' : 'Preview Form'}}</span>
+                            </nb-accordion-item-header>
+                            <nb-accordion-item-body *ngIf="!tool">
+                                <div nz-row class="container-preview" style="width: 100%;">
+                                    <div nz-col *ngFor="let item of form.value.formControls" [nzXs]="item.xs" [nzSm]="item.sm" [nzMd]="item.md" [nzLg]="item.lg" [nzXl]="item.xl" [nzXXl]="item.xxl" style="margin-bottom: 1rem;">
+                                        <ng-container appControl [item]="item"></ng-container>
+                                    </div>
+                                </div>
+                            </nb-accordion-item-body>
+                            <nb-accordion-item-body *ngIf="tool">
+                                <div cdkDropList [cdkDropListSortingDisabled]="true" [cdkDropListData]="controls" (cdkDropListDropped)="drop($event)" [cdkDropListOrientation]="'horizontal'" [cdkDropListConnectedTo]="[controlList]" #paletteList="cdkDropList" class="palette">
+                                    <div [nbTooltip]="control.subType !== '' ? (control.type + '-' + control.subType) : control.type" nbTooltipStatus="default" class="item" *ngFor="let control of controls" cdkDrag>
+                                        <div class="image">
+                                            <img [src]="'../../../../../../../assets/controls/'+ (control.subType !== '' ? (control.type + '-' + control.subType) : control.type) +'.png'" />
+                                        </div>
+                                        <div nz-row class="preview">
+                                            <nb-accordion style="width: 100%;">
+                                                <nb-accordion-item>
+                                                    <nb-accordion-item-header>
+                                                        <span style="
+                                                          margin-left: 1.5rem;
+                                                          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;
+                                                          border-radius: 5px;
+                                                          width: 2rem;
+                                                          display: flex;
+                                                          justify-content: center;
+                                                          align-items: center;
+                                                          height: 2rem;
+                                                          ">
+                                                        <img style="width: 80%;" [src]="'../../../../../../../assets/controls/'+ (control.subType !== '' ? (control.type + '-' + control.subType) : control.type) +'.png'" />
+                                                      </span>
+                                                        <nb-icon style="position: absolute; right: 3rem;" icon="power"></nb-icon>
+                                                        <nb-icon style="position: absolute; left: 1rem; cursor: move;" icon="move-outline"></nb-icon>
+                                                    </nb-accordion-item-header>
+                                                    <nb-accordion-item-body>
+                                                    </nb-accordion-item-body>
+                                                </nb-accordion-item>
+                                            </nb-accordion>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container-control" nz-col [nzSpan]="24" cdkDropList [cdkDropListData]="form.get('formControls')['controls']" #controlList="cdkDropList" (cdkDropListDropped)="dropControl($event)">
+                                    <nb-accordion *ngFor="let group of form.get('formControls')['controls']; let i = index" style="margin-bottom: 0.5rem;" cdkDrag>
+                                        <nb-accordion-item>
+                                            <nb-accordion-item-header class="control-header">
+                                                <span style="
+                                                  margin-left: 1.5rem;
+                                                  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;
+                                                  border-radius: 5px;
+                                                  width: 2rem;
+                                                  display: flex;
+                                                  justify-content: center;
+                                                  align-items: center;
+                                                  height: 2rem;
+                                                  ">
+                                                  <img style="width: 80%;" [src]="'../../../../../../../assets/controls/'+ (group.get('subType').value !== '' ? (group.get('type').value + '-' + group.get('subType').value) : group.get('type').value) +'.png'" />
+                                                </span>
+                                                <nb-icon style="position: absolute; right: 3rem;" icon="power" (click)="removeControl(i)"></nb-icon>
+                                                <nb-icon cdkDragHandle style="position: absolute; left: 1rem; cursor: move;" icon="move-outline"></nb-icon>
+                                            </nb-accordion-item-header>
+                                            <nb-accordion-item-body>
+                                                <div nz-row style="width: 100%;" [formGroup]="group">
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Name</label>
+                                                            <input type="text" nbInput fullWidth [formControl]="group.get('name')" [status]="(group.get('name').dirty || group.get('name').touched) && group.get('name').invalid ? 'danger' : 'info'" status="info" placeholder="Fill control name" />
+                                                            <nb-icon class="text-danger" *ngIf="(group.get('name').dirty || group.get('name').touched) && group.get('name').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                        </nb-form-field>
+                                                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf=" (group.get('name').dirty || group.get('name').touched) && group.get('name').invalid">
+                                                        Name must be required
+                                                      </span>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Label</label>
+                                                            <input type="text" nbInput fullWidth [formControl]="group.get('label')" status="info" placeholder="Fill control label" />
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Tooltip</label>
+                                                            <input type="text" nbInput fullWidth [formControl]="group.get('tooltip')" status="info" placeholder="Fill control label" />
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Placeholder</label>
+                                                            <input type="text" nbInput fullWidth [formControl]="group.get('placeHolder')" status="info" placeholder="Fill control placeholder" />
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div *ngIf="group.get('type').value === 'label' || group.get('type').value === 'paragraph' || group.get('type').value === 'header'" nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">FontSize</label>
+                                                            <input type="number" nbInput fullWidth [formControl]="group.get('fontSize')" status="info" placeholder="Fill control placeholder" />
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div *ngIf="group.get('type').value === 'label' || group.get('type').value === 'paragraph' || group.get('type').value === 'header'" nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Color</label>
+                                                            <input style="height: 3rem;" type="color" nbInput fullWidth [formControl]="group.get('color')" status="info" placeholder="Fill control color" />
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Small Telephone</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('xs')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Medium Telephone</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('sm')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Tablet</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('md')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Small Laptop</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('lg')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Medium Laptop</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('xl')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                                                            <label class="text-info">Large Laptop</label>
+                                                            <nb-select [status]="'info'" fullWidth placeholder="Select Gender" [formControl]="group.get('xxl')">
+                                                                <nb-option [value]="24">Full Screen</nb-option>
+                                                                <nb-option [value]="12">1/2 Screen</nb-option>
+                                                                <nb-option [value]="8">1/3 Screen</nb-option>
+                                                                <nb-option [value]="6">1/4 Screen</nb-option>
+                                                            </nb-select>
+                                                        </nb-form-field>
+                                                    </div>
+                                                    <div nz-col [nzSpan]="24" *ngIf="group.get('type').value === 'select' || group.get('type').value === 'multi-select' || group.get('type').value === 'auto-complete' || group.get('type').value === 'radio'">
+                                                        <div style="padding: 1rem; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-bottom: 0.5rem">
+                                                            <span>Options</span>
+                                                            <button nbButton size="small" style="position: absolute; right: 1rem; top: 0.6rem;" status="primary" (click)="addOption(group.get('options'))">
+                                                        <nb-icon icon="plus"></nb-icon>
+                                                        </button>
+                                                        </div>
+                                                        <nb-accordion style="width: 100%;">
+                                                            <nb-accordion-item *ngFor="let option of group.get('options')['controls']; let o = index">
+                                                                <nb-accordion-item-header>
+                                                                    <nb-icon (click)="removeOption(o)" style="position: absolute; left: 1rem;" icon="power"></nb-icon>
+                                                                </nb-accordion-item-header>
+                                                                <nb-accordion-item-body>
+                                                                    <div nz-row style="width: 100%;" [formGroup]="option">
+                                                                        <div nz-col [nzSpan]="24">
+                                                                            <nb-form-field style="margin-bottom: 0.8rem">
+                                                                                <label class="text-info">Label</label>
+                                                                                <input type="text" nbInput fullWidth [formControl]="option.get('label')" [status]="(option.get('label').dirty || option.get('label').touched) && option.get('label').invalid ? 'danger' : 'info'" status="info" placeholder="Fill option label" />
+                                                                                <nb-icon class="text-danger" *ngIf="(option.get('label').dirty || option.get('label').touched) && option.get('label').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                                            </nb-form-field>
+                                                                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf=" (option.get('label').dirty || option.get('label').touched) && option.get('label').invalid">
+                                                                  Name must be required
+                                                                </span>
+                                                                        </div>
+                                                                        <div nz-col [nzSpan]="24">
+                                                                            <nb-form-field style="margin-bottom: 0.8rem">
+                                                                                <label class="text-info">Value</label>
+                                                                                <input type="text" nbInput fullWidth [formControl]="option.get('value')" [status]="(option.get('value').dirty || option.get('value').touched) && option.get('value').invalid ? 'danger' : 'info'" status="info" placeholder="Fill option value" />
+                                                                                <nb-icon class="text-danger" *ngIf="(option.get('value').dirty || option.get('value').touched) && option.get('value').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                                            </nb-form-field>
+                                                                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf=" (option.get('value').dirty || option.get('value').touched) && option.get('value').invalid">
+                                                                              Value must be required
+                                                              </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </nb-accordion-item-body>
+                                                            </nb-accordion-item>
+                                                        </nb-accordion>
+                                                    </div>
+                                                </div>
+                                            </nb-accordion-item-body>
+                                        </nb-accordion-item>
+                                    </nb-accordion>
+                                </div>
+                            </nb-accordion-item-body>
+                        </nb-accordion-item>
+                    </nb-accordion>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</ng-template>

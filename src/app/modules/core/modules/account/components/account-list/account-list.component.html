@@ -27,7 +27,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <app-account-create [groups]="groups" (useDone)="useCreate($event)"></app-account-create>
+            <app-account-create [provinces]="provinces" [groups]="groups" (useDone)="useCreate($event)"></app-account-create>
         </div>
         <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
             <nb-form-field>
@@ -75,7 +75,7 @@
                       <nb-icon icon="phone"></nb-icon>
                   </button>
                         <app-account-mail [account]="account"></app-account-mail>
-                        <app-account-update [groups]="groups" [account]="account" (useDone)="useUpdate($event, i)"></app-account-update>
+                        <app-account-update [provinces]="provinces" [groups]="groups" [account]="account" (useDone)="useUpdate($event, i)"></app-account-update>
                         <button [nbPopover]="typeRef" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
           <nb-icon icon="car"></nb-icon>
         </button>
@@ -156,7 +156,6 @@
             <th>email</th>
             <th>phone</th>
             <th>gender</th>
-            <th>address</th>
         </tr>
     </thead>
     <tbody>
@@ -166,7 +165,6 @@
             <td>{{ account.email }}</td>
             <td>'{{ account.phone }}</td>
             <td>{{ account.gender ? 'Male' : 'Female' }}</td>
-            <td>{{ account.address }}</td>
         </tr>
     </tbody>
 </table>
@@ -178,7 +176,6 @@
             <th>email</th>
             <th>phone</th>
             <th>gender</th>
-            <th>address</th>
         </tr>
     </thead>
     <tbody>
@@ -188,7 +185,6 @@
             <td>no-reply@gmail.com</td>
             <td>'0123456789</td>
             <td>Male</td>
-            <td>Sydney</td>
         </tr>
     </tbody>
 </table>

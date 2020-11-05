@@ -27,7 +27,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <app-lead-create [groups]="groups" (useDone)="useCreate($event)"></app-lead-create>
+            <app-lead-create [provinces]="provinces" [groups]="groups" (useDone)="useCreate($event)"></app-lead-create>
         </div>
         <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
             <nb-form-field>
@@ -75,7 +75,7 @@
                           <nb-icon icon="phone"></nb-icon>
                       </button>
                         <app-lead-mail [lead]="lead"></app-lead-mail>
-                        <app-lead-update [groups]="groups" [lead]="lead" (useDone)="useUpdate($event, i)"></app-lead-update>
+                        <app-lead-update [provinces]="provinces" [groups]="groups" [lead]="lead" (useDone)="useUpdate($event, i)"></app-lead-update>
                         <button [nbPopover]="typeRef" nbButton size="small" status="primary" shape="round" style="margin-right: 0.5rem">
               <nb-icon icon="car"></nb-icon>
             </button>
@@ -156,7 +156,6 @@
             <th>email</th>
             <th>phone</th>
             <th>gender</th>
-            <th>address</th>
         </tr>
     </thead>
     <tbody>
@@ -166,7 +165,6 @@
             <td>{{ lead.email }}</td>
             <td>'{{ lead.phone }}</td>
             <td>{{ lead.gender ? 'Male' : 'Female' }}</td>
-            <td>{{ lead.address }}</td>
         </tr>
     </tbody>
 </table>
@@ -178,7 +176,6 @@
             <th>email</th>
             <th>phone</th>
             <th>gender</th>
-            <th>address</th>
         </tr>
     </thead>
     <tbody>
@@ -188,7 +185,6 @@
             <td>no-reply@gmail.com</td>
             <td>'0123456789</td>
             <td>Male</td>
-            <td>Sydney</td>
         </tr>
     </tbody>
 </table>

@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@an
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM, GroupVM } from '@view-models';
+import { CustomerVM, District, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-opportunity-update',
@@ -13,6 +13,8 @@ export class OpportunityUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() opportunity: CustomerVM;
   @Input() groups: GroupVM[] = [];
+  @Input() provinces: Province[] = [];
+  districts: District[] = [];
   form: FormGroup;
   visible = false;
   constructor(
@@ -24,8 +26,10 @@ export class OpportunityUpdateComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]],
       fullname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      address: '',
+      province: undefined,
+      district: undefined,
       avatar: undefined,
+      birthDate: undefined,
       gender: true,
       groups: [],
     });
@@ -41,11 +45,15 @@ export class OpportunityUpdateComponent implements OnInit {
       fullname: this.opportunity.fullname,
       phone: this.opportunity.phone,
       email: this.opportunity.email,
-      address: this.opportunity.address,
+      province: this.opportunity.province ? parseInt(this.opportunity.province, 0) : undefined,
+      district: this.opportunity.district ? parseInt(this.opportunity.district, 0) : undefined,
+      birthDate: this.opportunity.birthDate,
       gender: this.opportunity.gender,
       avatar: this.opportunity.avatar,
       groups: this.opportunity.groups.map((group) => (group.id)),
     });
+    this.districts = this.form.get('province').value ? (this.provinces.find((province) => province.id === this.form.get('province').value)
+    ? this.provinces.find((province) => province.id === this.form.get('province').value).huyen : []) : [];
     this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
   submit = (ref: NbDialogRef<any>) => {
@@ -94,4 +102,9 @@ export class OpportunityUpdateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
+  selectProvince = (id: number) => {
+    this.districts = this.provinces.find((province) => province.id === id)
+      ? this.provinces.find((province) => province.id === id).huyen : [];
+    this.form.get('district').setValue(undefined);
+  }
 }

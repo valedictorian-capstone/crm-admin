@@ -72,35 +72,35 @@ export const environment = {
         active: 'api/v1/Condition/Active',
         deactive: 'api/v1/Condition/Deactive',
       },
-      'work-flow': {
-        main: 'api/v1/WorkFlow',
-        getById: 'api/v1/WorkFlow/',
-        active: 'api/v1/WorkFlow/Active',
-        deactive: 'api/v1/WorkFlow/Deactive',
+      process: {
+        main: 'api/v1/Process',
+        getById: 'api/v1/Process/',
+        active: 'api/v1/Process/Active',
+        deactive: 'api/v1/Process/Deactive',
       },
-      'work-flow-step': {
-        main: 'api/v1/WorkFlowStep',
-        getById: 'api/v1/WorkFlowStep/',
-        active: 'api/v1/WorkFlowStep/Active',
-        deactive: 'api/v1/WorkFlowStep/Deactive',
+      'process-step': {
+        main: 'api/v1/ProcessStep',
+        getById: 'api/v1/ProcessStep/',
+        active: 'api/v1/ProcessStep/Active',
+        deactive: 'api/v1/ProcessStep/Deactive',
       },
-      'work-flow-step-instance': {
-        main: 'api/v1/WorkFlowStepInstance',
-        getById: 'api/v1/WorkFlowStepInstance/',
-        active: 'api/v1/WorkFlowStepInstance/Active',
-        deactive: 'api/v1/WorkFlowStepInstance/Deactive',
+      'process-step-instance': {
+        main: 'api/v1/ProcessStepInstance',
+        getById: 'api/v1/ProcessStepInstance/',
+        active: 'api/v1/ProcessStepInstance/Active',
+        deactive: 'api/v1/ProcessStepInstance/Deactive',
       },
-      'work-flow-connection': {
-        main: 'api/v1/WorkFlowConnection',
-        getById: 'api/v1/WorkFlowConnection/',
-        active: 'api/v1/WorkFlowConnection/Active',
-        deactive: 'api/v1/WorkFlowConnection/Deactive',
+      'process-connection': {
+        main: 'api/v1/ProcessConnection',
+        getById: 'api/v1/ProcessConnection/',
+        active: 'api/v1/ProcessConnection/Active',
+        deactive: 'api/v1/ProcessConnection/Deactive',
       },
-      'work-flow-instance': {
-        main: 'api/v1/WorkFlowInstance',
-        getById: 'api/v1/WorkFlowInstance/',
-        active: 'api/v1/WorkFlowInstance/Active',
-        deactive: 'api/v1/WorkFlowInstance/Deactive',
+      'process-instance': {
+        main: 'api/v1/ProcessInstance',
+        getById: 'api/v1/ProcessInstance/',
+        active: 'api/v1/ProcessInstance/Active',
+        deactive: 'api/v1/ProcessInstance/Deactive',
       },
     },
     'account-api': {
@@ -117,18 +117,12 @@ export const environment = {
         deactive: 'api/v1/AccountExtraInformationData/Deactive',
       },
     },
-    'product-api': {
-      product: {
-        main: 'api/v1/Product',
-        getById: 'api/v1/Product/',
-        active: 'api/v1/Product/Active',
-        deactive: 'api/v1/Product/Deactive',
-      },
-      'product-extra-information-data': {
-        main: 'api/v1/ProductExtraInformationData',
-        getById: 'api/v1/ProductExtraInformationData/',
-        active: 'api/v1/ProductExtraInformationData/Active',
-        deactive: 'api/v1/ProductExtraInformationData/Deactive',
+    'service-api': {
+      service: {
+        main: 'api/v1/Service',
+        getById: 'api/v1/Service/',
+        active: 'api/v1/Service/Active',
+        deactive: 'api/v1/Service/Deactive',
       },
     },
     'customer-api': {
@@ -298,7 +292,7 @@ export const environment = {
         {
           label: 'Service',
           value: 'service',
-          icon: 'smartphone',
+          icon: 'flash',
           type: 'item'
         },
         {
@@ -329,6 +323,110 @@ export const environment = {
       measurementId: 'G-XJD981CY3Y'
     },
   },
+  controls: [
+    {
+      type: 'input',
+      subtype: 'text'
+    },
+    {
+      type: 'input',
+      subtype: 'number'
+    },
+    {
+      type: 'input',
+      subtype: 'password'
+    },
+    {
+      type: 'select',
+      subtype: ''
+    },
+    {
+      type: 'multi-select',
+      subtype: ''
+    },
+    {
+      type: 'auto-complete',
+      subtype: ''
+    },
+    {
+      type: 'date-picker',
+      subtype: ''
+    },
+    {
+      type: 'time-picker',
+      subtype: ''
+    },
+    {
+      type: 'text-area',
+      subtype: ''
+    },
+    {
+      type: 'switch',
+      subtype: ''
+    },
+    {
+      type: 'rate',
+      subtype: ''
+    },
+    {
+      type: 'radio',
+      subtype: ''
+    },
+    {
+      type: 'slider',
+      subtype: ''
+    },
+    {
+      type: 'paragraph',
+      subtype: ''
+    },
+    {
+      type: 'label',
+      subtype: ''
+    },
+    {
+      type: 'header',
+      subtype: ''
+    },
+    {
+      type: 'file-upload',
+      subtype: ''
+    },
+    {
+      type: 'date-range',
+      subtype: ''
+    },
+    {
+      type: 'check-box',
+      subtype: ''
+    }
+  ],
+  types: [
+    {
+      name: 'activity',
+      label: 'Activity',
+      subTypes: [
+        { name: 'task', label: 'Task'}
+      ]
+    },
+    {
+      name: 'gateway',
+      label: 'GateWay',
+      subTypes: [
+        { name: 'exclusive', label: 'Exclusive'},
+        { name: 'inclusive', label: 'Inclusive'},
+        { name: 'parallel', label: 'Parallel'},
+      ]
+    },
+    {
+      name: 'event',
+      label: 'Event',
+      subTypes: [
+        { name: 'start', label: 'Start'},
+        { name: 'end', label: 'End'},
+      ]
+    }
+  ],
 };
 
 /*

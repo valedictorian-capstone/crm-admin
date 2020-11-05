@@ -1,10 +1,9 @@
 import { ComponentFactoryResolver, Directive, ViewContainerRef, OnInit, ComponentRef, Input, Type } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlVM } from '@view-models';
 import {
   AutoCompleteComponent,
   CheckBoxComponent,
-  CheckBoxGroupComponent,
   DatePickerComponent,
   DateRangeComponent,
   FileUploadComponent,
@@ -19,15 +18,18 @@ import {
   SwitchComponent,
   TextAreaComponent,
   TimePickerComponent,
+  RadioComponent
 } from '../../components';
 
 @Directive({
   selector: '[appControl]'
 })
 export class ControlDirective implements OnInit {
+  @Input() control: FormControl;
   @Input() group: FormGroup;
-  @Input() control: FormControlVM;
-  protected readonly components: Array<{ type: string, component: Type<unknown> }> = [
+  @Input() item: FormControlVM;
+  @Input() isDesign?: boolean;
+  protected readonly components: Array<{ type: string, component: Type<any> }> = [
     {
       type: 'auto-complete',
       component: AutoCompleteComponent,
@@ -35,10 +37,6 @@ export class ControlDirective implements OnInit {
     {
       type: 'check-box',
       component: CheckBoxComponent,
-    },
-    {
-      type: 'check-box-group',
-      component: CheckBoxGroupComponent,
     },
     {
       type: 'date-picker',
@@ -77,6 +75,10 @@ export class ControlDirective implements OnInit {
       component: RateComponent,
     },
     {
+      type: 'radio',
+      component: RadioComponent,
+    },
+    {
       type: 'select',
       component: SelectComponent,
     },
@@ -97,7 +99,7 @@ export class ControlDirective implements OnInit {
       component: TimePickerComponent,
     },
   ];
-  protected componentRef: ComponentRef<unknown>;
+  protected componentRef: ComponentRef<any>;
   constructor(
     protected readonly factoryResolver: ComponentFactoryResolver,
     protected readonly containerRef: ViewContainerRef,
@@ -105,9 +107,13 @@ export class ControlDirective implements OnInit {
 
   ngOnInit() {
     const factory = this.factoryResolver.resolveComponentFactory(
-      this.components.find((component) => component.type === this.control.type).component
+      this.components.find((component) => component.type === this.item.type).component
     );
     this.componentRef = this.containerRef.createComponent(factory);
+    this.componentRef.instance.control = this.control;
+    this.componentRef.instance.group = this.group;
+    this.componentRef.instance.item = this.item;
+    this.componentRef.instance.isDesign = this.isDesign;
   }
 
 }

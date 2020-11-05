@@ -1,0 +1,129 @@
+<button nbTooltip="Edit" nbTooltipStatus="info" nbButton size="small" status="info" shape="round" style="margin-right: 0.5rem;" (click)="open(dialog)"><nb-icon icon="edit"></nb-icon></button>
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>
+            <div class="update-modal-header">
+                <span>Update step</span>
+                <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="ref.close()"></nb-icon></button>
+                <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
+            </div>
+        </nb-card-header>
+        <nb-card-body style="max-height: 92vh;">
+            <nz-spin nzTip="Loading..." [nzSpinning]="load">
+                <div class="update-modal-body">
+                    <div nz-row style="width: 100%" [formGroup]="form">
+                        <div nz-col [nzSpan]="24">
+                            <nb-form-field style="margin-bottom: 0.5rem;">
+                                <nb-icon [class]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
+                                <input type="text" nbInput fullWidth [formControl]="form.get('name')" [status]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'danger' : 'info'" status="info" placeholder="Fill step name" />
+                                <nb-icon class="text-danger" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            </nb-form-field>
+                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid">
+                        Name must be required
+                      </span>
+                        </div>
+                        <div nz-col [nzSpan]="24">
+                            <nb-form-field style="margin-bottom: 0.5rem; max-width: 100%;">
+                                <nb-icon [class]="(form.get('type').dirty || form.get('type').touched) && form.get('type').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="bookmark-outline"></nb-icon>
+                                <nb-select placeholder="Select Type" fullWidth [formControl]="form.get('type')" [status]="(form.get('type').dirty || form.get('type').touched) && form.get('type').invalid ? 'danger' : 'info'">
+                                    <nb-option *ngFor="let type of types" [value]="type.name">{{type.label}}</nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('type').dirty || form.get('type').touched) && form.get('type').invalid">
+                      Type must be required
+                    </span>
+                        </div>
+                        <div nz-col [nzSpan]="24">
+                            <nb-form-field style="margin-bottom: 0.5rem; max-width: 100%;">
+                                <nb-icon [class]="(form.get('subType').dirty || form.get('subType').touched) && form.get('subType').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="award-outline"></nb-icon>
+                                <nb-select [disabled]="subTypes.length === 0" placeholder="Select Type" fullWidth [formControl]="form.get('subType')" [status]="(form.get('subType').dirty || form.get('subType').touched) && form.get('subType').invalid ? 'danger' : 'info'">
+                                    <nb-option *ngFor="let subType of subTypes" [value]="subType.name">{{subType.label}}</nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('subType').dirty || form.get('subType').touched) && form.get('subType').invalid">
+                        SubType must be required
+                      </span>
+                        </div>
+                        <div nz-col [nzSpan]="24">
+                            <nb-form-field style="margin-bottom: 0.5rem; max-width: 100%;">
+                                <nb-icon [class]="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="cube-outline"></nb-icon>
+                                <nb-select placeholder="Select Department" fullWidth [formControl]="form.get('department')" [status]="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid ? 'danger' : 'info'">
+                                    <nb-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                            <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid">
+                          Department must be required
+                    </span>
+                        </div>
+                        <div nz-col [nzSpan]="24">
+                            <nb-form-field style="margin-bottom: 0.5rem;">
+                                <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
+                                <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill step description"></textarea>
+                            </nb-form-field>
+                        </div>
+                        <div nz-col [nzSpan]="24">
+                            <nb-accordion style="width: 100%;">
+                                <nb-accordion-item *ngIf="step.processFromConnections != null && step.processFromConnections.length > 0">
+                                    <nb-accordion-item-header>Connection From</nb-accordion-item-header>
+                                    <nb-accordion-item-body>
+                                        <nb-form-field *ngFor="let connection of step.processFromConnections" style="margin-bottom: 0.5rem; max-width: 100%;">
+                                            <span nbPrefix class="{{getIcon(connection.fromProcessStep.type + '-' + connection.fromProcessStep.subType).value}}" style="font-size: 1.4rem"></span>
+                                            <input type="text" nbInput fullWidth status="info" [value]="connection.fromProcessStep.name" disabled />
+                                        </nb-form-field>
+                                    </nb-accordion-item-body>
+                                </nb-accordion-item>
+                                <nb-accordion-item>
+                                    <nb-accordion-item-header>Connection To</nb-accordion-item-header>
+                                    <nb-accordion-item-body>
+                                        <nb-accordion style="width: 100%;">
+                                            <nb-accordion-item *ngFor="let connection of form.get('processToConnections')['controls']; let i = index" [formGroup]="connection">
+                                                <nb-accordion-item-header>
+                                                    <span nbPrefix class="{{getIcon(connection.get('toProcessStep').value.type + '-' + connection.get('toProcessStep').value.subType).value}}" style="font-size: 1.4rem; margin-right: 0.5rem;"></span>
+                                                    <span>{{connection.get('toProcessStep').value.name}}</span>
+                                                </nb-accordion-item-header>
+                                                <nb-accordion-item-body>
+                                                    <div nz-col [nzSpan]="24">
+                                                        <nb-form-field style="margin-bottom: 0.5rem;">
+                                                            <span nbPrefix class="{{getIcon(connection.get('toProcessStep').value.type + '-' + connection.get('toProcessStep').value.subType).value}}" style="font-size: 1.4rem"></span>
+                                                            <input type="text" [value]="connection.get('toProcessStep').value.name" nbInput fullWidth status="info" disabled />
+                                                            <nb-icon class="text-danger" nbSuffix icon="trash-2-outline" (click)="removeConnection(i)"></nb-icon>
+                                                        </nb-form-field>
+                                                        <nb-form-field style="margin-bottom: 0.5rem; position: relative;">
+                                                            <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
+                                                            <textarea rows="5" nbInput fullWidth [formControl]="connection.get('description')" status="info" placeholder="Fill connection description"></textarea>
+                                                        </nb-form-field>
+                                                    </div>
+                                                </nb-accordion-item-body>
+                                            </nb-accordion-item>
+                                        </nb-accordion>
+                                        <nz-select *ngIf="filterSteps.length > 0 && checkCanSelect()" style="width: 100%; margin-top: 0.5rem;" [nzNotFoundContent]="''" nzPlaceHolder="Connect to" [(ngModel)]="model" [ngModelOptions]="{standalone: true}" (ngModelChange)="addConnection($event)">
+                                            <nz-option *ngFor="let step of filterSteps" [nzLabel]="step.name" [nzValue]="step"></nz-option>
+                                        </nz-select>
+                                    </nb-accordion-item-body>
+                                </nb-accordion-item>
+                                <nb-accordion-item>
+                                    <nb-accordion-item-header>Forms</nb-accordion-item-header>
+                                    <nb-accordion-item-body>
+                                        <div nz-row class="groups">
+                                            <div class="group" #form [class.selected]="formGroup.isSelected" nz-col [nzSpan]="24" *ngFor="let formGroup of formGroups; let f = index">
+                                                <span class="name"><nb-checkbox [checked]="formGroup.isSelected" (checkedChange)="useToggle(f, $event)">{{formGroup.name}}</nb-checkbox></span>
+                                                <div class="action">
+                                                    <nb-icon nbPrefix [icon]="formGroup.isSee ? 'eye-off-2-outline' : 'eye-outline'" (click)="useSee(f, form)"></nb-icon>
+                                                </div>
+                                                <div *ngIf="formGroup.isSee" class="content" nz-row>
+                                                    <div style="margin-bottom: 0.5rem;" *ngFor="let item of formGroup.formControls" nz-col [nzXs]="item.xs" [nzSm]="item.sm" [nzMd]="item.md" [nzLg]="item.lg" [nzXl]="item.xl" [nzXXl]="item.xxl">
+                                                        <ng-container appControl [item]="item"></ng-container>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </nb-accordion-item-body>
+                                </nb-accordion-item>
+                            </nb-accordion>
+                        </div>
+                    </div>
+                </div>
+            </nz-spin>
+        </nb-card-body>
+    </nb-card>
+</ng-template>

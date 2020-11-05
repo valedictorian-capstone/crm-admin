@@ -72,7 +72,7 @@ export class DashboardCustomerComponent implements OnInit {
         formatter: (params) => {
           params.value = this.decimalPipe.transform(params.value, '1.0-0').split(',').join('.');
           return (
-            params.seriesName + ' - ' + params.name + ' : ' + params.value + ' (' + params.percent + '%)'
+            params.seriesName + ' - ' + params.name + ' : ' + params.value + ' customers (' + params.percent + '%)'
           );
         },
       },
@@ -84,7 +84,7 @@ export class DashboardCustomerComponent implements OnInit {
       calculable: true,
       series: [
         {
-          name: 'Tỉ lệ',
+          name: 'Ratio',
           selectedMode: 'single',
           type: 'pie',
           radius: 100,

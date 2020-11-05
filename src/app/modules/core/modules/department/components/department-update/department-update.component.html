@@ -8,7 +8,7 @@
                 <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
             </div>
         </nb-card-header>
-        <nb-card-body>
+        <nb-card-body style="max-height: 90vh;">
             <div class="update-modal-body">
                 <div nz-row style="width: 100%" [formGroup]="form">
                     <div nz-col [nzSpan]="24">
@@ -26,6 +26,38 @@
                             <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
                             <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill department description"></textarea>
                         </nb-form-field>
+                    </div>
+                    <div nz-col [nzSpan]="24" style="margin-bottom: 0.8rem; max-width: 100% !important;">
+                        <nb-accordion style="width: 100%;">
+                            <nb-accordion-item [expanded]="true">
+                                <nb-accordion-item-header>
+                                    <span class="text-info">{{form.get('manager').get('accountId').value ? getShortName(findInformation(form.get('manager').get('accountId').value).fullname) : 'Leader'}}</span>
+                                </nb-accordion-item-header>
+                                <nb-accordion-item-body [formGroup]="form.get('manager')">
+                                    <nz-select *ngIf="!form.get('manager').get('accountId').value" style="width: 100%;" [nzNotFoundContent]="''" fullWidth nzPlaceHolder="Select Leader" [formControl]="form.get('manager').get('accountId')">
+                                        <nz-option *ngFor="let manager of managers" [nzLabel]="manager.fullname" [nzValue]="manager.id"></nz-option>
+                                    </nz-select>
+                                    <nb-form-field *ngIf="form.get('manager').get('accountId').value">
+                                        <input type="text" [value]="findInformation(form.get('manager').get('accountId').value).fullname" nbInput fullWidth status="info" disabled />
+                                        <nb-icon class="text-danger" nbSuffix icon="trash-2-outline" (click)="form.get('manager').get('accountId').setValue(undefined)"></nb-icon>
+                                    </nb-form-field>
+                                    <textarea style="margin-top: 0.5rem;" *ngIf="form.get('manager').get('accountId').value" rows="5" nbInput fullWidth [formControl]="form.get('manager').get('description')" status="info" placeholder="Fill leader role description"></textarea>
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+                            <nb-accordion-item *ngFor="let employee of form.get('employees')['controls']; let i = index">
+                                <nb-accordion-item-header>{{getShortName(findInformation(employee.get('accountId').value).fullname)}}</nb-accordion-item-header>
+                                <nb-accordion-item-body [formGroup]="employee">
+                                    <nb-form-field>
+                                        <input type="text" [value]="findInformation(employee.get('accountId').value).fullname" nbInput fullWidth status="info" disabled />
+                                        <nb-icon class="text-danger" nbSuffix icon="trash-2-outline" (click)="removeEmployee(i)"></nb-icon>
+                                    </nb-form-field>
+                                    <textarea style="margin-top: 0.5rem;" rows="5" nbInput fullWidth [formControl]="employee.get('description')" status="info" placeholder="Fill employee role description"></textarea>
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+                        </nb-accordion>
+                        <nz-select *ngIf="employees.length > 0" style="width: 100%; margin-top: 0.5rem;" [nzNotFoundContent]="''" nzPlaceHolder="Choose new Employee" [formControl]="model" (ngModelChange)="addEmployee($event)">
+                            <nz-option *ngFor="let employee of employees" [nzLabel]="employee.fullname" [nzValue]="employee.id"></nz-option>
+                        </nz-select>
                     </div>
                 </div>
             </div>
