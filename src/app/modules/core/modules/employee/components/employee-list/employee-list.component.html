@@ -1,7 +1,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <button nbButton status="success" (click)="useDialog(createDialog, 'create-modal')" size="small">Add Account</button>
+            <button nbButton status="success" (click)="useDialog(createDialog, 'create-modal')" size="small">Add Employee</button>
             <ng-template #createDialog let-data let-ref="dialogRef">
                 <app-employee-create (useDone)="useCreate(ref, $event)" (useClose)="ref.close()"></app-employee-create>
             </ng-template>

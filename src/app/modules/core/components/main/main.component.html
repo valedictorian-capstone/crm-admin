@@ -10,7 +10,7 @@
                 <span style="margin: 0 0.5rem 0 0.5rem;">/</span>
                 <button [nbTooltip]="point.label" nbButton size="small" status="basic">
                     <nb-icon icon="{{point.icon ? point.icon : 'alert-circle'}}-outline"></nb-icon>
-                    <span>{{point.label | maxLength: 11}}</span>
+                    <span *ngIf="point.icon">{{point.label | maxLength: 11}}</span>
                 </button>
             </div>
 

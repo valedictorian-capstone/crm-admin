@@ -259,7 +259,7 @@ export const environment = {
       label: 'Bpmn',
       icon: 'settings-2',
       type: 'group',
-      values: ['instace', 'process', 'form'],
+      values: ['process', 'form'],
       value: 'bpmn-group',
       items: [
         {
@@ -272,12 +272,6 @@ export const environment = {
           label: 'Process',
           value: 'process',
           icon: 'browser',
-          type: 'item',
-        },
-        {
-          label: 'Instance',
-          value: 'instance',
-          icon: 'sync',
           type: 'item',
         },
       ],

@@ -1,0 +1,17 @@
+.update-modal-body,
+.update-modal-header {
+    width: calc(50vw - 16rem + 5px);
+}
+
+.update-modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1309px) {
+    .update-modal-body,
+    .update-modal-header {
+        width: calc(70vw);
+    }
+}

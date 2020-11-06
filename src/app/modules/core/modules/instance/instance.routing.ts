@@ -1,9 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
-import { InstanceMainComponent, InstanceDetailComponent } from './pages';
+import { InstanceMainComponent } from './pages';
 
 const routes: Routes = [
   { path: '', component: InstanceMainComponent },
-  { path: ':id', component: InstanceDetailComponent },
+  { path: ':id', component: InstanceMainComponent },
 ];
 
 export const InstanceRoutes = RouterModule.forChild(routes);

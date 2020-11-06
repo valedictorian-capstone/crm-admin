@@ -1,23 +1,20 @@
-<button nbButton status="success" (click)="open(dialog)" size="small">
-  Add Form
-</button>
-<ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>
-            <div class="create-modal-header">
-                <span>Create new form</span>
-                <button nbButton size="small" style="float: right" shape="round" status="danger">
-          <nb-icon icon="close" (click)="ref.close()"></nb-icon>
-        </button>
-                <button [disabled]="form.invalid" nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="success" (click)="submit(ref)">
-          <nb-icon icon="checkmark"></nb-icon>
-        </button>
-                <button nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="primary">
-          <nb-icon [icon]="!tool ? 'settings-2-outline' : 'eye-outline'" (click)="tool = !tool"></nb-icon>
-        </button>
-            </div>
-        </nb-card-header>
-        <nb-card-body style="max-height: 90vh">
+<nb-card>
+    <nb-card-header>
+        <div class="create-modal-header">
+            <span>Create new form</span>
+            <button nbButton size="small" style="float: right" shape="round" status="danger">
+                  <nb-icon icon="close" (click)="useClose.emit()"></nb-icon>
+                </button>
+            <button [disabled]="form.invalid" nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="success" (click)="useSubmit()">
+                  <nb-icon icon="checkmark"></nb-icon>
+                </button>
+            <button nbButton size="small" style="float: right; margin-right: 0.5rem" shape="round" status="basic">
+                  <nb-icon [icon]="!tool ? 'settings-2-outline' : 'eye-outline'" (click)="tool = !tool"></nb-icon>
+                </button>
+        </div>
+    </nb-card-header>
+    <nb-card-body style="max-height: 90vh">
+        <nz-spin nzTip="Loading..." [nzSpinning]="load">
             <div class="create-modal-body">
                 <div style="width: 100%" [formGroup]="form">
                     <nb-accordion style="width: 100%;">
@@ -39,10 +36,7 @@
                             ? 'danger'
                             : 'info'
                         " placeholder="Fill form code" />
-                                            <nb-icon class="text-danger" *ngIf="
-                          (form.get('code').dirty || form.get('code').touched) &&
-                          form.get('code').invalid
-                        " nbSuffix icon="slash-outline"></nb-icon>
+                                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                                         </nb-form-field>
                                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf="
                         (form.get('code').dirty || form.get('code').touched) &&
@@ -71,10 +65,7 @@
                             ? 'danger'
                             : 'info'
                         " status="info" placeholder="Fill form name" />
-                                            <nb-icon class="text-danger" *ngIf="
-                          (form.get('name').dirty || form.get('name').touched) &&
-                          form.get('name').invalid
-                        " nbSuffix icon="slash-outline"></nb-icon>
+                                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                                         </nb-form-field>
                                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf="
                         (form.get('name').dirty || form.get('name').touched) &&
@@ -104,7 +95,7 @@
                                 </div>
                             </nb-accordion-item-body>
                             <nb-accordion-item-body *ngIf="tool">
-                                <div cdkDropList [cdkDropListSortingDisabled]="true" [cdkDropListData]="controls" (cdkDropListDropped)="drop($event)" [cdkDropListOrientation]="'horizontal'" [cdkDropListConnectedTo]="[controlList]" #paletteList="cdkDropList" class="palette">
+                                <div cdkDropList [cdkDropListSortingDisabled]="true" [cdkDropListData]="controls" (cdkDropListDropped)="useDrop($event)" [cdkDropListOrientation]="'horizontal'" [cdkDropListConnectedTo]="[controlList]" #paletteList="cdkDropList" class="palette">
                                     <div [nbTooltip]="control.subType !== '' ? (control.type + '-' + control.subType) : control.type" nbTooltipStatus="default" class="item" *ngFor="let control of controls" cdkDrag>
                                         <div class="image">
                                             <img [src]="'../../../../../../../assets/controls/'+ (control.subType !== '' ? (control.type + '-' + control.subType) : control.type) +'.png'" />
@@ -125,7 +116,7 @@
                                                           ">
                                                         <img style="width: 80%;" [src]="'../../../../../../../assets/controls/'+ (control.subType !== '' ? (control.type + '-' + control.subType) : control.type) +'.png'" />
                                                       </span>
-                                                        <nb-icon style="position: absolute; right: 3rem;" icon="power"></nb-icon>
+                                                        <nb-icon style="position: absolute; right: 3rem;" status="danger" icon="trash-2-outline"></nb-icon>
                                                         <nb-icon style="position: absolute; left: 1rem; cursor: move;" icon="move-outline"></nb-icon>
                                                     </nb-accordion-item-header>
                                                     <nb-accordion-item-body>
@@ -135,9 +126,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container-control" nz-col [nzSpan]="24" cdkDropList [cdkDropListData]="form.get('formControls')['controls']" #controlList="cdkDropList" (cdkDropListDropped)="dropControl($event)">
+                                <div class="container-control" nz-col [nzSpan]="24" cdkDropList [cdkDropListData]="form.get('formControls')['controls']" #controlList="cdkDropList" (cdkDropListDropped)="useDropControl($event)">
                                     <nb-accordion *ngFor="let group of form.get('formControls')['controls']; let i = index" style="margin-bottom: 0.5rem;" cdkDrag>
-                                        <nb-accordion-item>
+                                        <nb-accordion-item #item>
                                             <nb-accordion-item-header class="control-header">
                                                 <span style="
                                                   margin-left: 1.5rem;
@@ -151,7 +142,7 @@
                                                   ">
                                                   <img style="width: 80%;" [src]="'../../../../../../../assets/controls/'+ (group.get('subType').value !== '' ? (group.get('type').value + '-' + group.get('subType').value) : group.get('type').value) +'.png'" />
                                                 </span>
-                                                <nb-icon style="position: absolute; right: 3rem;" icon="power" (click)="removeControl(i)"></nb-icon>
+                                                <nb-icon style="position: absolute; right: 3rem;" status="danger" icon="trash-2-outline" (click)="useRemoveControl(i)"></nb-icon>
                                                 <nb-icon cdkDragHandle style="position: absolute; left: 1rem; cursor: move;" icon="move-outline"></nb-icon>
                                             </nb-accordion-item-header>
                                             <nb-accordion-item-body>
@@ -160,7 +151,7 @@
                                                         <nb-form-field style="margin-bottom: 0.8rem; max-width: 100% !important;">
                                                             <label class="text-info">Name</label>
                                                             <input type="text" nbInput fullWidth [formControl]="group.get('name')" [status]="(group.get('name').dirty || group.get('name').touched) && group.get('name').invalid ? 'danger' : 'info'" status="info" placeholder="Fill control name" />
-                                                            <nb-icon class="text-danger" *ngIf="(group.get('name').dirty || group.get('name').touched) && group.get('name').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                                                         </nb-form-field>
                                                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900" *ngIf=" (group.get('name').dirty || group.get('name').touched) && group.get('name').invalid">
                                                         Name must be required
@@ -265,14 +256,14 @@
                                                     <div nz-col [nzSpan]="24" *ngIf="group.get('type').value === 'select' || group.get('type').value === 'multi-select' || group.get('type').value === 'auto-complete' || group.get('type').value === 'radio'">
                                                         <div style="padding: 1rem; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-bottom: 0.5rem">
                                                             <span>Options</span>
-                                                            <button nbButton size="small" style="position: absolute; right: 1rem; top: 0.6rem;" status="primary" (click)="addOption(group.get('options'))">
+                                                            <button nbButton size="small" style="position: absolute; right: 1rem; top: 0.6rem;" status="primary" (click)="useAddOption(group.get('options'))">
                                                         <nb-icon icon="plus"></nb-icon>
                                                         </button>
                                                         </div>
                                                         <nb-accordion style="width: 100%;">
                                                             <nb-accordion-item *ngFor="let option of group.get('options')['controls']; let o = index">
                                                                 <nb-accordion-item-header>
-                                                                    <nb-icon (click)="removeOption(o)" style="position: absolute; left: 1rem;" icon="power"></nb-icon>
+                                                                    <nb-icon (click)="useRemoveOption(o)" style="position: absolute; left: 1rem;" status="danger" icon="trash-2-outline"></nb-icon>
                                                                 </nb-accordion-item-header>
                                                                 <nb-accordion-item-body>
                                                                     <div nz-row style="width: 100%;" [formGroup]="option">
@@ -311,6 +302,6 @@
                     </nb-accordion>
                 </div>
             </div>
-        </nb-card-body>
-    </nb-card>
-</ng-template>
+        </nz-spin>
+    </nb-card-body>
+</nb-card>

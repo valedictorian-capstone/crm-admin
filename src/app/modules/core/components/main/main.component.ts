@@ -83,6 +83,11 @@ export class MainComponent implements OnInit {
       icon: 'sync',
     },
     {
+      label: 'Step',
+      value: 'step',
+      icon: 'rewind-right',
+    },
+    {
       label: 'Service',
       value: 'service',
       icon: 'flash',
@@ -107,7 +112,6 @@ export class MainComponent implements OnInit {
     this.usePoints(window.location.hash.replace('#/core/', ''));
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        console.log(event);
         this.usePoints(event.urlAfterRedirects.replace('/core/', ''));
       }
     });
@@ -117,12 +121,15 @@ export class MainComponent implements OnInit {
   }
   usePoints = (url: string) => {
     const tmp = url.split('/');
+    let value = '';
     this.points = tmp.map((e, i) => {
       const point = this.categories.find((categorie) => categorie.value === e)
-        ? this.categories.find((categorie) => categorie.value === e) : { label: e, value: e, icon: undefined };
+        ? {...this.categories.find((categorie) => categorie.value === e)} : { label: e, value: e, icon: undefined };
       if (i > 0) {
-        point.value = tmp[i - 1] + '/' + point.value;
+        point.value = value + '/' + point.value;
+        value = point.value;
       }
+      value = point.value;
       return point;
     });
   }

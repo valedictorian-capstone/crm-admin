@@ -1,4 +1,4 @@
-import { ProcessStepVM } from '..';
+import { ProcessInstanceVM, ProcessStepVM } from '..';
 
 export interface ProcessVM {
   readonly id: string;
@@ -6,6 +6,7 @@ export interface ProcessVM {
   readonly description: string;
   readonly code: string;
   readonly processSteps: ProcessStepVM[];
+  readonly processInstances: ProcessInstanceVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

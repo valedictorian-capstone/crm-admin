@@ -30,7 +30,7 @@
         <div nz-row class="list">
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let service of serviceFilter; let i = index">
                 <div class="box" #box>
-                    <nb-icon icon="layers-outline" style="position: absolute; left: 1rem"></nb-icon>
+                    <nb-icon icon="flash-outline" style="position: absolute; left: 1rem"></nb-icon>
                     <div [nbTooltip]="service.name" class="name">{{ service.name | maxLength: 50 }}</div>
                     <div class="button-icon-circle" style="position: absolute; right: 0.5rem" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-1 l-1-half'" nz-dropdown [nzDropdownMenu]="dropdown">
                         <nb-icon icon="more-horizontal-outline"></nb-icon>

@@ -1,11 +1,12 @@
-import { ProcessStepInstanceVM } from '..';
+import { CustomerVM, ProcessStepInstanceVM, ProcessVM } from '..';
 
 export interface ProcessInstanceVM {
   readonly id: string;
   readonly code: string;
-  readonly workFlowId: string;
-  readonly note: string;
-  readonly workFlowStepInstanceVMs: ProcessStepInstanceVM[];
+  readonly process: ProcessVM;
+  readonly customer: CustomerVM;
+  readonly description: string;
+  readonly processStepInstances: ProcessStepInstanceVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;
@@ -14,14 +15,14 @@ export interface ProcessInstanceVM {
 }
 
 export interface ProcessInstanceCM {
-  code: string;
-  workFlowId: string;
-  note: string;
+  process: ProcessVM;
+  customer: CustomerVM;
+  description: string;
 }
 
 export interface ProcessInstanceUM {
   id: string;
-  code: string;
-  workFlowId: string;
-  note: string;
+  process: ProcessVM;
+  customer: CustomerVM;
+  description: string;
 }

@@ -1,0 +1,32 @@
+<nb-card>
+    <nb-card-header>
+        <div class="create-modal-header">
+            <span>Create new instance</span>
+            <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="useClose.emit()"></nb-icon></button>
+            <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="useSubmit()"><nb-icon icon="checkmark"></nb-icon></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <nz-spin nzTip="Loading..." [nzSpinning]="load">
+            <div class="create-modal-body">
+                <div nz-row style="width: 100%" [formGroup]="form">
+                    <div nz-col [nzSpan]="24">
+                        <nz-select [ngStyle]="{'border': (form.get('customer').dirty || form.get('customer').touched) && form.get('customer').invalid ? '2px solid #dc3545' : '1px solid #0095ff'}" [nzSize]="'large'" nzShowSearch style="width: 100%; margin-bottom: 0.5rem; border-radius: 5px;"
+                            [nzNotFoundContent]="''" nzPlaceHolder="Select customer" [formControl]="form.get('customer')">
+                            <nz-option *ngFor="let customer of customers" [nzLabel]="customer.fullname" [nzValue]="customer.id"></nz-option>
+                        </nz-select>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('customer').dirty || form.get('customer').touched) && form.get('customer').invalid">
+                        Customer must be required
+                  </span>
+                    </div>
+                    <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem;">
+                            <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
+                            <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill instance description"></textarea>
+                        </nb-form-field>
+                    </div>
+                </div>
+            </div>
+        </nz-spin>
+    </nb-card-body>
+</nb-card>
