@@ -1,9 +1,9 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RoleService } from '@services';
 import { RoleVM } from '@view-models';
 import swal from 'sweetalert2';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-role-create',
   templateUrl: './role-create.component.html',
@@ -11,11 +11,12 @@ import swal from 'sweetalert2';
 })
 export class RoleCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
+  @Output() useClose: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
   form: FormGroup;
   visible = false;
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: RoleService,
   ) {
     this.form = fb.group({
@@ -25,22 +26,22 @@ export class RoleCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.useForm();
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({ name: '', description: '' });
   }
 
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
-      this.service.insert(this.form.value).subscribe(
+      this.load = true;
+      this.service.insert(this.form.value)
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
         (data) => {
-          ref.close();
           swal.fire('Notification', 'Create new role successfully!!', 'success');
           this.useDone.emit(data);
         },

@@ -1,8 +1,9 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { CustomerVM, District, GroupVM, Province } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-account-update',
@@ -11,12 +12,14 @@ import swal from 'sweetalert2';
 })
 export class AccountUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
+  @Output() useClose: EventEmitter<GroupVM> = new EventEmitter<GroupVM>();
   @Input() account: CustomerVM;
   @Input() groups: GroupVM[] = [];
   @Input() provinces: Province[] = [];
   districts: District[] = [];
   form: FormGroup;
   visible = false;
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
     protected readonly dialogService: NbDialogService,
@@ -36,11 +39,12 @@ export class AccountUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.check('phone');
-    this.check('email');
+    this.useCheck('phone');
+    this.useCheck('email');
+    this.useForm();
   }
 
-  open(dialog: TemplateRef<any>) {
+  useForm = () => {
     this.form.reset({
       fullname: this.account.fullname,
       phone: this.account.phone,
@@ -54,29 +58,31 @@ export class AccountUpdateComponent implements OnInit {
     });
     this.districts = this.form.get('province').value ? (this.provinces.find((province) => province.id === this.form.get('province').value)
       ? this.provinces.find((province) => province.id === this.form.get('province').value).huyen : []) : [];
-    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
+      this.load = true;
       this.service.update({
         ...this.account, ...this.form.value, groups: this.form.value.groups.map((id) => ({ id }))
-      }).subscribe(
-        () => {
-          ref.close();
-          swal.fire('Notification', 'Update ' + this.account.code + ' successfully!!', 'success');
-          this.useDone.emit({ ...this.account, ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) });
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      })
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          () => {
+            swal.fire('Notification', 'Update ' + this.account.code + ' successfully!!', 'success');
+            this.useDone.emit({ ...this.account, ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) });
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
-    // ref.close();
   }
 
-  check = async (name: string) => {
+  useCheck = async (name: string) => {
     const control = this.form.get(name);
     control.valueChanges.subscribe(async (data) => {
       if (data !== '') {
@@ -102,7 +108,7 @@ export class AccountUpdateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
-  selectProvince = (id: number) => {
+  useSelectProvince = (id: number) => {
     this.districts = this.provinces.find((province) => province.id === id)
       ? this.provinces.find((province) => province.id === id).huyen : [];
     this.form.get('district').setValue(undefined);

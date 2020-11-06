@@ -65,9 +65,8 @@
             left: 0.5rem;
         }
         .action {
-            position: absolute;
-            right: 0.5rem;
-            top: 0.75rem;
+            height: 100%;
+            width: 100%;
         }
         .search {
             position: absolute;
@@ -99,7 +98,7 @@
         .select {
             position: absolute;
             right: 0.5rem;
-            top: 1.25rem;
+            top: 0;
         }
         .pagination {
             position: absolute;

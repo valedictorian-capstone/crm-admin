@@ -1,4 +1,4 @@
-.list {
+.main {
     width: 100%;
     height: 100%;
     position: relative;
@@ -12,7 +12,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         padding: 4.5rem 0 4.5rem 0;
-        .data {
+        .list {
             width: 100%;
             height: 100%;
             align-content: baseline;
@@ -20,7 +20,7 @@
                 padding: 0 0.5rem 0 0.5rem;
                 margin-bottom: 1rem;
                 position: relative;
-                .top {
+                .box {
                     background: white;
                     border-radius: 5px;
                     width: 100%;
@@ -29,17 +29,12 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    .right {
-                        position: absolute;
-                        top: 0.5rem;
-                        right: 0.5rem;
-                    }
                     .name {
-                        width: 70%;
-                        overflow: hidden;
+                        width: calc(100% - 6rem);
                         font-family: Open Sans, sans-serif;
                         font-size: 0.9rem;
                         font-weight: 600;
+                        padding: 0 0.5rem 0 0.5rem;
                     }
                 }
             }
@@ -70,12 +65,8 @@
             left: 0.5rem;
         }
         .action {
-            position: absolute;
-            right: 0;
-            display: flex;
-            justify-content: flex-end;
-            align-self: center;
-            top: 0.75rem;
+            height: 100%;
+            width: 100%;
         }
         .search {
             position: absolute;
@@ -106,11 +97,8 @@
         position: relative;
         .select {
             position: absolute;
-            right: 0;
-            display: flex;
-            justify-content: flex-end;
-            align-self: center;
-            top: 0.75rem;
+            right: 0.5rem;
+            top: 0;
         }
         .pagination {
             position: absolute;
@@ -125,10 +113,10 @@
 }
 
 @media (max-width: 1009px) {
-    .list {
+    .main {
         .content {
             width: 100vw;
-            .data {
+            .list {
                 .item {
                     padding: 0 2rem 0 2rem;
                 }

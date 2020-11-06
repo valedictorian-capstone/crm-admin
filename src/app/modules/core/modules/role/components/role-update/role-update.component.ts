@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NbDialogService, NbDialogRef } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RoleService } from '@services';
 import { RoleVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 
 @Component({
@@ -12,12 +12,13 @@ import swal from 'sweetalert2';
 })
 export class RoleUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
+  @Output() useClose: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
   @Input() role: RoleVM;
   form: FormGroup;
   visible = false;
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: RoleService,
   ) {
     this.form = fb.group({
@@ -27,29 +28,28 @@ export class RoleUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.useForm();
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({ name: this.role.name, description: this.role.description });
   }
-
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
-      this.service.update({ ...this.role, ...this.form.value }).subscribe(
-        () => {
-          ref.close();
-          swal.fire('Notification', 'Update role successfully!!', 'success');
-          this.useDone.emit({ ...this.role, ...this.form.value });
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      this.load = true;
+      this.service.update({ ...this.role, ...this.form.value })
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          () => {
+            swal.fire('Notification', 'Update role successfully!!', 'success');
+            this.useDone.emit({ ...this.role, ...this.form.value });
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }

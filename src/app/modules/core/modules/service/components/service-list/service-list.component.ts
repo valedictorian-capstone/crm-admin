@@ -1,5 +1,7 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { MockService, ServiceService } from '@services';
+import { Component, ElementRef, OnInit, TemplateRef } from '@angular/core';
+import { ActionMenuItem } from '@extras/models';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { ServiceService } from '@services';
 import { ServiceVM } from '@view-models';
 import swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
@@ -17,53 +19,81 @@ export class ServiceListComponent implements OnInit {
   showSearch = false;
   search = '';
   count = 20;
+  actions: ActionMenuItem[] = [
+    {
+      label: 'Edit service\'s information',
+      value: 'edit',
+      icon: {
+        icon: 'edit-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+    {
+      label: 'Disabled service',
+      value: 'remove',
+      icon: {
+        icon: 'trash-2-outline',
+        status: 'danger'
+      },
+      textColor: 'text-danger',
+    }
+  ];
+  headerActions: ActionMenuItem[] = [
+    {
+      label: 'Export to excel',
+      value: 'export',
+      icon: {
+        icon: 'cloud-download-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+  ];
   constructor(
     protected readonly service: ServiceService,
-    protected readonly mockService: MockService,
-  ) {
-
-  }
-
+    protected readonly dialogService: NbDialogService,
+  ) { }
   ngOnInit() {
-    this.mockService.getProvinces().subscribe(console.log);
     this.service.findAll().subscribe((data) => {
       this.services = data;
       this.search = '';
       this.useFilter();
     });
   }
-
   useFilter = () => {
     this.serviceFilter = this.services.filter((service, i) =>
-      (service.name.toLowerCase().includes(this.search.toLowerCase()) || service.code.toLowerCase().includes(this.search.toLowerCase())) &&
+      service.name.toLowerCase().includes(this.search.toLowerCase()) &&
       (i < ((this.min + 1) * this.count) - 1 && i >= this.min * this.count)
     );
   }
-  useCreate = (data: ServiceVM) => {
+  useCreate = (dialog: NbDialogRef<any>, data: ServiceVM) => {
     this.services.push(data);
     this.search = data.name;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useUpdate = (data: ServiceVM, index: number) => {
+  useUpdate = (dialog: NbDialogRef<any>, data: ServiceVM, index: number) => {
     this.services[index] = data;
     this.search = data.name;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useRemove = (data: ServiceVM) => {
+  useRemove = (data: ServiceVM, index: number) => {
     swal.fire({
       showCancelButton: true,
       cancelButtonText: 'Not Sure',
       confirmButtonText: 'Sure',
       title: 'Confirm',
       icon: 'question',
-      text: 'Are you sure to shutdown ' + data.name + ' ?',
+      text: 'Are you sure to disabled ' + data.name + ' ?',
     }).then((res) => {
       if (res.isConfirmed) {
         this.service.remove(data.id).subscribe(
           () => {
-            this.services = this.services.filter((service) => service.id !== data.id);
+            this.services.splice(index, 1);
             this.useFilter();
             swal.fire('Notification', 'Delete ' + data.name + ' successfully!!', 'success');
           },
@@ -74,10 +104,10 @@ export class ServiceListComponent implements OnInit {
       }
     });
   }
-  goto = (index: number) => {
+  useGo = (index: number) => {
     if (
       this.active !== index
-      && index <= this.getMax()
+      && index <= this.useMax()
       && index >= 0
     ) {
       if (index > this.min + 3) {
@@ -94,14 +124,30 @@ export class ServiceListComponent implements OnInit {
     this.search = '';
     this.useFilter();
   }
-  getMax = () => {
+  useMax = () => {
     return parseInt((this.serviceFilter.length / this.count) + '', 0) + (this.serviceFilter.length % this.count > 0 ? 1 : 0);
   }
-  export = (table: ElementRef<any>) => {
+  useExport = (table: ElementRef<any>) => {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
     ws['!cols'] = [{ width: 20 }];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Lead List');
     XLSX.writeFile(wb, 'services.xlsx');
+  }
+  useAction = (action: ActionMenuItem, template: TemplateRef<any>, data: ServiceVM, index: number) => {
+    switch (action.value) {
+      case 'edit':
+        this.useDialog(template, 'update-modal');
+        return;
+      case 'remove':
+        this.useRemove(data, index);
+        return;
+      case 'export':
+        this.useExport(template as any);
+        return;
+    }
+  }
+  useDialog(template: TemplateRef<any>, dialogClass: string) {
+    this.dialogService.open(template, { dialogClass });
   }
 }

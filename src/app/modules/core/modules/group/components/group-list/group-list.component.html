@@ -13,12 +13,15 @@
             </nb-form-field>
         </div>
         <div class="action">
-            <button nbTooltip="Search" nbTooltipStatus="primary" nbButton status="primary" size="small" shape="round" style="margin-right: 0.5rem" (click)="showSearch = true">
-              <nb-icon icon="search" ></nb-icon>
-            </button>
-            <button nbTooltip="Export Excel" nbTooltipStatus="primary" status="primary" (click)="useExport(table)" nbButton size="small" shape="round" style="margin-right: 0.5rem">
-              <nb-icon icon="cloud-download"></nb-icon>
-            </button>
+            <div class="button-icon-circle" style="position: absolute; right: 3rem; top: 0.5rem;" (click)="showSearch = true">
+                <nb-icon icon="search-outline"></nb-icon>
+            </div>
+            <div class="button-icon-circle" style="position: absolute; right: 0.5rem; top: 0.5rem;" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-1 l-1-half'" nz-dropdown [nzDropdownMenu]="dropdown">
+                <nb-icon icon="more-horizontal-outline"></nb-icon>
+            </div>
+            <nz-dropdown-menu #dropdown="nzDropdownMenu">
+                <app-action-menu [actions]="headerActions" (useSelectItem)="useAction($event, table, undefined, undefined)"></app-action-menu>
+            </nz-dropdown-menu>
         </div>
     </div>
 </div>
@@ -29,7 +32,9 @@
                 <div class="box" #box>
                     <nb-icon icon="layers-outline" style="position: absolute; left: 1rem"></nb-icon>
                     <div [nbTooltip]="group.name" class="name">{{ group.name | maxLength: 50 }}</div>
-                    <nb-icon icon="more-horizontal-outline" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-3 l-1'" nz-dropdown [nzDropdownMenu]="dropdown" style="position: absolute; right: 1rem; cursor: pointer;"></nb-icon>
+                    <div class="button-icon-circle" style="position: absolute; right: 0.5rem" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-1 l-1-half'" nz-dropdown [nzDropdownMenu]="dropdown">
+                        <nb-icon icon="more-horizontal-outline"></nb-icon>
+                    </div>
                     <nz-dropdown-menu #dropdown="nzDropdownMenu">
                         <app-action-menu [template]="box" [actions]="actions" (useSelectItem)="useAction($event, editDialog, group, i)"></app-action-menu>
                     </nz-dropdown-menu>
@@ -61,7 +66,9 @@
     </button>
         </div>
         <div class="select">
-            <nb-icon icon="more-horizontal-outline" [nzPlacement]="'bottomCenter'" [nzOverlayClassName]="'mb-3 l-1'" nz-dropdown [nzDropdownMenu]="more" style="margin-right: 0.5rem; cursor: pointer"></nb-icon>
+            <div class="button-icon-circle" style="position: absolute; top: 0.5rem; right: 0" [nzPlacement]="'bottomCenter'" [nzOverlayClassName]="'mb-1 l-1-half'" nz-dropdown [nzDropdownMenu]="more">
+                <nb-icon icon="more-horizontal-outline"></nb-icon>
+            </div>
             <nz-dropdown-menu #more="nzDropdownMenu">
                 <div style="
               display: flex;

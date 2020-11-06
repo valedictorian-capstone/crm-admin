@@ -1,8 +1,8 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountService, DepartmentService } from '@services';
 import { AccountVM, DepartmentVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-department-update',
@@ -12,6 +12,7 @@ import swal from 'sweetalert2';
 export class DepartmentUpdateComponent implements OnInit {
   @Input() department: DepartmentVM;
   @Output() useDone: EventEmitter<DepartmentVM> = new EventEmitter<DepartmentVM>();
+  @Output() useClose: EventEmitter<DepartmentVM> = new EventEmitter<DepartmentVM>();
   form: FormGroup;
   accounts: AccountVM[] = [];
   managers: AccountVM[] = [];
@@ -20,9 +21,9 @@ export class DepartmentUpdateComponent implements OnInit {
   visible = false;
   search = '';
   model = new FormControl(undefined);
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: DepartmentService,
     protected readonly accountService: AccountService,
   ) {
@@ -44,24 +45,24 @@ export class DepartmentUpdateComponent implements OnInit {
       this.accounts = data.filter((acc) => acc.accountDepartments.length === 0 || accs.find((a) => a.id === acc.id));
       this.managers = data.filter((acc) => acc.accountDepartments.length === 0 || accs.find((a) => a.id === acc.id));
       this.employees = data.filter((acc) => acc.accountDepartments.length === 0 || accs.find((a) => a.id === acc.id));
-    });
-    this.form.get('manager').get('accountId').valueChanges.subscribe((e) => {
-      if (this.form.get('manager').get('accountId').value) {
+      this.form.get('manager').get('accountId').valueChanges.subscribe((e) => {
+        if (this.form.get('manager').get('accountId').value) {
+          this.employees = this.accounts.filter((account) => this.form.get('employees')
+            .value.findIndex((employee) => employee.accountId === account.id) === -1
+            && account.id !== this.form.get('manager').get('accountId').value);
+        }
+      });
+      this.form.get('employees').valueChanges.subscribe((e) => {
+        this.managers = this.accounts.filter((account) => this.form.get('employees')
+          .value.findIndex((employee) => employee.accountId === account.id) === -1);
         this.employees = this.accounts.filter((account) => this.form.get('employees')
           .value.findIndex((employee) => employee.accountId === account.id) === -1
           && account.id !== this.form.get('manager').get('accountId').value);
-      }
-    });
-    this.form.get('employees').valueChanges.subscribe((e) => {
-      this.managers = this.accounts.filter((account) => this.form.get('employees')
-        .value.findIndex((employee) => employee.accountId === account.id) === -1);
-      this.employees = this.accounts.filter((account) => this.form.get('employees')
-        .value.findIndex((employee) => employee.accountId === account.id) === -1
-        && account.id !== this.form.get('manager').get('accountId').value);
+      });
+      this.useForm();
     });
   }
-
-  newForm = () => {
+  useForm = () => {
     this.form.reset({
       name: this.department.name,
       description: this.department.description,
@@ -85,13 +86,9 @@ export class DepartmentUpdateComponent implements OnInit {
       }));
     }
   }
-
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
+      this.load = true;
       const accountDepartments = this.form.value.employees.map((employee) => ({
         ...employee,
         account: { id: employee.accountId },
@@ -114,28 +111,28 @@ export class DepartmentUpdateComponent implements OnInit {
         name: this.form.value.name,
         description: this.form.value.description,
         accountDepartments
-      }).subscribe(
-        (data) => {
-          ref.close();
-          swal.fire('Notification', 'Update new department successfully!!', 'success');
-          this.useDone.emit(data);
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      })
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          (data) => {
+            swal.fire('Notification', 'Update new department successfully!!', 'success');
+            this.useDone.emit(data);
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
     // ref.close();
   }
-  useFilter = () => {
-
-  }
-  findInformation = (accountId: string) => {
+  useInformation = (accountId: string) => {
     return this.accounts.find((account) => account.id === accountId);
   }
-  getShortName = (name: string) => {
+  useShortname = (name: string) => {
     const tmp = name.split(' ');
     if (tmp.length > 0) {
       let rs = '';
@@ -152,7 +149,7 @@ export class DepartmentUpdateComponent implements OnInit {
       return name;
     }
   }
-  addEmployee = (accountId: string) => {
+  useAddEmployee = (accountId: string) => {
     if (accountId) {
       (this.form.get('employees') as FormArray).push(this.fb.group({
         accountId,
@@ -161,7 +158,7 @@ export class DepartmentUpdateComponent implements OnInit {
       this.model.setValue(undefined);
     }
   }
-  removeEmployee = (index: number) => {
+  useRemoveEmployee = (index: number) => {
     (this.form.get('employees') as FormArray).removeAt(index);
   }
 }

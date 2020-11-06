@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { AccountService } from '@services';
 import { AccountVM, RoleVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-employee-update',
@@ -11,10 +12,12 @@ import swal from 'sweetalert2';
 })
 export class EmployeeUpdateComponent implements OnInit {
   @Output() useDone: EventEmitter<AccountVM> = new EventEmitter<AccountVM>();
+  @Output() useClose: EventEmitter<AccountVM> = new EventEmitter<AccountVM>();
   @Input() employee: AccountVM;
   @Input() roles: RoleVM[] = [];
   form: FormGroup;
   visible = false;
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
     protected readonly dialogService: NbDialogService,
@@ -32,11 +35,11 @@ export class EmployeeUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.check('phone');
-    this.check('email');
+    this.useCheck('phone');
+    this.useCheck('email');
+    this.useForm();
   }
-
-  open(dialog: TemplateRef<any>) {
+  useForm = () => {
     this.form.reset({
       fullname: this.employee.fullname,
       phone: this.employee.phone,
@@ -46,29 +49,30 @@ export class EmployeeUpdateComponent implements OnInit {
       avatar: this.employee.avatar,
       roles: this.employee.roles.map((group) => (group.id)),
     });
-    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
   }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
+      this.load = true;
       this.service.update({
         ...this.employee, ...this.form.value, roles: this.form.value.roles.map((id) => ({ id }))
-      }).subscribe(
-        () => {
-          ref.close();
-          swal.fire('Notification', 'Update ' + this.employee.code + ' successfully!!', 'success');
-          this.useDone.emit({ ...this.employee, ...this.form.value, roles: this.form.value.roles.map((id) => ({ id })) });
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      })
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          () => {
+            swal.fire('Notification', 'Update ' + this.employee.code + ' successfully!!', 'success');
+            this.useDone.emit({ ...this.employee, ...this.form.value, roles: this.form.value.roles.map((id) => ({ id })) });
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
-    // ref.close();
   }
-
-  check = async (name: string) => {
+  useCheck = async (name: string) => {
     const control = this.form.get(name);
     control.valueChanges.subscribe(async (data) => {
       if (data !== '') {

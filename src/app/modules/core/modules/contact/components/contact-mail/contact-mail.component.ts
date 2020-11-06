@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EmailService } from '@services';
 import { CustomerVM } from '@view-models';
 import swal from 'sweetalert2';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contact-mail',
@@ -10,31 +10,28 @@ import swal from 'sweetalert2';
   styleUrls: ['./contact-mail.component.scss']
 })
 export class ContactMailComponent implements OnInit {
+  @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Input() contact: CustomerVM;
   text = '';
   subject = '';
+  load = false;
   constructor(
-    protected readonly dialogService: NbDialogService,
     protected readonly emailService: EmailService,
   ) { }
 
   ngOnInit() {
   }
 
-  open(dialog: TemplateRef<any>) {
-    this.text = '';
-    this.subject = '';
-    this.dialogService.open(dialog, { dialogClass: 'update-modal' });
-  }
-  send = (ref: NbDialogRef<any>) => {
+  useSend = () => {
+    this.load = true;
     this.emailService.sendMail({
       info: this.contact,
       content: this.text,
       subject: this.subject,
-    }).subscribe(
+    }).pipe(finalize(() => { this.load = false; })).subscribe(
       () => {
         swal.fire('Notification', 'Send mail successfully!!', 'success');
-        ref.close();
+        this.useClose.emit();
       },
       () => {
         swal.fire('Notification', 'Send mail fail ! Please try again', 'error');

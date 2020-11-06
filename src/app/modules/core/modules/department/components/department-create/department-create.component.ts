@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { DepartmentService } from '@services';
 import { DepartmentVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-department-create',
@@ -11,12 +11,12 @@ import swal from 'sweetalert2';
 })
 export class DepartmentCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<DepartmentVM> = new EventEmitter<DepartmentVM>();
+  @Output() useClose: EventEmitter<DepartmentVM> = new EventEmitter<DepartmentVM>();
   form: FormGroup;
   visible = false;
-  search = '';
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: DepartmentService,
   ) {
     this.form = fb.group({
@@ -26,34 +26,33 @@ export class DepartmentCreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.useForm();
+    console.log('new');
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({ name: '', description: '' });
   }
 
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
-      this.service.insert(this.form.value).subscribe(
-        (data) => {
-          ref.close();
-          swal.fire('Notification', 'Create new department successfully!!', 'success');
-          this.useDone.emit(data);
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      this.load = true;
+      this.service.insert(this.form.value)
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          (data) => {
+            swal.fire('Notification', 'Create new department successfully!!', 'success');
+            this.useDone.emit(data);
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
     // ref.close();
-  }
-  useFilter = () => {
-
   }
 }

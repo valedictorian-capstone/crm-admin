@@ -1,27 +1,26 @@
-<button nbTooltip="Edit" nbTooltipStatus="info" nbButton size="small" status="info" shape="round" style="margin-right: 0.5rem;" (click)="open(dialog)"><nb-icon icon="edit"></nb-icon></button>
-<ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>
-            <div class="update-modal-header">
-                <span>Update service</span>
-                <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="ref.close()"></nb-icon></button>
-                <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
-            </div>
-        </nb-card-header>
-        <nb-card-body style="max-height: 90vh;">
+<nb-card>
+    <nb-card-header>
+        <div class="update-modal-header">
+            <span>Update service</span>
+            <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="useClose.emit()"></nb-icon></button>
+            <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="useSubmit()"><nb-icon icon="checkmark"></nb-icon></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body style="max-height: 90vh;">
+        <nz-spin nzTip="Loading..." [nzSpinning]="load">
             <div class="update-modal-body">
                 <div nz-row style="width: 100%" [formGroup]="form">
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="'text-info'" nbPrefix icon="code-outline"></nb-icon>
-                            <input disabled type="text" nbInput fullWidth [value]="serv.code" [status]="'info'" placeholder="Fill service code" />
+                            <input disabled type="text" nbInput fullWidth [value]="_service.code" [status]="'info'" placeholder="Fill service code" />
                         </nb-form-field>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('name')" [status]="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid ? 'danger' : 'info'" status="info" placeholder="Fill service name" />
-                            <nb-icon class="text-danger" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('name').dirty || form.get('name').touched) && form.get('name').invalid">
                         Name must be required
@@ -32,7 +31,7 @@
                             <nb-icon [class]="(form.get('price').dirty || form.get('price').touched) && form.get('price').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="pricetags-outline"></nb-icon>
                             <input mask="separator.0" thousandSeparator="," type="text" nbInput fullWidth [formControl]="form.get('price')" [status]="(form.get('price').dirty || form.get('price').touched) && form.get('price').invalid ? 'danger' : 'info'" status="info" placeholder="Fill service price"
                             />
-                            <nb-icon class="text-danger" *ngIf="(form.get('price').dirty || form.get('price').touched) && form.get('price').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('price').dirty || form.get('price').touched) && form.get('price').invalid">
                       Price must be required
@@ -55,7 +54,7 @@
                                                 <nb-icon [class]="(parameter.get('label').dirty || parameter.get('label').touched) && parameter.get('label').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
                                                 <input type="text" nbInput fullWidth [formControl]="parameter.get('label')" [status]="(parameter.get('label').dirty || parameter.get('label').touched) && parameter.get('label').invalid ? 'danger' : 'info'" status="info" placeholder="Fill parameter label"
                                                 />
-                                                <nb-icon class="text-danger" *ngIf="(parameter.get('label').dirty || parameter.get('label').touched) && parameter.get('label').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                                             </nb-form-field>
                                             <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(parameter.get('label').dirty || parameter.get('label').touched) && parameter.get('label').invalid">
                                   Label must be required
@@ -66,21 +65,21 @@
                                                 <nb-icon [class]="(parameter.get('value').dirty || parameter.get('value').touched) && parameter.get('value').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
                                                 <input type="text" nbInput fullWidth [formControl]="parameter.get('value')" [status]="(parameter.get('value').dirty || parameter.get('value').touched) && parameter.get('value').invalid ? 'danger' : 'info'" status="info" placeholder="Fill parameter value"
                                                 />
-                                                <nb-icon class="text-danger" *ngIf="(parameter.get('value').dirty || parameter.get('value').touched) && parameter.get('value').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                                                <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                                             </nb-form-field>
                                             <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(parameter.get('value').dirty || parameter.get('value').touched) && parameter.get('value').invalid">
                                   Value must be required
                                 </span>
                                         </div>
                                     </div>
-                                    <button style="float:right" nbButton status="danger" (click)="removeParameter(i)" size="small">Remove Parameter</button>
+                                    <button style="float:right" nbButton status="danger" (click)="useRemoveParameter(i)" size="small">Remove Parameter</button>
                                 </nb-accordion-item-body>
                             </nb-accordion-item>
                         </nb-accordion>
-                        <button nbButton status="primary" (click)="addParameter()" size="small">Add Parameter</button>
+                        <button nbButton status="primary" (click)="useAddParameter()" size="small">Add Parameter</button>
                     </div>
                 </div>
             </div>
-        </nb-card-body>
-    </nb-card>
-</ng-template>
+        </nz-spin>
+    </nb-card-body>
+</nb-card>

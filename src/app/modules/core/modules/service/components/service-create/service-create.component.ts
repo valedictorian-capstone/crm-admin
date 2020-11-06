@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { ServiceService } from '@services';
 import { ServiceVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
 import swal from 'sweetalert2';
 @Component({
   selector: 'app-service-create',
@@ -11,11 +11,12 @@ import swal from 'sweetalert2';
 })
 export class ServiceCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<ServiceVM> = new EventEmitter<ServiceVM>();
+  @Output() useClose: EventEmitter<ServiceVM> = new EventEmitter<ServiceVM>();
   form: FormGroup;
   visible = false;
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: ServiceService,
   ) {
     this.form = fb.group({
@@ -29,45 +30,44 @@ export class ServiceCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.check('code');
+    this.useCheck('code');
+    this.useForm();
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({ code: '', name: '', description: '', type: '', price: undefined });
     (this.form.get('parameters') as FormArray).clear();
   }
-
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
-      this.service.insert(this.form.value).subscribe(
-        (data) => {
-          ref.close();
-          swal.fire('Notification', 'Create new service successfully!!', 'success');
-          this.useDone.emit(data);
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      this.load = true;
+      this.service.insert(this.form.value)
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          (data) => {
+            swal.fire('Notification', 'Create new service successfully!!', 'success');
+            this.useDone.emit(data);
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
-    // ref.close();
   }
-  addParameter = () => {
+  useAddParameter = () => {
     (this.form.get('parameters') as FormArray).push(this.fb.group({
       label: ['', Validators.required],
       value: ['', Validators.required],
     }));
   }
-  removeParameter = (index: number) => {
+  useRemoveParameter = (index: number) => {
     (this.form.get('parameters') as FormArray).removeAt(index);
   }
-  check = async (name: string) => {
+  useCheck = async (name: string) => {
     const control = this.form.get(name);
     control.valueChanges.subscribe(async (data) => {
       if (data !== '') {

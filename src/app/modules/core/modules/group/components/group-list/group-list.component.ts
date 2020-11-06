@@ -39,6 +39,17 @@ export class GroupListComponent implements OnInit {
       textColor: 'text-danger',
     }
   ];
+  headerActions: ActionMenuItem[] = [
+    {
+      label: 'Export to excel',
+      value: 'export',
+      icon: {
+        icon: 'cloud-download-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+  ];
   constructor(
     protected readonly service: GroupService,
     protected readonly dialogService: NbDialogService,
@@ -77,7 +88,7 @@ export class GroupListComponent implements OnInit {
       confirmButtonText: 'Sure',
       title: 'Confirm',
       icon: 'question',
-      text: 'Are you sure to shutdown ' + data.name + ' ?',
+      text: 'Are you sure to disabled ' + data.name + ' ?',
     }).then((res) => {
       if (res.isConfirmed) {
         this.service.remove(data.id).subscribe(
@@ -130,6 +141,9 @@ export class GroupListComponent implements OnInit {
         return;
       case 'remove':
         this.useRemove(data, index);
+        return;
+      case 'export':
+        this.useExport(template as any);
         return;
     }
   }

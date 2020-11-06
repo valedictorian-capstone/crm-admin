@@ -6,12 +6,13 @@
         <input placeholder="Fill anything to search..." />
         <nb-icon icon="search-outline" status="basic"></nb-icon>
     </div>
+    <div #template style="position:fixed; height: 0; width: 320px;"></div>
     <div #right class="header-right" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-2'" nz-dropdown [nzDropdownMenu]="dropdown">
         <div class="header-right-name">
             {{name}}</div>
         <div class="header-right-avatar"><img [src]="avatar" /></div>
         <nz-dropdown-menu #dropdown="nzDropdownMenu">
-            <app-action-menu [actions]="actions" (useSelectItem)="useAction($event)"></app-action-menu>
+            <app-action-menu [template]="template" [actions]="actions" (useSelectItem)="useAction($event)"></app-action-menu>
         </nz-dropdown-menu>
     </div>
     <div #bell class="header-bell" [class.open]="bellFocus">

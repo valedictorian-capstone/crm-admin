@@ -1,87 +1,86 @@
-<button nbButton status="success" (click)="open(dialog)" size="small">Add Contact</button>
-<ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>
-            <div class="create-modal-header">
-                <span>Create new contact</span>
-                <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="ref.close()"></nb-icon></button>
-                <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="submit(ref)"><nb-icon icon="checkmark"></nb-icon></button>
-            </div>
-        </nb-card-header>
-        <nb-card-body>
+<nb-card>
+    <nb-card-header>
+        <div class="create-modal-header">
+            <span>Create new contact</span>
+            <button nbButton size="small" style="float:right" shape="round" status="danger"><nb-icon icon="close" (click)="useClose.emit()"></nb-icon></button>
+            <button [disabled]="form.invalid" nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="success" (click)="useSubmit()"><nb-icon icon="checkmark"></nb-icon></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <nz-spin nzTip="Loading..." [nzSpinning]="load">
             <div class="create-modal-body">
                 <div nz-row style="width: 100%" [formGroup]="form">
                     <!-- <div nz-col [nzSpan]="24">
-                        <input accept="image/*" #fileAvatar (change)="changeAvatar($event)" type="file" style="height: 0; width: 0; position: absolute; overflow: hidden;" />
-                        <div class="avatar">
-                            <div class="image">
-                                <img [src]="form.get('avatar').value ? form.get('avatar').value : '../../../../../../../assets/avatars/avatar.jpg'" />
-                            </div>
-                            <div class="button">
-                                <button nbButton (click)="fileAvatar.click()" size="small" shape="round" status="default"><nb-icon icon="camera"></nb-icon></button>
-                            </div>
+                    <input accept="image/*" #fileAvatar (change)="changeAvatar($event)" type="file" style="height: 0; width: 0; position: absolute; overflow: hidden;" />
+                    <div class="avatar">
+                        <div class="image">
+                            <img [src]="form.get('avatar').value ? form.get('avatar').value : '../../../../../../../assets/avatars/avatar.jpg'" />
                         </div>
-                    </div> -->
+                        <div class="button">
+                            <button nbButton (click)="fileAvatar.click()" size="small" shape="round" status="default"><nb-icon icon="camera"></nb-icon></button>
+                        </div>
+                    </div>
+                </div> -->
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('code').dirty || form.get('code').touched) && form.get('code').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="code-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('code')" [status]="(form.get('code').dirty || form.get('code').touched) && form.get('code').invalid ? 'danger' : 'info'" placeholder="Fill contact code" />
-                            <nb-icon class="text-danger" *ngIf="(form.get('code').dirty || form.get('code').touched) && form.get('code').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('code').dirty || form.get('code').touched) && form.get('code').errors?.required">
-                        Code must be required
-                    </span>
-                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('code').dirty || form.get('code').touched) && form.get('code').errors?.unique">
-                    Code must be unique
+                    Code must be required
                 </span>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('code').dirty || form.get('code').touched) && form.get('code').errors?.unique">
+                Code must be unique
+            </span>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="phone-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('phone')" [status]="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').invalid ? 'danger' : 'info'" placeholder="Fill contact phone" />
-                            <nb-icon class="text-danger" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').errors?.required">
-                            Phone must be required
-                        </span>
-                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').errors?.pattern">
-                          Phone must be true format
-                      </span>
-                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').errors?.unique">
-                        Phone must be unique
+                        Phone must be required
                     </span>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').errors?.pattern">
+                      Phone must be true format
+                  </span>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('phone').dirty || form.get('phone').touched) && form.get('phone').errors?.unique">
+                    Phone must be unique
+                </span>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('fullname').dirty || form.get('fullname').touched) && form.get('fullname').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="smiling-face-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('fullname')" [status]="(form.get('fullname').dirty || form.get('fullname').touched) && form.get('fullname').invalid ? 'danger' : 'info'" status="info" placeholder="Fill contact fullname" />
-                            <nb-icon class="text-danger" *ngIf="(form.get('fullname').dirty || form.get('fullname').touched) && form.get('fullname').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('fullname').dirty || form.get('fullname').touched) && form.get('fullname').invalid">
-                          Fullname must be required
-                        </span>
+                      Fullname must be required
+                    </span>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon [class]="(form.get('email').dirty || form.get('email').touched) && form.get('email').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="email-outline"></nb-icon>
                             <input type="text" nbInput fullWidth [formControl]="form.get('email')" [status]="(form.get('email').dirty || form.get('email').touched) && form.get('email').invalid ? 'danger' : 'info'" status="info" placeholder="Fill contact email" />
-                            <nb-icon class="text-danger" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').invalid" nbSuffix icon="slash-outline"></nb-icon>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
                         </nb-form-field>
                         <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors?.required">
-                          Email must be required
-                      </span>
-                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors?.pattern">
-                        Email must be true format
-                    </span>
-                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors?.unique">
-                      Email must be unique
+                      Email must be required
                   </span>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors?.pattern">
+                    Email must be true format
+                </span>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors?.unique">
+                  Email must be unique
+              </span>
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nz-date-picker [nzSize]="'large'" style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [formControl]="form.get('birthDate')"></nz-date-picker>
                     </div>
                     <div nz-col [nzSpan]="24">
-                        <nz-select [nzSize]="'large'" nzShowSearch style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [nzNotFoundContent]="''" nzPlaceHolder="Select province" [formControl]="form.get('province')" (ngModelChange)="selectProvince($event)">
+                        <nz-select [nzSize]="'large'" nzShowSearch style="width: 100%; margin-bottom: 0.5rem; border: 1px solid #0095ff; border-radius: 5px;" [nzNotFoundContent]="''" nzPlaceHolder="Select province" [formControl]="form.get('province')" (ngModelChange)="useSelectProvince($event)">
                             <nz-option *ngFor="let province of provinces" [nzLabel]="province.name" [nzValue]="province.id"></nz-option>
                         </nz-select>
                     </div>
@@ -109,6 +108,6 @@
                     </div>
                 </div>
             </div>
-        </nb-card-body>
-    </nb-card>
-</ng-template>
+        </nz-spin>
+    </nb-card-body>
+</nb-card>

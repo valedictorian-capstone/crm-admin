@@ -1,9 +1,10 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NbDialogRef } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { CustomerVM, District, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-opportunity-create',
   templateUrl: './opportunity-create.component.html',
@@ -11,14 +12,15 @@ import swal from 'sweetalert2';
 })
 export class OpportunityCreateComponent implements OnInit {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
+  @Output() useClose: EventEmitter<GroupVM> = new EventEmitter<GroupVM>();
   @Input() groups: GroupVM[] = [];
   @Input() provinces: Province[] = [];
   form: FormGroup;
   visible = false;
   districts: District[] = [];
+  load = false;
   constructor(
     protected readonly fb: FormBuilder,
-    protected readonly dialogService: NbDialogService,
     protected readonly service: CustomerService,
   ) {
     this.form = fb.group({
@@ -37,12 +39,13 @@ export class OpportunityCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.check('phone');
-    this.check('email');
-    this.check('code');
+    this.useForm();
+    this.useCheck('phone');
+    this.useCheck('email');
+    this.useCheck('code');
   }
 
-  newForm = () => {
+  useForm = () => {
     this.form.reset({
       fullname: '',
       phone: '',
@@ -58,30 +61,28 @@ export class OpportunityCreateComponent implements OnInit {
     });
     this.districts = [];
   }
-
-  open(dialog: TemplateRef<any>) {
-    this.newForm();
-    this.dialogService.open(dialog, { dialogClass: 'create-modal' });
-  }
-  submit = (ref: NbDialogRef<any>) => {
+  useSubmit = () => {
     if (this.form.valid) {
-      this.service.insert({ ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) }).subscribe(
-        (data) => {
-          ref.close();
-          swal.fire('Notification', 'Create new opportunity successfully!!', 'success');
-          this.useDone.emit(data);
-        },
-        (error) => {
-          swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
-        }
-      );
+      this.load = true;
+      this.service.insert({ ...this.form.value, groups: this.form.value.groups.map((id) => ({ id })) })
+        .pipe(finalize(() => {
+          this.load = false;
+        }))
+        .subscribe(
+          (data) => {
+            swal.fire('Notification', 'Create new opportunity successfully!!', 'success');
+            this.useDone.emit(data);
+          },
+          (error) => {
+            swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
+          }
+        );
     } else {
       this.form.markAsTouched();
     }
-    // ref.close();
   }
 
-  check = async (name: string) => {
+  useCheck = async (name: string) => {
     const control = this.form.get(name);
     control.valueChanges.subscribe(async (data) => {
       if (data !== '') {
@@ -107,7 +108,7 @@ export class OpportunityCreateComponent implements OnInit {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // }
-  selectProvince = (id: number) => {
+  useSelectProvince = (id: number) => {
     this.districts = this.provinces.find((province) => province.id === id)
       ? this.provinces.find((province) => province.id === id).huyen : [];
     this.form.get('district').setValue(undefined);

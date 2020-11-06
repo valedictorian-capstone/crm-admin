@@ -1,18 +1,15 @@
-<button nbTooltip="Email" nbTooltipStatus="danger" nbButton size="small" status="danger" shape="round" style="margin-right: 0.5rem" (click)="open(dialog)">
-  <nb-icon icon="email"></nb-icon>
-</button>
-<ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>
-            <div class="mail-modal-header">
-                New Mail
-                <button nbButton size="small" style="float: right" shape="round" status="danger">
-          <nb-icon icon="close" (click)="ref.close()"></nb-icon>
+<nb-card>
+    <nb-card-header>
+        <div class="mail-modal-header">
+            New Mail
+            <button nbButton size="small" style="float: right" shape="round" status="danger">
+          <nb-icon icon="close" (click)="useClose.emit()"></nb-icon>
         </button>
-                <button nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="primary" (click)="send(ref)"><nb-icon icon="navigation-2"></nb-icon></button>
-            </div>
-        </nb-card-header>
-        <nb-card-body>
+            <button nbButton size="small" style="float:right; margin-right: 0.5rem;" shape="round" status="primary" (click)="useSend()"><nb-icon icon="navigation-2"></nb-icon></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <nz-spin nzTip="Loading..." [nzSpinning]="load">
             <div class="mail-modal-body">
                 <div nz-row style="width: 100%">
                     <div nz-col [nzSpan]="24">
@@ -32,6 +29,6 @@
                     </div>
                 </div>
             </div>
-        </nb-card-body>
-    </nb-card>
-</ng-template>
+        </nz-spin>
+    </nb-card-body>
+</nb-card>

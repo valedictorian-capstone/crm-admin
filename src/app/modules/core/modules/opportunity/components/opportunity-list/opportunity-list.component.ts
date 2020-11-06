@@ -1,11 +1,12 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, TemplateRef } from '@angular/core';
 import { CustomerService, GroupService, MockService } from '@services';
 import { CustomerVM, GroupVM, Province } from '@view-models';
 import swal from 'sweetalert2';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
 import * as XLSX from 'xlsx';
-import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { ActionMenuItem } from '@extras/models';
 @Component({
   selector: 'app-opportunity-list',
   templateUrl: './opportunity-list.component.html',
@@ -22,6 +23,64 @@ export class OpportunityListComponent implements OnInit {
   count = 20;
   env = 'desktop';
   provinces: Province[] = [];
+  actions: ActionMenuItem[] = [
+    {
+      label: 'Get opportunity phone',
+      value: 'phone',
+      icon: {
+        icon: 'phone-outline',
+        status: 'success'
+      },
+      textColor: 'text-success',
+    },
+    {
+      label: 'Mail to opportunity',
+      value: 'mail',
+      icon: {
+        icon: 'email-outline',
+        status: 'warning'
+      },
+      textColor: 'text-warning',
+    },
+    {
+      label: 'Edit opportunity\'s information',
+      value: 'edit',
+      icon: {
+        icon: 'edit-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+    {
+      label: 'Disabled opportunity',
+      value: 'remove',
+      icon: {
+        icon: 'trash-2-outline',
+        status: 'danger'
+      },
+      textColor: 'text-danger',
+    }
+  ];
+  headerActions: ActionMenuItem[] = [
+    {
+      label: 'Export to excel',
+      value: 'export',
+      icon: {
+        icon: 'cloud-download-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+    {
+      label: 'Import excel',
+      value: 'import',
+      icon: {
+        icon: 'cloud-upload-outline',
+        status: 'info'
+      },
+      textColor: 'text-info',
+    },
+  ];
   constructor(
     protected readonly service: CustomerService,
     protected readonly deviceService: DeviceDetectorService,
@@ -29,6 +88,7 @@ export class OpportunityListComponent implements OnInit {
     protected readonly clipboard: Clipboard,
     protected readonly groupService: GroupService,
     protected readonly mockService: MockService,
+    protected readonly dialogService: NbDialogService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -55,35 +115,36 @@ export class OpportunityListComponent implements OnInit {
         opportunity.phone.toLowerCase().includes(this.search.toLowerCase())) &&
       (i < ((this.min + 1) * this.count) - 1 && i >= this.min * this.count)
     );
-    console.log(this.getMax());
   }
-  useCreate = (data: CustomerVM) => {
+  useCreate = (dialog: NbDialogRef<any>, data: CustomerVM) => {
     this.opportunitys.push(data);
-    this.search = data.code;
+    this.search = data.fullname;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useUpdate = (data: CustomerVM, index: number) => {
+  useUpdate = (dialog: NbDialogRef<any>, data: CustomerVM, index: number) => {
     this.opportunitys[index] = data;
-    this.search = data.code;
+    this.search = data.fullname;
     this.showSearch = true;
     this.useFilter();
+    dialog.close();
   }
-  useRemove = (data: CustomerVM) => {
+  useRemove = (data: CustomerVM, index: number) => {
     swal.fire({
       showCancelButton: true,
       cancelButtonText: 'Not Sure',
       confirmButtonText: 'Sure',
       title: 'Confirm',
       icon: 'question',
-      text: 'Are you sure to shutdown ' + data.code + ' ?',
+      text: 'Are you sure to disabled ' + data.fullname + ' ?',
     }).then((res) => {
       if (res.isConfirmed) {
         this.service.remove(data.id).subscribe(
           () => {
-            this.opportunitys = this.opportunitys.filter((opportunity) => opportunity.id !== data.id);
+            this.opportunitys.splice(index, 1);
             this.useFilter();
-            swal.fire('Notification', 'Delete ' + data.code + ' successfully!!', 'success');
+            swal.fire('Notification', 'Delete ' + data.fullname + ' successfully!!', 'success');
           },
           (error) => {
             swal.fire('Notification', 'Something wrong on runtime! Please check again', 'error');
@@ -92,7 +153,7 @@ export class OpportunityListComponent implements OnInit {
       }
     });
   }
-  copyPhone = (phone: string) => {
+  usePhone = (phone: string) => {
     console.log(this.env);
     if (this.env === 'desktop') {
       this.clipboard.copy(phone);
@@ -101,7 +162,7 @@ export class OpportunityListComponent implements OnInit {
       window.open('tel:' + phone, '_self');
     }
   }
-  getShortName = (name: string) => {
+  useShortName = (name: string) => {
     const tmp = name.split(' ');
     if (tmp.length > 0) {
       let rs = '';
@@ -118,10 +179,10 @@ export class OpportunityListComponent implements OnInit {
       return name;
     }
   }
-  goto = (index: number) => {
+  useGo = (index: number) => {
     if (
       this.active !== index
-      && index <= this.getMax()
+      && index <= this.useMax()
       && index >= 0
     ) {
       if (index > this.min + 3) {
@@ -138,17 +199,17 @@ export class OpportunityListComponent implements OnInit {
     this.search = '';
     this.useFilter();
   }
-  getMax = () => {
+  useMax = () => {
     return parseInt((this.opportunityFilter.length / this.count) + '', 0) + (this.opportunityFilter.length % this.count > 0 ? 1 : 0);
   }
-  export = (table: ElementRef<any>) => {
+  useExport = (table: ElementRef<any>) => {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
     ws['!cols'] = [{ width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 50 }];
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Opportunity List');
     XLSX.writeFile(wb, 'opportunitys.xlsx');
   }
-  import = (event, input) => {
+  useImport = (event, input) => {
     if (event.target.files[0].name.match(/(.xls|.xlsx)/)) {
       const reader: FileReader = new FileReader();
       reader.onloadend = async () => {
@@ -192,8 +253,7 @@ export class OpportunityListComponent implements OnInit {
       swal.fire('SOMETHING WRONG', 'Not accept ' + event.target.files[0].name + ' Please try again!', 'error');
     }
   }
-
-  useExport = (table: ElementRef<any>, input: any) => {
+  useQuestion = (table: ElementRef<any>, input: any) => {
     swal.fire({
       showCancelButton: true,
       cancelButtonText: 'Get example excel?',
@@ -233,5 +293,27 @@ export class OpportunityListComponent implements OnInit {
         console.log(this.opportunityFilter);
       }
     });
+  }
+  useAction = (action: ActionMenuItem, template: TemplateRef<any>, mailTemplate: TemplateRef<any>, data: CustomerVM, index: number) => {
+    switch (action.value) {
+      case 'edit':
+        this.useDialog(template, 'update-modal');
+        return;
+      case 'remove':
+        this.useRemove(data, index);
+        return;
+      case 'export':
+        this.useExport(template as any);
+        return;
+      case 'mail':
+        this.useDialog(mailTemplate, 'update-modal');
+        return;
+      case 'phone':
+        this.usePhone(data.phone);
+        return;
+    }
+  }
+  useDialog(template: TemplateRef<any>, dialogClass: string) {
+    this.dialogService.open(template, { dialogClass });
   }
 }
