@@ -65,6 +65,12 @@ export const environment = {
         active: 'api/v1/Comment/Active',
         deactive: 'api/v1/Comment/Deactive',
       },
+      task: {
+        main: 'api/v1/Task',
+        getById: 'api/v1/Task/',
+        active: 'api/v1/Task/Active',
+        deactive: 'api/v1/Task/Deactive',
+      },
       condition: {
         main: 'api/v1/Condition',
         getById: 'api/v1/Condition/',
@@ -258,7 +264,7 @@ export const environment = {
       label: 'Bpmn',
       icon: 'settings-2',
       type: 'group',
-      values: ['instace', 'process', 'form'],
+      values: ['process', 'form'],
       value: 'bpmn-group',
       items: [
         {
@@ -271,12 +277,6 @@ export const environment = {
           label: 'Process',
           value: 'process',
           icon: 'browser',
-          type: 'item',
-        },
-        {
-          label: 'Instance',
-          value: 'instance',
-          icon: 'sync',
           type: 'item',
         },
       ],
