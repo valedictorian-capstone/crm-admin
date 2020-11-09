@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "m-crm-company"
+  },
+  "targets": {
+    "m-crm-company": {
+      "hosting": {
+        "m-crm-admin": [
+          "m-crm-admin"
+        ]
+      }
+    }
   }
 }

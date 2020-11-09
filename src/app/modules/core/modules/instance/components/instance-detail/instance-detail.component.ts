@@ -160,7 +160,7 @@ export class InstanceDetailComponent implements OnInit {
     dialog.close();
   }
   useUpdate = (dialog: NbDialogRef<any>, data: TaskVM, step: ProcessStepInstanceVM, index: number) => {
-    step.tasks[index] = data;
+    step.tasks[step.tasks.findIndex((task) => task.id === data.id)] = data;
     dialog.close();
   }
   // useRemove = (data: RoleVM, index: number) => {
