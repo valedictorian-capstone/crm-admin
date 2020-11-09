@@ -1,15 +1,14 @@
-import { AccountVM, CommentVM, CustomerVM, FormDataVM } from '..';
+import { CommentVM, FormDataVM, ProcessInstanceVM, ProcessStepVM, TaskVM } from '..';
 
 export interface ProcessStepInstanceVM {
   readonly id: string;
   readonly status: string;
   readonly note: string;
-  readonly workFlowStepId: string;
-  readonly workFlowInstanceId: string;
+  readonly processStep: ProcessStepVM;
+  readonly processInstance: ProcessInstanceVM;
+  readonly tasks: TaskVM[];
   readonly comments: CommentVM[];
-  readonly customers: CustomerVM[];
-  readonly accounts: AccountVM[];
-  readonly formDataVMs: FormDataVM[];
+  readonly formDatas: FormDataVM[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;
@@ -20,14 +19,14 @@ export interface ProcessStepInstanceVM {
 export interface ProcessStepInstanceCM {
   status: string;
   note: string;
-  workFlowStepId: string;
-  workFlowInstanceId: string;
+  processStep: ProcessStepVM;
+  processInstance: ProcessInstanceVM;
 }
 
 export interface ProcessStepInstanceUM {
   id: string;
   status: string;
   note: string;
-  workFlowStepId: string;
-  workFlowInstanceId: string;
+  processStep: ProcessStepVM;
+  processInstance: ProcessInstanceVM;
 }

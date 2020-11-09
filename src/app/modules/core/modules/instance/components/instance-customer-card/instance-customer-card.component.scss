@@ -1,0 +1,48 @@
+.card {
+    min-width: 360px;
+    position: relative;
+    min-height: 11rem;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    .avatar {
+        width: 5rem;
+        height: 5rem;
+        position: absolute;
+        top: 1rem;
+        left: 0.5rem;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .information {
+        position: absolute;
+        width: calc(100% - 8rem);
+        top: 1rem;
+        left: 7rem;
+    }
+    .contact {
+        width: calc(100% - 1rem);
+        position: absolute;
+        bottom: 1rem;
+        left: 0.5rem;
+    }
+}
+
+.mail-modal-body,
+.mail-modal-header {
+    width: calc(50vw - 16rem + 5px);
+}
+
+.mail-modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1309px) {
+    .mail-modal-body,
+    .mail-modal-header {
+        width: calc(70vw);
+    }
+}

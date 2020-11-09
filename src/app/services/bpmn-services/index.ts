@@ -5,3 +5,4 @@ export * from './process-instance.service';
 export * from './process-step-instance.service';
 export * from './process-step.service';
 export * from './process.service';
+export * from './task.service';

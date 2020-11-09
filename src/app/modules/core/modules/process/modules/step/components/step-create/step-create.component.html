@@ -45,6 +45,18 @@
                     </span>
                     </div>
                     <div nz-col [nzSpan]="24">
+                        <nb-form-field style="margin-bottom: 0.5rem; max-width: 100%;">
+                            <nb-icon [class]="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid ? 'text-danger' : 'text-info'" nbPrefix icon="cube-outline"></nb-icon>
+                            <nb-select placeholder="Select Department" fullWidth [formControl]="form.get('department')" [status]="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid ? 'danger' : 'info'">
+                                <nb-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</nb-option>
+                            </nb-select>
+                            <nb-icon status="danger" nbSuffix icon="sun-outline"></nb-icon>
+                        </nb-form-field>
+                        <span class="text-danger" style="display: block; margin-bottom: 0.5rem; font-weight: 900;" *ngIf="(form.get('department').dirty || form.get('department').touched) && form.get('department').invalid">
+                Department must be required
+          </span>
+                    </div>
+                    <div nz-col [nzSpan]="24">
                         <nb-form-field style="margin-bottom: 0.5rem;">
                             <nb-icon style="position: absolute; top: 0.5rem;" class="text-info" nbPrefix icon="edit-2-outline"></nb-icon>
                             <textarea rows="5" nbInput fullWidth [formControl]="form.get('description')" status="info" placeholder="Fill step description"></textarea>

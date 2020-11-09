@@ -62,7 +62,7 @@ export class StepUpdateComponent implements OnInit {
       subType: [undefined, [Validators.required]],
       department: [undefined, [Validators.required]],
       description: '',
-      processToConnections: fb.array([]),
+      processFromConnections: fb.array([]),
     });
     this.form.get('type').valueChanges.subscribe((data) => {
       this.subTypes = this.types.find((e) => e.name === data) ? this.types.find((e) => e.name === data).subTypes : [];
@@ -80,15 +80,15 @@ export class StepUpdateComponent implements OnInit {
       });
       this.formGroups = this.formGroups.map((formGroup) => this.step.formGroups.find((e) => e.id === formGroup.id)
         ? ({ ...formGroup, isSelected: true }) : formGroup);
-      (this.form.get('processToConnections') as FormArray).clear();
-      for (const connection of this.step.processToConnections) {
-        (this.form.get('processToConnections') as FormArray).push(this.fb.group({
+      (this.form.get('processFromConnections') as FormArray).clear();
+      for (const connection of this.step.processFromConnections) {
+        (this.form.get('processFromConnections') as FormArray).push(this.fb.group({
           ...connection,
           fromProcessStep: this.step,
         }));
       }
       this.filterSteps = this.process.processSteps.filter((step) => step.id !== this.step.id
-        && (this.form.get('processToConnections').value as ProcessConnectionVM[])
+        && (this.form.get('processFromConnections').value as ProcessConnectionVM[])
           .map((e) => e.toProcessStep).findIndex((e) => e.id === step.id) === -1
         && this.step.processFromConnections.map((e) => e.fromProcessStep).findIndex((e) => e.id === step.id) === -1);
       this.load = false;
@@ -114,7 +114,7 @@ export class StepUpdateComponent implements OnInit {
     }
   }
   useAddConnection = (processStep: ProcessStepVM) => {
-    (this.form.get('processToConnections') as FormArray).push(this.fb.group({
+    (this.form.get('processFromConnections') as FormArray).push(this.fb.group({
       id: this.uuidv4(),
       type: '',
       description: '',
@@ -122,24 +122,24 @@ export class StepUpdateComponent implements OnInit {
       toProcessStep: processStep,
     }));
     this.filterSteps = this.process.processSteps.filter((step) => step.id !== this.step.id
-      && this.form.get('processToConnections').value.map((e) => e.toProcessStep).findIndex((e) => e.id === step.id) === -1
+      && this.form.get('processFromConnections').value.map((e) => e.toProcessStep).findIndex((e) => e.id === step.id) === -1
       && this.step.processFromConnections.map((e) => e.fromProcessStep).findIndex((e) => e.id === step.id) === -1);
     this.model = undefined;
   }
   useRemoveConnection = (index: number) => {
-    (this.form.get('processToConnections') as FormArray).removeAt(index);
+    (this.form.get('processFromConnections') as FormArray).removeAt(index);
     this.filterSteps = this.process.processSteps.filter((step) => step.id !== this.step.id
-      && this.form.get('processToConnections').value.map((e) => e.toProcessStep).findIndex((e) => e.id === step.id) === -1
+      && this.form.get('processFromConnections').value.map((e) => e.toProcessStep).findIndex((e) => e.id === step.id) === -1
       && this.step.processFromConnections.map((e) => e.fromProcessStep).findIndex((e) => e.id === step.id) === -1);
   }
   useCheckCanSelect = () => {
     switch (this.step.type) {
       case 'activity':
-        return this.form.get('processToConnections').value.length === 0;
+        return this.form.get('processFromConnections').value.length === 0;
       case 'gateway':
         return true;
       case 'event':
-        return this.form.get('processToConnections').value.length === 0;
+        return this.step.subType === 'end' ? false : this.form.get('processFromConnections').value.length === 0;
       default: return false;
     }
   }

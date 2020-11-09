@@ -176,4 +176,7 @@ export class ConfigListComponent implements OnInit {
   useDialog(template: TemplateRef<any>, dialogClass: string) {
     this.dialogService.open(template, { dialogClass });
   }
+  useStep = (process: ProcessVM, type: string, subType: string) => {
+    return process.processSteps.filter((e) => e.type === type && e.subType === subType);
+  }
 }

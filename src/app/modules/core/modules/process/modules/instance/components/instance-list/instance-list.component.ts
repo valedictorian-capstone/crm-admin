@@ -164,4 +164,7 @@ export class InstanceListComponent implements OnInit {
   useDialog(template: TemplateRef<any>, dialogClass: string) {
     this.dialogService.open(template, { dialogClass });
   }
+  useCurrentStep = (instance: ProcessInstanceVM) => {
+    return instance.processStepInstances.filter((e) => e.status === 'processing');
+  }
 }

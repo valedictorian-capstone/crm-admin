@@ -66,6 +66,12 @@ export const environment = {
         active: 'api/v1/Comment/Active',
         deactive: 'api/v1/Comment/Deactive',
       },
+      task: {
+        main: 'api/v1/Task',
+        getById: 'api/v1/Task/',
+        active: 'api/v1/Task/Active',
+        deactive: 'api/v1/Task/Deactive',
+      },
       condition: {
         main: 'api/v1/Condition',
         getById: 'api/v1/Condition/',

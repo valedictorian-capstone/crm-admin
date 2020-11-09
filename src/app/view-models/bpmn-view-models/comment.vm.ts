@@ -1,8 +1,11 @@
+import { ProcessStepInstanceVM } from '.';
+import { AccountVM } from '../account-view-models';
+
 export interface CommentVM {
-  id: string;
-  readonly accountId: string;
-  readonly workFlowStepInstanceId: string;
-  readonly value: string;
+  readonly id: string;
+  readonly account: AccountVM;
+  readonly processStepInstance: ProcessStepInstanceVM;
+  readonly message: string;
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;
@@ -11,14 +14,14 @@ export interface CommentVM {
 }
 
 export interface CommentCM {
-  accountId: string;
-  workFlowStepInstanceId: string;
-  value: string;
+  account: AccountVM;
+  processStepInstance: ProcessStepInstanceVM;
+  message: string;
 }
 
 export interface CommentUM {
   id: string;
-  accountId: string;
-  workFlowStepInstanceId: string;
-  value: string;
+  account: AccountVM;
+  processStepInstance: ProcessStepInstanceVM;
+  message: string;
 }

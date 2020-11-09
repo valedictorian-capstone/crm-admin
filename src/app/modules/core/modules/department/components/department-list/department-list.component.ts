@@ -150,4 +150,10 @@ export class DepartmentListComponent implements OnInit {
   useDialog(template: TemplateRef<any>, dialogClass: string) {
     this.dialogService.open(template, { dialogClass });
   }
+  useLeader = (department: DepartmentVM) => {
+    return department.accountDepartments.filter((e) => e.isLeader);
+  }
+  useMember = (department: DepartmentVM) => {
+    return department.accountDepartments.filter((e) => !e.isLeader);
+  }
 }

@@ -30,6 +30,7 @@
                         <nb-accordion style="width: 100%;">
                             <nb-accordion-item [expanded]="true">
                                 <nb-accordion-item-header>
+                                    <nb-icon icon="headphones-outline" style="margin-right: 1rem;"></nb-icon>
                                     <span class="text-info">{{form.get('manager').get('accountId').value ? useShortname(useInformation(form.get('manager').get('accountId').value).fullname) : 'Leader'}}</span>
                                 </nb-accordion-item-header>
                                 <nb-accordion-item-body [formGroup]="form.get('manager')">
@@ -44,7 +45,10 @@
                                 </nb-accordion-item-body>
                             </nb-accordion-item>
                             <nb-accordion-item *ngFor="let employee of form.get('employees')['controls']; let i = index">
-                                <nb-accordion-item-header>{{useShortname(useInformation(employee.get('accountId').value).fullname)}}</nb-accordion-item-header>
+                                <nb-accordion-item-header>
+                                    <nb-icon icon="mic-outline" style="margin-right: 1rem;"></nb-icon>
+                                    <span>{{useShortname(useInformation(employee.get('accountId').value).fullname)}}</span>
+                                </nb-accordion-item-header>
                                 <nb-accordion-item-body [formGroup]="employee">
                                     <nb-form-field>
                                         <input type="text" [value]="useInformation(employee.get('accountId').value).fullname" nbInput fullWidth status="info" disabled />

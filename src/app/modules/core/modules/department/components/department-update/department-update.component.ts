@@ -117,7 +117,7 @@ export class DepartmentUpdateComponent implements OnInit {
         }))
         .subscribe(
           (data) => {
-            swal.fire('Notification', 'Update new department successfully!!', 'success');
+            swal.fire('Notification', 'Update department successfully!!', 'success');
             this.useDone.emit(data);
           },
           (error) => {

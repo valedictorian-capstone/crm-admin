@@ -28,9 +28,9 @@
 <div class="main">
     <div class="content">
         <div nz-row class="list">
-            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let department of departmentFilter; let i = index">
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let department of departmentFilter; let i = index" [ngStyle]="{'margin-bottom': i === departmentFilter.length - 1 ? '4.5rem' : '1rem'}">
                 <div class="box" #box>
-                    <nb-icon icon="layers-outline" style="position: absolute; left: 1rem"></nb-icon>
+                    <nb-icon icon="cube-outline" style="position: absolute; left: 1rem"></nb-icon>
                     <div [nbTooltip]="department.name" class="name">{{ department.name | maxLength: 50 }}</div>
                     <div class="button-icon-circle" style="position: absolute; right: 0.5rem" [nzPlacement]="'bottomRight'" [nzOverlayClassName]="'mt-1 l-1-half'" nz-dropdown [nzDropdownMenu]="dropdown">
                         <nb-icon icon="more-horizontal-outline"></nb-icon>
@@ -41,6 +41,12 @@
                     <ng-template #editDialog let-data let-ref="dialogRef">
                         <app-department-update [department]="department" (useDone)="useUpdate(ref, $event, i)" (useClose)="ref.close()"></app-department-update>
                     </ng-template>
+                </div>
+                <div class="information">
+                    <nb-icon [nbTooltip]="'Leader'" icon="headphones-outline" style="position: absolute; left: 1rem; top: 0.5rem"></nb-icon>
+                    <span class="leader">{{useLeader(department).length}}</span>
+                    <nb-icon [nbTooltip]="'Member'" icon="mic-outline" style="position: absolute; left: 1rem; top: 3rem"></nb-icon>
+                    <span class="member">{{useMember(department).length}}</span>
                 </div>
             </div>
         </div>

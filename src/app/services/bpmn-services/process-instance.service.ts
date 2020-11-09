@@ -16,8 +16,8 @@ export class ProcessInstanceService {
   }
 
   public readonly findById = (id: string): Observable<ProcessInstanceVM> => {
-    return this.httpClient.get<ProcessInstanceVM>(`${environment.apiEndpont}
-    ${environment.api['bpmn-api']['process-instance'].getById}${id}`);
+    return this.httpClient
+      .get<ProcessInstanceVM>(`${environment.apiEndpont}${environment.api['bpmn-api']['process-instance'].getById}${id}`);
   }
 
   public readonly insert = (data: ProcessInstanceCM): Observable<ProcessInstanceVM> => {

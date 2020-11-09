@@ -3,7 +3,7 @@
         <div class="add">
             <button nbButton status="success" (click)="useDialog(createDialog, 'create-modal')" size="small">Add Employee</button>
             <ng-template #createDialog let-data let-ref="dialogRef">
-                <app-employee-create (useDone)="useCreate(ref, $event)" (useClose)="ref.close()"></app-employee-create>
+                <app-employee-create [roles]="roles" (useDone)="useCreate(ref, $event)" (useClose)="ref.close()"></app-employee-create>
             </ng-template>
         </div>
         <div class="search" [ngStyle]="{ display: showSearch ? 'block' : 'none' }">
@@ -47,7 +47,7 @@
                         <app-action-menu [template]="box" [actions]="actions" (useSelectItem)="useAction($event, editDialog, mailDialog, employee, i)"></app-action-menu>
                     </nz-dropdown-menu>
                     <ng-template #editDialog let-data let-ref="dialogRef">
-                        <app-employee-update [employee]="employee" (useDone)="useUpdate(ref, $event, i)" (useClose)="ref.close()"></app-employee-update>
+                        <app-employee-update [roles]="roles" [employee]="employee" (useDone)="useUpdate(ref, $event, i)" (useClose)="ref.close()"></app-employee-update>
                     </ng-template>
                     <ng-template #mailDialog let-data let-ref="dialogRef">
                         <app-employee-mail [employee]="employee" (useClose)="ref.close()"></app-employee-mail>

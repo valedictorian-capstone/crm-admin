@@ -28,7 +28,7 @@
 <div class="main">
     <div class="content">
         <div nz-row class="list">
-            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let instance of instanceFilter; let i = index">
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="item" *ngFor="let instance of instanceFilter; let i = index" [ngStyle]="{'margin-bottom': i === instanceFilter.length - 1 ? '4.5rem' : '1rem'}">
                 <div class="box" #box>
                     <nb-icon icon="sync-outline" style="position: absolute; left: 1rem"></nb-icon>
                     <div [nbTooltip]="instance.code" class="name">{{ instance.code | maxLength: 50 }}</div>
@@ -41,6 +41,24 @@
                     <ng-template #editDialog let-data let-ref="dialogRef">
                         <!-- <app-instance-update [instance]="instance" (useDone)="useUpdate(ref, $event, i)" (useClose)="ref.close()"></app-instance-update> -->
                     </ng-template>
+                </div>
+                <div class="information">
+                    <nb-icon [nbTooltip]="'Customer'" icon="wifi-outline" style="position: absolute; left: 1rem; top: 0.5rem"></nb-icon>
+                    <span class="customer">{{instance.customer.fullname}}</span>
+                    <nb-icon [nbTooltip]="'WorkFlow'" icon="browser-outline" style="position: absolute; left: 1rem; top: 3rem"></nb-icon>
+                    <span class="process">{{instance.process.name}}</span>
+                    <nb-icon [nbTooltip]="'Current Step'" icon="rewind-right-outline" style="position: absolute; left: 1rem; top: 5.5rem"></nb-icon>
+                    <div class="current-step" *ngIf="useCurrentStep(instance).length > 0">
+                        <div class="step text-danger" *ngFor="let step of useCurrentStep(instance)">
+                            <span>{{step.processStep.name}}</span>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="current-step" *ngIf="useCurrentStep(instance).length === 0">
+                        <div class="step text-success">
+                            <span>Finished</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

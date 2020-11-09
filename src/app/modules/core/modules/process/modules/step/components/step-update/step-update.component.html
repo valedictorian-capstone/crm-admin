@@ -64,20 +64,20 @@
                     </div>
                     <div nz-col [nzSpan]="24">
                         <nb-accordion style="width: 100%;">
-                            <nb-accordion-item *ngIf="step.processFromConnections != null && step.processFromConnections.length > 0">
+                            <nb-accordion-item *ngIf="step.processToConnections != null && step.processToConnections.length > 0">
                                 <nb-accordion-item-header>Connection From</nb-accordion-item-header>
                                 <nb-accordion-item-body>
-                                    <nb-form-field *ngFor="let connection of step.processFromConnections" style="margin-bottom: 0.5rem; max-width: 100%;">
+                                    <nb-form-field *ngFor="let connection of step.processToConnections" style="margin-bottom: 0.5rem; max-width: 100%;">
                                         <span nbPrefix class="{{useIcon(connection.fromProcessStep.type + '-' + connection.fromProcessStep.subType).value}}" style="font-size: 1.4rem"></span>
                                         <input type="text" nbInput fullWidth status="info" [value]="connection.fromProcessStep.name" disabled />
                                     </nb-form-field>
                                 </nb-accordion-item-body>
                             </nb-accordion-item>
-                            <nb-accordion-item>
+                            <nb-accordion-item *ngIf="step.subType !== 'end'">
                                 <nb-accordion-item-header>Connection To</nb-accordion-item-header>
                                 <nb-accordion-item-body>
                                     <nb-accordion style="width: 100%;">
-                                        <nb-accordion-item *ngFor="let connection of form.get('processToConnections')['controls']; let i = index" [formGroup]="connection">
+                                        <nb-accordion-item *ngFor="let connection of form.get('processFromConnections')['controls']; let i = index" [formGroup]="connection">
                                             <nb-accordion-item-header>
                                                 <span nbPrefix class="{{useIcon(connection.get('toProcessStep').value.type + '-' + connection.get('toProcessStep').value.subType).value}}" style="font-size: 1.4rem; margin-right: 0.5rem;"></span>
                                                 <span>{{connection.get('toProcessStep').value.name}}</span>
@@ -102,7 +102,7 @@
                                     </nz-select>
                                 </nb-accordion-item-body>
                             </nb-accordion-item>
-                            <nb-accordion-item>
+                            <nb-accordion-item *ngIf="step.type !== 'event'">
                                 <nb-accordion-item-header>Forms</nb-accordion-item-header>
                                 <nb-accordion-item-body>
                                     <div nz-row class="groups">

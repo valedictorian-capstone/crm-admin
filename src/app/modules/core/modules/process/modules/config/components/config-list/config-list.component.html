@@ -1,7 +1,7 @@
 <div class="header">
     <div class="content">
         <div class="add">
-            <button nbButton status="success" (click)="useDialog(createDialog, 'create-modal')" size="small">Add Department</button>
+            <button nbButton status="success" (click)="useDialog(createDialog, 'create-modal')" size="small">Add Process</button>
             <ng-template #createDialog let-data let-ref="dialogRef">
                 <app-config-create (useDone)="useCreate(ref, $event)" (useClose)="ref.close()"></app-config-create>
             </ng-template>
@@ -41,6 +41,28 @@
                     <ng-template #editDialog let-data let-ref="dialogRef">
                         <app-config-update [process]="process" (useDone)="useUpdate(ref, $event, i)" (useClose)="ref.close()"></app-config-update>
                     </ng-template>
+                </div>
+                <div class="information">
+                    <div class="event">
+                        <span [nbTooltip]="'Event Start'" class="bpmn-icon-start-event-none" style="font-size: 1.2rem;"></span>
+                        <span class="event-start">{{useStep(process, 'event', 'start').length}}</span>
+                        <span [nbTooltip]="'Event End'" class="bpmn-icon-end-event-none" style="font-size: 1.2rem;"></span>
+                        <span class="event-end">{{useStep(process, 'event', 'end').length}}</span>
+                    </div>
+                    <div class="activity">
+                        <span [nbTooltip]="'Activity Task'" class="bpmn-icon-call-activity" style="font-size: 1.2rem;"></span>
+                        <span class="activity-task">{{useStep(process, 'activity', 'task').length}}</span>
+                    </div>
+                    <div class="gateway">
+                        <span [nbTooltip]="'Gateway Parallel'" class="bpmn-icon-gateway-parallel" style="font-size: 1.2rem;"></span>
+                        <span class="gateway-parallel">{{useStep(process, 'gateway', 'parallel').length}}</span>
+                        <span [nbTooltip]="'Gateway Exclusive'" class="bpmn-icon-gateway-xor" style="font-size: 1.2rem;"></span>
+                        <span class="gateway-exclusive">{{useStep(process, 'gateway', 'exclusive').length}}</span>
+                        <span [nbTooltip]="'Gateway Inclusive'" class="bpmn-icon-gateway-or" style="font-size: 1.2rem;"></span>
+                        <span class="gateway-inclusive">{{useStep(process, 'gateway', 'inclusive').length}}</span>
+                    </div>
+                    <nb-icon [nbTooltip]="'Process Instance'" icon="sync-outline" style="position: absolute; left: 1rem; top: 0.5rem"></nb-icon>
+                    <span class="instance">{{process.processInstances.length}}</span>
                 </div>
             </div>
         </div>

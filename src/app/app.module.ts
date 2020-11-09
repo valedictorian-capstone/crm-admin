@@ -1,17 +1,17 @@
-import { NbThemeModule, NbSidebarModule, NbMenuModule, NbDatepickerModule, NbDialogModule, NbToastrModule, NbWindowModule } from '@nebular/theme';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { NbDatepickerModule, NbDialogModule, NbMenuModule, NbSidebarModule, NbThemeModule, NbTimepickerModule, NbToastrModule, NbWindowModule } from '@nebular/theme';
+import { InterceptorService } from '@services';
+import * as Hammer from 'hammerjs';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { NgxEmojiPickerModule } from 'ngx-emoji-picker';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AppRoutes } from './app.routing';
 import { ExtrasModule } from './extras/extras.module';
-import { InterceptorService } from '@services';
-import * as Hammer from 'hammerjs';
-import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
-import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 export class HammerConfig extends HammerGestureConfig {
   // tslint:disable-next-line: no-angle-bracket-type-assertion
   overrides = <any> {
@@ -36,6 +36,8 @@ export class HammerConfig extends HammerGestureConfig {
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
+    NbTimepickerModule.forRoot(),
+    NgxEmojiPickerModule.forRoot()
   ],
   providers: [
     {

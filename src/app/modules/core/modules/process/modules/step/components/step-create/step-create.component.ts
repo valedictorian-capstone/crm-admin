@@ -29,6 +29,7 @@ export class StepCreateComponent implements OnInit {
       name: ['', [Validators.required]],
       type: ['', [Validators.required]],
       subType: ['', [Validators.required]],
+      department: [undefined, [Validators.required]],
       description: '',
       process: this.process
     });

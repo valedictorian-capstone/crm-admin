@@ -1,12 +1,12 @@
-import { Component, ElementRef, OnInit, TemplateRef } from '@angular/core';
-import { AccountService, EmailService, GroupService, MockService } from '@services';
-import { AccountVM, GroupVM, Province } from '@view-models';
-import swal from 'sweetalert2';
-import { DeviceDetectorService } from 'ngx-device-detector';
 import { Clipboard } from '@angular/cdk/clipboard';
-import * as XLSX from 'xlsx';
-import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { Component, ElementRef, OnInit, TemplateRef } from '@angular/core';
 import { ActionMenuItem } from '@extras/models';
+import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { AccountService, EmailService, MockService, RoleService } from '@services';
+import { AccountVM, Province, RoleVM } from '@view-models';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-employee-list',
   templateUrl: './employee-list.component.html',
@@ -14,7 +14,7 @@ import { ActionMenuItem } from '@extras/models';
 })
 export class EmployeeListComponent implements OnInit {
   employees: AccountVM[] = [];
-  groups: GroupVM[] = [];
+  roles: RoleVM[] = [];
   employeeFilter: AccountVM[] = [];
   min = 0;
   active = 1;
@@ -87,7 +87,7 @@ export class EmployeeListComponent implements OnInit {
     protected readonly deviceService: DeviceDetectorService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
-    protected readonly groupService: GroupService,
+    protected readonly roleService: RoleService,
     protected readonly mockService: MockService,
     protected readonly dialogService: NbDialogService,
   ) {
@@ -98,8 +98,8 @@ export class EmployeeListComponent implements OnInit {
 
   ngOnInit() {
     this.mockService.getProvinces().subscribe((data) => this.provinces = data);
-    this.groupService.findAll().subscribe((data) => {
-      this.groups = data;
+    this.roleService.findAll().subscribe((data) => {
+      this.roles = data;
     });
     this.service.findAll().subscribe((data) => {
       this.employees = data;

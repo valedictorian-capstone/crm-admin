@@ -35,7 +35,9 @@ export class InterceptorService {
           }
         }
       ), finalize(() => {
-        this.loadingService.next(false);
+        setTimeout(() => {
+          this.loadingService.next(false);
+        }, 1000);
       })
     );
   }

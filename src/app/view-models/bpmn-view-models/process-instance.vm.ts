@@ -6,7 +6,7 @@ export interface ProcessInstanceVM {
   readonly process: ProcessVM;
   readonly customer: CustomerVM;
   readonly description: string;
-  readonly processStepInstances: ProcessStepInstanceVM[];
+  readonly processStepInstances: (ProcessStepInstanceVM & { isEmoji?: boolean})[];
   readonly isDelete: boolean;
   readonly createdBy: string;
   readonly updatedBy: string;

@@ -35,9 +35,9 @@ export class EmployeeUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.useForm();
     this.useCheck('phone');
     this.useCheck('email');
-    this.useForm();
   }
   useForm = () => {
     this.form.reset({
