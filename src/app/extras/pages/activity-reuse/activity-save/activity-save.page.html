@@ -1,0 +1,139 @@
+<nb-card style="position: relative; margin: 0;" [class.inside]="inside">
+    <ngx-spinner [name]="'activity-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        {{activity ? 'Edit' : 'New'}} Activity
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+        <nb-icon icon="close"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+            <input style="height: 3rem;" [status]="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="form.get('type').value.toUpperCase()" shape="rectangle" [formControl]="form.get('name')"
+                nbInput size="large" />
+        </nb-form-field>
+        <div class="crm-activity-type">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('email')" [class.selected]="form.get('type').value === 'email'" [nbTooltip]="'Email'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="email-outline"></nb-icon>
+            </a>
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('call')" [class.selected]="form.get('type').value === 'call'" [nbTooltip]="'Call'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="phone-outline"></nb-icon>
+            </a>
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('meetting')" [class.selected]="form.get('type').value === 'meetting'" [nbTooltip]="'Meetting'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="people-outline"></nb-icon>
+            </a>
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('task')" [class.selected]="form.get('type').value === 'task'" [nbTooltip]="'Task'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="clock-outline"></nb-icon>
+            </a>
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('deadline')" [class.selected]="form.get('type').value === 'deadline'" [nbTooltip]="'Deadline'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="flag-outline"></nb-icon>
+            </a>
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('lunch')" [class.selected]="form.get('type').value === 'lunch'" [nbTooltip]="'Lunch'" [nbTooltipPlacement]="'bottom'">
+                <nb-icon icon="utensils" pack="font-awesome"></nb-icon>
+            </a>
+        </div>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-icon nbPrefix icon="clock-outline"></nb-icon>
+            <input fullWidth [status]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateStart').value)" (focus)="showDateStartPicker = true" [nzVisible]="showDateStartPicker"
+                placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+        </nb-form-field>
+        <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
+            <app-reuse-activity-time [date]="form.get('dateStart').value" (useChange)="form.get('dateStart').setValue($event); showDateStartPicker = false"></app-reuse-activity-time>
+        </nz-dropdown-menu>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-icon nbPrefix icon="clock-outline"></nb-icon>
+            <input fullWidth [status]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateEnd').value)" (focus)="showDateEndPicker = true" [nzVisible]="showDateEndPicker"
+                placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+        </nb-form-field>
+        <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
+            <app-reuse-activity-time [date]="form.get('dateEnd').value" (useChange)="form.get('dateEnd').setValue($event); showDateEndPicker = false"></app-reuse-activity-time>
+        </nz-dropdown-menu>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Location</span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-icon nbPrefix icon="pin-outline"></nb-icon>
+            <input fullWidth [formControl]="form.get('location')" nbInput />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)">Owner <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon icon="person-outline" nbPrefix></nb-icon>
+            <input #assigneeInput fullWidth (blur)="form.get('assignee').markAsTouched()" [status]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'"
+                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('assignee').value?.fullname ? form.get('assignee').value.fullname : ''" nbInput size="small" (input)="employee.useChangeValue($event.target.value)" />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
+            <app-reuse-employee-select [selected]="form.get('assignee').value" (useNone)="form.get('assignee').setValue(undefined)" #employee (useSelect)="form.get('assignee').setValue($event)" [template]="assigneeInput"></app-reuse-employee-select>
+        </nz-dropdown-menu>
+        <span [style.display]="fixDeal ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)">Deal <span class="text-danger">*</span></span>
+        <nb-form-field [style.display]="fixDeal ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
+            <input #dealInput fullWidth (blur)="form.get('deal').markAsTouched()" [status]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'"
+                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useChangeValue($event.target.value)" />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #dealRef="nzDropdownMenu">
+            <app-reuse-deal-select [selected]="form.get('deal').value" #dealSelect (useSelect)="form.get('deal').setValue($event)" [template]="dealInput"></app-reuse-deal-select>
+        </nz-dropdown-menu>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description</span>
+        <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
+    </nb-card-body>
+    <nb-card-footer>
+        <button *ngIf="activity" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+        <nb-icon icon="more-horizontal-outline"></nb-icon>
+      </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useToggleDone()">
+                    <b>Mask as {{activity?.status === 'done' ? 'Processing' : 'Done'}}</b>
+                </li>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(removeRef)">
+                    <b>Delete</b>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+        <button style="float: right;" status="default" nbButton size="small" (click)="inside ? useClose.emit() : useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="inside ? useSubmit() : useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+    Save and hide
+  </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+    Continue editing
+  </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+    Hide modal
+  </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+    Continue editing
+  </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove activity </nb-card-header>
+        <nb-card-body>Are you sure you wish to remove this activity?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useRemove(ref)">
+Remove
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Cancel
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

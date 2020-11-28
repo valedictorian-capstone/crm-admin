@@ -1,0 +1,11 @@
+<nb-form-field [nbSpinner]="stage === 'searching'" [nbSpinnerSize]="'tiny'" class="crm-global-search search" [class.show]="showSearch">
+    <nb-icon [ngStyle]="{'opacity': stage === '' ? '1' : '0'}" [icon]="'search-outline'" nbPrefix></nb-icon>
+    <input #template nz-dropdown [readOnly]="searchRef.loading" [formControl]="search" [nzDropdownMenu]="result" [nzPlacement]="'bottom'" [nzTrigger]="'click'" [nzBackdrop]="false" fullWidth type="text" nbInput placeholder="Search" shape="round" />
+    <nb-icon *ngIf="showSearch" [icon]="'close-circle'" (click)="showSearch = false; searchRef.useSearch(search.value)" status="danger" nbSuffix></nb-icon>
+</nb-form-field>
+<button *ngIf="!showSearch" nbButton shape="round" nz-dropdown class="crm-global-search-button" (click)="showSearch = true;">
+  <nb-icon icon="search"></nb-icon>
+</button>
+<nz-dropdown-menu #result="nzDropdownMenu">
+    <app-search-result (clickOutside)="this.stage = ''" #searchRef (isSearch)="this.stage = $event ? 'searching' : ''" [template]="template" [value]="search.value"></app-search-result>
+</nz-dropdown-menu>

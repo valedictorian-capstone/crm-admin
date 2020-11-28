@@ -1,0 +1,26 @@
+<nb-card style="position: relative; margin: 0;">
+    <ngx-spinner [name]="'mail-sender'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        Send mail
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+      <nb-icon icon="close"></nb-icon>
+    </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <nb-form-field style="margin-bottom: 1rem; width: 100%">
+            <nb-icon class="" nbPrefix icon="email-outline"></nb-icon>
+            <input type="text" nbInput fullWidth placeholder="Subject" [formControl]="form.get('email')" />
+        </nb-form-field>
+        <nb-form-field style="margin-bottom: 1rem; width: 100%">
+            <nb-icon class="" nbPrefix icon="clipboard-outline"></nb-icon>
+            <input type="text" nbInput fullWidth placeholder="Subject" [formControl]="form.get('subject')" />
+        </nb-form-field>
+        <angular-editor [formControl]="form.get('content')" [config]="config"></angular-editor>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useClose.emit()">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useSend()" nbButton size="small">
+        Send
+      </button>
+    </nb-card-footer>
+</nb-card>

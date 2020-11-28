@@ -1,0 +1,80 @@
+<button *ngIf="!data" nbButton status="success" (click)="useDownload(example)" size="small">Download Example</button>
+<table #example style="display: none;">
+    <thead>
+        <tr>
+            <th>code</th>
+            <th>name</th>
+            <th>type</th>
+            <th>price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PRO-1</td>
+            <td>Watch</td>
+            <td>Unit</td>
+            <td>1,000</td>
+        </tr>
+    </tbody>
+</table>
+<div class="data" *ngIf="data">
+    <table class="table table-bordered m-0">
+        <thead>
+            <tr>
+                <th>
+                    <div style="width: 15rem; text-align: center;">CODE</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">NAME</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">PRICE</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">CATEGORY</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let form of products.controls" [formGroup]="form">
+                <th>
+                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['codeStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
+                        <nb-icon [ngStyle]="{'opacity': form['codeStage'] === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
+                        <input (blur)="useCheckCode(form)" [status]="form.get('code').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field style="width: 100%;">
+                        <input [status]="form.get('name').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Name'" shape="rectangle" [formControl]="form.get('name')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                        <nb-icon icon="money-bill-wave" pack="font-awesome" nbPrefix></nb-icon>
+                        <input mask="separator.0" mask="separator.0" thousandSeparator="," [status]="
+                form.get('price').invalid ? 'danger'
+                  : 'basic'
+              " placeholder="Price" fullWidth [formControl]="form.get('price')" nbInput size="small" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field style="width: 100%;">
+                        <nb-icon icon="compass-outline" nbPrefix></nb-icon>
+                        <input #categoryInput fullWidth nz-dropdown [status]="
+                        form.get('category').invalid
+                          ? 'danger'
+                          : 'basic'
+                      " [nzDropdownMenu]="categoryRef" placeholder="Category" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form?.get('category').value?.name" nbInput size="small" (input)="categoryPlus.useChangeValue($event.target.value)"
+                        />
+                        <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+                    </nb-form-field>
+                    <nz-dropdown-menu #categoryRef="nzDropdownMenu">
+                        <app-reuse-category-select [selected]="form.get('category').value" #categoryPlus (useSelect)="form.get('category').setValue($event)" [template]="categoryInput"></app-reuse-category-select>
+                    </nz-dropdown-menu>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="products.invalid">Save</button>
+<button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>

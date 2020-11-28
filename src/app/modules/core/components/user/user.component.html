@@ -1,0 +1,40 @@
+<a class="crm-user-circle" [nbTooltip]="fullname" nz-dropdown [nzDropdownMenu]="options" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false" [nbTooltipPlacement]="'end-bottom'">
+    <span *ngIf="!avatar">{{ fullname | fullnameShort }}</span>
+    <img *ngIf="avatar" [src]="avatar">
+</a>
+<nz-dropdown-menu #options="nzDropdownMenu">
+    <div nz-menu class="items">
+        <a nz-menu-item class="item" (click)="useProfile()">
+            <span class="icon">
+              <nb-icon icon="person-outline"></nb-icon>
+            </span>
+            <span class="text">
+                Profile
+            </span>
+        </a>
+        <a nz-menu-item class="item" (click)="usePassword()">
+            <span class="icon">
+            <nb-icon icon="lock-outline"></nb-icon>
+          </span>
+            <span class="text">
+              Change Password
+          </span>
+        </a>
+        <a *ngIf="canSetting" nz-menu-item class="item" (click)="useSetting()">
+            <span class="icon">
+          <nb-icon icon="settings-2-outline"></nb-icon>
+        </span>
+            <span class="text">
+            Setting Permission
+        </span>
+        </a>
+        <a nz-menu-item class="item" (click)="useOut()">
+            <span class="icon">
+              <nb-icon icon="log-out-outline"></nb-icon>
+            </span>
+            <span class="text">
+                Log out
+            </span>
+        </a>
+    </div>
+</nz-dropdown-menu>

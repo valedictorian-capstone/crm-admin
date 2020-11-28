@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ErrorMainComponent } from './pages';
+import { ErrorMainPage } from './pages';
 
 const routes: Routes = [
-  { path: '', component: ErrorMainComponent },
+  { path: '', component: ErrorMainPage },
 ];
 
 export const ErrorRoutes = RouterModule.forChild(routes);

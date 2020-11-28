@@ -12,6 +12,6 @@ export class EmailService {
   constructor(protected readonly httpClient: HttpClient) { }
 
   public readonly sendMail = (data: { info: CustomerVM, subject: string, content: string }): Observable<any> => {
-    return this.httpClient.post<any>(`${environment.apiEndpont}${environment.api['extra-api'].email.main}/sendManual`, data);
+    return this.httpClient.post<any>(`${environment.apiEndpont}${environment.api.extra.email.main}/sendManual`, data);
   }
 }

@@ -1,0 +1,82 @@
+.crm-pipeline-activity {
+    background: white;
+    border-radius: 5px;
+    box-shadow: #00000029 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    width: 370px;
+    position: relative;
+    .main {
+        min-height: 5rem;
+        max-height: 14rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 100%;
+        .activity {
+            width: 100%;
+            min-height: 4rem;
+            position: relative;
+            border: 1px solid #e5e5e5;
+            p {
+                font-size: 0.8rem;
+                font-weight: 600;
+            }
+            .icon {
+                width: 10%;
+                height: 100%;
+                float: left;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .content {
+                height: 1rem;
+                float: left;
+                width: 90%;
+                padding: 0 1rem 0 1rem;
+            }
+            .time {
+                width: 90%;
+                height: 3rem;
+                padding: 0 1rem 0 1rem;
+                float: left;
+                display: flex;
+                align-items: center;
+                span {
+                    display: inline-block;
+                    font: 600 13px/16px monospace, sans-serif;
+                    color: #747678;
+                }
+                .separator {
+                    margin: 0;
+                    padding: 0 16px 0 9px;
+                    width: 8px;
+                    display: inline-block;
+                    cursor: default;
+                    text-align: center;
+                    font-weight: 900;
+                }
+            }
+        }
+    }
+    .footer {
+        height: 3.5rem;
+        width: 100%;
+        padding: 0.5rem 0 0.5rem 0;
+        border-top: 1px solid #e5e5e5;
+        .plus {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0.1rem 0.1rem 0.1rem 2rem;
+            &:hover {
+                background-color: #317ae2;
+                cursor: pointer;
+                color: #fff;
+            }
+            b {
+                font-size: 1rem;
+                margin-top: 0.125rem;
+            }
+        }
+    }
+}

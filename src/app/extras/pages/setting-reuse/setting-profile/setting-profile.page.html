@@ -1,0 +1,63 @@
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'setting-profile'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5; text-transform: capitalize;">
+        Edit Profile
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <div class="avatar">
+            <div class="avatar-picker" [class.danger]="errorImage">
+                <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
+                <button *ngIf="!form.get('avatar').value" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                <img *ngIf="form.get('avatar').value" [src]="form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
+                <button *ngIf="form.get('avatar').value" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+            </div>
+            <b *ngIf="errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{message}}</b>
+        </div>
+        <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+            <input style="height: 3rem;" [status]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')"
+                nbInput size="large" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon [ngStyle]="{'opacity': phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+            <input style="height: 3rem;" [status]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty) ? 'danger' : 'basic'" (blur)="useCheckPhone()" fullWidth nz-dropdown [placeholder]="'Phone'" shape="rectangle" [formControl]="form.get('phone')"
+                nbInput size="large" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon [ngStyle]="{'opacity': emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+            <input style="height: 3rem;" [status]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty) ? 'danger' : 'basic'" (blur)="useCheckEmail()" fullWidth nz-dropdown [placeholder]="'Email'" shape="rectangle" [formControl]="form.get('email')"
+                nbInput size="large" />
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="primary" nbButton size="small" (click)="useSubmit(ref)">Save and hide</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="default" nbButton size="small" (click)="ref.close(); useClose.emit();">Hide modal</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

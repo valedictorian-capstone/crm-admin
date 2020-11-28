@@ -1,1 +1,1 @@
-export * from './account-main/account-main.component';
+export * from './account-main/account-main.page';

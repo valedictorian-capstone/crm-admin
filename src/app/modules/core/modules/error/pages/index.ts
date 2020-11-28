@@ -1,1 +1,1 @@
-export * from './error-main/error-main.component';
+export * from './error-main/error-main.page';

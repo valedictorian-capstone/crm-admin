@@ -1,0 +1,19 @@
+<div nz-menu class="crm-pipeline-actions">
+    <div class="crm-pipeline-list">
+        <a nz-menu-item class="crm-pipeline-action" *ngFor="let pipeline of pipelines" (click)="useSelect.emit(pipeline); selectedPipeline = pipeline">
+            <b>{{pipeline.name}}</b>
+            <nb-icon class="selected" status="primary" *ngIf="pipeline.id === selectedPipeline?.id" icon="checkmark"></nb-icon>
+            <button nbButton size="tiny"><nb-icon icon="edit" (click)="useEdit.emit()"></nb-icon></button>
+        </a>
+    </div>
+    <div class="crm-pipeline-main">
+        <a nz-menu-item class="crm-pipeline-action" (click)="useAdd.emit()">
+            <nb-icon icon="plus" style="margin-right: 0.5rem;"></nb-icon>
+            <b>New process</b>
+        </a>
+        <a nz-menu-item class="crm-pipeline-action" (click)="useEdit.emit()">
+            <nb-icon icon="edit" style="margin-right: 0.5rem;"></nb-icon>
+            <b>Edit process</b>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+export * from './dealDynamic.directive';

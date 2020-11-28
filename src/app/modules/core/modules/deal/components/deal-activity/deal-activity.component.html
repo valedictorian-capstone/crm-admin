@@ -1,0 +1,45 @@
+<div class="activity">
+    <div class="content">
+        <nb-checkbox (checkedChange)="useToggleDone()" [checked]="data?.status === 'done'" [status]="'success'"><a>{{data?.type}}</a></nb-checkbox>
+    </div>
+    <div class="time" [class.processing]="data?.status === 'processing'" [class.done]="data?.status === 'done'">
+        <span class="text" [class.text-success]="!data?.expired && data?.status === 'processing'" [class.text-danger]="data?.expired && data?.status === 'processing'">{{data?.dateStart | time}}</span>
+        <span class="separator">·</span>
+        <span class="text">Đặng Khánh Vinh</span>
+    </div>
+    <button outline nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+      <nb-icon icon="more-horizontal-outline"></nb-icon>
+    </button>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useEdit()">
+                <b>Edit</b>
+            </li>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useToggleDone()">
+                <b>Mask as {{data?.status === 'done' ? 'Processing' : 'Done'}}</b>
+            </li>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(removeRef)">
+                <b>Delete</b>
+            </li>
+        </ul>
+    </nz-dropdown-menu>
+</div>
+<div class="description" *ngIf="data?.description && data?.description.length > 0">
+    <p [innerHTML]="data?.description"></p>
+</div>
+<div class="connect" *ngIf="data.last"></div>
+
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove activity </nb-card-header>
+        <nb-card-body>Are you sure you wish to remove this activity?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useRemove(ref)">
+Remove
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Cancel
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

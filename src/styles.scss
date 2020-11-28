@@ -3,7 +3,6 @@
 //         display: none;
 //     }
 // }
-@import "assets/bpmn/css/bpmn.css";
 @import '~@ctrl/ngx-emoji-mart/picker';
 .emoji-mart-bar {
     display: none;
@@ -32,8 +31,40 @@
     background-color: rgb(91, 155, 213);
 }
 
+.bd-10 {
+    border-radius: 10px;
+}
+
 .create-modal {
     margin-left: 6rem;
+}
+
+ngx-spinner {
+     ::ng-deep {
+        div.overlay {
+            z-index: 999 !important;
+        }
+    }
+}
+
+nb-form-field.search {
+    nb-spinner {
+        border-radius: 1.5rem !important;
+        span.spin-circle {
+            left: 1rem;
+            position: absolute;
+        }
+    }
+}
+
+nb-form-field.not-search {
+    nb-spinner {
+        border-radius: none !important;
+        span.spin-circle {
+            left: 1rem;
+            position: absolute;
+        }
+    }
 }
 
 #asignee {

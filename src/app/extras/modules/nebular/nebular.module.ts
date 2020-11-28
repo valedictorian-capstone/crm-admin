@@ -52,6 +52,9 @@ import {
 import {
   NbEvaIconsModule
 } from '@nebular/eva-icons';
+
+import { NbDateFnsDateModule } from '@nebular/date-fns';
+import { vi } from 'date-fns/locale';
 export const NEBULAR_MODULES = [
   NbIconModule,
   NbButtonModule,
@@ -117,6 +120,7 @@ export class NebularModule {
         ...NbDialogModule.forRoot().providers,
         ...NbWindowModule.forRoot().providers,
         ...NbToastrModule.forRoot().providers,
+        ...NbTimepickerModule.forRoot().providers,
       ]
     };
   }
@@ -128,6 +132,10 @@ export class NebularModule {
         // ...NbSidebarModule.forRoot().providers,
         // ...NbMenuModule.forRoot().providers,
         // ...NbDatepickerModule.().providers,
+        ...NbDateFnsDateModule.forRoot({
+            parseOptions: { locale: vi, awareOfUnicodeTokens: true },
+            formatOptions: { locale: vi, awareOfUnicodeTokens: true }
+          }).providers,
         ...NbDialogModule.forChild().providers,
         ...NbWindowModule.forChild().providers,
         // ...NbToastrModule.forRoot().providers,

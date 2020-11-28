@@ -6,6 +6,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ShortPipe implements PipeTransform {
 
   transform(value: string): any {
+    if (!value) {
+      return '';
+    }
     const tmp = value.split(' ');
     if (tmp.length > 0) {
       let rs = '';

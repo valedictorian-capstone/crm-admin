@@ -1,0 +1,11 @@
+<div nz-menu class="customer-select">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
+    <a nz-menu-item class="item" [class.selected]="customer.id === selected?.id" *ngFor="let customer of filterCustomers" (click)="useSelect.emit(customer); this.selected = customer">
+        <nb-icon icon="person-outline" style="margin-right: 0.7rem;"></nb-icon>
+        <pre>{{customer.fullname}}</pre>
+    </a>
+    <a nz-menu-item class="item" *ngIf="filterCustomers.length === 0 && stage !== 'finding'" (click)="useAdd.emit(value); useChangeValue('')">
+        <nb-icon icon="plus" style="margin-right: 1rem;"></nb-icon>
+        <pre>{{value === '' ? 'Add new lead' : 'Add \'' + value + '\' as new lead'}}</pre>
+    </a>
+</div>

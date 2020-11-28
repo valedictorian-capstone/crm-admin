@@ -1,32 +1,32 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import {
-  AccountCreateComponent,
-  AccountListComponent,
-  AccountUpdateComponent,
-  AccountMailComponent
+  AccountItemComponent,
 } from './components';
+import { AccountMainPage } from './pages';
+// import { } from './directives';
+// import { } from './pipes';
 import { AccountRoutes } from './account.routing';
-import {
-  AccountMainComponent
-} from './pages';
-
 const COMPONENTS = [
-  AccountCreateComponent,
-  AccountListComponent,
-  AccountUpdateComponent,
-  AccountMailComponent
+  AccountItemComponent,
 ];
+
 const PAGES = [
-  AccountMainComponent,
+  AccountMainPage
+];
+
+const PIPES = [
+
+];
+
+const DIRECTIVES = [
+
 ];
 @NgModule({
   imports: [
-    ExtrasModule.forRoot(),
-    ClipboardModule,
-    AccountRoutes,
+    ExtrasModule.forChild(),
+    AccountRoutes
   ],
-  declarations: [...COMPONENTS, ...PAGES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
 })
 export class AccountModule { }

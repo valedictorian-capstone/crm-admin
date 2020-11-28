@@ -1,0 +1,28 @@
+<div class="stage" [style.width]="'calc(100% / '+ selectedPipeline.stages.length + ')'" [class.many]="selectedPipeline.stages.length > 10">
+    <div class="stage-header" [nbTooltip]="stage.name" [nbTooltipPlacement]="'top-end'">
+        <svg *ngIf="index !== 0" class="arrow" width="16" height="56"><g fill="none" fill-rule="evenodd"><path class="arrow__right" fill="#edf1f7" d="M0 0h16v56H0z"></path><path class="arrow__border" fill="silver" d="M1 0l8 28-8 28H0V0z"></path><path class="arrow__left" fill="#edf1f7" d="M0 1l8 27-8 27z"></path></g></svg>
+        <div class="stage-header-name">
+            {{stage.name}} ({{stage.probability}}%)
+        </div>
+        <div class="stage-header-money">
+            ₫{{deals | totalMoney}}
+        </div>
+    </div>
+    <!-- <div class="stage-body" #stageBody [class.dragging]="dragging" cdkDropList [cdkDropListData]="deals" (cdkDropListDropped)="useDrop($event)">
+        <app-pipeline-deal (useRemove)="deals.splice(i, 1)" (useMove)="useMove($event)" [dragging]="dragging" (useDragging)="useDragging.emit($event)" *ngFor="let deal of deals; let i = index" [deal]="deal"></app-pipeline-deal>
+        <button (click)="useCreateDeal()" nbButton fullWidth class="stage-plus" size="medium">
+    <nb-icon pack="eva" icon="plus"></nb-icon>
+  </button>
+    </div> -->
+    <div class="stage-body" #stageBody [class.dragging]="dragging">
+        <smooth-dnd-container [groupName]="'deal'" [dragHandleSelector]="'.canDrag'" [getChildPayload]="usePayload()" (drop)="useDrop($event)" (dragStart)="dragging = true" (dragEnd)="dragging = false">
+            <smooth-dnd-draggable *ngFor="let deal of deals; let i = index">
+                <app-pipeline-deal (useRemove)="deals.splice(i, 1)" (useMove)="useMove($event)" [dragging]="dragging" (useDragging)="useDragging.emit($event)" [deal]="deal"></app-pipeline-deal>
+            </smooth-dnd-draggable>
+        </smooth-dnd-container>
+        <button (click)="useCreateDeal()" nbButton fullWidth class="stage-plus" size="medium">
+        <nb-icon pack="eva" icon="plus"></nb-icon>
+      </button>
+        <ngx-spinner [name]="'pipeline-stage' + stage.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    </div>
+</div>

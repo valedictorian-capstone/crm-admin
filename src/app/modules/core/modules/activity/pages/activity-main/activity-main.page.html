@@ -1,0 +1,48 @@
+<div class="crm-activity">
+    <div class='crm-activity-header'>
+        <div class="mb-2" style="width: 100%; height: 40px; display: flex; align-items: center;">
+            <button (click)="usePlus()" nbButton status="success" style="float: left;margin-right: 0.5rem;" size="small">
+            New Activity
+          </button>
+            <nb-form-field *ngIf="type === 'day'" style="float: left; margin-right: 0.5rem;">
+                <nb-icon nbPrefix icon="calendar-outline"></nb-icon>
+                <input readonly size="small" [nbDatepicker]="datePicker" style="max-width: 208px;" nbInput [value]="viewDate | date: 'dd/MM/yyyy'">
+                <nb-datepicker (dateChange)="viewDate = $event" #datePicker></nb-datepicker>
+            </nb-form-field>
+        </div>
+        <div style="width: 100%; height: 40px;">
+            <nb-form-field style="float: left; margin-right: 0.5rem;">
+                <nb-select size="small" placeholder="Type" [(ngModel)]="type">
+                    <nb-option value="month">Month</nb-option>
+                    <nb-option value="week">Week</nb-option>
+                    <nb-option value="day">Day</nb-option>
+                </nb-select>
+            </nb-form-field>
+            <button nbButton status="primary" size="small" mwlCalendarPreviousView [view]="type" [(viewDate)]="viewDate">
+            <nb-icon icon="arrow-ios-back-outline"></nb-icon>
+        </button>
+            <button nbButton status="default" size="small" mwlCalendarToday [(viewDate)]="viewDate">
+            Today
+        </button>
+            <button nbButton status="primary" size="small" mwlCalendarNextView [view]="type" [(viewDate)]="viewDate">
+          <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
+        </button>
+        </div>
+    </div>
+    <div class='crm-activity-body'>
+        <div [ngSwitch]="type">
+            <mwl-calendar-month-view *ngSwitchCase="'month'" (dayClicked)="usePlusWithDay($event)" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-month-view>
+            <mwl-calendar-week-view *ngSwitchCase="'week'" (hourSegmentClicked)="usePlusWithHour($event)" [eventTemplate]="dayEvent" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-week-view>
+            <mwl-calendar-day-view *ngSwitchCase="'day'" (hourSegmentClicked)="usePlusWithHour($event)" [eventTemplate]="dayEvent" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
+            </mwl-calendar-day-view>
+        </div>
+    </div>
+</div>
+<ng-template #dayEvent let-weekEvent="weekEvent">
+    <!-- {{weekEvent. title}} asndlasdlsakjd -->
+    <button nbButton outline status="success" size="small" (click)="eventClicked({event: weekEvent.event})">
+      <nb-icon [icon]="useIcon(weekEvent.event.type).icon" [pack]="useIcon(weekEvent.event.type).pack"></nb-icon>
+    </button>
+</ng-template>

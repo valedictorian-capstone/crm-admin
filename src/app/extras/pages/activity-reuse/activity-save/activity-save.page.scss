@@ -1,0 +1,56 @@
+nb-card {
+    width: 789px;
+    margin-top: 29px;
+    &.inside {
+        width: 100%;
+        margin-top: 0;
+    }
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow: auto;
+        div.crm-activity-type {
+            margin-bottom: 1rem;
+            height: 32px;
+            a.crm-activity-type-item {
+                text-decoration: none;
+                color: black;
+                background: white;
+                width: calc(100% / 6);
+                height: 32px;
+                padding: 4px;
+                display: flex;
+                justify-content: center;
+                float: left;
+                align-items: center;
+                box-shadow: inset 0 0 0 1px #cbcccd, 0 1px 2px rgba(38, 41, 44, .08);
+                nb-icon {
+                    font-size: 18px;
+                    color: #26292c;
+                    font-weight: 600;
+                }
+                &.selected {
+                    box-shadow: inset 0 0 0 1px #317ae2, 0 0 0 rgba(49, 122, 226, 0), inset 0 1px 2px rgba(49, 122, 226, .16);
+                    background: #eff5fd;
+                    &:hover {
+                        background: #eff5fd;
+                    }
+                    nb-icon {
+                        color: rgb(49, 122, 226);
+                    }
+                }
+                &:hover {
+                    background: #e5e5e5;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card {
+        width: 95vw;
+        &.inside {
+            width: 100%;
+        }
+    }
+}

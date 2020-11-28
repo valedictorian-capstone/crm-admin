@@ -1,0 +1,34 @@
+.crm-global-search {
+    width: 30rem;
+}
+
+.crm-global-search-button {
+    position: absolute;
+    right: 165px;
+    top: 8px;
+    width: 40px;
+    height: 40px;
+    display: none;
+}
+
+@media (max-width: 789px) {
+    .crm-global-search-button {
+        display: flex;
+    }
+    .crm-global-search {
+        width: 100vw;
+        height: 56px;
+        display: none;
+        z-index: 1000;
+        position: fixed;
+        top: 0;
+        right: 0;
+        &.show {
+            display: flex;
+        }
+        input {
+            height: 56px;
+            border-radius: 0;
+        }
+    }
+}

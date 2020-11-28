@@ -1,0 +1,7 @@
+<div nz-menu class="crm-global-add-menu fadeInDown fadeOutUp">
+    <a nz-menu-item class="crm-global-add-menu-item" *ngFor="let item of menus" (click)="useSelect(item.value)">
+        <nb-icon [icon]="item.icon" [pack]="item.pack"></nb-icon>
+        <span class="crm-global-add-menu-item-label">{{item.label}}</span>
+        <span class="crm-global-add-menu-item-tag">{{item.label | fullnameShort}}</span>
+    </a>
+</div>

@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { LeadMainComponent } from './pages';
+import { LeadMainPage } from './pages';
 
 const routes: Routes = [
-  { path: '', component: LeadMainComponent },
+  { path: '', component: LeadMainPage },
 ];
 
 export const LeadRoutes = RouterModule.forChild(routes);

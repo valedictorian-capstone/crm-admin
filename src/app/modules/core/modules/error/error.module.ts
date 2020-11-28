@@ -5,14 +5,14 @@ import {
 } from './components';
 import { ErrorRoutes } from './error.routing';
 import {
-  ErrorMainComponent,
+  ErrorMainPage,
 } from './pages';
 
 const COMPONENTS = [
   NotFoundComponent
 ];
 const PAGES = [
-  ErrorMainComponent,
+  ErrorMainPage,
 ];
 @NgModule({
   imports: [

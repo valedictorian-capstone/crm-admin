@@ -3,22 +3,26 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
+  production: false,
+  // apiEndpont: 'http://localhost:8080/',
+  apiEndpont: 'https://localhost:8081/',
+  // apiEndpont: 'https://crm-capstone-ws.azurewebsites.net/',
+  // socketServer: 'https://crm-capstone-ws.azurewebsites.net/',
+  // socketServer: 'http://localhost:8080/',
+  socketServer: 'https://localhost:8081/',
   token: 'crm-token',
-  apiEndpont: 'https://crm-capstione-be.azurewebsites.net/',
   api: {
-    'basic-api': {
+    basic: {
       role: {
         main: 'api/v1/Role',
         getById: 'api/v1/Role/',
         active: 'api/v1/Role/Active',
         deactive: 'api/v1/Role/Deactive',
       },
-      department: {
-        main: 'api/v1/Department',
-        getById: 'api/v1/Department/',
-        active: 'api/v1/Department/Active',
-        deactive: 'api/v1/Department/Deactive',
+      notification: {
+        main: 'api/v1/Notification',
+        getById: 'api/v1/Notification/',
+        seen: 'api/v1/Notification/Seen',
       },
       group: {
         main: 'api/v1/Group',
@@ -26,26 +30,56 @@ export const environment = {
         active: 'api/v1/Group/Active',
         deactive: 'api/v1/Group/Deactive',
       },
-      pattern: {
-        main: 'api/v1/Pattern',
-        getById: 'api/v1/Pattern/',
-        active: 'api/v1/Pattern/Active',
-        deactive: 'api/v1/Pattern/Deactive',
+      category: {
+        main: 'api/v1/Category',
+        getById: 'api/v1/Category/',
+        active: 'api/v1/Category/Active',
+        deactive: 'api/v1/Category/Deactive',
       },
-      permission: {
-        main: 'api/v1/Permission',
-        getById: 'api/v1/Permission/',
-        active: 'api/v1/Permission/Active',
-        deactive: 'api/v1/Permission/Deactive',
+      device: {
+        main: 'api/v1/Device',
+        getById: 'api/v1/Device/',
+        active: 'api/v1/Device/Active',
+        deactive: 'api/v1/Device/Deactive',
       },
-      'extra-information': {
-        main: 'api/v1/ExtraInformation',
-        getById: 'api/v1/ExtraInformation/',
-        active: 'api/v1/ExtraInformation/Active',
-        deactive: 'api/v1/ExtraInformation/Deactive',
+      account: {
+        main: 'api/v1/Account',
+        getById: 'api/v1/Account/',
+        active: 'api/v1/Account/Active',
+        deactive: 'api/v1/Account/Deactive',
+      },
+      customer: {
+        main: 'api/v1/Customer',
+        getById: 'api/v1/Customer/',
+        active: 'api/v1/Customer/Active',
+        deactive: 'api/v1/Customer/Deactive',
+      },
+      product: {
+        main: 'api/v1/Product',
+        getById: 'api/v1/Product/',
+        active: 'api/v1/Product/Active',
+        deactive: 'api/v1/Product/Deactive',
+      },
+      ticket: {
+        main: 'api/v1/Ticket',
+        getById: 'api/v1/Ticket/',
+        active: 'api/v1/Ticket/Active',
+        deactive: 'api/v1/Ticket/Deactive',
+      },
+      event: {
+        main: 'api/v1/Event',
+        getById: 'api/v1/Event/',
+        active: 'api/v1/Event/Active',
+        deactive: 'api/v1/Event/Deactive',
+      },
+      trigger: {
+        main: 'api/v1/Trigger',
+        getById: 'api/v1/Trigger/',
+        active: 'api/v1/Trigger/Active',
+        deactive: 'api/v1/Trigger/Deactive',
       },
     },
-    'extra-api': {
+    extra: {
       auth: {
         main: 'api/v1/Auth',
         getById: 'api/v1/Auth/',
@@ -57,123 +91,52 @@ export const environment = {
       email: {
         main: 'api/v1/Email',
       },
-    },
-    'bpmn-api': {
-      comment: {
-        main: 'api/v1/Comment',
-        getById: 'api/v1/Comment/',
-        active: 'api/v1/Comment/Active',
-        deactive: 'api/v1/Comment/Deactive',
-      },
-      task: {
-        main: 'api/v1/Task',
-        getById: 'api/v1/Task/',
-        active: 'api/v1/Task/Active',
-        deactive: 'api/v1/Task/Deactive',
-      },
-      condition: {
-        main: 'api/v1/Condition',
-        getById: 'api/v1/Condition/',
-        active: 'api/v1/Condition/Active',
-        deactive: 'api/v1/Condition/Deactive',
-      },
-      process: {
-        main: 'api/v1/Process',
-        getById: 'api/v1/Process/',
-        active: 'api/v1/Process/Active',
-        deactive: 'api/v1/Process/Deactive',
-      },
-      'process-step': {
-        main: 'api/v1/ProcessStep',
-        getById: 'api/v1/ProcessStep/',
-        active: 'api/v1/ProcessStep/Active',
-        deactive: 'api/v1/ProcessStep/Deactive',
-      },
-      'process-step-instance': {
-        main: 'api/v1/ProcessStepInstance',
-        getById: 'api/v1/ProcessStepInstance/',
-        active: 'api/v1/ProcessStepInstance/Active',
-        deactive: 'api/v1/ProcessStepInstance/Deactive',
-      },
-      'process-connection': {
-        main: 'api/v1/ProcessConnection',
-        getById: 'api/v1/ProcessConnection/',
-        active: 'api/v1/ProcessConnection/Active',
-        deactive: 'api/v1/ProcessConnection/Deactive',
-      },
-      'process-instance': {
-        main: 'api/v1/ProcessInstance',
-        getById: 'api/v1/ProcessInstance/',
-        active: 'api/v1/ProcessInstance/Active',
-        deactive: 'api/v1/ProcessInstance/Deactive',
+      search: {
+        main: 'api/v1/Search',
       },
     },
-    'account-api': {
-      account: {
-        main: 'api/v1/Account',
-        getById: 'api/v1/Account/',
-        active: 'api/v1/Account/Active',
-        deactive: 'api/v1/Account/Deactive',
+    deal: {
+      activity: {
+        main: 'api/v1/Activity',
+        getById: 'api/v1/Activity/',
+        active: 'api/v1/Activity/Active',
+        deactive: 'api/v1/Activity/Deactive',
       },
-      'account-extra-information-data': {
-        main: 'api/v1/AccountExtraInformationData',
-        getById: 'api/v1/AccountExtraInformationData/',
-        active: 'api/v1/AccountExtraInformationData/Active',
-        deactive: 'api/v1/AccountExtraInformationData/Deactive',
+      stage: {
+        main: 'api/v1/Stage',
+        getById: 'api/v1/Stage/',
+        active: 'api/v1/Stage/Active',
+        deactive: 'api/v1/Stage/Deactive',
       },
-    },
-    'service-api': {
-      service: {
-        main: 'api/v1/Service',
-        getById: 'api/v1/Service/',
-        active: 'api/v1/Service/Active',
-        deactive: 'api/v1/Service/Deactive',
+      pipeline: {
+        main: 'api/v1/Pipeline',
+        getById: 'api/v1/Pipeline/',
+        active: 'api/v1/Pipeline/Active',
+        deactive: 'api/v1/Pipeline/Deactive',
       },
-    },
-    'customer-api': {
-      customer: {
-        main: 'api/v1/Customer',
-        getById: 'api/v1/Customer/',
-        active: 'api/v1/Customer/Active',
-        deactive: 'api/v1/Customer/Deactive',
+      deal: {
+        main: 'api/v1/Deal',
+        getById: 'api/v1/Deal/',
+        active: 'api/v1/Deal/Active',
+        deactive: 'api/v1/Deal/Deactive',
       },
-      'customer-extra-data': {
-        main: 'api/v1/CustomerExtraData',
-        getById: 'api/v1/CustomerExtraData/',
-        active: 'api/v1/CustomerExtraData/Active',
-        deactive: 'api/v1/CustomerExtraData/Deactive',
+      dealDetail: {
+        main: 'api/v1/DealDetail',
+        getById: 'api/v1/DealDetail/',
+        active: 'api/v1/DealDetail/Active',
+        deactive: 'api/v1/DealDetail/Deactive',
       },
-      'customer-extra-information-data': {
-        main: 'api/v1/CustomerExtraInformationData',
-        getById: 'api/v1/CustomerExtraInformationData/',
-        active: 'api/v1/CustomerExtraInformationData/Active',
-        deactive: 'api/v1/CustomerExtraInformationData/Deactive',
+      note: {
+        main: 'api/v1/Note',
+        getById: 'api/v1/Note/',
+        active: 'api/v1/Note/Active',
+        deactive: 'api/v1/Note/Deactive',
       },
-    },
-    'form-api': {
-      'form-control': {
-        main: 'api/v1/FormControl',
-        getById: 'api/v1/FormControl/',
-        active: 'api/v1/FormControl/Active',
-        deactive: 'api/v1/FormControl/Deactive',
-      },
-      'form-data': {
-        main: 'api/v1/FormData',
-        getById: 'api/v1/FormData/',
-        active: 'api/v1/FormData/Active',
-        deactive: 'api/v1/FormData/Deactive',
-      },
-      'form-group': {
-        main: 'api/v1/FormGroup',
-        getById: 'api/v1/FormGroup/',
-        active: 'api/v1/FormGroup/Active',
-        deactive: 'api/v1/FormGroup/Deactive',
-      },
-      'form-value': {
-        main: 'api/v1/FormValue',
-        getById: 'api/v1/FormValue/',
-        active: 'api/v1/FormValue/Active',
-        deactive: 'api/v1/FormValue/Deactive',
+      attachment: {
+        main: 'api/v1/Attachment',
+        getById: 'api/v1/Attachment/',
+        active: 'api/v1/Attachment/Active',
+        deactive: 'api/v1/Attachment/Deactive',
       },
     },
   },
@@ -182,133 +145,252 @@ export const environment = {
       label: 'Dashboard',
       value: 'dashboard',
       icon: 'home',
-      type: 'item'
+      pack: 'eva',
     },
     {
-      label: 'Tracking',
-      type: 'group',
+      label: 'Activity',
+      value: 'activity',
       icon: 'activity',
-      values: [],
-      value: 'tracking-group',
-      items: [
-
-      ],
+      pack: 'eva',
     },
     {
-      label: 'Customer',
-      type: 'group',
-      icon: 'wifi',
-      values: ['group', 'lead', 'opportunity', 'contact', 'account'],
-      value: 'customer-group',
-      items: [
-        {
-          label: 'Group',
-          value: 'group',
-          icon: 'layers',
-          type: 'item'
-        },
-        {
-          label: 'Lead',
-          value: 'lead',
-          icon: 'paper-plane',
-          type: 'item'
-        },
-        {
-          label: 'Opportunity',
-          value: 'opportunity',
-          icon: 'person-add',
-          type: 'item'
-        },
-        {
-          label: 'Contact',
-          value: 'contact',
-          icon: 'phone',
-          type: 'item'
-        },
-        {
-          label: 'Account',
-          value: 'account',
-          icon: 'person-done',
-          type: 'item'
-        },
-      ],
+      label: 'Lead',
+      value: 'lead',
+      icon: 'paper-plane',
+      pack: 'eva',
+    },
+    {
+      label: 'Deal',
+      value: 'deal',
+      icon: 'donate',
+      pack: 'font-awesome',
+    },
+    {
+      label: 'Contact',
+      value: 'contact',
+      icon: 'phone',
+      pack: 'eva',
+    },
+    {
+      label: 'Account',
+      value: 'account',
+      icon: 'person-done',
+      pack: 'eva',
     },
     {
       label: 'Employee',
-      icon: 'monitor',
-      type: 'group',
-      values: ['department', 'employee', 'role'],
-      value: 'employee-group',
-      items: [
-        {
-          label: 'Department',
-          value: 'department',
-          icon: 'cube',
-          type: 'item'
-        },
-        {
-          label: 'Employee',
-          value: 'employee',
-          icon: 'mic',
-          type: 'item'
-        },
-        {
-          label: 'Role',
-          value: 'role',
-          icon: 'pin',
-          type: 'item'
-        },
-      ],
+      value: 'employee',
+      icon: 'mic',
+      pack: 'eva',
     },
     {
-      label: 'Bpmn',
-      icon: 'settings-2',
-      type: 'group',
-      values: ['process', 'form'],
-      value: 'bpmn-group',
-      items: [
-        {
-          label: 'Form',
-          value: 'form',
-          icon: 'book',
-          type: 'item',
-        },
-        {
-          label: 'Process',
-          value: 'process',
-          icon: 'browser',
-          type: 'item',
-        },
-      ],
+      label: 'Role',
+      value: 'role',
+      icon: 'pin',
+      pack: 'eva',
     },
     {
-      label: 'Main',
-      icon: 'tv',
-      type: 'group',
-      values: ['service', 'strategy', 'event'],
-      value: 'main-group',
-      items: [
-        {
-          label: 'Service',
-          value: 'service',
-          icon: 'flash',
-          type: 'item'
-        },
-        {
-          label: 'Strategy',
-          value: 'strategy',
-          icon: 'volume-up',
-          type: 'item'
-        },
-        {
-          label: 'Event',
-          value: 'event',
-          icon: 'calendar',
-          type: 'item'
-        },
-      ]
+      label: 'Pipeline',
+      value: 'pipeline',
+      icon: 'browser',
+      pack: 'eva',
+    },
+    {
+      label: 'Ticket',
+      value: 'ticket',
+      icon: 'pricetags',
+      pack: 'eva',
+    },
+    {
+      label: 'Feedback',
+      value: 'feedback',
+      icon: 'headphones',
+      pack: 'eva',
+    },
+    {
+      label: 'Product',
+      value: 'product',
+      icon: 'shopping-cart',
+      pack: 'eva',
+    },
+    {
+      label: 'Event',
+      value: 'event',
+      icon: 'calendar',
+      pack: 'eva',
     },
 
+  ],
+  more_categories: [
+    {
+      label: 'Contact',
+      value: 'contact',
+      icon: 'phone',
+      pack: 'eva',
+    },
+    {
+      label: 'Account',
+      value: 'account',
+      icon: 'person-done',
+      pack: 'eva',
+    },
+    {
+      label: 'Ticket',
+      value: 'ticket',
+      icon: 'pricetags',
+      pack: 'eva',
+    },
+    {
+      label: 'Feedback',
+      value: 'feedback',
+      icon: 'headphones',
+      pack: 'eva',
+    },
+    {
+      label: 'Product',
+      value: 'product',
+      icon: 'shopping-cart',
+      pack: 'eva',
+    },
+  ],
+  filterTabs: [
+    // {
+    //   label: 'Group',
+    //   value: 'group',
+    //   icon: 'layers',
+    //   pack: 'eva',
+    // },
+    {
+      label: 'Lead',
+      value: 'lead',
+      icon: 'binoculars',
+      pack: 'font-awesome',
+    },
+    {
+      label: 'Deal',
+      value: 'deal',
+      icon: 'donate',
+      pack: 'font-awesome',
+    },
+    {
+      label: 'Account',
+      value: 'account',
+      icon: 'person-done',
+      pack: 'eva',
+    },
+    {
+      label: 'Contact',
+      value: 'contact',
+      icon: 'phone',
+      pack: 'eva',
+    },
+    {
+      label: 'Activity',
+      value: 'activity',
+      icon: 'calendar-alt',
+      pack: 'font-awesome',
+    },
+    // {
+    //   label: 'Employee',
+    //   value: 'employee',
+    //   icon: 'mic',
+    //   pack: 'eva',
+    // },
+    // {
+    //   label: 'Pipeline',
+    //   value: 'pipeline',
+    //   icon: 'browser',
+    //   pack: 'eva',
+    // },
+    // {
+    //   label: 'Role',
+    //   value: 'role',
+    //   icon: 'pin',
+    //   pack: 'eva',
+    // },
+    // {
+    //   label: 'Product',
+    //   value: 'product',
+    //   icon: 'shopping-cart',
+    //   pack: 'eva',
+    // },
+    // {
+    //   label: 'Event',
+    //   value: 'event',
+    //   icon: 'calendar',
+    //   pack: 'eva',
+    // },
+    {
+      label: 'Attachment',
+      value: 'attachment',
+      icon: 'attach-outline',
+      pack: 'eva',
+    },
+  ],
+  createMenus: [
+    {
+      label: 'Activity',
+      value: 'activity',
+      icon: 'calendar-plus',
+      pack: 'font-awesome',
+      can: 'canCreateActivity',
+    },
+    {
+      label: 'Customer',
+      value: 'customer',
+      icon: 'person',
+      pack: 'eva',
+      can: 'canCreateCustomer',
+    },
+    {
+      label: 'Event',
+      value: 'event',
+      icon: 'calendar',
+      pack: 'eva',
+      can: 'canCreateEvent',
+    },
+    {
+      label: 'Deal',
+      value: 'deal',
+      icon: 'donate',
+      pack: 'font-awesome',
+      can: 'canCreateDeal',
+    },
+    {
+      label: 'Product',
+      value: 'product',
+      icon: 'shopping-cart',
+      pack: 'eva',
+      can: 'canCreateProduct',
+    },
+    {
+      label: 'Employee',
+      value: 'employee',
+      icon: 'mic',
+      pack: 'eva',
+      can: 'canCreateEmployee',
+    },
+    {
+      label: 'Role',
+      value: 'role',
+      icon: 'pin',
+      pack: 'eva',
+      can: 'canCreateRole',
+    },
+    {
+      label: 'Note',
+      value: 'note',
+      icon: 'comment-alt',
+      pack: 'font-awesome',
+      can: 'canCreateNote',
+    },
+    {
+      label: 'Attachment',
+      value: 'attachment',
+      icon: 'attach-outline',
+      pack: 'eva',
+      can: 'canCreateAttachment',
+    },
   ],
   firebase: {
     config: {
@@ -318,114 +400,16 @@ export const environment = {
       projectId: 'm-crm-company',
       storageBucket: 'm-crm-company.appspot.com',
       messagingSenderId: '827605403995',
-      appId: '1:827605403995:web:bb661f7481360f9a99727e',
-      measurementId: 'G-XJD981CY3Y'
+      appId: '1:827605403995:web:d3693496db3d4ebf99727e',
+      measurementId: 'G-KB93V2FMWR'
     },
   },
-  controls: [
-    {
-      type: 'input',
-      subtype: 'text'
-    },
-    {
-      type: 'input',
-      subtype: 'number'
-    },
-    {
-      type: 'input',
-      subtype: 'password'
-    },
-    {
-      type: 'select',
-      subtype: ''
-    },
-    {
-      type: 'multi-select',
-      subtype: ''
-    },
-    {
-      type: 'auto-complete',
-      subtype: ''
-    },
-    {
-      type: 'date-picker',
-      subtype: ''
-    },
-    {
-      type: 'time-picker',
-      subtype: ''
-    },
-    {
-      type: 'text-area',
-      subtype: ''
-    },
-    {
-      type: 'switch',
-      subtype: ''
-    },
-    {
-      type: 'rate',
-      subtype: ''
-    },
-    {
-      type: 'radio',
-      subtype: ''
-    },
-    {
-      type: 'slider',
-      subtype: ''
-    },
-    {
-      type: 'paragraph',
-      subtype: ''
-    },
-    {
-      type: 'label',
-      subtype: ''
-    },
-    {
-      type: 'header',
-      subtype: ''
-    },
-    {
-      type: 'file-upload',
-      subtype: ''
-    },
-    {
-      type: 'date-range',
-      subtype: ''
-    },
-    {
-      type: 'check-box',
-      subtype: ''
-    }
-  ],
-  types: [
-    {
-      name: 'activity',
-      label: 'Activity',
-      subTypes: [
-        { name: 'task', label: 'Task'}
-      ]
-    },
-    {
-      name: 'gateway',
-      label: 'GateWay',
-      subTypes: [
-        { name: 'exclusive', label: 'Exclusive'},
-        { name: 'inclusive', label: 'Inclusive'},
-        { name: 'parallel', label: 'Parallel'},
-      ]
-    },
-    {
-      name: 'event',
-      label: 'Event',
-      subTypes: [
-        { name: 'start', label: 'Start'},
-        { name: 'end', label: 'End'},
-      ]
-    }
-  ],
+  stringee: {
+    sid: 'SKG3Y1zHDriSAoY1s5QtZvlrXvrWWnY4',
+    serect: 'TDdsMXN5QVd5YmJRRXNhMk9FaUFncXlFcmpLZE1HaA==',
+    api: 'https://v2.stringee.com/web-sdk-conference-samples/php/token_helper.php',
+    endpoint: 'https://api.stringee.com/v1/room2',
+  },
 };
 
 /*

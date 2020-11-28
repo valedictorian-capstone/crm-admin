@@ -1,0 +1,233 @@
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'deal-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5">
+        {{deal ? 'Edit' : 'New'}} deal
+        <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
+    <nb-icon icon="close"></nb-icon>
+  </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('customer').invalid &&
+      (form.get('customer').touched || form.get('customer').dirty)
+    ">Customer <span class="text-danger">*</span></span>
+        <nb-form-field [style.display]="adding ? 'none' : null" style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="person-outline" nbPrefix></nb-icon>
+            <input #customerInput fullWidth nz-dropdown [status]="
+          form.get('customer').invalid &&
+          (form.get('customer').touched || form.get('customer').dirty) ? 'danger' : 'basic'
+        " (blur)="form.get('customer').markAsTouched()" [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="customerSave ? customerSave.form?.get('fullname').value : form.get('customer').value?.fullname"
+                nbInput size="small" (input)="select.useChangeValue($event.target.value)" />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #customerRef="nzDropdownMenu">
+            <app-reuse-customer-select #select [selected]="form.get('customer').value" (useSelect)="form.get('customer').setValue($event); adding = false" (useAdd)="form.get('customer').setValue({fullname: $event}); adding = true" [template]="customerInput"></app-reuse-customer-select>
+        </nz-dropdown-menu>
+        <nb-accordion *ngIf="adding" style="width: 100%; margin-bottom: 1rem">
+            <nb-accordion-item>
+                <nb-accordion-item-header style="padding: 1rem 0.7rem;">
+                    <button (click)="adding = false; form.get('customer').setValue(undefined)" nbButton status="primary" size="tiny" style="margin-right: 0.5rem;">
+                    Change '{{customerSave ? customerSave.form?.get('fullname').value : form.get('customer').value?.fullname}}'
+                  </button>
+                </nb-accordion-item-header>
+                <nb-accordion-item-body>
+                    <app-reuse-customer-save #customerSave [inside]="true" [fullname]="form.get('customer').value.fullname"></app-reuse-customer-save>
+                </nb-accordion-item-body>
+            </nb-accordion-item>
+        </nb-accordion>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('title').invalid &&
+      (form.get('title').touched || form.get('title').dirty)
+    ">Title <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
+            <input [status]="
+          form.get('title').invalid &&
+          (form.get('title').touched || form.get('title').dirty) ? 'danger' : 'basic'
+        " fullWidth [formControl]="form.get('title')" nbInput size="small" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Process</span
+  >
+  <nb-form-field style="width: 100%; margin-bottom: 1rem">
+    <nb-icon icon="browser-outline" nbPrefix></nb-icon>
+    <input
+      #pipelineInput
+      fullWidth
+      nz-dropdown
+      [nzDropdownMenu]="pipelineRef"
+      [value]="pipeline?.name"
+      [nzPlacement]="'bottomCenter'"
+      [nzBackdrop]="false"
+      [nzTrigger]="'click'"
+      readonly
+      (focus)="pipelineSelect.useChangeValue(pipeline ? pipeline.name : '')"
+      nbInput
+      size="small"
+      (input)="pipelineSelect.useChangeValue($event.target.value)"
+    />
+    <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+  </nb-form-field>
+  <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
+    <app-reuse-pipeline-select
+      [selected]="pipeline"
+      [pipelines]="pipelines"
+      #pipelineSelect
+      (useSelect)="useSelectPipeline($event.id)"
+      [template]="pipelineInput"
+    ></app-reuse-pipeline-select>
+  </nz-dropdown-menu>
+  <span
+    *ngIf="pipeline"
+    style="display: block; margin-bottom: 0.5rem; font-weight: 600"
+    >Stage</span
+  >
+  <div *ngIf="pipeline" class="stages">
+    <label
+      class="stage"
+      (click)="form.get('stage').setValue(stage)"
+      [class.selected]="
+        form.get('stage').value &&
+        stage.position <= form.get('stage').value.position
+      "
+      *ngFor="let stage of pipeline.stages; let i = index"
+    ></label>
+  </div>
+  <nb-accordion *ngIf="!inside" style="width: 100%; margin-bottom: 1rem;">
+    <nb-accordion-item [expanded]="true">
+        <nb-accordion-item-header>Cart</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          <nb-card style="width: 100%; margin-bottom: 1rem" *ngFor="let detail of form.get('dealDetails')['controls']; let in = index" [formGroup]="detail">
+            <nb-card-body>
+              <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                <nb-icon icon="shopping-cart-outline" nbPrefix></nb-icon>
+                <input
+                  #productInput
+                  fullWidth
+                  nz-dropdown
+                  [status]="
+                  detail.get('product').get('name').invalid &&
+                  (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'
+                "
+                  [formControl]="detail.get('product').get('name')"
+                  [nzDropdownMenu]="productRef"
+                  [nzPlacement]="'bottomCenter'"
+                  [nzBackdrop]="false"
+                  [nzTrigger]="'click'"
+                  [status]="
+                  detail.get('product').get('name').invalid &&
+                  (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'
+                "
+                  nbInput
+                  size="small"
+                  (input)="product.useChangeValue($event.target.value)"
+                />
+                <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+              </nb-form-field>
+              <nz-dropdown-menu #productRef="nzDropdownMenu">
+                <app-reuse-product-select
+                  #product
+                  [selected]="detail.get('product')"
+                  (useSelect)="useChangeDealDetail($event, detail.get('product'), false)"
+                  (useAdd)="useChangeDealDetail({name: $event}, detail.get('product'), true)"
+                  [template]="productInput"
+                ></app-reuse-product-select>
+              </nz-dropdown-menu>
+              <div style="width: 100%; margin-bottom: 0.5rem;">
+                  <div style="width: 30%; float: left">
+                    <pre style="
+                          white-space: pre-wrap;
+                          white-space: -moz-pre-wrap;
+                          white-space: -pre-wrap;
+                          white-space: -o-pre-wrap;
+                          word-wrap: break-word;
+                          margin: 0;
+                          font-weight: bolder;
+                    ">Price</pre>
+                  </div>
+                  <div style="width: 30%; float: left">
+                    <pre style="
+                          white-space: pre-wrap;
+                          white-space: -moz-pre-wrap;
+                          white-space: -pre-wrap;
+                          white-space: -o-pre-wrap;
+                          word-wrap: break-word;
+                          margin: 0;
+                          font-weight: bolder;
+                    ">Quantity</pre>
+                  </div>
+                  <div style="width: 40%; float: left">
+                    <pre style="
+                          white-space: pre-wrap;
+                          white-space: -moz-pre-wrap;
+                          white-space: -pre-wrap;
+                          white-space: -o-pre-wrap;
+                          word-wrap: break-word;
+                          margin: 0;
+                          font-weight: bolder;
+                    ">Amount</pre>
+                  </div>
+              </div>
+              <nb-form-field style="width: 29%; margin: 0 1% 0 0; float: left">
+                <input fullWidth [readonly]="!detail.get('product').value.isNew" [status]="
+                detail.get('product').get('price').invalid &&
+                (detail.get('product').get('price').touched || detail.get('product').get('price').dirty) ? 'danger' : 'basic'
+              " [formControl]="detail.get('product').get('price')" mask="separator.0" thousandSeparator="," placeholder="Price" nbInput size="small" />
+            </nb-form-field>
+              <nb-form-field style="width: 29%; margin: 0 1% 0 0; float: left">
+                  <input fullWidth [status]="
+                  detail.get('quantity').invalid &&
+                  (detail.get('quantity').touched || detail.get('quantity').dirty) ? 'danger' : 'basic'
+                " [formControl]="detail.get('quantity')" mask="separator.0" thousandSeparator="," placeholder="Quantity" nbInput size="small" />
+              </nb-form-field>
+              <nb-form-field style="width: 40%; margin-top: 0; float: left">
+                <input fullWidth readonly [value]="useAmount(detail)" placeholder="Amout" nbInput size="small" />
+                <button nbSuffix nbButton status="danger" size="small" outline (click)="useRemoveDealDetail(in)" *ngIf="form.get('dealDetails')['controls'].length > 1"><nb-icon icon="trash-2-outline"></nb-icon></button>
+            </nb-form-field>
+            </nb-card-body>
+          </nb-card>
+          <button nbButton size="small" outline status="success" (click)="useAddDealDetail()">New Product</button>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Description</span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <textarea #area placeHolder="Description" fullWidth [formControl]="form.get('description')" (focus)="area.rows = 5" rows="1" (blur)="area.rows = 1" nbInput></textarea>
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef)">
+    Cancel
+  </button>
+        <button style="float: right; margin-right: 0.5rem" [disabled]="form.invalid || (adding && customerSave && customerSave.form && customerSave.form.invalid)" status="primary" (click)="useDialog(submitRef)" nbButton size="small">
+    Save
+  </button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+      Save and hide
+    </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+      Continue editing
+    </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+      Hide modal
+    </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+      Continue editing
+    </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

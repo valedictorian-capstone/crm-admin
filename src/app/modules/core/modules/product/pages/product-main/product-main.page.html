@@ -1,0 +1,25 @@
+<div class="crm-product">
+    <div class='crm-product-header'>
+        <div class="navigation">
+            <button nbButton status="success" (click)="usePlus()" outline class="mr-2" size="small">New Customer</button>
+            <button nbButton status="primary" (click)="useImport()" outline class="mr-2" size="small">Import</button>
+            <button nbButton status="default" (click)="useReload()" outline size="small">
+            <nb-icon icon="sync-outline"></nb-icon>
+          </button>
+        </div>
+        <div class="filter">
+            <nb-form-field class="not-search" style="max-width: 100%; width: 500px; margin-bottom: 1rem;" [nbSpinner]="stage === 'querying'" [nbSpinnerSize]="'tiny'">
+                <nb-icon [ngStyle]="{'opacity': stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
+                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search" nbInput size="large" />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class='crm-product-body'>
+        <ngx-spinner [name]="'product-main'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+        <div nz-row style="width: 90%; margin: auto">
+            <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6" *ngFor="let product of filterProducts">
+                <app-product-item [search]="search" [product]="product"></app-product-item>
+            </div>
+        </div>
+    </div>
+</div>

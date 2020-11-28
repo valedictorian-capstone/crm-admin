@@ -1,0 +1,11 @@
+<div nz-menu class="category-select">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
+    <a nz-menu-item class="item" [class.selected]="category.id === selected?.id" *ngFor="let category of filterCategorys" (click)="useSelect.emit(category); this.selected = category">
+        <nb-icon icon="compass-outline" style="margin-right: 0.7rem;"></nb-icon>
+        <pre>{{category.name}}</pre>
+    </a>
+    <a nz-menu-item class="item" *ngIf="filterCategorys.length === 0 && stage !== 'finding'" (click)="usePlus()">
+        <nb-icon icon="plus" style="margin-right: 1rem;"></nb-icon>
+        <pre>{{value === '' ? 'Add new category' : 'Add \'' + value + '\' as new category'}}</pre>
+    </a>
+</div>

@@ -1,0 +1,183 @@
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'product-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5">
+        {{this.product ? 'Edit' : 'New'}} Product
+        <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
+    <nb-icon icon="close"></nb-icon>
+  </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('code').invalid &&
+      (form.get('code').touched || form.get('code').dirty)
+    ">Code <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="stage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem">
+            <nb-icon [ngStyle]="{ opacity: stage === 'done' ? '1' : '0' }" nbPrefix icon="code-outline"></nb-icon>
+            <input style="height: 3rem" [status]="
+        form.get('code').invalid &&
+        (form.get('code').touched || form.get('code').dirty)
+          ? 'danger'
+          : 'basic'
+      " (blur)="useCheckCode()" fullWidth nz-dropdown [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')" nbInput size="large" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('name').invalid &&
+      (form.get('name').touched || form.get('name').dirty)
+    ">Name <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="shopping-cart-outline" x nbPrefix></nb-icon>
+            <input placeholder="Name" [status]="
+        form.get('name').invalid &&
+        (form.get('name').touched || form.get('name').dirty)
+          ? 'danger'
+          : 'basic'
+      " fullWidth [formControl]="form.get('name')" nbInput size="small" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('type').invalid &&
+      (form.get('type').touched || form.get('type').dirty)
+    ">Type <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="tape" pack="font-awesome" nbPrefix></nb-icon>
+            <input placeholder="Type" [status]="
+        form.get('type').invalid &&
+        (form.get('type').touched || form.get('type').dirty)
+          ? 'danger'
+          : 'basic'
+      " fullWidth [formControl]="form.get('type')" nbInput size="small" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+      form.get('price').invalid &&
+      (form.get('price').touched || form.get('price').dirty)
+    ">Price <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="money-bill-wave" pack="font-awesome" nbPrefix></nb-icon>
+            <input mask="separator.0" mask="separator.0" thousandSeparator="," [status]="
+        form.get('price').invalid &&
+        (form.get('price').touched || form.get('price').dirty)
+          ? 'danger'
+          : 'basic'
+      " placeholder="Price" fullWidth [formControl]="form.get('price')" nbInput size="small" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Category</span
+  >
+  <nb-form-field style="width: 100%; margin-bottom: 1rem">
+    <nb-icon icon="compass-outline" nbPrefix></nb-icon>
+    <input
+      #categoryInput
+      fullWidth
+      nz-dropdown
+      [status]="
+        form.get('category').invalid &&
+        (form.get('category').touched || form.get('category').dirty)
+          ? 'danger'
+          : 'basic'
+      "
+      [nzDropdownMenu]="categoryRef"
+      placeholder="Category"
+      [nzPlacement]="'bottomCenter'"
+      [nzBackdrop]="false"
+      [nzTrigger]="'click'"
+      [value]="form?.get('category').value?.name"
+      nbInput
+      size="small"
+      (input)="categoryPlus.useChangeValue($event.target.value)"
+    />
+    <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+  </nb-form-field>
+  <nz-dropdown-menu #categoryRef="nzDropdownMenu">
+    <app-reuse-category-select
+    [selected]="form.get('category').value"
+      #categoryPlus
+      (useSelect)="form.get('category').setValue($event)"
+      [template]="categoryInput"
+    ></app-reuse-category-select>
+  </nz-dropdown-menu>
+  <span style="display: block; margin-bottom: 0.5rem; font-weight: 600"
+    >Description</span
+  >
+  <nb-form-field style="width: 100%; margin-bottom: 1rem">
+    <textarea
+      #area
+      placeHolder="Description"
+      fullWidth
+      [formControl]="form.get('description')"
+      (focus)="area.rows = 5"
+      rows="1"
+      (blur)="area.rows = 1"
+      nbInput
+    ></textarea>
+  </nb-form-field>
+  <nb-accordion>
+    <nb-accordion-item>
+      <nb-accordion-item-header>Parameters</nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <smooth-dnd-container [dragHandleSelector]="'.drag-handle'" (drop)="useDrop($event)">
+          <smooth-dnd-draggable *ngFor="let parameter of form.get('parameters')['controls']; let i = index">
+            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+              <nb-icon class="drag-handle" style="cursor: move;" nbPrefix icon="move-outline"></nb-icon>
+                <input fullWidth [status]="
+                      parameter.get('label').invalid &&
+                      (parameter.get('label').touched ||
+                        parameter.get('label').dirty)
+                        ? 'danger'
+                        : 'basic'
+                    " [formControl]="parameter.get('label')" placeholder="Label" nbInput size="small" />
+            </nb-form-field>
+            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+                <input fullWidth [status]="
+                      parameter.get('value').invalid &&
+                      (parameter.get('value').touched ||
+                        parameter.get('value').dirty)
+                        ? 'danger'
+                        : 'basic'
+                    " [formControl]="parameter.get('value')" placeholder="Value" nbInput size="small" />
+                <nb-icon (click)="useRemoveParameter(i)" style="cursor: pointer;" nbSuffix icon="trash-2-outline" status="danger"></nb-icon>
+            </nb-form-field>
+          </smooth-dnd-draggable>
+      </smooth-dnd-container>
+      <button (click)="useAddParameter()" nbButton status="success" size="small">
+          <nb-icon icon="plus"></nb-icon>
+          <b>Add new parameter</b>
+        </button>
+      </nb-accordion-item-body>
+      </nb-accordion-item>
+      </nb-accordion>
+  </nb-card-body>
+  <nb-card-footer>
+      <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef)">
+    Cancel
+  </button>
+      <button style="float: right; margin-right: 0.5rem" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">
+    Save
+  </button>
+  </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+  <nb-card>
+      <nb-card-header>Saved changes </nb-card-header>
+      <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+      <nb-card-footer class="p-2">
+          <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+      Save and hide
+    </button>
+          <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+      Continue editing
+    </button>
+      </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+  <nb-card>
+      <nb-card-header>You have unsaved changes </nb-card-header>
+      <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+      <nb-card-footer class="p-2">
+          <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+      Hide modal
+    </button>
+          <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+      Continue editing
+    </button>
+      </nb-card-footer>
+  </nb-card>
+</ng-template>

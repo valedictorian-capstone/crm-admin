@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -17,10 +16,18 @@
       "dom"
     ],
     "paths": {
-      "@guards": ["./src/app/guards"],
       "@environments": ["./src/environments"],
       "@environments/*": ["./src/environments/*"],
       "@extras": ["./src/app/extras"],
+      "@store/*": ["./src/app/store/*"],
+      "@store": ["./src/app/store"],
+      "@actions": ["./src/app/store/actions"],
+      "@adapters": ["./src/app/store/adapters"],
+      "@selectors": ["./src/app/store/selectors"],
+      "@effects": ["./src/app/store/effects"],
+      "@reducers": ["./src/app/store/reducers"],
+      "@states": ["./src/app/store/states"],
+      "@guards": ["./src/app/guards"],
       "@extras/*": ["./src/app/extras/*"],
       "@modules": ["./src/app/modules"],
       "@view-models": ["./src/app/view-models"],

@@ -1,0 +1,25 @@
+<div class="crm-search-result">
+    <div class="crm-search-result-tabs">
+        <a (click)="useAll()" [class.current]="stage === 'all'" class="crm-search-result-tab" [style.width]="(100 / (menus.length + 1)) + '%'">
+          All
+        </a>
+        <a class="crm-search-result-tab" *ngFor="let item of menus; let i = index" [style.width]="(100 / (menus.length + 1)) + '%'" [nbTooltip]="item.label" [class.current]="stage === item.value" [nbTooltipPlacement]="'top'" (click)="useSelect(item.value)">
+            <nb-icon [icon]="item.icon" [pack]="item.pack"></nb-icon>
+        </a>
+    </div>
+    <div class="crm-search-result-data" [class.searching]="loading">
+        <div class="no-content text-center" *ngIf="value && value.length > 0 && data.length === 0 && !loading">
+            <b>No result for your value. New data with <br><a *ngFor="let item of useNoResul(); let i = index" (click)="useNoResultSelect(item)">{{item}}</a></b>
+        </div>
+        <div class="no-search" *ngIf="value == null || value === '' && !loading">
+            <b>Type anything to show more result</b>
+        </div>
+        <div nz-menu class="result" *ngIf="value && value.length > 0 && data.length > 0 && !loading">
+            <a nz-menu-item class="item" *ngFor="let item of data" (click)="useClickItem(item)">
+                <nb-icon [icon]="useIcon(item.searchType).icon" [pack]="useIcon(item.searchType).pack" style="margin-right: 1.2rem;"></nb-icon>
+                <pre [innerHTML]="item[useField(item.searchType)] | mask: value"></pre>
+            </a>
+        </div>
+        <ngx-spinner [name]="'search-result'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    </div>
+</div>

@@ -1,32 +1,32 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import {
-  ContactCreateComponent,
-  ContactListComponent,
-  ContactUpdateComponent,
-  ContactMailComponent
+  ContactItemComponent,
 } from './components';
+import { ContactMainPage } from './pages';
+// import { } from './directives';
+// import { } from './pipes';
 import { ContactRoutes } from './contact.routing';
-import {
-  ContactMainComponent
-} from './pages';
-
 const COMPONENTS = [
-  ContactCreateComponent,
-  ContactListComponent,
-  ContactUpdateComponent,
-  ContactMailComponent
+  ContactItemComponent,
 ];
+
 const PAGES = [
-  ContactMainComponent,
+  ContactMainPage
+];
+
+const PIPES = [
+
+];
+
+const DIRECTIVES = [
+
 ];
 @NgModule({
   imports: [
-    ExtrasModule.forRoot(),
-    ClipboardModule,
-    ContactRoutes,
+    ExtrasModule.forChild(),
+    ContactRoutes
   ],
-  declarations: [...COMPONENTS, ...PAGES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
 })
 export class ContactModule { }

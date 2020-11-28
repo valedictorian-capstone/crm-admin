@@ -1,0 +1,153 @@
+.crm-nav {
+    position: fixed;
+    min-height: 100vh;
+    max-height: 100vh;
+    width: 56px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: rgb(64, 67, 70);
+    user-select: none;
+    z-index: 1000;
+    a.crm-logo {
+        display: flex;
+        height: 56px;
+        width: 56px;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        img {
+            width: 50%;
+            height: 57%;
+        }
+    }
+    a.crm-menu-item {
+        display: flex;
+        height: 56px;
+        position: relative;
+        width: 56px;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        &.selected {
+            color: #6be487 !important;
+            nb-icon {
+                color: #6be487 !important;
+            }
+        }
+        &.mobile {
+            display: none;
+        }
+        &:hover {
+            background: rgb(32, 34, 37);
+        }
+        b {
+            display: none;
+            color: white;
+            position: absolute;
+            bottom: 3px;
+            font-size: 0.8rem;
+        }
+        nb-icon {
+            color: white;
+            font-size: 1.5rem;
+        }
+    }
+}
+
+.more-categories {
+    background: white;
+    position: fixed;
+    width: 56px;
+    height: calc(100vh - 56px);
+    left: 56px;
+    top: 56px;
+    transform: translateX(-56px);
+    z-index: 999;
+    transition: transform .5s ease-in-out;
+    a.crm-more-item {
+        display: flex;
+        height: 56px;
+        width: 100%;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        &.selected {
+            color: #6be487;
+            nb-icon {
+                color: #6be487;
+            }
+        }
+        &:hover {
+            background-color: #317ae2;
+            cursor: pointer;
+            nb-icon {
+                color: #fff;
+            }
+            b {
+                color: #fff;
+            }
+        }
+        b {
+            display: none;
+            color: rgb(32, 34, 37);
+            position: absolute;
+            bottom: 3px;
+            font-size: 0.8rem;
+        }
+        nb-icon {
+            color: rgb(32, 34, 37);
+            font-size: 1.5rem;
+        }
+    }
+    &.show {
+        transform: translate(0);
+    }
+}
+
+@media (max-width: 789px) {
+    .crm-nav {
+        min-height: 56px;
+        max-height: 56px;
+        overflow-y: hidden;
+        width: 100vw;
+        bottom: 0;
+        a.crm-logo {
+            display: none;
+        }
+        a.crm-menu-item {
+            float: left;
+            width: calc(100% / 5);
+            &.mobile {
+                display: flex;
+            }
+            &.not-mobile {
+                display: none;
+            }
+            b {
+                display: unset;
+            }
+            nb-icon {
+                margin-bottom: 15px;
+            }
+        }
+    }
+    .more-categories {
+        width: 100vw;
+        left: 0;
+        bottom: 56px;
+        top: unset;
+        transform: translateY(100%);
+        height: 56px;
+        a.crm-more-item {
+            width: calc(100% / 5);
+            float: left;
+            b {
+                display: unset;
+            }
+            nb-icon {
+                margin-bottom: 15px;
+            }
+        }
+    }
+}

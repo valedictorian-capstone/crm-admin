@@ -1,0 +1,11 @@
+<div nz-menu class="pipeline-select">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
+    <a nz-menu-item [class.selected]="pipeline.id === selected?.id" class="item" *ngFor="let pipeline of filterPipelines" (click)="useSelect.emit(pipeline); this.selected = pipeline">
+        <nb-icon icon="browser-outline" style="margin-right: 0.5rem;"></nb-icon>
+        <pre>{{pipeline.name}}</pre>
+    </a>
+    <!-- <a nz-menu-item class="item" *ngIf="filterPipelines.length === 0 && stage !== 'finding'">
+      <nb-icon icon="plus" style="margin-right: 1rem;"></nb-icon>
+      <pre>{{value === '' ? 'Add new pipeline' : 'Add ' + value + ' as new pipeline'}}</pre>
+  </a> -->
+</div>

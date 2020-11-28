@@ -1,0 +1,17 @@
+nb-card {
+    width: 789px;
+    margin-top: 29px;
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow: auto;
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card {
+        width: 95vw;
+        &.inside {
+            width: 100%;
+        }
+    }
+}

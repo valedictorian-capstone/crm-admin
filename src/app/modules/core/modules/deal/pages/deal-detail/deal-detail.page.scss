@@ -1,0 +1,443 @@
+.crm-deal-detail {
+    max-height: 100%;
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    padding: 2rem;
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+    .crm-deal-detail-main {
+        width: 70%;
+        margin: 0 auto;
+        position: relative;
+        height: 100%;
+        .crm-deal-detail-information {
+            background: white;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 5px;
+            height: 13rem;
+            float: left;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            .deal-header {
+                height: 2rem;
+                .deal-header-left {
+                    width: fit-content;
+                    float: left;
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    b {
+                        cursor: pointer;
+                        font-size: 1rem;
+                        color: #317ae2;
+                        margin-right: 0.5rem;
+                    }
+                }
+                .deal-header-right {
+                    width: fit-content;
+                    float: right;
+                    display: flex;
+                    align-items: center;
+                    .desktop {
+                        display: inline-flex;
+                        margin-right: 0.5rem;
+                    }
+                    .small-mobile {
+                        display: none;
+                        margin-right: 0.2rem;
+                    }
+                }
+            }
+            .deal-stages {
+                flex-flow: row nowrap;
+                border-radius: 2px;
+                table-layout: fixed;
+                height: 28px;
+                width: 100%;
+                display: flex;
+                box-sizing: border-box;
+                margin: 1rem 0 1rem 0;
+                .deal-stage {
+                    position: relative;
+                    display: flex;
+                    flex-grow: 1;
+                    flex-basis: 0;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: -6px;
+                    background-color: #dcdddd;
+                    color: #747678;
+                    height: 100%;
+                    cursor: pointer;
+                    font-size: 13px;
+                    text-align: center;
+                    font-style: normal;
+                    font-stretch: normal;
+                    line-height: 1.5;
+                    letter-spacing: normal;
+                    -webkit-clip-path: polygon(calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 2px 100%, 8px 50%, 2px 0);
+                    clip-path: polygon(calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 2px 100%, 8px 50%, 2px 0);
+                    &:hover {
+                        opacity: 0.8;
+                        background-color: #eee;
+                    }
+                    &.selected {
+                        color: #fff;
+                        background-color: #08a742;
+                        &:hover {
+                            background-color: #26b259;
+                        }
+                    }
+                    &:first-of-type {
+                        margin-left: 0;
+                        border-radius: 2px 0 0 2px;
+                        -webkit-clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
+                        clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
+                    }
+                    &:last-of-type {
+                        border-radius: 0 2px 2px 0;
+                        -webkit-clip-path: polygon(100% 0, 100% 100%, 2px 100%, 8px 50%, 2px 0);
+                        clip-path: polygon(100% 0, 100% 100%, 2px 100%, 8px 50%, 2px 0);
+                    }
+                }
+            }
+            .deal-stage-deail {
+                width: 100%;
+                height: 1rem;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+            }
+        }
+        .crm-deal-detail-products {
+            margin-top: 1rem;
+            width: 32.5%;
+            float: left;
+            margin-right: 2.5%;
+        }
+        .crm-deal-detail-content {
+            margin-top: 1rem;
+            height: fit-content;
+            width: 65%;
+            border-radius: 5px;
+            float: left;
+            .crm-deal-detail-content-pin {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            .crm-deal-detail-content-navigation {
+                width: 100%;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                background: white;
+                min-height: 9rem;
+                .crm-deal-detail-content-navigation-bar {
+                    display: flex;
+                    align-items: center;
+                    height: 3rem;
+                    padding: 1rem;
+                    border-bottom: 1px solid #e5e5e5;
+                }
+                .crm-deal-detail-content-navigation-plus {
+                    width: 100%;
+                    .no-content {
+                        padding: 1rem;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: center;
+                        height: 6rem;
+                        align-items: center;
+                    }
+                }
+            }
+            .crm-deal-detail-content-plan {
+                margin-top: 1rem;
+                width: 100%;
+                .title {
+                    height: 4rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    span {
+                        display: inline-block;
+                        width: auto;
+                        margin: 0;
+                        min-width: 105px;
+                        padding: 2px 12px;
+                        background: none;
+                        cursor: default;
+                        font: 400 13px/16px monospace, sans-serif;
+                        vertical-align: middle;
+                        text-align: center;
+                        text-transform: uppercase;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        border-radius: 10px;
+                        color: #fff;
+                        background-color: #747678;
+                    }
+                }
+                .plans {
+                    min-height: 6rem;
+                    width: 100%;
+                    position: relative;
+                    nz-timeline {
+                         ::ng-deep {
+                            ul {
+                                li {
+                                    .ant-timeline-item-tail {
+                                        border-left: 2px dashed silver !important;
+                                    }
+                                    .ant-timeline-item-head.ant-timeline-item-head-custom {
+                                        top: 13px !important;
+                                        background: none;
+                                        .crm-deal-detail-content-connect {
+                                            position: absolute;
+                                            height: 13rem;
+                                            width: 1rem;
+                                            left: 1.3rem;
+                                            border-left: 2px dashed silver !important;
+                                        }
+                                    }
+                                    .ant-timeline-item-content {
+                                        margin: 0 0 0 50px !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .empty {
+                        width: 100%;
+                        height: 4rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+            }
+            .crm-deal-detail-content-done {
+                .title {
+                    height: 4rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    span {
+                        display: inline-block;
+                        width: auto;
+                        margin: 0;
+                        min-width: 105px;
+                        padding: 2px 12px;
+                        background: none;
+                        cursor: default;
+                        font: 400 13px/16px monospace, sans-serif;
+                        vertical-align: middle;
+                        text-align: center;
+                        text-transform: uppercase;
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        border-radius: 10px;
+                        color: #fff;
+                        background-color: #747678;
+                    }
+                }
+                .dones {
+                    min-height: 20rem;
+                    nz-timeline {
+                         ::ng-deep {
+                            ul {
+                                li {
+                                    .ant-timeline-item-tail {
+                                        border-left: 2px dashed silver !important;
+                                    }
+                                    .ant-timeline-item-head.ant-timeline-item-head-custom {
+                                        top: 13px !important;
+                                        background: none;
+                                    }
+                                    .ant-timeline-item-content {
+                                        margin: 0 0 0 50px !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .navigation {
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 3rem;
+                        margin-bottom: 1.5rem;
+                        .item {
+                            display: inline-block;
+                            font: 400 13px/16px monospace, sans-serif;
+                            line-height: 32px;
+                            color: #747678;
+                            padding: 0 12px;
+                            cursor: pointer;
+                            text-transform: uppercase;
+                            text-decoration: none;
+                            &:hover {
+                                color: #317ae2;
+                            }
+                            &.dot-active {
+                                border-bottom: 2px solid #721ea9;
+                            }
+                            .data {
+                                position: relative;
+                                span {
+                                    position: absolute;
+                                    width: 20px;
+                                    height: 20px;
+                                    background: red;
+                                    display: flex;
+                                    border-radius: 50%;
+                                    justify-content: center;
+                                    color: white;
+                                    font-size: 16px;
+                                    align-items: center;
+                                    top: -16px;
+                                    left: 11px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .deal-customer {
+            width: 100%;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            .deal-customer-avatar {
+                height: 3rem;
+                width: fit-content;
+                border-radius: 50%;
+                cursor: pointer;
+                text-align: center;
+                .avatar {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    border-radius: 50%;
+                }
+                .none-avatar {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    border: 1px solid #e5e5e5;
+                    background: antiquewhite;
+                    font-size: 1rem;
+                    align-items: center;
+                    text-transform: uppercase;
+                }
+                .fullname {
+                    display: block;
+                    width: 100%;
+                    margin-top: 0.2rem;
+                    font-weight: bold;
+                }
+            }
+            .cart {
+                position: absolute;
+                right: 0;
+                top: 1rem;
+            }
+        }
+    }
+}
+
+@media (max-width: 1100px) {
+    .crm-deal-detail {
+        padding: 1rem;
+        .crm-deal-detail-main {
+            width: 100%;
+            .crm-deal-detail-products {
+                width: 100%;
+                margin-right: 0;
+            }
+            .crm-deal-detail-content {
+                width: 100%;
+                .crm-deal-detail-content-plan {
+                    .plans {
+                        nz-timeline {
+                             ::ng-deep {
+                                ul {
+                                    li {
+                                        .ant-timeline-item-content {
+                                            margin: 0 0 0 40px !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .crm-deal-detail-content-done {
+                    .dones {
+                        nz-timeline {
+                             ::ng-deep {
+                                ul {
+                                    li {
+                                        .ant-timeline-item-content {
+                                            margin: 0 0 0 40px !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 414px) {
+    .crm-deal-detail {
+        .crm-deal-detail-main {
+            .crm-deal-detail-information {
+                .deal-header {
+                    .deal-header-right {
+                        .desktop {
+                            display: none;
+                        }
+                        .small-mobile {
+                            display: inline-flex;
+                        }
+                    }
+                }
+            }
+            .crm-deal-detail-content {
+                .crm-deal-detail-content-navigation {
+                    .crm-deal-detail-content-navigation-bar {
+                        .desktop {
+                            display: none;
+                        }
+                        .small-mobile {
+                            display: unset !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

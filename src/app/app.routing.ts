@@ -1,4 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
+import { AppGuard } from './app.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +14,7 @@ const routes: Routes = [
   {
     path: 'core',
     loadChildren: () => import('src/app/modules').then((m) => m.CoreModule),
-    canLoad: []
+    canLoad: [AppGuard],
   },
 ];
 

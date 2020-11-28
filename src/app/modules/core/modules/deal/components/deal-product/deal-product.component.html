@@ -1,0 +1,86 @@
+<nb-accordion style="width: 100%;">
+    <nb-accordion-item [expanded]="true">
+        <nb-accordion-item-header>
+            <nb-icon class="mr-2" icon="shopping-cart-outline"></nb-icon>
+            <b>Cart</b>
+        </nb-accordion-item-header>
+        <nb-accordion-item-body style="max-height: 60vh; overflow-y: auto;">
+            <nb-card style="width: 100%; margin-bottom: 1rem" *ngFor="let detail of details.controls; let in = index" [formGroup]="detail">
+                <nb-card-body>
+                    <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+                        <nb-icon icon="shopping-cart-outline" nbPrefix></nb-icon>
+                        <input #productInput fullWidth nz-dropdown nbInput size="small" [status]="detail.get('product').get('name').invalid &&
+                                (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'" [formControl]="detail.get('product').get('name')" [nzDropdownMenu]="productRef" [nzPlacement]="'bottomCenter'"
+                            [nzBackdrop]="false" [nzTrigger]="'click'" [status]="detail.get('product').get('name').invalid &&
+                                (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'" (input)="product.useChangeValue($event.target.value)" />
+                        <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+                    </nb-form-field>
+                    <nz-dropdown-menu #productRef="nzDropdownMenu">
+                        <app-reuse-product-select #product [selected]="detail.get('product')" (useSelect)="useChangeDealDetail($event, detail.get('product'), false)" (useAdd)="useChangeDealDetail({name: $event}, detail.get('product'), true)" [template]="productInput"></app-reuse-product-select>
+                    </nz-dropdown-menu>
+                    <div style="width: 100%; margin-bottom: 0.5rem;">
+                        <div style="width: 30%; float: left">
+                            <pre style="
+                                white-space: pre-wrap;
+                                white-space: -moz-pre-wrap;
+                                white-space: -pre-wrap;
+                                white-space: -o-pre-wrap;
+                                word-wrap: break-word;
+                                margin: 0;
+                                font-weight: bolder;
+                              ">Price
+                            </pre>
+                        </div>
+                        <div style="width: 30%; float: left">
+                            <pre style="
+                                  white-space: pre-wrap;
+                                  white-space: -moz-pre-wrap;
+                                  white-space: -pre-wrap;
+                                  white-space: -o-pre-wrap;
+                                  word-wrap: break-word;
+                                  margin: 0;
+                                  font-weight: bolder;
+                              ">Quantity
+                            </pre>
+                        </div>
+                        <div style="width: 40%; float: left">
+                            <pre style="
+                                  white-space: pre-wrap;
+                                  white-space: -moz-pre-wrap;
+                                  white-space: -pre-wrap;
+                                  white-space: -o-pre-wrap;
+                                  word-wrap: break-word;
+                                  margin: 0;
+                                  font-weight: bolder;
+                              ">Amount
+                            </pre>
+                        </div>
+                    </div>
+                    <nb-form-field style="width: 29%; margin: 0 1% 0 0; float: left">
+                        <input fullWidth [readonly]="!detail.get('product').value.isNew" [status]="
+    detail.get('product').get('price').invalid &&
+    (detail.get('product').get('price').touched || detail.get('product').get('price').dirty) ? 'danger' : 'basic'
+  " [formControl]="detail.get('product').get('price')" mask="separator.0" thousandSeparator="," placeholder="Price" nbInput size="small" />
+                    </nb-form-field>
+                    <nb-form-field style="width: 29%; margin: 0 1% 0 0; float: left">
+                        <input fullWidth [status]="
+      detail.get('quantity').invalid &&
+      (detail.get('quantity').touched || detail.get('quantity').dirty) ? 'danger' : 'basic'
+    " [formControl]="detail.get('quantity')" mask="separator.0" thousandSeparator="," placeholder="Quantity" nbInput size="small" />
+                    </nb-form-field>
+                    <nb-form-field style="width: 40%; margin-top: 0; float: left">
+                        <input fullWidth readonly [value]="useAmount(detail)" placeholder="Amout" nbInput size="small" />
+                    </nb-form-field>
+                    <button nbButton status="primary" outline size="small" [disabled]="detail.invalid" class="mr-2 mt-2" (click)="useSaveDetail(detail)"> {{detail.value.id ? 'Save' : 'Add'}}</button>
+                    <button nbButton status="danger" outline size="small" class="mt-2" (click)="useRemoveDetail(detail.value.id, in)" *ngIf="useCanDelete()">Remove</button>
+                </nb-card-body>
+            </nb-card>
+            <button nbButton status="success" outline size="small" (click)="usePlusDetail()">New Product</button>
+            <nb-card class="mt-2">
+                <nb-card-body>
+                    <span>Total: <b>₫{{details.value | money}}</b></span>
+                </nb-card-body>
+            </nb-card>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
+</nb-accordion>

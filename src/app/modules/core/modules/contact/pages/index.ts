@@ -1,1 +1,1 @@
-export * from './contact-main/contact-main.component';
+export * from './contact-main/contact-main.page';

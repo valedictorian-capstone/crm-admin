@@ -1,0 +1,79 @@
+<button *ngIf="!data" nbButton status="success" (click)="useDownload(example)" size="small">Download Example</button>
+<table #example style="display: none;">
+    <thead>
+        <tr>
+            <th>code</th>
+            <th>fullname</th>
+            <th>email</th>
+            <th>phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>SE00000</td>
+            <td>John Doe</td>
+            <td>no-reply@gmail.com</td>
+            <td>'0123456789</td>
+        </tr>
+    </tbody>
+</table>
+<div class="data" *ngIf="data">
+    <table class="table table-bordered m-0">
+        <thead>
+            <tr>
+                <th>
+                    <div style="width: 15rem; text-align: center;">CODE</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">FULLNAME</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">EMAIL</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">PHONE</div>
+                </th>
+                <th>
+                    <div style="width: 15rem; text-align: center;">ROLES</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let form of employees.controls" [formGroup]="form">
+                <th>
+                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['codeStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
+                        <nb-icon [ngStyle]="{'opacity': form['codeStage'] === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
+                        <input (blur)="useCheckCode(form)" [status]="form.get('code').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field style="width: 100%;">
+                        <input [status]="form.get('fullname').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['emailStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
+                        <nb-icon [ngStyle]="{'opacity': form['emailStage'] === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+                        <input (blur)="useCheckEmail(form)" [status]="form.get('email').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Email'" shape="rectangle" [formControl]="form.get('email')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['phoneStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
+                        <nb-icon [ngStyle]="{'opacity': form['phoneStage'] === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+                        <input (blur)="useCheckPhone(form)" [status]="form.get('phone').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Phone'" shape="rectangle" [formControl]="form.get('phone')" nbInput size="large" />
+                    </nb-form-field>
+                </th>
+                <th>
+                    <nb-form-field style="max-width: 100%;">
+                        <nb-icon icon="pin-outline" nbPrefix></nb-icon>
+                        <nb-select fullWidth multiple placeholder="Role" [formControl]="form.get('roles')">
+                            <nb-option [value]="{id: role.id}" *ngFor="let role of roles">{{role.name}}</nb-option>
+                        </nb-select>
+                    </nb-form-field>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="employees.invalid">Save</button>
+<button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>

@@ -1,0 +1,33 @@
+nb-calendar-with-time {
+     ::ng-deep {
+        nb-card.calendar-with-time {
+            width: fit-content;
+            margin: 0;
+            margin-top: -3rem;
+            nb-card-body.picker-body {
+                display: unset;
+                .timepicker-section.timepicker-multiple-column-width {
+                    width: 100%;
+                    height: 3rem;
+                    .picker-title {
+                        display: none;
+                    }
+                    nb-card-header {
+                        display: none;
+                    }
+                    nb-list {
+                        width: 330px;
+                        white-space: nowrap;
+                        max-width: 330px;
+                        overflow-x: auto;
+                        display: block;
+                        .list-item:not(.am-pm-item) {
+                            display: inline-block;
+                            width: 4rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -20,9 +20,7 @@ export class InterceptorService {
     request = request.clone(
       {
         reportProgress: true,
-        setHeaders: {
-          authorization: `${token}`,
-        },
+        setHeaders: token ? { authorization: `${token}` } : {},
       }
     );
     return next.handle(request).pipe(

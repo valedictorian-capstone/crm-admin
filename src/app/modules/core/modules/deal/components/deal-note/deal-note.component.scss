@@ -1,0 +1,39 @@
+.note {
+    background: #fffcdc;
+    width: 100%;
+    min-height: 6rem;
+    padding: 1rem;
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid #e5e5e5;
+    p {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .time {
+        width: calc(100% - 1rem);
+        height: 1rem;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        span {
+            display: inline-block;
+            font: 400 13px/16px monospace, sans-serif;
+            color: #747678;
+        }
+        .separator {
+            margin: 0;
+            padding: 0 16px 0 9px;
+            width: 8px;
+            display: inline-block;
+            cursor: default;
+            text-align: center;
+            font-weight: 900;
+        }
+    }
+    button {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+    }
+}

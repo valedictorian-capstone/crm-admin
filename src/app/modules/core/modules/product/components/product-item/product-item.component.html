@@ -1,0 +1,30 @@
+<nb-card style="width: 95%; margin: auto;">
+    <nb-card-header style="display: flex; align-items: center; border-radius: 5px;">
+        <div style="width: calc(100% - 3rem); float: left">
+            <div style="display: block; text-overflow: ellipsis; width: 100%; white-space: nowrap; overflow: hidden;">
+                <span>
+                <b class="text-warning" [innerHTML]="product.code  | mask: search"></b> - <b [innerHTML]="product.name | mask: search"></b>
+              </span>
+            </div>
+        </div>
+        <div style="width: 3rem; display: flex; justify-content: center; align-items: center;">
+            <button nbButton status="primary" (click)="useEdit()" class="mr-1 mt-1" outline shape="round" size="small">
+            <nb-icon icon="edit-2-outline"></nb-icon>
+          </button>
+            <button nbButton status="danger" (click)="useDialog(removeRef)" class="mr-1 mt-1" outline shape="round" size="small">
+            <nb-icon icon="trash-2-outline"></nb-icon>
+          </button>
+        </div>
+    </nb-card-header>
+</nb-card>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Disable product
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to disabled this product?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Disabled</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

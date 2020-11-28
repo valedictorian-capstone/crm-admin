@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { AccountMainComponent } from './pages';
+import { AccountMainPage } from './pages';
 
 const routes: Routes = [
-  { path: '', component: AccountMainComponent },
+  { path: '', component: AccountMainPage },
 ];
 
 export const AccountRoutes = RouterModule.forChild(routes);

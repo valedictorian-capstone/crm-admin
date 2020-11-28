@@ -12,33 +12,33 @@ export class GroupService {
   constructor(protected readonly httpClient: HttpClient) { }
 
   public readonly findAll = (): Observable<GroupVM[]> => {
-    return this.httpClient.get<GroupVM[]>(`${environment.apiEndpont}${environment.api['basic-api'].group.main}`);
+    return this.httpClient.get<GroupVM[]>(`${environment.apiEndpont}${environment.api.basic.group.main}`);
   }
 
   public readonly findById = (id: string): Observable<GroupVM> => {
-    return this.httpClient.get<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.getById}${id}`);
+    return this.httpClient.get<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.getById}${id}`);
   }
 
   public readonly insert = (data: GroupCM): Observable<GroupVM> => {
-    return this.httpClient.post<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.main}`, data);
+    return this.httpClient.post<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.main}`, data);
   }
 
   public readonly update = (data: GroupUM): Observable<GroupVM> => {
-    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.main}`, data);
+    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.main}`, data);
   }
 
   public readonly remove = (id: string): Observable<GroupVM> => {
-    return this.httpClient.delete<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.getById}${id}`);
+    return this.httpClient.delete<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.getById}${id}`);
   }
 
   public readonly active = (ids: string[]): Observable<GroupVM> => {
-    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.active}`, ids);
+    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.active}`, ids);
   }
 
   public readonly deactive = (ids: string[]): Observable<GroupVM> => {
-    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api['basic-api'].group.deactive}`, ids);
+    return this.httpClient.put<GroupVM>(`${environment.apiEndpont}${environment.api.basic.group.deactive}`, ids);
   }
   public readonly checkUnique = (label: string, value: string): Observable<boolean> => {
-    return this.httpClient.get<boolean>(`${environment.apiEndpont}${environment.api['basic-api'].group.getById}unique?label=${label}&value=${value}`);
+    return this.httpClient.get<boolean>(`${environment.apiEndpont}${environment.api.basic.group.getById}unique?label=${label}&value=${value}`);
   }
 }

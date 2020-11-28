@@ -1,0 +1,120 @@
+<div class="crm-pipeline-header">
+    <nb-form-field style="max-width: 55vw;">
+        <nb-icon icon="browser-outline" [status]="name.invalid && (name.touched || name.dirty) ? 'danger' : 'default'" nbPrefix></nb-icon>
+        <input [formControl]="name" [status]="name.invalid && (name.touched || name.dirty) ? 'danger' : 'default'" nbInput fullWidth />
+    </nb-form-field>
+    <div class="crm-pipeline-header-action">
+        <button nbButton style="margin-right: 0.5rem;" (click)="useDialog(cancelRef, -1)" status="default"><nb-icon icon="undo-outline"></nb-icon></button>
+        <button nbButton style="margin-right: 0.5rem;" (click)="useDialog(submitRef, -1)" [disabled]="name.invalid || stages.invalid" status="primary"><nb-icon icon="save-outline"></nb-icon></button>
+        <ng-template #submitRef let-data let-ref="dialogRef">
+            <nb-card>
+                <nb-card-header>Saved changes
+                </nb-card-header>
+                <nb-card-body>Are you sure you wish to create and leave this page?</nb-card-body>
+                <nb-card-footer>
+                    <button style="float: right;" status="primary" nbButton size="small" (click)="useCreate(ref)">Create and leave</button>
+                    <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+                </nb-card-footer>
+            </nb-card>
+        </ng-template>
+        <ng-template #cancelRef let-data let-ref="dialogRef">
+            <nb-card>
+                <nb-card-header>You have unsaved changes
+                </nb-card-header>
+                <nb-card-body>Are you sure you wish to leave this page?</nb-card-body>
+                <nb-card-footer>
+                    <button style="float: right;" status="default" nbButton size="small" (click)="useCancel(ref)">Leave this page</button>
+                    <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+                </nb-card-footer>
+            </nb-card>
+        </ng-template>
+    </div>
+</div>
+<div class="crm-pipeline-body">
+    <div class="stages">
+        <smooth-dnd-container [dragHandleSelector]="'.drag-handle'" [orientation]="'horizontal'" (drop)="useDrop($event)" (dragStart)="dragging = true" (dragEnd)="dragging = false">
+            <smooth-dnd-draggable *ngFor="let stage of stages.controls; let i = index">
+                <div class="stage" [class.selected]="i === active" (click)="active = i" [formGroup]="stage">
+                    <div class="stage-header">
+                        <button class="plus-left" (click)="usePlus(i)" status="default" nbButton size="tiny" shape="round"><nb-icon icon="plus"></nb-icon></button>
+                        <button class="plus-right" (click)="usePlus(i + 1)" status="default" nbButton size="tiny" shape="round"><nb-icon icon="plus"></nb-icon></button>
+                        <svg *ngIf="i !== stages.length - 1" class="arrow-right" width="16" height="56"><g fill="none" fill-rule="evenodd"><path class="arrow__right" fill="#edf1f7" d="M0 0h16v56H0z" [class.near]="active === i + 1 && active !== -1"></path><path class="arrow__border" fill="#E5E5E5" d="M1 0l8 28-8 28H0V0z"></path><path class="arrow__left" fill="#edf1f7" d="M0 1l8 27-8 27z"></path></g></svg>
+                        <div class="stage-header-name">
+                            {{stage.value.name}}
+                        </div>
+                        <div class="stage-header-probability">
+                            <nb-icon icon="thermometer-plus-outline" style="margin-right: 0.5rem;"></nb-icon>
+                            <span>{{stage.value.probability}}</span>
+                        </div>
+                        <svg *ngIf="i !== 0" class="arrow-left" width="16" height="56"><g fill="none" fill-rule="evenodd"><path class="arrow__right" fill="#edf1f7" d="M0 0h16v56H0z"></path><path class="arrow__border" fill="#E5E5E5" d="M1 0l8 28-8 28H0V0z"></path><path class="arrow__left" fill="#edf1f7" d="M0 1l8 27-8 27z" [class.near]="active === i - 1 && active !== -1"></path></g></svg>
+                        <nb-icon class="drag-handle" style="position: absolute; right: 18px; top: 18px;" icon="move"></nb-icon>
+                    </div>
+                    <div class="stage-body">
+                        <div class="form-group">
+                            <span>Name</span>
+                            <input size="tiny" [formControl]="stage.get('name')" [status]="stage.get('name').invalid && (stage.get('name').touched || stage.get('name').dirty) ? 'danger' : 'default'" nbInput fullWidth />
+                        </div>
+                        <div class="form-group">
+                            <span>Probability <nb-icon icon="question-mark-circle" style="cursor: pointer;" [nbPopover]="probabilityRef" [nbPopoverPlacement]="'end'" [nbPopoverTrigger]="'hover'"></nb-icon></span>
+                            <input type="number" size="tiny" [formControl]="stage.get('probability')" [status]="stage.get('probability').invalid && (stage.get('probability').touched || stage.get('name').dirty) ? 'danger' : 'default'" nbInput fullWidth />
+                            <ng-template #probabilityRef>
+                                <div style="
+                                padding: 16px;
+                                width: 256px;
+                                height: 240px;
+font: 400 15px/20px Source Sans Pro,sans-serif;
+    color: #26292c;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,.24), 0 8px 10px 1px rgba(0,0,0,.05), 0 3px 14px 2px rgba(0,0,0,.06), 0 5px 5px -3px rgba(0,0,0,.1);
+                              ">
+                                    <span style="
+                                    display: block;
+                                    width: 100%;
+                                    font-weight: 600;
+                                    margin-bottom: 0.5rem;
+                                  ">
+                                    Win probability
+                                  </span>
+
+                                    <span style="
+                                    word-wrap: break-word;
+                                    font-size: 0.8rem;
+                                ">
+This represents your confidence in winning a deal by the expected close date. Probability can be assigned by deal or pipeline stage and is used to project your future revenue. The default probability for each stage is 100%, but you can assign any value between 0% and 100%.                                </span>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div class="stage-footer">
+                        <a (click)="useDialog(removeRef, -1)">
+                            <nb-icon icon="trash-2" style="margin-right: 0.5rem;"></nb-icon>
+                            <span>Delete stage</span>
+                        </a>
+                        <ng-template #removeRef let-data let-ref="dialogRef">
+                            <nb-card style="width: 420px;">
+                                <nb-card-header>Delete Qualified stage
+                                </nb-card-header>
+                                <nb-card-body>There are no deals in this stage right now.</nb-card-body>
+                                <nb-card-footer>
+                                    <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(data, ref)"><nb-icon icon="trash-2"></nb-icon> Delete stage</button>
+                                    <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+                                </nb-card-footer>
+                            </nb-card>
+                        </ng-template>
+                    </div>
+                </div>
+            </smooth-dnd-draggable>.
+            <div class="new-stage" [style.width]="'calc(100% - ' + ((stages.controls.length) * 18) +'rem )'">
+                <div class="content" [style.opacity]="dragging ? '0' : '1'">
+                    <h5>Add new stage</h5>
+                    <p>Process stages represent the steps in your sales process</p>
+                    <button nbButton status="success" (click)="usePlus()" size="small">
+                  <nb-icon icon="plus"></nb-icon> New stage
+                </button>
+                </div>
+            </div>
+        </smooth-dnd-container>
+
+    </div>
+</div>

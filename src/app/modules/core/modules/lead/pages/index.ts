@@ -1,1 +1,1 @@
-export * from './lead-main/lead-main.component';
+export * from './lead-main/lead-main.page';

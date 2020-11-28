@@ -1,32 +1,32 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import {
-  LeadCreateComponent,
-  LeadListComponent,
-  LeadUpdateComponent,
-  LeadMailComponent
+  LeadItemComponent,
 } from './components';
+import { LeadMainPage } from './pages';
+// import { } from './directives';
+// import { } from './pipes';
 import { LeadRoutes } from './lead.routing';
-import {
-  LeadMainComponent
-} from './pages';
-
 const COMPONENTS = [
-  LeadCreateComponent,
-  LeadListComponent,
-  LeadUpdateComponent,
-  LeadMailComponent
+  LeadItemComponent,
 ];
+
 const PAGES = [
-  LeadMainComponent,
+  LeadMainPage
+];
+
+const PIPES = [
+
+];
+
+const DIRECTIVES = [
+
 ];
 @NgModule({
   imports: [
-    ExtrasModule.forRoot(),
-    ClipboardModule,
+    ExtrasModule.forChild(),
     LeadRoutes,
   ],
-  declarations: [...COMPONENTS, ...PAGES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
 })
 export class LeadModule { }

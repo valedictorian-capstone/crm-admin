@@ -1,28 +1,110 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AntModule, FormModule, NebularModule, PrimeModule } from './modules';
-import { ActionMenuComponent } from './components';
-import { LengthPipe, ShortPipe } from './pipes';
+import { AntModule, NebularModule, PrimeModule, NgxModule } from './modules';
+import {
+  ActivityTimeComponent,
+  CategorySelectComponent,
+  CustomerSelectComponent,
+  CustomerBirthdayComponent,
+  DealSelectComponent,
+  EmployeeSelectComponent,
+  PipelineSelectComponent,
+  ProductSelectComponent,
+  RoleSelectComponent,
+  CustomerColumnComponent,
+  DealItemComponent,
+  FeedbackItemComponent,
+  TicketItemComponent,
+  EmployeeItemComponent
+} from './components';
+import {
+  ActivitySavePage,
+  AttachmentSavePage,
+  CustomerSavePage,
+  DealSavePage,
+  EmployeeSavePage,
+  NoteSavePage,
+  ProductSavePage,
+  RoleSavePage,
+  PipelineMovetoPage,
+  CustomerImportPage,
+  DealImportPage,
+  EmployeeImportPage,
+  ImportDataPage,
+  ProductImportPage,
+  MailSenderPage,
+  CustomerProfilePage,
+  SettingPasswordPage,
+  SettingPermissionPage,
+  SettingProfilePage
+} from './pages';
+import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+
 export const EXTRA_MODULES = [
-  FormModule,
   AntModule,
   NebularModule,
   PrimeModule,
+  NgxModule,
+
 ];
 
 export const ANGULAR_MODULES = [
   FormsModule,
   ReactiveFormsModule,
-  CommonModule
+  CommonModule,
+  DragDropModule,
+  ClipboardModule
+];
+export const REUSE_COMPONENTS = [
+  ActivityTimeComponent,
+  CategorySelectComponent,
+  CustomerSelectComponent,
+  CustomerBirthdayComponent,
+  DealSelectComponent,
+  EmployeeSelectComponent,
+  PipelineSelectComponent,
+  ProductSelectComponent,
+  RoleSelectComponent,
+  CustomerColumnComponent,
+  DealItemComponent,
+  FeedbackItemComponent,
+  TicketItemComponent,
+  EmployeeItemComponent
 ];
 
-export const COMPONENTS = [
-  ActionMenuComponent
+export const REUSE_PAGES = [
+  ActivitySavePage,
+  AttachmentSavePage,
+  CustomerSavePage,
+  DealSavePage,
+  EmployeeSavePage,
+  NoteSavePage,
+  ProductSavePage,
+  RoleSavePage,
+  PipelineMovetoPage,
+  CustomerImportPage,
+  DealImportPage,
+  EmployeeImportPage,
+  ImportDataPage,
+  ProductImportPage,
+  MailSenderPage,
+  CustomerProfilePage,
+  SettingPasswordPage,
+  SettingPermissionPage,
+  SettingProfilePage
 ];
 export const PIPES = [
   LengthPipe,
-  ShortPipe
+  ShortPipe,
+  TimePipe,
+  MoneyPipe,
+  TotalMoneyPipe,
+  MaskPipe,
+  SeparatorPipe,
+  KeyPipe
 ];
 @NgModule({
   imports: [
@@ -30,14 +112,16 @@ export const PIPES = [
     ...EXTRA_MODULES,
   ],
   declarations: [
-    ...COMPONENTS,
+    ...REUSE_COMPONENTS,
+    ...REUSE_PAGES,
     ...PIPES
   ],
   exports: [
     ...ANGULAR_MODULES,
     ...EXTRA_MODULES,
-    ...COMPONENTS,
-    ...PIPES
+    ...REUSE_COMPONENTS,
+    ...REUSE_PAGES,
+    ...PIPES,
   ],
 })
 export class ExtrasModule {
@@ -45,7 +129,8 @@ export class ExtrasModule {
     return {
       ngModule: ExtrasModule,
       providers: [
-        // ...NebularModule.forRoot().providers,
+        ...NebularModule.forRoot().providers,
+        ...NgxModule.forRoot().providers,
       ]
     };
   }
@@ -54,6 +139,7 @@ export class ExtrasModule {
       ngModule: ExtrasModule,
       providers: [
         ...NebularModule.forChild().providers,
+        ...NgxModule.forChild().providers,
       ]
     };
   }

@@ -1,11 +1,11 @@
 export interface Province {
-  id: number;
-  name: string;
-  huyen: District[];
+  readonly id: number;
+  readonly name: string;
+  readonly huyen: District[];
 }
 
 export interface District {
-  id: number;
-  name: string;
-  tinh_id: number;
+  readonly id: number;
+  readonly name: string;
+  readonly tinh_id: number;
 }

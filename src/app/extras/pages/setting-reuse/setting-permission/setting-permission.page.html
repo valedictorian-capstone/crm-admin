@@ -1,0 +1,38 @@
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'setting-permission'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5; text-transform: capitalize;">
+        Setting permission
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+          <nb-icon icon="close"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body>
+        <button class="mb-2 float-left" nbButton (click)="usePlus('role')" outline status="success">
+        <nb-icon icon="plus-outline"></nb-icon>
+      </button>
+        <nb-form-field class="mb-2 float-left">
+            <nb-select placeholder="Select Role" [(ngModel)]="selectedRole">
+                <nb-option [value]="undefined">All</nb-option>
+                <nb-option [value]="role" *ngFor="let role of roles">{{role.name}}</nb-option>
+            </nb-select>
+        </nb-form-field>
+        <button *ngIf="selectedRole" class="mb-2 float-left" nbButton outline (click)="useEdit()" status="primary">
+          <nb-icon icon="edit-2-outline"></nb-icon>
+        </button>
+        <app-reuse-employee-item class="mb-2" *ngFor="let employee of selectedRole ? selectedRole.accounts : accounts" [you]="you" [employee]="employee" [search]="search"></app-reuse-employee-item>
+        <div class="empty">
+            <div class="text-center">
+                <button class="mb-2" (click)="usePlus('employee')" nbButton size="small" status="primary" outline>
+                <nb-icon icon="person-outline"></nb-icon>
+                New Employee
+              </button>
+                <br>
+                <button (click)="useImport()" nbButton size="small" status="primary" outline>
+                <nb-icon icon="person-outline"></nb-icon>
+                Import Employees
+              </button>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>

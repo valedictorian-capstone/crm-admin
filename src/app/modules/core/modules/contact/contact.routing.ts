@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ContactMainComponent } from './pages';
+import { ContactMainPage } from './pages';
 
 const routes: Routes = [
-  { path: '', component: ContactMainComponent },
+  { path: '', component: ContactMainPage },
 ];
 
 export const ContactRoutes = RouterModule.forChild(routes);

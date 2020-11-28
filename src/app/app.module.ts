@@ -1,16 +1,28 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { NbDatepickerModule, NbDialogModule, NbMenuModule, NbSidebarModule, NbThemeModule, NbTimepickerModule, NbToastrModule, NbWindowModule } from '@nebular/theme';
+import { EntityDataModule } from '@ngrx/data';
+import { EffectsModule } from '@ngrx/effects';
+import {
+  NavigationActionTiming, RouterState, StoreRouterConnectingModule
+} from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { metaReducers, reducers } from '@reducers';
 import { InterceptorService } from '@services';
 import * as Hammer from 'hammerjs';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { NgxEmojiPickerModule } from 'ngx-emoji-picker';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { appConfig } from './app.metadata';
 import { AppRoutes } from './app.routing';
+import { AppSerializer } from './app.serializer';
 import { ExtrasModule } from './extras/extras.module';
 export class HammerConfig extends HammerGestureConfig {
   // tslint:disable-next-line: no-angle-bracket-type-assertion
@@ -29,15 +41,22 @@ export class HammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     ExtrasModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    NbThemeModule.forRoot({ name: 'default' }),
-    NbSidebarModule.forRoot(),
-    NbMenuModule.forRoot(),
-    NbDatepickerModule.forRoot(),
-    NbDialogModule.forRoot(),
-    NbWindowModule.forRoot(),
-    NbToastrModule.forRoot(),
-    NbTimepickerModule.forRoot(),
-    NgxEmojiPickerModule.forRoot()
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
+    AngularFireMessagingModule,
+    AngularFireModule.initializeApp(environment.firebase.config),
+    StoreModule.forRoot(reducers, {
+      metaReducers
+    }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !environment.production }),
+    EffectsModule.forRoot([]),
+    StoreRouterConnectingModule.forRoot({
+      serializer: AppSerializer,
+      routerState: RouterState.Minimal,
+      navigationActionTiming: NavigationActionTiming.PostActivation,
+      stateKey: 'router',
+    }),
+    EntityDataModule.forRoot(appConfig),
   ],
   providers: [
     {

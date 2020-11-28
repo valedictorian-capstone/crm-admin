@@ -1,0 +1,40 @@
+.product-select {
+    max-height: 280px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 6px 0 6px 0;
+    .item {
+        min-height: 32px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        padding: 0 1rem 0 1rem;
+        color: black;
+        &.selected {
+            color: #317ae2;
+            pre {
+                color: #317ae2;
+            }
+        }
+        pre {
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            font-weight: bolder;
+        }
+        &:hover {
+            background-color: #317ae2;
+            cursor: pointer;
+            color: #fff;
+            pre {
+                color: #fff;
+            }
+        }
+    }
+}

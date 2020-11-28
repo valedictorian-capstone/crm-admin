@@ -1,9 +1,0 @@
-<nb-layout>
-    <nb-layout-column style="padding: 0;">
-        <app-header #header (useClickOutside)="sidebar.stick = false" (useToggle)="sidebar.stick = !sidebar.stick"></app-header>
-        <app-side-bar #sidebar></app-side-bar>
-        <app-main (useClickOutside)="sidebar.stick = false">
-            <router-outlet></router-outlet>
-        </app-main>
-    </nb-layout-column>
-</nb-layout>

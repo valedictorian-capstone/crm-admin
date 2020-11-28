@@ -1,29 +1,62 @@
 import { Routes, RouterModule } from '@angular/router';
-import { LayoutComponent } from './pages';
+import { CoreGuard } from './core.guard';
+import { LayoutPage } from './pages';
+
 const routes: Routes = [
   {
-    path: '', component: LayoutComponent,
-    children: [
-      { path: '', redirectTo: 'dashboard' },
-      { path: 'account', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.AccountModule) },
-      { path: 'contact', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ContactModule) },
-      // { path: 'customer', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.CustomerModule) },
-      { path: 'dashboard', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.DashboardModule) },
-      { path: 'department', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.DepartmentModule) },
-      { path: 'employee', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.EmployeeModule) },
-      { path: 'event', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.EventModule) },
-      { path: 'form', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.FormModule) },
-      { path: 'group', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.GroupModule) },
-      { path: 'service', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ServiceModule) },
-      { path: 'instance', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.InstanceModule) },
-      { path: 'lead', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.LeadModule) },
-      { path: 'opportunity', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.OpportunityModule) },
-      { path: 'process', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ProcessModule) },
-      { path: 'role', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.RoleModule) },
-      { path: 'strategy', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.StrategyModule) },
-      { path: '404', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ErrorModule) },
-      { path: '**', redirectTo: '404' }
-    ],
+    path: '', component: LayoutPage, children: [
+      { path: '', redirectTo: 'pipeline' },
+      {
+        path: 'account',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.AccountModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Customer' }
+      },
+      {
+        path: 'contact',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.ContactModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Customer' }
+      },
+      {
+        path: 'lead',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.LeadModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Customer' }
+      },
+      {
+        path: 'pipeline',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.PipelineModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Process' }
+      },
+      {
+        path: 'deal',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.DealModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Deal' }
+      },
+      {
+        path: 'product',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.ProductModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Product' }
+      },
+      {
+        path: 'activity',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.ActivityModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Activity' }
+      },
+      {
+        path: 'call',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.CallModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Call' }
+      },
+      { path: 'error', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ErrorModule) },
+      { path: '**', redirectTo: 'error' }
+    ]
   },
 ];
 

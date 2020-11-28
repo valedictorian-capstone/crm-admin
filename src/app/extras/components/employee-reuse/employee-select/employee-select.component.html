@@ -1,0 +1,10 @@
+<div nz-menu class="employee-select">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
+    <a nz-menu-item class="item" [class.selected]="account.id === selected?.id" *ngFor="let account of filterAccounts" (click)="useSelect.emit(account); this.selected = account">
+        <nb-icon icon="person-outline" style="margin-right: 0.7rem;"></nb-icon>
+        <pre>{{account.fullname}} <b class="text-primary">{{account.id === you ? '(You)' : ''}}</b></pre>
+    </a>
+    <a nz-menu-item class="item" *ngIf="filterAccounts.length === 0 && stage !== 'finding'" (click)="useNone.emit()">
+        <pre>{{value === '' ? 'No one to set' : 'No one have name: \'' + value + '\''}}</pre>
+    </a>
+</div>

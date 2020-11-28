@@ -1,0 +1,38 @@
+<div class="note">
+    <div class="time">
+        <span class="text">{{data?.createdAt | time}}</span>
+        <span class="separator">·</span>
+        <span class="text">Đặng Khánh Vinh</span>
+    </div>
+    <p [innerHTML]="data?.description"></p>
+    <button outline nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+      <nb-icon icon="more-horizontal-outline"></nb-icon>
+    </button>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useEdit()">
+                <b>Edit</b>
+            </li>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useTogglePin()">
+                <b>{{data?.pin ? 'Unpin' : 'Pin'}} this note</b>
+            </li>
+            <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(removeRef)">
+                <b>Delete</b>
+            </li>
+        </ul>
+    </nz-dropdown-menu>
+</div>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove note </nb-card-header>
+        <nb-card-body>Are you sure you wish to remove this note?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useRemove(ref)">
+Remove
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Cancel
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

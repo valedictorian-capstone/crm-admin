@@ -76,7 +76,7 @@ import { TreeModule } from 'primeng/tree';
 import { TreeTableModule } from 'primeng/treetable';
 import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
-
+import {CalendarModule} from 'primeng/calendar';
 const PRIME_MODULES = [
   AutoCompleteModule,
 AccordionModule,
@@ -116,7 +116,8 @@ InputTextareaModule,
 KeyFilterModule,
 LightboxModule,
 ListboxModule,
-MegaMenuModule,
+  MegaMenuModule,
+  CalendarModule,
 MenuModule,
 MenubarModule,
 MessageModule,
