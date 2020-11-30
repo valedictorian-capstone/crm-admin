@@ -58,7 +58,7 @@ export class ProductSavePage implements OnInit {
     });
   }
   useRemoveParameter = (index: number) => {
-    (this.form.get('parameters') as FormArray).controls.splice(index, 1);
+    (this.form.get('parameters') as FormArray).removeAt(index);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });

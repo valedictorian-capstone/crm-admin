@@ -7,32 +7,16 @@
       </button>
     </nb-card-header>
     <nb-card-body>
-        <button class="mb-2 float-left" nbButton (click)="usePlus('role')" outline status="success">
-        <nb-icon icon="plus-outline"></nb-icon>
+        <button class="mb-2" nbButton (click)="usePlus()" outline status="success">
+        <nb-icon icon="plus-outline"></nb-icon> <b>Role</b>
       </button>
-        <nb-form-field class="mb-2 float-left">
-            <nb-select placeholder="Select Role" [(ngModel)]="selectedRole">
-                <nb-option [value]="undefined">All</nb-option>
-                <nb-option [value]="role" *ngFor="let role of roles">{{role.name}}</nb-option>
-            </nb-select>
-        </nb-form-field>
-        <button *ngIf="selectedRole" class="mb-2 float-left" nbButton outline (click)="useEdit()" status="primary">
-          <nb-icon icon="edit-2-outline"></nb-icon>
-        </button>
-        <app-reuse-employee-item class="mb-2" *ngFor="let employee of selectedRole ? selectedRole.accounts : accounts" [you]="you" [employee]="employee" [search]="search"></app-reuse-employee-item>
-        <div class="empty">
-            <div class="text-center">
-                <button class="mb-2" (click)="usePlus('employee')" nbButton size="small" status="primary" outline>
-                <nb-icon icon="person-outline"></nb-icon>
-                New Employee
-              </button>
-                <br>
-                <button (click)="useImport()" nbButton size="small" status="primary" outline>
-                <nb-icon icon="person-outline"></nb-icon>
-                Import Employees
-              </button>
-            </div>
-
-        </div>
+        <nb-accordion>
+            <nb-accordion-item class="mb-2" *ngFor="let role of roles">
+                <nb-accordion-item-header>{{role.name}}</nb-accordion-item-header>
+                <nb-accordion-item-body style="max-height: 30rem; overflow-y:auto;">
+                    <app-reuse-role-save [role]="role" [inside]="true"></app-reuse-role-save>
+                </nb-accordion-item-body>
+            </nb-accordion-item>
+        </nb-accordion>
     </nb-card-body>
 </nb-card>

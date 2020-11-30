@@ -2,7 +2,7 @@ import { PipelineAction } from '@actions';
 import { pipelineAdapter, pipelineInitialState } from '@adapters';
 import { createReducer, on } from '@ngrx/store';
 import { PipelineState } from '@states';
-export const pipelineFeatureKey = 'pipeline';
+export const pipelineFeatureKey = 'process';
 export const pipelineReducer = createReducer(
   pipelineInitialState,
   on(PipelineAction.useFindAllAction,

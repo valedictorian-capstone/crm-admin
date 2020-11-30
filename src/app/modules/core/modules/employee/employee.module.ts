@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
-  AccountItemComponent,
+  EmployeeItemComponent,
 } from './components';
-import { AccountMainPage } from './pages';
+import { EmployeeMainPage } from './pages';
 // import { } from './directives';
 // import { } from './pipes';
-import { AccountRoutes } from './account.routing';
+import { EmployeeRoutes } from './employee.routing';
 const COMPONENTS = [
-  AccountItemComponent,
+  EmployeeItemComponent,
 ];
 
 const PAGES = [
-  AccountMainPage
+  EmployeeMainPage
 ];
 
 const PIPES = [
@@ -25,8 +25,8 @@ const DIRECTIVES = [
 @NgModule({
   imports: [
     ExtrasModule.forChild(),
-    AccountRoutes
+    EmployeeRoutes
   ],
   declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
 })
-export class AccountModule { }
+export class EmployeeModule { }

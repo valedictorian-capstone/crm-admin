@@ -5,15 +5,9 @@ import { LayoutPage } from './pages';
 const routes: Routes = [
   {
     path: '', component: LayoutPage, children: [
-      { path: '', redirectTo: 'pipeline' },
+      { path: '', redirectTo: 'process' },
       {
-        path: 'account',
-        loadChildren: () => import('@app/modules/core/modules').then((m) => m.AccountModule),
-        canLoad: [CoreGuard],
-        data: { permission: 'Customer' }
-      },
-      {
-        path: 'contact',
+        path: 'customer',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ContactModule),
         canLoad: [CoreGuard],
         data: { permission: 'Customer' }
@@ -25,7 +19,13 @@ const routes: Routes = [
         data: { permission: 'Customer' }
       },
       {
-        path: 'pipeline',
+        path: 'account',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.EmployeeModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Employee' }
+      },
+      {
+        path: 'process',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.PipelineModule),
         canLoad: [CoreGuard],
         data: { permission: 'Process' }

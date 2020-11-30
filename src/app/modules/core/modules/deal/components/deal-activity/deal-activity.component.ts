@@ -9,7 +9,7 @@ import { ActivityVM } from '@view-models';
   styleUrls: ['./deal-activity.component.scss']
 })
 export class DealActivityComponent implements OnInit {
-  @Input() data: ActivityVM & {last?: boolean, expired?: boolean};
+  @Input() data: ActivityVM & {last?: boolean, state: string};
   constructor(
     protected readonly activityService: ActivityService,
     protected readonly globalService: GlobalService,
@@ -17,6 +17,7 @@ export class DealActivityComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.data);
   }
   useToggleDone = () => {
     this.activityService.update({

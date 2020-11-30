@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { RoleService } from '@services';
+import { AuthService, RoleService } from '@services';
 import { RoleVM } from '@view-models';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 
@@ -13,6 +14,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class RoleSavePage implements OnInit {
   @Input() role: RoleVM;
+  @Input() inside: boolean;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
   form: FormGroup;
@@ -48,16 +50,26 @@ export class RoleSavePage implements OnInit {
     protected readonly dialogService: NbDialogService,
     protected readonly roleService: RoleService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly deviceService: DeviceDetectorService,
+    protected readonly authService: AuthService,
   ) {
     this.useShowSpinner();
     this.useInitForm();
   }
 
   ngOnInit() {
+    this.useLoadData();
     if (this.role) {
       this.useSetData();
     }
     this.useHideSpinner();
+  }
+  useLoadData = () => {
+    this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
+      .subscribe((data) => {
+        this.level = Math.min(...data.roles.map((e) => e.level));
+        this.form.get('level').setValue(this.level + 1);
+      });
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
@@ -146,8 +158,10 @@ export class RoleSavePage implements OnInit {
       this.form.patchValue(this.role);
     });
   }
-  useSubmit = (ref: NbDialogRef<any>) => {
-    ref.close();
+  useSubmit = (ref?: NbDialogRef<any>) => {
+    if (ref) {
+      ref.close();
+    }
     if (this.form.valid) {
       this.useShowSpinner();
       setTimeout(() => {

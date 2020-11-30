@@ -1,14 +1,14 @@
 import { StageVM } from '@view-models';
 
 export interface PipelineVM {
-  readonly id: string;
-  readonly name: string;
-  readonly stages: StageVM[];
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  name: string;
+  stages: StageVM[];
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface PipelineCM {

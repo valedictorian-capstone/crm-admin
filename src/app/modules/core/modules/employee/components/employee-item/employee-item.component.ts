@@ -1,24 +1,27 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, Input, OnInit } from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { GlobalService } from '@services';
-import { CustomerVM } from '@view-models';
+import { AuthService, GlobalService } from '@services';
+import { AccountVM } from '@view-models';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
-  selector: 'app-account-item',
-  templateUrl: './account-item.component.html',
-  styleUrls: ['./account-item.component.scss']
+  selector: 'app-employee-item',
+  templateUrl: './employee-item.component.html',
+  styleUrls: ['./employee-item.component.scss']
 })
-export class AccountItemComponent implements OnInit {
-  @Input() customer: CustomerVM;
+export class EmployeeItemComponent implements OnInit {
+  @Input() employee: AccountVM;
   @Input() search: string;
   env = 'desktop';
+  you: AccountVM;
+  canEdit = false;
   constructor(
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
     protected readonly deviceService: DeviceDetectorService,
+    protected readonly authService: AuthService,
   ) {
     if (deviceService.isMobile()) {
       this.env = 'mobile';
@@ -26,12 +29,19 @@ export class AccountItemComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
+      .subscribe((data) => {
+        this.you = data;
+        if (Math.min(...data.roles.map((e) => e.level)) < Math.min(...this.employee.roles.map((e) => e.level))) {
+          this.canEdit = true;
+        }
+      });
   }
   useEdit = () => {
-    this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
+    this.globalService.triggerView$.next({ type: 'employee', payload: { employee: this.employee } });
   }
   useView = () => {
-    this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.customer } });
+    this.globalService.triggerView$.next({ type: 'employee', payload: { employee: this.employee, isProfile: true } });
   }
   usePhone = (phone: string) => {
     if (this.env === 'desktop') {

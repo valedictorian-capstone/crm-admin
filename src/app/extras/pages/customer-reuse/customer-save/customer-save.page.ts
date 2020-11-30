@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
+import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
   selector: 'app-reuse-customer-save',
   templateUrl: './customer-save.page.html',
@@ -15,6 +16,7 @@ export class CustomerSavePage implements OnInit {
   @ViewChild('submitRef') submitRef: TemplateRef<any>;
   @ViewChild('cancelRef') cancelRef: TemplateRef<any>;
   @Input() customer: CustomerVM;
+  @Input() isProfile = false;
   @Input() inside: boolean;
   @Input() fullname: string;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
@@ -31,8 +33,9 @@ export class CustomerSavePage implements OnInit {
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly clipboard: Clipboard,
   ) {
-    if (!this.inside) {
+    if (!this.inside && !this.isProfile) {
       this.useShowSpinner();
     }
     this.useInitForm();
@@ -108,7 +111,7 @@ export class CustomerSavePage implements OnInit {
     if (!this.inside) {
       ref.close();
     }
-    if (this.form.valid) {
+    if (this.form.valid && !this.isProfile) {
       if (!this.inside) {
         this.useShowSpinner();
       }
@@ -146,6 +149,10 @@ export class CustomerSavePage implements OnInit {
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
+  useCopy = (data: string) => {
+    this.clipboard.copy(data);
+    this.toastrService.show('', 'Copy success', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+  }
   useSelectImage = (event: any, input: HTMLElement) => {
     this.errorImage = false;
     const files: File[] = event.target.files;
@@ -155,9 +162,9 @@ export class CustomerSavePage implements OnInit {
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
-        if (files[0].size > 1024 * 1024 * 2) {
+        if (files[0].size > 1024 * 1024 * 18) {
           this.errorImage = true;
-          this.message = 'Only image size less than 2MB accept';
+          this.message = 'Only image size less than 18MB accept';
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();

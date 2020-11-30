@@ -1,15 +1,15 @@
 import { DealVM } from '@view-models';
 
 export interface NoteVM {
-  readonly id: string;
-  readonly description: string;
-  readonly pin: boolean;
-  readonly deal: DealVM;
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  description: string;
+  pin: boolean;
+  deal: DealVM;
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface NoteCM {

@@ -3,9 +3,19 @@
         <div class="navigation">
             <button nbButton status="success" (click)="usePlus()" outline class="mr-2" size="small">New Customer</button>
             <button nbButton status="primary" (click)="useImport()" outline class="mr-2" size="small">Import</button>
-            <button nbButton status="default" (click)="useReload()" outline size="small">
+            <button nbButton status="default" (click)="useReload()" class="mr-2" outline size="small">
               <nb-icon icon="sync-outline"></nb-icon>
             </button>
+            <button nz-dropdown [nzDropdownMenu]="filter" [nzBackdrop]="false" [nzTrigger]="'click'" nzPlacement="bottomCenter" nbButton status="default" outline size="small">
+              <nb-icon icon="funnel-outline"></nb-icon>
+            </button>
+            <nz-dropdown-menu #filter="nzDropdownMenu">
+                <ul nz-menu style="border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+                    <li nz-menu-item (click)="selectedGroup = ''; useFilter()" [ngStyle]="{'background': selectedGroup === '' ? '#e6e6e6' : 'white'}" style="min-width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;">ALL</li>
+                    <li *ngFor="let group of groups" nz-menu-item [ngStyle]="{'background': selectedGroup === group.id ? '#e6e6e6' : 'white'}" (click)="selectedGroup = group.id; useFilter()" style="min-width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;"
+                        class="text-primary">{{group.name}}</li>
+                </ul>
+            </nz-dropdown-menu>
         </div>
         <div class="filter">
             <nb-form-field class="not-search" style="max-width: 100%; width: 500px; margin-bottom: 1rem;" [nbSpinner]="stage === 'querying'" [nbSpinnerSize]="'tiny'">

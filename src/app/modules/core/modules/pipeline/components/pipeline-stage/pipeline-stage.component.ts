@@ -52,14 +52,14 @@ export class PipelineStageComponent implements OnInit, OnChanges {
     }
   }
   ngOnInit() {
-    this.spinner.show('pipeline-stage' + this.stage.id);
+    this.useReload();
+  }
+  useReload = () => {
+    this.useShowSpinner();
     this.stageService.findById(this.stage.id)
       .pipe(
         finalize(() => {
-          setTimeout(() => {
-            this.spinner.hide('pipeline-stage' + this.stage.id);
-            this.first = false;
-          }, 1000);
+          this.useHideSpinner();
         }),
         map(async (data) => ({
           ...data,
@@ -71,22 +71,6 @@ export class PipelineStageComponent implements OnInit, OnChanges {
         await this.useFilter(this.status);
       });
   }
-  // useDrop(event: CdkDragDrop<(DealUM & { changing?: boolean })[]>) {
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  //   } else {
-  //     const deal = event.previousContainer.data[event.previousIndex];
-  //     deal.changing = true;
-  //     deal.stage = { ...this.stage, deals: undefined };
-  //     event.previousContainer.data.splice(event.previousIndex, 1);
-  //     this.deals.push(deal as any);
-  //     moveItemInArray(this.deals, event.container.data.length - 1, event.currentIndex);
-  //     this.dealService.update({ ...deal, stage: { id: this.stage.id } as any }).subscribe((data) => {
-  //       deal.changing = false;
-  //     });
-
-  //   }
-  // }
   useDrop = (event: DropResult) => {
     if (event.removedIndex != null && event.addedIndex != null) {
       moveItemInArray(this.stage.deals, event.removedIndex, event.addedIndex);
@@ -124,10 +108,19 @@ export class PipelineStageComponent implements OnInit, OnChanges {
     this.stage.deals.splice(this.deals.findIndex(d => d.id === res.deal.id), 1);
     this.useFilter(this.status);
     this.dealService.update({ ...res.deal, stage: { id: res.moveToStage.id } as any }).subscribe((data) => {
-      this.dealService.triggerValue$.next({type: 'update', data});
+      this.dealService.triggerValue$.next({ type: 'update', data });
     });
   }
   useFilter = (status: string) => {
     this.deals = this.stage.deals.filter((deal) => deal.status.includes(status));
+  }
+  useShowSpinner = () => {
+    this.spinner.show('pipeline-stage' + this.stage.id);
+  }
+  useHideSpinner = () => {
+    setTimeout(() => {
+      this.spinner.hide('pipeline-stage' + this.stage.id);
+      this.first = false;
+    }, 1000);
   }
 }

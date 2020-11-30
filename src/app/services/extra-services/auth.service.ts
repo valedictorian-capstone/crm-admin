@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { TokenVM, AccountVM, LoginGM, DeviceVM } from '@view-models';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  public readonly triggerValue$ = new Subject<AccountVM>();
   constructor(protected readonly httpClient: HttpClient) { }
 
   public readonly login = (data: LoginGM): Observable<TokenVM> => {

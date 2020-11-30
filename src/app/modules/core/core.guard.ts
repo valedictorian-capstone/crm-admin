@@ -23,6 +23,7 @@ export class CoreGuard implements CanLoad {
         localStorage.setItem('fcmToken', fcmToken);
       }
     }
+
     return this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any).toPromise()
       .then((res) => {
         const permission = 'canAccess' + route.data.permission;

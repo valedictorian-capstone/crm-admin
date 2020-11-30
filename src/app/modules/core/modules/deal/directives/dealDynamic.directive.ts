@@ -7,7 +7,7 @@ import { DealActivityComponent, DealAttachmentComponent, DealNoteComponent } fro
 })
 export class DealDynamicDirective implements OnInit {
   @Input() type: string;
-  @Input() data: ActivityVM | NoteVM | AttachmentVM;
+  @Input() data: ActivityVM & {state: string} | NoteVM | AttachmentVM;
   componentRef: ComponentRef<DealActivityComponent | DealNoteComponent | DealAttachmentComponent>;
   componentMapper = {
     activity: DealActivityComponent,

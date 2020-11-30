@@ -10,7 +10,7 @@
         <div class="mb-2" *ngIf="!importType">
             <button nbButton class="mr-1" [status]="type === 'customer' ? 'primary' : 'basic'" (click)="type = 'customer'; data = undefined" size="small">Customer</button>
             <button nbButton class="mr-1" [status]="type === 'product' ? 'primary' : 'basic'" (click)="type = 'product'; data = undefined" size="small">Product</button>
-            <button nbButton class="mr-1" [status]="type === 'employee' ? 'primary' : 'basic'" (click)="type = 'employee'; data = undefined" size="small">Employee</button>
+            <button nbButton class="mr-1" [status]="type === 'employee' ? 'primary' : 'basic'" (click)="type = 'employee'; data = undefined" size="small">Account</button>
         </div>
         <nz-upload *ngIf="!data" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
             <p class="ant-upload-drag-icon">

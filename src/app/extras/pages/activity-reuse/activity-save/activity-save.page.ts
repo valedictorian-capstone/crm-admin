@@ -83,6 +83,17 @@ export class ActivitySavePage implements OnInit, OnChanges {
         dateEnd: new Date(this.activity.dateEnd),
         dateStart: new Date(this.activity.dateStart)
       });
+      switch (this.activity.type) {
+        case 'email':
+          this.useSetValidatorEmail();
+          break;
+        case 'call':
+          this.useSetValidatorPhone();
+          break;
+        default:
+          this.useSetValidatorNormal();
+          break;
+      }
     });
   }
   useInput = () => {
@@ -148,7 +159,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
   }
   useInitForm = () => {
     this.form = new FormGroup({
-      name: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required, Validators.email]),
       type: new FormControl('email', [Validators.required]),
       location: new FormControl(''),
       status: new FormControl('processing'),
@@ -174,5 +185,33 @@ export class ActivitySavePage implements OnInit, OnChanges {
     setTimeout(() => {
       this.spinner.hide('activity-save');
     }, 1000);
+  }
+  useSetValidatorEmail = () => {
+    this.form.get('name').setValidators([Validators.required, Validators.email]);
+    this.form.get('name').markAsTouched();
+    if (this.activity && this.activity.type === 'email') {
+      this.form.get('name').setValue(this.activity.name);
+    } else {
+      this.form.get('name').setValue('');
+    }
+  }
+  useSetValidatorPhone = () => {
+    this.form.get('name').setValidators([Validators.required,
+    Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]);
+    this.form.get('name').markAsTouched();
+    if (this.activity && this.activity.type === 'phone') {
+      this.form.get('name').setValue(this.activity.name);
+    } else {
+      this.form.get('name').setValue('');
+    }
+  }
+  useSetValidatorNormal = () => {
+    this.form.get('name').setValidators([Validators.required]);
+    this.form.get('name').markAsTouched();
+    if (this.activity && this.activity.type !== 'email' && this.activity.type !== 'phone') {
+      this.form.get('name').setValue(this.activity.name);
+    } else {
+      this.form.get('name').setValue('');
+    }
   }
 }

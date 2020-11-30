@@ -15,8 +15,8 @@ export class CustomerService {
   public readonly findAll = (): Observable<CustomerVM[]> => {
     return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}`);
   }
-  public readonly findAllByType = (type: string): Observable<CustomerVM[]> => {
-    return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/type?type=${type}`);
+  public readonly findAllLead = (): Observable<CustomerVM[]> => {
+    return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/lead`);
   }
   public readonly findById = (id: string): Observable<CustomerVM> => {
     return this.httpClient.get<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.getById}${id}`);

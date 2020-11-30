@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService, GlobalService } from '@services';
-import { CustomerVM } from '@view-models';
+import { CustomerService, GlobalService, GroupService } from '@services';
+import { CustomerVM, GroupVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 
@@ -12,16 +12,20 @@ import { finalize } from 'rxjs/operators';
 export class ContactMainPage implements OnInit {
   customers: CustomerVM[] = [];
   filterCustomers: CustomerVM[] = [];
+  groups: GroupVM[] = [];
   search = '';
   stage = 'done';
+  selectedGroup = '';
   constructor(
     protected readonly customerService: CustomerService,
+    protected readonly groupService: GroupService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
   ) {
   }
 
   ngOnInit() {
+    this.useLoadGroup();
     this.useReload();
     this.useTrigger();
   }
@@ -36,6 +40,9 @@ export class ContactMainPage implements OnInit {
       }
       this.useFilter();
     });
+  }
+  useLoadGroup = () => {
+    this.groupService.findAll().subscribe((data) => this.groups = data);
   }
   useReload = () => {
     this.useShowSpinner();
@@ -52,20 +59,21 @@ export class ContactMainPage implements OnInit {
   }
   useFilter = () => {
     this.filterCustomers = this.customers.filter((e) =>
-      e.fullname.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.phone.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.email.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.facebook.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.fax.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.company.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.city.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.type.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.country.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.skypeName.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.state.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.street.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.twitter.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.website.toLowerCase().includes(this.search.toLowerCase())
+      (e.fullname.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.phone.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.email.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.facebook.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.fax.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.company.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.city.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.type.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.country.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.skypeName.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.state.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.street.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.twitter.toLowerCase().includes(this.search.toLowerCase()) ||
+        e.website.toLowerCase().includes(this.search.toLowerCase()))
+      && e.groups.filter((group) => group.id.includes(this.selectedGroup)).length > 0
     );
   }
   usePlus = () => {

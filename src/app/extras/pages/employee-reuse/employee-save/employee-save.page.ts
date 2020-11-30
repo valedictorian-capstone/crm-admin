@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { AccountService, RoleService } from '@services';
+import { AccountService, AuthService, RoleService } from '@services';
 import { AccountVM, RoleVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap, tap } from 'rxjs/operators';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-reuse-employee-save',
@@ -27,7 +28,7 @@ export class EmployeeSavePage implements OnInit {
   phoneStage = 'done';
   emailStage = 'done';
   codeStage = 'done';
-  level = -1;
+  level = 9999;
   constructor(
     protected readonly employeeService: AccountService,
     protected readonly toastrService: NbToastrService,
@@ -35,6 +36,8 @@ export class EmployeeSavePage implements OnInit {
     protected readonly spinner: NgxSpinnerService,
     protected readonly clipboard: Clipboard,
     protected readonly roleService: RoleService,
+    protected readonly deviceService: DeviceDetectorService,
+    protected readonly authService: AuthService,
   ) {
     this.useShowSpinner();
     this.useInitForm();
@@ -42,10 +45,19 @@ export class EmployeeSavePage implements OnInit {
   }
 
   ngOnInit() {
-    this.roleService.findAll().subscribe((data) => {
-      this.roles = data;
-      this.useHideSpinner();
-    });
+    this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
+      .pipe(
+        tap((data) => {
+          this.level = Math.min(...data.roles.map((e) => e.level));
+        }),
+        switchMap(() => this.roleService.findAll()),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe((data) => {
+        this.roles = data.filter((e) => e.level > this.level);
+      });
     if (!this.employee) {
       this.form.addControl('password', new FormControl(Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
         .map((x) => x[Math.floor(Math.random() * x.length)]).join('')));
@@ -55,7 +67,11 @@ export class EmployeeSavePage implements OnInit {
   }
   useSetData = () => {
     this.form.addControl('id', new FormControl(this.employee.id));
-    this.form.patchValue(this.employee);
+    this.form.patchValue({
+      ...this.employee,
+      roles: this.employee.roles.map((role) => role.id)
+    });
+    console.log(this.form);
   }
   useInitForm = () => {
     this.form = new FormGroup({
@@ -72,7 +88,13 @@ export class EmployeeSavePage implements OnInit {
     if (this.form.valid && !this.isProfile) {
       this.useShowSpinner();
       setTimeout(() => {
-        (this.employee ? this.employeeService.update(this.form.value) : this.employeeService.insert(this.form.value))
+        (this.employee ? this.employeeService.update({
+          ...this.form.value,
+          roles: this.form.value.roles.map((e) => ({ id: e }))
+        }) : this.employeeService.insert({
+          ...this.form.value,
+          roles: this.form.value.roles.map((e) => ({ id: e }))
+        }))
           .pipe(
             finalize(() => {
               this.useHideSpinner();
@@ -80,11 +102,11 @@ export class EmployeeSavePage implements OnInit {
           )
           .subscribe((data) => {
             this.employeeService.triggerValue$.next({ type: this.employee ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save employee success!', { duration: 3000 });
+            this.toastrService.success('', 'Save account success!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }, (err) => {
-            this.toastrService.danger('', 'Save employee fail! Something wrong at runtime', { duration: 3000 });
+            this.toastrService.danger('', 'Save account fail! Something wrong at runtime', { duration: 3000 });
           });
       }, 2000);
     } else {
@@ -104,9 +126,9 @@ export class EmployeeSavePage implements OnInit {
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
-        if (files[0].size > 1024 * 1024 * 2) {
+        if (files[0].size > 1024 * 1024 * 18) {
           this.errorImage = true;
-          this.message = 'Only image size less than 2MB accept';
+          this.message = 'Only image size less than 18MB accept';
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();

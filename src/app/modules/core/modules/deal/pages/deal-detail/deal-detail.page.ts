@@ -25,7 +25,7 @@ export class DealDetailPage implements OnInit {
   stage: StageVM;
   pipeline: PipelineVM;
   dones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string })[] = [];
-  plans: (ActivityVM & { last?: boolean, expired?: boolean })[] = [];
+  plans: (ActivityVM & { last?: boolean, state: string })[] = [];
   filterDones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string })[] = [];
   done = '';
   type = 'note';
@@ -152,7 +152,7 @@ export class DealDetailPage implements OnInit {
         ...e,
         dateStart: new Date(e.dateStart),
         dateEnd: new Date(e.dateEnd),
-        expired: new Date(e.dateStart) > new Date(e.dateEnd)
+        state: new Date() < new Date(e.dateStart) ? 'notStart' : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
       }));
     this.useSelectDone();
   }

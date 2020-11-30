@@ -24,14 +24,14 @@ export class PipelineLoadingPage implements OnInit {
       this.pipelineService.findAll().subscribe((data) => {
         this.spinner.hide();
         if (data.length === 0) {
-          this.router.navigate(['core/pipeline/add']);
+          this.router.navigate(['core/process/add']);
         } else {
           let selected = localStorage.getItem('selectedPipeline');
           if (!selected || !data.find((p) => p.id === selected)) {
             localStorage.setItem('selectedPipeline', data[0].id);
             selected = localStorage.getItem('selectedPipeline');
           }
-          this.router.navigate(['core/pipeline/detail']);
+          this.router.navigate(['core/process/detail']);
         }
       });
 

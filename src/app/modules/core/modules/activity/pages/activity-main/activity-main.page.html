@@ -4,10 +4,10 @@
             <button (click)="usePlus()" nbButton status="success" style="float: left;margin-right: 0.5rem;" size="small">
             New Activity
           </button>
-            <nb-form-field *ngIf="type === 'day'" style="float: left; margin-right: 0.5rem;">
+            <nb-form-field style="float: left; margin-right: 0.5rem;">
                 <nb-icon nbPrefix icon="calendar-outline"></nb-icon>
                 <input readonly size="small" [nbDatepicker]="datePicker" style="max-width: 208px;" nbInput [value]="viewDate | date: 'dd/MM/yyyy'">
-                <nb-datepicker (dateChange)="viewDate = $event" #datePicker></nb-datepicker>
+                <nb-datepicker (dateChange)="viewDate = $event" [format]="'dd/MM/yyyy'" #datePicker></nb-datepicker>
             </nb-form-field>
         </div>
         <div style="width: 100%; height: 40px;">
@@ -42,7 +42,7 @@
 </div>
 <ng-template #dayEvent let-weekEvent="weekEvent">
     <!-- {{weekEvent. title}} asndlasdlsakjd -->
-    <button nbButton outline status="success" size="small" (click)="eventClicked({event: weekEvent.event})">
+    <button nbButton outline [status]="weekEvent.event.state === 'notStart' ? 'default' : (weekEvent.event.state === 'processing' ? 'primary' : 'success')" size="small" (click)="eventClicked({event: weekEvent.event})">
       <nb-icon [icon]="useIcon(weekEvent.event.type).icon" [pack]="useIcon(weekEvent.event.type).pack"></nb-icon>
     </button>
 </ng-template>

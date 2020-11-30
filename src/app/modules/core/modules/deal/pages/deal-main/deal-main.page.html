@@ -32,7 +32,7 @@
                         <li nz-menu-item (click)="status = 'processing'; useFilter()" [ngStyle]="{'background': status === 'processing' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;"
                             class="text-primary">PROCESSING</li>
                         <li nz-menu-item (click)="status = 'won'; useFilter()" [ngStyle]="{'background': status === 'won' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-success">WON</li>
-                        <li nz-menu-item (click)="status = 'close'; useFilter()" [ngStyle]="{'background': status === 'close' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">CLOSE</li>
+                        <li nz-menu-item (click)="status = 'lost'; useFilter()" [ngStyle]="{'background': status === 'lost' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">LOST</li>
                     </ul>
                 </nz-dropdown-menu>
             </div>

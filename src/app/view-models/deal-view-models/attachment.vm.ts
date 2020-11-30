@@ -1,18 +1,18 @@
 import { DealVM } from '@view-models';
 
 export interface AttachmentVM {
-  readonly id: string;
-  readonly name: string;
-  readonly extension: string;
-  readonly description: string;
-  readonly url: string;
-  readonly size: number;
-  readonly deal: DealVM;
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  name: string;
+  extension: string;
+  description: string;
+  url: string;
+  size: number;
+  deal: DealVM;
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AttachmentCM {

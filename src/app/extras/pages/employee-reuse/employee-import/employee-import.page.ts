@@ -78,10 +78,10 @@ export class EmployeeImportPage implements OnInit, OnChanges {
         })
       ).subscribe((data) => {
         data.forEach((e) => this.employeeService.triggerValue$.next({ type: 'create', data: e }));
-        this.toastrService.success('', 'Import employees success!', { duration: 3000 });
+        this.toastrService.success('', 'Import accounts success!', { duration: 3000 });
         this.useChange.emit();
       }, (err) => {
-        this.toastrService.danger('', 'Import employees fail! Something wrong at runtime', { duration: 3000 });
+        this.toastrService.danger('', 'Import accounts fail! Something wrong at runtime', { duration: 3000 });
       });
     }
   }

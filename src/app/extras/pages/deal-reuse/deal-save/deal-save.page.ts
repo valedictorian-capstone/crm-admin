@@ -197,7 +197,7 @@ export class DealSavePage implements OnInit {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
   useRemoveDealDetail = (index: number) => {
-    (this.form.get('dealDetails') as FormArray).controls.splice(index, 1);
+    (this.form.get('dealDetails') as FormArray).removeAt(index);
   }
   useAddDealDetail = () => {
     (this.form.get('dealDetails') as FormArray).push(new FormGroup({

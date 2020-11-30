@@ -19,12 +19,12 @@
         </div>
         <nb-tabset fullWidth>
             <nb-tab tabTitle="Information" tabIcon="info-outline" responsive>
-
+                <app-reuse-customer-save [customer]="customer" [isProfile]="true"></app-reuse-customer-save>
             </nb-tab>
             <nb-tab tabTitle="Deal" [tabIcon]="{icon: 'donate', pack: 'font-awesome'}" responsive>
                 <ngx-spinner [name]="'account-item' + customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
                 <app-reuse-deal-item *ngFor="let deal of customer.deals" [deal]="deal"></app-reuse-deal-item>
-                <div *ngIf="customer.deals.length === 0" class="empty">
+                <div *ngIf="(customer.deals ? customer.deals : []).length === 0" class="empty">
                     <span>
                 <b>Don't have any deals</b>
               </span>
@@ -33,7 +33,7 @@
             <nb-tab tabTitle="Ticket" tabIcon="pricetags-outline" responsive>
                 <ngx-spinner [name]="'account-item' + customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
                 <app-reuse-ticket-item *ngFor="let ticket of customer.tickets"></app-reuse-ticket-item>
-                <div *ngIf="customer.tickets.length === 0" class="empty">
+                <div *ngIf="(customer.tickets ? customer.tickets : []).length === 0" class="empty">
                     <span>
                 <b>Don't have any tickets</b>
               </span>

@@ -4,6 +4,17 @@ nb-card {
     &.inside {
         width: 100%;
     }
+    &.profile {
+        width: 100%;
+        border: none;
+        nb-card-body {
+            padding: 0;
+            max-height: fit-content;
+        }
+        nb-card-footer {
+            padding: 0;
+        }
+    }
     nb-card-body {
         max-height: calc(100vh - 238px);
         overflow-y: auto;

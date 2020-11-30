@@ -40,7 +40,7 @@ export class ActivityMainPage implements OnInit {
       id: e.id,
       title: e.name,
       start: new Date(e.dateStart),
-      expried: new Date(e.dateStart) > new Date(e.dateEnd),
+      state: new Date() < new Date(e.dateStart) ? 'notStart' : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired'),
       ...e,
       draggable: true,
     }));

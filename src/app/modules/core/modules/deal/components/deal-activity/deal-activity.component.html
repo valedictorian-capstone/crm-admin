@@ -3,7 +3,7 @@
         <nb-checkbox (checkedChange)="useToggleDone()" [checked]="data?.status === 'done'" [status]="'success'"><a>{{data?.type}}</a></nb-checkbox>
     </div>
     <div class="time" [class.processing]="data?.status === 'processing'" [class.done]="data?.status === 'done'">
-        <span class="text" [class.text-success]="!data?.expired && data?.status === 'processing'" [class.text-danger]="data?.expired && data?.status === 'processing'">{{data?.dateStart | time}}</span>
+        <span class="text" [class.text-success]="data.state === 'processing' && data.status === 'processing'" [class.text-danger]="data.state === 'expired' && data.status === 'processing'">{{data.dateStart | time}}</span>
         <span class="separator">·</span>
         <span class="text">Đặng Khánh Vinh</span>
     </div>

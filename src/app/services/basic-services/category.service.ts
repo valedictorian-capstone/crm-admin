@@ -20,7 +20,7 @@ export class CategoryService {
   }
 
   public readonly insert = (data: CategoryCM): Observable<CategoryVM> => {
-    return this.httpClient.post<CategoryVM>(`${environment.apiEndpont}${environment.api.basic.category.main}`, data);
+    return this.httpClient.put<CategoryVM>(`${environment.apiEndpont}${environment.api.basic.category.main}`, data);
   }
 
   public readonly update = (data: CategoryUM): Observable<CategoryVM> => {

@@ -2,27 +2,27 @@
     <a class="crm-logo" [nbTooltip]="'M-CRM'" [nbTooltipPlacement]="'end'">
         <img src="assets/192x192.png" />
     </a>
-    <a class="crm-menu-item not-mobile" [class.selected]="active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Home'" [nbTooltipPlacement]="'end'">
+    <a class="crm-menu-item not-mobile" [class.selected]="active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Dashboard'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'home'" [pack]="'eva'"></nb-icon>
-        <b>Home</b>
+        <b>Dashboard</b>
     </a>
     <a class="crm-menu-item" [class.selected]="active === 'lead'" (click)="useUpdate('lead')" [nbTooltip]="'Lead'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'binoculars'" [pack]="'font-awesome'"></nb-icon>
         <b>Lead</b>
     </a>
-    <a class="crm-menu-item" [class.selected]="active === 'pipeline' || active === 'deal'" (click)="useUpdate('pipeline')" [nbTooltip]="'Deal'" [nbTooltipPlacement]="'end'">
+    <a class="crm-menu-item" [class.selected]="active === 'process' || active === 'deal'" (click)="useUpdate('process')" [nbTooltip]="'Deal'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'donate'" [pack]="'font-awesome'"></nb-icon>
         <b>Deal</b>
     </a>
-    <a class="crm-menu-item mobile" [class.selected]="active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Home'" [nbTooltipPlacement]="'end'">
+    <a class="crm-menu-item mobile" [class.selected]="active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Dashboard'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'home'" [pack]="'eva'"></nb-icon>
-        <b>Home</b>
+        <b>Dashboard</b>
     </a>
     <a class="crm-menu-item" [class.selected]="active === 'activity'" (click)="useUpdate('activity')" [nbTooltip]="'Activity'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'calendar-alt'" [pack]="'font-awesome'"></nb-icon>
         <b>Activity</b>
     </a>
-    <a class="crm-menu-item" [class.selected]="active !== 'dashboard' && active !== 'lead' && active !== 'pipeline' && active !== 'profile' && active !== 'activity' && active !== 'deal'" (click)="useUpdate()" [nbTooltip]="'More'" [nbTooltipPlacement]="'end'"
+    <a class="crm-menu-item" [class.selected]="active !== 'dashboard' && active !== 'lead' && active !== 'process' && active !== 'profile' && active !== 'activity' && active !== 'deal'" (click)="useUpdate()" [nbTooltip]="'More'" [nbTooltipPlacement]="'end'"
         (clickOutside)="showMore = false" (click)="showMore = !showMore">
         <nb-icon [icon]="'more-horizontal'" [pack]="'eva'"></nb-icon>
         <b>More</b>

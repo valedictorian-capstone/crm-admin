@@ -13,7 +13,7 @@
             <span>₫{{[deal] | totalMoney}}</span>
         </div>
     </div>
-    <span *ngIf="deal.status !== 'processing'" [class.bg-danger]="deal.status === 'close'" style="display: flex; position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem; border-radius: 5px; width: 80px; letter-spacing: 2px; justify-content: center; align-items: center;"
+    <span *ngIf="deal.status !== 'processing'" [class.bg-danger]="deal.status === 'lost'" style="display: flex; position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem; border-radius: 5px; width: 80px; letter-spacing: 2px; justify-content: center; align-items: center;"
         [class.bg-success]="deal.status === 'won'">
     <b style="text-transform: uppercase; color: white; font-family: victor mono, Menlo, Monaco, 'Courier New', monospace;">{{deal.status}}</b>
 </span>
@@ -21,7 +21,7 @@
 <nz-dropdown-menu #more="nzDropdownMenu">
     <ul nz-menu style="border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
         <li nz-menu-item (click)="useWon()" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-success">WON</li>
-        <li nz-menu-item (click)="useClose()" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">CLOSE</li>
-        <li nz-menu-item (click)="useDelete()" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;">DELETE</li>
+        <li nz-menu-item (click)="useClose()" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">LOST</li>
+        <!-- <li nz-menu-item (click)="useDelete()" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;">DELETE</li> -->
     </ul>
 </nz-dropdown-menu>

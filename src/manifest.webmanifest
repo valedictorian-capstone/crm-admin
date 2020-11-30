@@ -2,7 +2,7 @@
     "name": "Admin",
     "short_name": "Admin",
     "theme_color": "#404346",
-    "background_color": "#fafafa",
+    "background_color": "rgb(64, 67, 70)",
     "display": "standalone",
     "scope": "./",
     "start_url": "./",

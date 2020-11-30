@@ -39,7 +39,7 @@ export class PipelineDetailPage implements OnInit {
       .subscribe(async (data) => {
         this.pipelines = data;
         if (data.length === 0) {
-          this.router.navigate(['core/pipeline/add']);
+          this.router.navigate(['core/process/add']);
         } else {
           const selected = localStorage.getItem('selectedPipeline');
           await this.useSelectPipeline(!(selected || !data.find((p) => p.id === selected)) ? data[0].id : selected, true);
@@ -53,10 +53,10 @@ export class PipelineDetailPage implements OnInit {
     }
   }
   useAdd = () => {
-    this.router.navigate(['core/pipeline/add']);
+    this.router.navigate(['core/process/add']);
   }
   useEdit = () => {
-    this.router.navigate(['core/pipeline/edit']);
+    this.router.navigate(['core/process/edit']);
   }
   useCreateDeal = () => {
     this.globalService.triggerView$.next({ type: 'deal', payload: { pipeline: this.selectedPipeline } });
@@ -65,9 +65,7 @@ export class PipelineDetailPage implements OnInit {
     this.spinner.show('pipeline-deatail');
   }
   useHideSpinner = () => {
-    setTimeout(() => {
       this.spinner.hide('pipeline-deatail');
-    }, 1000);
   }
   useViewDeal = () => {
     this.router.navigate(['core/deal']);

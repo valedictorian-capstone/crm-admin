@@ -75,22 +75,14 @@
                                 border-left: none;
                                 &:hover {
                                     cursor: move;
-                                    .plus-left {
-                                        display: flex;
-                                    }
-                                    .plus-right {
-                                        display: flex;
-                                    }
                                 }
                                 .plus-left {
-                                    display: none;
                                     position: absolute;
                                     top: 15px;
                                     left: -8px;
                                     z-index: 2;
                                 }
                                 .plus-right {
-                                    display: none;
                                     position: absolute;
                                     top: 15px;
                                     right: -8px;

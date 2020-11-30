@@ -62,7 +62,7 @@ export class DealMainPage implements OnInit {
     }, 1000);
   }
   useViewPipeline = () => {
-    this.router.navigate(['core/pipeline/detail']);
+    this.router.navigate(['core/process/detail']);
   }
   useFilter = () => {
     this.filterDeals = this.deals.filter((deal) => deal.status.includes(this.status));

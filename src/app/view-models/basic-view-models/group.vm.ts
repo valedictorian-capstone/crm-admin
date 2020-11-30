@@ -1,15 +1,15 @@
 import { CustomerVM } from '..';
 
 export interface GroupVM {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly customers: CustomerVM[];
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  name: string;
+  description: string;
+  customers: CustomerVM[];
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface GroupCM {

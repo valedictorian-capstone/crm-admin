@@ -1,21 +1,21 @@
 import { AccountVM, StageVM, CustomerVM } from '@view-models';
 
 export interface TicketVM {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly customer: CustomerVM;
-  readonly assignee: AccountVM;
-  readonly status: string;
-  readonly feedbackAssignee: AccountVM;
-  readonly feedbackMessage: string;
-  readonly feedbackStatus: string;
-  readonly feedbackRating: number;
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  title: string;
+  description: string;
+  customer: CustomerVM;
+  assignee: AccountVM;
+  status: string;
+  feedbackAssignee: AccountVM;
+  feedbackMessage: string;
+  feedbackStatus: string;
+  feedbackRating: number;
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TicketCM {
@@ -27,14 +27,14 @@ export interface TicketCM {
 }
 
 export interface TicketUM {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly customer: CustomerVM;
-  readonly stage: StageVM;
-  readonly status: string;
-  readonly feedbackAssignee: AccountVM;
-  readonly feedbackMessage: string;
-  readonly feedbackStatus: string;
-  readonly feedbackRating: number;
+  id: string;
+  title: string;
+  description: string;
+  customer: CustomerVM;
+  stage: StageVM;
+  status: string;
+  feedbackAssignee: AccountVM;
+  feedbackMessage: string;
+  feedbackStatus: string;
+  feedbackRating: number;
 }

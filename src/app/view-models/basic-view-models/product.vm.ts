@@ -1,19 +1,19 @@
 
 export interface ProductVM {
-  readonly id: string;
-  readonly code: string;
-  readonly name: string;
-  readonly type: string;
-  readonly category: string;
-  readonly price: number;
-  readonly unit: string;
-  readonly description: string;
-  readonly parameters: {label: string, value: string}[];
-  readonly isDelete: boolean;
-  readonly createdBy: string;
-  readonly updatedBy: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  category: string;
+  price: number;
+  unit: string;
+  description: string;
+  parameters: {label: string, value: string}[];
+  isDelete: boolean;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ProductCM {

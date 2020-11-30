@@ -55,10 +55,10 @@ export class SettingPasswordPage implements OnInit {
             })
           )
           .subscribe((data) => {
-            this.toastrService.success('', 'Save employee success!', { duration: 3000 });
+            this.toastrService.success('', 'Change password success!', { duration: 3000 });
             this.useClose.emit();
           }, (err) => {
-            this.toastrService.danger('', 'Save employee fail! Something wrong at runtime', { duration: 3000 });
+            this.toastrService.danger('', 'Change password fail! Something wrong at runtime', { duration: 3000 });
           });
       }, 2000);
     } else {

@@ -4,7 +4,7 @@
         <div class="crm-deal-detail-information">
             <div class="deal-header">
                 <div class="deal-header-left" (click)="useEdit()">
-                    <b>{{deal?.title}}</b>
+                    <b><nb-icon icon="edit-2-outline"></nb-icon> {{deal?.title}}</b>
                     <nb-icon icon="pricetags-outline"></nb-icon>
                 </div>
                 <div class="deal-header-right">
@@ -12,18 +12,18 @@
                     <button *ngIf="deal?.status === 'processing'" outline (click)="useWon()" nbButton size="tiny" class="small-mobile" status="success">
                       <nb-icon icon="star-outline"></nb-icon>
                     </button>
-                    <button *ngIf="deal?.status === 'processing'" outline (click)="useClose()" nbButton size="small" class="desktop" status="danger">CLOSE</button>
+                    <button *ngIf="deal?.status === 'processing'" outline (click)="useClose()" nbButton size="small" class="desktop" status="danger">LOST</button>
                     <button *ngIf="deal?.status === 'processing'" outline (click)="useClose()" nbButton size="tiny" class="small-mobile" status="danger">
                       <nb-icon icon="close-outline"></nb-icon>
                     </button>
                     <button *ngIf="deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="small" class="desktop" status="warning">REOPEN</button>
                     <button *ngIf="deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="tiny" class="small-mobile" status="warning">REOPEN</button>
-                    <button nbButton class="desktop" size="small" outline (click)="useDialog(deleteRef)">
+                    <!-- <button nbButton class="desktop" size="small" outline (click)="useDialog(deleteRef)">
                     <nb-icon icon="trash-2-outline"></nb-icon>
                   </button>
                     <button nbButton class="small-mobile" size="tiny" outline (click)="useDialog(deleteRef)">
                     <nb-icon icon="trash-2-outline"></nb-icon>
-                  </button>
+                  </button> -->
                     <button nbButton class="desktop" size="small" outline (click)="useReload()">
                     <nb-icon icon="sync-outline"></nb-icon>
                   </button>
@@ -55,7 +55,7 @@
                     <p class="fullname">{{deal?.customer.fullname | short}}</p>
                 </div>
                 <span *ngIf="deal?.status" style="display: flex; position: absolute; right: 0rem; padding: 0.2rem; border-radius: 5px; width: 6rem;font-size: 0.7rem; letter-spacing: 2px; justify-content: center; align-items: center;" [class.bg-success]="deal.status === 'won'"
-                    [class.bg-primary]="deal.status === 'processing'" [class.bg-danger]="deal.status === 'close'">
+                    [class.bg-primary]="deal.status === 'processing'" [class.bg-danger]="deal.status === 'lost'">
       <b style="text-transform: uppercase; color: white; font-family: victor mono, Menlo, Monaco, 'Courier New', monospace;">{{deal.status}}</b>
   </span>
             </div>

@@ -284,6 +284,8 @@
                             cursor: pointer;
                             text-transform: uppercase;
                             text-decoration: none;
+                            width: calc(90%/4);
+                            text-align: center;
                             &:hover {
                                 color: #317ae2;
                             }
@@ -330,10 +332,11 @@
                     border-radius: 50%;
                 }
                 .none-avatar {
-                    width: 100%;
-                    height: 100%;
+                    width: 3rem;
+                    height: 3rem;
                     border-radius: 50%;
                     display: flex;
+                    margin: auto;
                     justify-content: center;
                     border: 1px solid #e5e5e5;
                     background: antiquewhite;

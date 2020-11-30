@@ -37,7 +37,7 @@ export class DealItemComponent implements OnInit {
   useClose = () => {
     this.dealService.update({
       ...this.deal,
-      status: 'close',
+      status: 'lost',
       activitys: undefined,
       notes: undefined,
       logs: undefined,

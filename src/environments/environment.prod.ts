@@ -3,13 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
   // apiEndpont: 'http://localhost:8080/',
-  apiEndpont: 'https://localhost:8081/',
-  // apiEndpont: 'https://crm-capstone-ws.azurewebsites.net/',
-  // socketServer: 'https://crm-capstone-ws.azurewebsites.net/',
+  // apiEndpont: 'https://localhost:8081/',
+  apiEndpont: 'https://crm-capstone-ws.azurewebsites.net/',
+  socketServer: 'https://crm-capstone-ws.azurewebsites.net/',
   // socketServer: 'http://localhost:8080/',
-  socketServer: 'https://localhost:8081/',
+  // socketServer: 'https://localhost:8081/',
   token: 'crm-token',
   api: {
     basic: {
@@ -166,8 +166,8 @@ export const environment = {
       pack: 'font-awesome',
     },
     {
-      label: 'Contact',
-      value: 'contact',
+      label: 'Customer',
+      value: 'customer',
       icon: 'phone',
       pack: 'eva',
     },
@@ -190,8 +190,8 @@ export const environment = {
       pack: 'eva',
     },
     {
-      label: 'Pipeline',
-      value: 'pipeline',
+      label: 'Process',
+      value: 'process',
       icon: 'browser',
       pack: 'eva',
     },
@@ -223,15 +223,9 @@ export const environment = {
   ],
   more_categories: [
     {
-      label: 'Contact',
-      value: 'contact',
+      label: 'Customer',
+      value: 'customer',
       icon: 'phone',
-      pack: 'eva',
-    },
-    {
-      label: 'Account',
-      value: 'account',
-      icon: 'person-done',
       pack: 'eva',
     },
     {
@@ -251,6 +245,12 @@ export const environment = {
       value: 'product',
       icon: 'shopping-cart',
       pack: 'eva',
+    },
+    {
+      label: 'Employee',
+      value: 'employee',
+      icon: 'headset',
+      pack: 'font-awesome',
     },
   ],
   filterTabs: [
@@ -273,14 +273,8 @@ export const environment = {
       pack: 'font-awesome',
     },
     {
-      label: 'Account',
-      value: 'account',
-      icon: 'person-done',
-      pack: 'eva',
-    },
-    {
-      label: 'Contact',
-      value: 'contact',
+      label: 'Customer',
+      value: 'customer',
       icon: 'phone',
       pack: 'eva',
     },
@@ -338,7 +332,7 @@ export const environment = {
     {
       label: 'Customer',
       value: 'customer',
-      icon: 'person',
+      icon: 'phone',
       pack: 'eva',
       can: 'canCreateCustomer',
     },
@@ -366,8 +360,8 @@ export const environment = {
     {
       label: 'Employee',
       value: 'employee',
-      icon: 'mic',
-      pack: 'eva',
+      icon: 'headset',
+      pack: 'font-awesome',
       can: 'canCreateEmployee',
     },
     {
@@ -390,6 +384,12 @@ export const environment = {
       icon: 'attach-outline',
       pack: 'eva',
       can: 'canCreateAttachment',
+    },
+    {
+      label: 'Import',
+      value: 'import',
+      icon: 'cloud-upload-outline',
+      pack: 'eva',
     },
   ],
   firebase: {

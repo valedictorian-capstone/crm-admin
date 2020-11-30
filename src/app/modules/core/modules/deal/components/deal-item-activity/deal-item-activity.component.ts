@@ -11,7 +11,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class DealItemActivityComponent implements OnInit {
   @Input() deal: DealVM;
-  activitys: (ActivityVM & { expired?: boolean })[] = [];
+  activitys: (ActivityVM & { state: string })[] = [];
   constructor(
     protected readonly dealService: DealService,
     protected readonly activityService: ActivityService,
@@ -24,9 +24,19 @@ export class DealItemActivityComponent implements OnInit {
   ngOnInit() {
     this.activityService.triggerValue$.subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.activitys.push(trigger.data);
+        this.activitys.push({
+          ...trigger.data,
+          state: new Date() < new Date(trigger.data.dateStart)
+          ? 'notStart'
+          : (new Date() >= new Date(trigger.data.dateStart) && new Date() < new Date(trigger.data.dateEnd) ? 'processing' : 'expired')
+        });
       } else if (trigger.type === 'update') {
-        this.activitys[this.activitys.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
+        this.activitys[this.activitys.findIndex((e) => e.id === trigger.data.id)] = {
+          ...trigger.data,
+          state: new Date() < new Date(trigger.data.dateStart)
+          ? 'notStart'
+          : (new Date() >= new Date(trigger.data.dateStart) && new Date() < new Date(trigger.data.dateEnd) ? 'processing' : 'expired')
+        };
       } else {
         this.activitys.splice(this.activitys.findIndex((e) => e.id === trigger.data.id), 1);
       }
@@ -38,7 +48,12 @@ export class DealItemActivityComponent implements OnInit {
         })
       )
       .subscribe((data) => this.activitys =
-      data.activitys.map((e) => ({ ...e, expired: new Date(e.dateStart) > new Date(e.dateEnd) })));
+        data.activitys.map((e) => ({
+          ...e,
+          state: new Date() < new Date(e.dateStart)
+            ? 'notStart'
+            : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
+        })));
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'activity', payload: { deal: this.deal, fixDeal: true } });

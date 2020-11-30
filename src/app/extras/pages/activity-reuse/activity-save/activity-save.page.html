@@ -12,22 +12,22 @@
                 nbInput size="large" />
         </nb-form-field>
         <div class="crm-activity-type">
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('email')" [class.selected]="form.get('type').value === 'email'" [nbTooltip]="'Email'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('email'); useSetValidatorEmail()" [class.selected]="form.get('type').value === 'email'" [nbTooltip]="'Email'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="email-outline"></nb-icon>
             </a>
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('call')" [class.selected]="form.get('type').value === 'call'" [nbTooltip]="'Call'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('call'); useSetValidatorPhone()" [class.selected]="form.get('type').value === 'call'" [nbTooltip]="'Call'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="phone-outline"></nb-icon>
             </a>
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('meetting')" [class.selected]="form.get('type').value === 'meetting'" [nbTooltip]="'Meetting'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('meetting'); useSetValidatorNormal()" [class.selected]="form.get('type').value === 'meetting'" [nbTooltip]="'Meetting'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="people-outline"></nb-icon>
             </a>
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('task')" [class.selected]="form.get('type').value === 'task'" [nbTooltip]="'Task'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('task'); useSetValidatorNormal()" [class.selected]="form.get('type').value === 'task'" [nbTooltip]="'Task'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="clock-outline"></nb-icon>
             </a>
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('deadline')" [class.selected]="form.get('type').value === 'deadline'" [nbTooltip]="'Deadline'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('deadline'); useSetValidatorNormal()" [class.selected]="form.get('type').value === 'deadline'" [nbTooltip]="'Deadline'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="flag-outline"></nb-icon>
             </a>
-            <a class="crm-activity-type-item" (click)="form.get('type').setValue('lunch')" [class.selected]="form.get('type').value === 'lunch'" [nbTooltip]="'Lunch'" [nbTooltipPlacement]="'bottom'">
+            <a class="crm-activity-type-item" (click)="form.get('type').setValue('lunch'); useSetValidatorNormal()" [class.selected]="form.get('type').value === 'lunch'" [nbTooltip]="'Lunch'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="utensils" pack="font-awesome"></nb-icon>
             </a>
         </div>

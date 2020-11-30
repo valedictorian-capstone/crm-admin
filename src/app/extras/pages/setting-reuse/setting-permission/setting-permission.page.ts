@@ -18,6 +18,7 @@ export class SettingPermissionPage implements OnInit {
   accounts: AccountVM[] = [];
   search = '';
   you: AccountVM;
+  level = 99999;
   constructor(
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
@@ -37,16 +38,19 @@ export class SettingPermissionPage implements OnInit {
     this.useShowSpinner();
     this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
       .pipe(
+        tap((data) => {
+          this.you = data;
+          this.level = Math.min(...data.roles.map((e) => e.level));
+        }),
+        switchMap(() => this.employeeService.findAll()),
+        tap((data) => this.accounts = data),
+        switchMap(() => this.roleService.findAll()),
         finalize(() => {
           this.useHideSpinner();
         }),
-        tap((data) => this.you = data),
-        switchMap(() => this.employeeService.findAll()),
-        tap((data) => this.accounts = data),
-        switchMap(() => this.roleService.findAll())
       )
       .subscribe((data) => {
-        this.roles = data.sort((a, b) => a.level - b.level).map((role) => ({
+        this.roles = data.filter((e) => e.level > this.level).sort((a, b) => a.level - b.level).map((role) => ({
           ...role,
           accounts: role.accounts
         }));
@@ -82,8 +86,8 @@ export class SettingPermissionPage implements OnInit {
       this.spinner.hide('setting-permission');
     }, 1000);
   }
-  usePlus = (type: string) => {
-    this.globalService.triggerView$.next({ type, payload: {} });
+  usePlus = () => {
+    this.globalService.triggerView$.next({ type: 'role', payload: {} });
   }
   useEdit = () => {
     this.globalService.triggerView$.next({ type: 'role', payload: { role: this.selectedRole } });

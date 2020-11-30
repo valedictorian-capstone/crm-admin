@@ -27,7 +27,7 @@ export class LeadMainPage implements OnInit {
   }
   useTrigger = () => {
     this.customerService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data.groups.filter((group) => group.id === '0').length > 0) {
+      if (trigger.data.groups.filter((group) => group.id === '3').length > 0) {
         if (trigger.type === 'create') {
           this.customers.push(trigger.data);
         } else if (trigger.type === 'update') {
@@ -41,7 +41,7 @@ export class LeadMainPage implements OnInit {
   }
   useReload = () => {
     this.useShowSpinner();
-    this.customerService.findAllByType('0')
+    this.customerService.findAllLead()
       .pipe(
         finalize(() => {
           this.useHideSpinner();

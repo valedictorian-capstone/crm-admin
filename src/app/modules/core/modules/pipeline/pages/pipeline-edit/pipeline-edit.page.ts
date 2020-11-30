@@ -74,12 +74,13 @@ export class PipelineEditPage implements OnInit {
       )
       .subscribe((data) => {
         this.name.setValue(data.name);
-        this.stages.clear();
-        data.stages.forEach((e) => this.stages.controls.push(new FormGroup({
-          id: new FormControl(e.id),
-          name: new FormControl(e.name, [Validators.required]),
-          probability: new FormControl(e.probability, [Validators.required, Validators.min(0), Validators.max(100)]),
-        })));
+        // data.stages.forEach((e) => this.stages.controls.push(new FormGroup({
+        //   id: new FormControl(e.id),
+        //   name: new FormControl(e.name, [Validators.required]),
+        //   probability: new FormControl(e.probability, [Validators.required, Validators.min(0), Validators.max(100)]),
+        // })));
+        this.stages.patchValue(data.stages);
+        console.log(this.stages);
       });
   }
   useUpdate = (ref: NbDialogRef<any>) => {
@@ -88,7 +89,12 @@ export class PipelineEditPage implements OnInit {
       this.pipelineService.save({
         id: localStorage.getItem('selectedPipeline'),
         name: this.name.value,
-        stages: this.stages.value.map((e, i) => ({ ...e, position: i, id: e.id != null ? e.id : undefined })),
+        stages: this.stages.value.map((e, i) => ({
+          ...e,
+          position: i,
+          id: e.id != null ? e.id : undefined,
+          pipeline: { id: localStorage.getItem('selectedPipeline') }
+        })),
       })
         .pipe(
           finalize(() => {
@@ -100,7 +106,7 @@ export class PipelineEditPage implements OnInit {
           ref.close();
           this.toastrService.success('', 'Success to save process');
           localStorage.setItem('selectedPipeline', data.id);
-          this.router.navigate(['core/pipeline']);
+          this.router.navigate(['core/process']);
         }, (err) => {
           this.toastrService.danger('', 'Fail to save process');
         });
@@ -129,7 +135,7 @@ export class PipelineEditPage implements OnInit {
   }
   useCancel = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.router.navigate(['core/pipeline']);
+    this.router.navigate(['core/process']);
   }
   useDialog(template: TemplateRef<any>, index: number, stage?: StageVM) {
     if (stage) {
@@ -146,7 +152,7 @@ export class PipelineEditPage implements OnInit {
     }
   }
   useRemove = (index: number, ref: NbDialogRef<any>) => {
-    this.stages.controls.splice(index, 1);
+    this.stages.removeAt(index);
     ref.close();
   }
   useMoveAndRemove = (index: number, ref: NbDialogRef<any>, deals: DealVM[], stage: StageVM, oldStage: StageVM) => {
@@ -167,7 +173,7 @@ export class PipelineEditPage implements OnInit {
         })
       )
       .subscribe(() => {
-        this.stages.controls.splice(index, 1);
+        this.stages.removeAt(index);
         ref.close();
       });
   }

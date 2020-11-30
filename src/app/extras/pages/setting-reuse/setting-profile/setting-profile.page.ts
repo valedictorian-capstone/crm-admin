@@ -58,22 +58,21 @@ export class SettingProfilePage implements OnInit {
     ref.close();
     if (this.form.valid) {
       this.useShowSpinner();
-      setTimeout(() => {
-        this.authService.updateProfile(this.form.value)
-          .pipe(
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe((data) => {
-            localStorage.setItem('avatar', data.avatar);
-            localStorage.setItem('fullname', data.fullname);
-            this.toastrService.success('', 'Save employee success!', { duration: 3000 });
-            this.useClose.emit();
-          }, (err) => {
-            this.toastrService.danger('', 'Save employee fail! Something wrong at runtime', { duration: 3000 });
-          });
-      }, 2000);
+      this.authService.updateProfile(this.form.value)
+        .pipe(
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe((data) => {
+          localStorage.setItem('avatar', data.avatar);
+          localStorage.setItem('fullname', data.fullname);
+          this.authService.triggerValue$.next(data);
+          this.toastrService.success('', 'Update profile success!', { duration: 3000 });
+          this.useClose.emit();
+        }, (err) => {
+          this.toastrService.danger('', 'Update profile fail! Something wrong at runtime', { duration: 3000 });
+        });
     } else {
       this.form.markAsUntouched();
       this.form.markAsTouched();
@@ -91,9 +90,9 @@ export class SettingProfilePage implements OnInit {
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
-        if (files[0].size > 1024 * 1024 * 2) {
+        if (files[0].size > 1024 * 1024 * 18) {
           this.errorImage = true;
-          this.message = 'Only image size less than 2MB accept';
+          this.message = 'Only image size less than 18MB accept';
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();

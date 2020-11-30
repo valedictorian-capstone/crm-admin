@@ -97,6 +97,15 @@ export class SearchResultComponent implements OnInit {
       case 'attachment':
         window.open((data as AttachmentVM).url, '_blank');
         break;
+      case 'customer':
+        this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: data } });
+        break;
+      case 'lead':
+        this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: data } });
+        break;
+      case 'activity':
+        this.globalService.triggerView$.next({ type: 'activity', payload: { activity: data } });
+        break;
       default:
         this.router.navigate(['core/' + data.searchType + '/' + data.id]);
         break;

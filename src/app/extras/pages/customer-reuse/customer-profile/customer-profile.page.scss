@@ -29,7 +29,8 @@ nb-card {
         nb-tabset {
             height: 100%;
             nb-tab {
-                height: calc(100% - 52px);
+                min-height: calc(100% - 52px);
+                height: fit-content;
                 padding: 1rem;
                 position: relative;
                 .empty {

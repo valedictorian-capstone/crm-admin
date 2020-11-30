@@ -50,7 +50,7 @@
                         <li nz-menu-item (click)="status = ''" [ngStyle]="{'background': status === '' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;">ALL</li>
                         <li nz-menu-item (click)="status = 'processing'" [ngStyle]="{'background': status === 'processing' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;" class="text-primary">PROCESSING</li>
                         <li nz-menu-item (click)="status = 'won'" [ngStyle]="{'background': status === 'won' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-success">WON</li>
-                        <li nz-menu-item (click)="status = 'close'" [ngStyle]="{'background': status === 'close' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">CLOSE</li>
+                        <li nz-menu-item (click)="status = 'lost'" [ngStyle]="{'background': status === 'lost' ? '#e6e6e6' : 'white'}" style="width: 200px; display: flex; justify-content: center; align-items: center; font-weight: 600; padding: 1rem;" class="text-danger">LOST</li>
                     </ul>
                 </nz-dropdown-menu>
             </div>

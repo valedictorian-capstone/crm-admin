@@ -14,7 +14,7 @@ import { DropResult } from 'ngx-smooth-dnd';
 })
 export class PipelineAddPage implements OnInit {
   @Output() useReload: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
-  name = new FormControl('New Pipeline', [Validators.required]);
+  name = new FormControl('New Process', [Validators.required]);
   stages = new FormArray([
     new FormGroup({
       name: new FormControl('Qualified', [Validators.required]),
@@ -61,7 +61,7 @@ export class PipelineAddPage implements OnInit {
         ref.close();
         this.toastrService.success('', 'Success to save process');
         localStorage.setItem('selectedPipeline', data.id);
-        this.router.navigate(['core/pipeline']);
+        this.router.navigate(['core/process']);
       }, (err) => {
           this.toastrService.danger('', 'Fail to save process');
       });
@@ -90,13 +90,13 @@ export class PipelineAddPage implements OnInit {
   }
   useCancel = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.router.navigate(['core/pipeline']);
+    this.router.navigate(['core/process']);
   }
   useDialog<T>(template: TemplateRef<any>, index: T) {
     this.dialogService.open<T>(template, { context: index, closeOnBackdropClick: false });
   }
   useRemove = (index: number, ref: NbDialogRef<any>) => {
-    this.stages.controls.splice(index, 1);
+    this.stages.removeAt(index);
     ref.close();
   }
 }
