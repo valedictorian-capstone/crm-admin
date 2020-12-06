@@ -21,25 +21,8 @@ steps:
     ng build --prod
   displayName: 'npm install and build'
   
-- task: AzureRmWebAppDeployment@4
+- task: PublishBuildArtifacts@1
   inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure for Students(1)(fd8b1d07-0cd0-42d3-a131-1503ed53e201)'
-    appType: 'webApp'
-    WebAppName: 'crm-capstone-admin'
-    packageForLinux: 'dist/'
-    WebConfigParameters: |
-      <system.webServer>
-        <rewrite>
-          <rules>
-            <rule name="Angular Routes" stopProcessing="true">
-              <match url=".*" />
-              <conditions logicalGrouping="MatchAll">
-                <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
-                <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
-              </conditions>
-              <action type="Rewrite" url="/index.html" />
-            </rule>
-          </rules>
-        </rewrite>
-      </system.webServer>
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
