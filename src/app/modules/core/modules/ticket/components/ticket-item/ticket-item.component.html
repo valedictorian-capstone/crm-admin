@@ -1,0 +1,80 @@
+<div class="ticket">
+    <div class="content">
+        {{ticket.description}}
+    </div>
+    <div class="time">
+        {{ticket.createdAt | time}}
+        <b class="float-left" style="text-transform: capitalize; position: absolute; right: 0.75rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
+    </div>
+    <div class="customer">
+        <div style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; float: left; margin-right: 1rem; border: 1px solid #e5e5e5; cursor: pointer" (click)="useView()">
+            <img style="height: 3rem; width: 3rem; border-radius: 50%;" *ngIf="ticket.customer.avatar" [src]="ticket.customer.avatar" />
+            <b *ngIf="!ticket.customer.avatar">{{ ticket.customer.fullname | key }}</b>
+        </div>
+        {{ticket.customer.fullname}}
+        <button style="position: absolute; right: 0.75rem" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+          <nb-icon icon="more-horizontal-outline"></nb-icon>
+        </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(editRef)">
+                    <b>Edit</b>
+                </li>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useRemove()">
+                    <b>Delete</b>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+    </div>
+</div>
+<ng-template #editRef let-context let-ref="dialogRef">
+    <nb-card style="position: relative; margin: 0;">
+        <ngx-spinner [name]="'ticket-edit'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+        <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+            Edit Ticket
+            <button (click)="ref.close()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+        </nb-card-header>
+        <nb-card-body [formGroup]="form">
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Note about Conversation</span>
+            <angular-editor [formControl]="form.get('note')" [config]="config"></angular-editor>
+            <span *ngIf="ticket.type === 'deal'" style="display: block; margin: 0.5rem 0 0.5rem 0; font-weight: 600;">Ability to become deal</span>
+            <nz-slider *ngIf="ticket.type === 'deal'" [formControl]="form.get('ability')"></nz-slider>
+        </nb-card-body>
+        <nb-card-footer>
+            <nb-checkbox status="success" (checkedChange)="form.get('status').setValue($event ? 'resolve' : 'waiting')" [value]="form.get('status').value === 'resolve'">Mask as resolve</nb-checkbox>
+            <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+            <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+        </nb-card-footer>
+    </nb-card>
+    <ng-template #submitRef let-data let-comfirmRef="dialogRef">
+        <nb-card>
+            <nb-card-header>Saved changes </nb-card-header>
+            <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+            <nb-card-footer class="p-2">
+                <button style="float: right" status="primary" nbButton size="small" (click)="comfirmRef.close(); useUpdate(ref)">
+  Save and hide
+</button>
+                <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="comfirmRef.close()">
+  Continue editing
+</button>
+            </nb-card-footer>
+        </nb-card>
+    </ng-template>
+    <ng-template #cancelRef let-data let-comfirmRef="dialogRef">
+        <nb-card>
+            <nb-card-header>You have unsaved changes </nb-card-header>
+            <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+            <nb-card-footer class="p-2">
+                <button style="float: right" status="default" nbButton size="small" (click)="comfirmRef.close(); ref.close();">
+  Hide modal
+</button>
+                <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="comfirmRef.close()">
+  Continue editing
+</button>
+            </nb-card-footer>
+        </nb-card>
+    </ng-template>
+
+</ng-template>

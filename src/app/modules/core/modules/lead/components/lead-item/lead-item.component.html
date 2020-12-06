@@ -1,5 +1,5 @@
 <nb-card style="width: 95%; margin: auto;">
-    <nb-card-header style="display: flex; align-items: center; min-height: 6rem;">
+    <nb-card-header style="display: flex; align-items: center; min-height: 6rem; position: relative;">
         <div style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; float: left; margin-right: 1rem; border: 1px solid #e5e5e5; cursor: pointer" (click)="useView()">
             <img style="height: 3rem; width: 3rem; border-radius: 50%;" *ngIf="customer.avatar" [src]="customer.avatar" />
             <b *ngIf="!customer.avatar">{{ customer.fullname | key }}</b>
@@ -8,7 +8,7 @@
             <div style="display: block; text-overflow: ellipsis; width: 100%; white-space: nowrap; overflow: hidden;">
                 <span style="cursor: pointer" (click)="useView()">
           <nb-icon icon="person-outline" class="mr-2"></nb-icon>
-          <b [innerHTML]="customer.fullname | mask: search"></b>
+          <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;" [innerHTML]="customer.fullname | mask: search"></b>
         </span>
             </div>
             <button nbButton status="success" (click)="usePhone(customer.phone)" class="mr-1 mt-1" outline shape="round" size="small">
@@ -22,6 +22,9 @@
         </button>
             <button nbButton status="info" (click)="useView()" class="mr-1 mt-1" outline shape="round" size="small">
           <nb-icon icon="eye-outline"></nb-icon>
+        </button>
+            <button (click)="useToggleState()" nbButton [status]="!customer.isDelete ? 'success' : 'danger'" class="mr-1 mt-1 position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+          {{!customer.isDelete ? 'Active' : 'Disabled'}}
         </button>
         </div>
     </nb-card-header>

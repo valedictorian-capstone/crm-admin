@@ -1,4 +1,5 @@
-<nb-card>
+<nb-card class="position-relative">
+    <ngx-spinner [name]="'pipeline-move-to'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header *ngIf="!inside">
         Move deal
         <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">

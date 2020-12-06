@@ -32,7 +32,7 @@
             </nb-tab>
             <nb-tab tabTitle="Ticket" tabIcon="pricetags-outline" responsive>
                 <ngx-spinner [name]="'account-item' + customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-                <app-reuse-ticket-item *ngFor="let ticket of customer.tickets"></app-reuse-ticket-item>
+                <app-reuse-ticket-item *ngFor="let ticket of customer.tickets" [ticket]="ticket"></app-reuse-ticket-item>
                 <div *ngIf="(customer.tickets ? customer.tickets : []).length === 0" class="empty">
                     <span>
                 <b>Don't have any tickets</b>

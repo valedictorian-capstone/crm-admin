@@ -1,0 +1,106 @@
+<div class="role-main">
+    <div class="role">
+        <div class="name">
+            Roles
+        </div>
+        <div class="search">
+            <nb-form-field class="not-search" [nbSpinner]="search.role.stage === 'querying'" [nbSpinnerSize]="'tiny'">
+                <nb-icon [ngStyle]="{'opacity': search.role.stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
+                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search.role.value" nbInput size="large" />
+            </nb-form-field>
+        </div>
+        <div class="items">
+            <div class="item" [class.selected]="selectedRole.value.id === role.id" (click)="useSelectRole(role)" *ngFor="let role of filterRoles">
+                <b>{{role.name}}</b>
+            </div>
+            <div class="item add" (click)="usePlus()" [class.selected]="!selectedRole.value.id">
+                <nb-icon icon="plus-outline"></nb-icon>
+            </div>
+        </div>
+    </div>
+    <div class="role">
+        <div class="name">
+            Account List
+        </div>
+        <div class="search">
+            <button style="height: 3rem; width: 3rem; float: left" (click)="usePlusAccount()" nbButton status="success" outline>
+            <nb-icon icon="plus-outline"></nb-icon>
+          </button>
+            <nb-form-field style="width: calc(100% - 6rem); float: left;" class="not-search" [nbSpinner]="search.account.stage === 'querying'" [nbSpinnerSize]="'tiny'">
+                <nb-icon [ngStyle]="{'opacity': search.account.stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
+                <input (input)="useFilterAccount()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search.account.value" nbInput size="large" />
+            </nb-form-field>
+            <button style="height: 3rem; width: 3rem" (click)="useReload()" nbButton status="default" outline>
+              <nb-icon icon="sync-outline"></nb-icon>
+            </button>
+        </div>
+        <div class="items pb-3">
+            <app-role-account *ngFor="let account of filterAccounts" [level]="selectedRole.value.level" (useToggle)="account.selected = $event; useToggleAccount(account, $event)" [employee]="account"></app-role-account>
+        </div>
+    </div>
+    <ngx-spinner [name]="'role-main'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <div class="role text-center" [formGroup]="selectedRole">
+        <div class="name">
+            Information & Permissions
+        </div>
+        <div *ngIf="selectedRole.value.level > 0" class="content">
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+          selectedRole.get('name').invalid &&
+          (selectedRole.get('name').touched || selectedRole.get('name').dirty)
+        ">Name <span class="text-danger">*</span></span>
+            <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                <nb-icon icon="pin-outline" nbPrefix></nb-icon>
+                <input [status]="
+              selectedRole.get('name').invalid &&
+              (selectedRole.get('name').touched || selectedRole.get('name').dirty) ? 'danger' : 'basic'
+            " fullWidth [formControl]="selectedRole.get('name')" nbInput size="small" />
+            </nb-form-field>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+                  selectedRole.get('level').invalid &&
+                  (selectedRole.get('level').touched || selectedRole.get('level').dirty)
+                ">Level <span class="text-danger">*</span></span>
+            <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                <button nbButton ghost (click)="useMinusLevel()" nbPrefix>
+                  <nb-icon icon="minus-outline"></nb-icon>
+                </button>
+                <input style="text-align: center;" readonly [status]="
+                      selectedRole.get('level').invalid &&
+                      (selectedRole.get('level').touched || selectedRole.get('level').dirty) ? 'danger' : 'basic'
+                    " fullWidth [value]="selectedRole.get('level').value" nbInput size="small" />
+                <button nbButton ghost (click)="usePlusLevel()" nbSuffix>
+                      <nb-icon icon="plus-outline"></nb-icon>
+                    </button>
+            </nb-form-field>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Permissions</span
+                >
+            <div nz-row style="width: 100%;" *ngFor="let permission of permissions">
+              <div nz-col [nzSpan]="24" *ngFor="let item of permission">
+                <nb-toggle status="success" [formControl]="selectedRole.get(item.value)">{{item.label}}</nb-toggle>
+              </div>
+            </div>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Description</span
+              >
+            <nb-form-field style="width: 100%; margin-bottom: 1rem">
+              <textarea
+                #area
+                placeHolder="Description"
+                fullWidth
+                [formControl]="selectedRole.get('description')"
+                rows="5"
+                nbInput
+              ></textarea>
+            </nb-form-field>
+        </div>
+        <div *ngIf="selectedRole.value.level === 0" class="cant-edit">
+          <p>
+            This role is the highest role in the system.
+            This role owns all permissions of the system.
+            This role properties cannot be changed.
+          </p>
+        </div>
+        <div class="footer">
+          <button nbButton status="primary" class="mb-3" size="small" fullWidth outline (click)="useSubmit()">Save</button>
+        </div>
+
+    </div>
+</div>

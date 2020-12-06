@@ -1,0 +1,21 @@
+<nb-card style="position: relative; margin: 0;">
+    <ngx-spinner [name]="'product-restore'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        Restore product
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+  <nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body>
+        <nb-card style="width: 100%" class="mb-2" *ngFor="let product of products">
+            <nb-card-header>
+                <span style="height: 32px; display: flex; align-items: center; float: left;">
+                <nb-icon icon="shopping-cart-outline" class="mr-2"></nb-icon>{{product.name}}
+              </span>
+                <button (click)="useRestore(product.id)" style="float:right" status="warning" nbButton size="small">
+                <nb-icon icon="sync"></nb-icon>
+              </button>
+            </nb-card-header>
+        </nb-card>
+    </nb-card-body>
+</nb-card>

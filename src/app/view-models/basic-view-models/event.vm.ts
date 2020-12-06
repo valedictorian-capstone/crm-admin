@@ -1,15 +1,13 @@
-import { AccountVM, GroupVM, StageVM } from '@view-models';
+import { AccountVM, GroupVM, StageVM, TriggerVM } from '@view-models';
 
 export interface EventVM {
   id: string;
-  code: string;
   name: string;
   description: string;
   dateStart: Date;
-  timeStart: Date;
   dateEnd: Date;
-  timeEnd: Date;
   groups: GroupVM[];
+  triggers: TriggerVM[];
   isDelete: boolean;
   createdBy: string;
   updatedBy: string;
@@ -18,16 +16,20 @@ export interface EventVM {
 }
 
 export interface EventCM {
-  code: string;
   name: string;
   description: string;
+  dateStart: Date;
+  dateEnd: Date;
+  triggers: TriggerVM[];
   groups: GroupVM[];
 }
 
 export interface EventUM {
   id: string;
-  code: string;
   name: string;
   description: string;
+  dateStart: Date;
+  dateEnd: Date;
+  triggers: TriggerVM[];
   groups: GroupVM[];
 }

@@ -16,15 +16,7 @@ export class EmployeeImportPage implements OnInit, OnChanges {
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  employees: FormArray = new FormArray([
-    new FormGroup({
-      phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      fullname: new FormControl(undefined, [Validators.required]),
-      code: new FormControl(undefined, [Validators.required]),
-      roles: new FormControl([], [Validators.required]),
-    })
-  ]);
+  employees: FormArray = new FormArray([]);
   roles: RoleVM[] = [];
   constructor(
     protected readonly employeeService: AccountService,
@@ -42,13 +34,19 @@ export class EmployeeImportPage implements OnInit, OnChanges {
       this.employees.clear();
       for (const item of this.data) {
         const group = new FormGroup({
-          phone: new FormControl('',
-            [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
           password: new FormControl(Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
           .map((x) => x[Math.floor(Math.random() * x.length)]).join('')),
+          phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
+          phoneStage: new FormControl('done'),
+          emailStage: new FormControl('done'),
+          codeStage: new FormControl('done'),
+          showBirthday: new FormControl(false),
+          errorImage: new FormControl(false),
+          errorImageMessage: new FormControl(''),
           email: new FormControl('', [Validators.required, Validators.email]),
           fullname: new FormControl(undefined, [Validators.required]),
           code: new FormControl(undefined, [Validators.required]),
+          avatar: new FormControl(undefined),
           roles: new FormControl([], [Validators.required]),
         });
         const elements = [];
@@ -58,14 +56,12 @@ export class EmployeeImportPage implements OnInit, OnChanges {
             elements.push(element);
             if (group.get(key)) {
               group.get(key).setValue(element);
+              group.get(key).markAsTouched();
             }
           }
         }
         (group as any).autoCompleteData = elements;
-        this.useCheckEmail(group);
-        this.useCheckCode(group);
-        this.useCheckPhone(group);
-        this.employees.controls.push(group);
+        this.employees.push(group);
       }
     }
   }
@@ -77,8 +73,7 @@ export class EmployeeImportPage implements OnInit, OnChanges {
           this.useUnLoading.emit();
         })
       ).subscribe((data) => {
-        data.forEach((e) => this.employeeService.triggerValue$.next({ type: 'create', data: e }));
-        this.toastrService.success('', 'Import accounts success!', { duration: 3000 });
+        this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
         this.useChange.emit();
       }, (err) => {
         this.toastrService.danger('', 'Import accounts fail! Something wrong at runtime', { duration: 3000 });
@@ -93,43 +88,77 @@ export class EmployeeImportPage implements OnInit, OnChanges {
     XLSX.writeFile(wb, 'employee-example' + new Date().getTime() + '.xlsx');
   }
   useCheckPhone = (form: FormGroup) => {
-    if (form.get('phone').value) {
-      (form as any).phoneStage = 'querying';
+    const phone = form.get('phone');
+    if (phone.valid) {
+      form.get('phoneStage').setValue('querying');
       setTimeout(async () => {
-        const phone = form.get('phone');
         const check = await this.employeeService.checkUnique('phone', phone.value).toPromise();
         if (phone.valid && check) {
           phone.setErrors({ duplicate: true });
         }
-        (form as any).phoneStage = 'done';
+        form.get('phoneStage').setValue('done');
       }, 1000);
     }
 
   }
   useCheckEmail = (form: FormGroup) => {
-    if (form.get('email').value) {
-      (form as any).emailStage = 'querying';
+    const email = form.get('email');
+    if (email.valid) {
+      form.get('emailStage').setValue('querying');
       setTimeout(async () => {
-        const email = form.get('email');
         const check = await this.employeeService.checkUnique('email', email.value).toPromise();
         if (email.valid && check) {
           email.setErrors({ duplicate: true });
         }
-        (form as any).emailStage = 'done';
+        form.get('emailStage').setValue('done');
       }, 1000);
     }
   }
   useCheckCode = (form: FormGroup) => {
-    if (form.get('code').value) {
-      (form as any).codeStage = 'querying';
+    const code = form.get('code');
+    if (code.valid) {
+      form.get('codeStage').setValue('querying');
       setTimeout(async () => {
-        const code = form.get('code');
         const check = await this.employeeService.checkUnique('code', code.value).toPromise();
         if (code.valid && check) {
           code.setErrors({ duplicate: true });
         }
-        (form as any).codeStage = 'done';
+        form.get('codeStage').setValue('done');
       }, 1000);
+    }
+  }
+  useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
+    form.get('errorImage').setValue(false);
+    const files: File[] = event.target.files;
+    if (files.length > 1) {
+      form.get('errorImage').setValue(true);
+      form.get('errorImageMessage').setValue('Only one image accepted');
+      input.nodeValue = undefined;
+    } else {
+      if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
+        if (files[0].size > 1024 * 1024 * 18) {
+          form.get('errorImage').setValue(true);
+          form.get('errorImageMessage').setValue('Only image size less than 18MB accept');
+          input.nodeValue = undefined;
+        } else {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            form.get('avatar').setValue(reader.result);
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      } else {
+        form.get('errorImage').setValue(true);
+        form.get('errorImageMessage').setValue('Only one image accepted');
+        input.nodeValue = undefined;
+      }
+    }
+  }
+  useRemoveItem = (index: number) => {
+    this.employees.removeAt(index);
+    if (this.employees.length === 0) {
+      this.data = undefined;
+      this.useChange.emit();
     }
   }
 }

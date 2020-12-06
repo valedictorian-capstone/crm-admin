@@ -6,6 +6,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { PipelineService } from '@services';
 import { PipelineVM } from '@view-models';
 import { DropResult } from 'ngx-smooth-dnd';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pipeline-add',
@@ -53,18 +54,22 @@ export class PipelineAddPage implements OnInit {
   }
   useCreate = (ref: NbDialogRef<any>) => {
     if (this.name.valid && this.stages.valid) {
-      this.pipelineService.save({
-        name: this.name.value,
-        stages: this.stages.value.map((e, i) => ({...e, position: i})),
-      }).subscribe((data) => {
-        this.useReload.emit(data);
-        ref.close();
-        this.toastrService.success('', 'Success to save process');
-        localStorage.setItem('selectedPipeline', data.id);
-        this.router.navigate(['core/process']);
-      }, (err) => {
-          this.toastrService.danger('', 'Fail to save process');
-      });
+      if (this.stages.controls.length === 0) {
+        swal.fire('Save process', 'Please add some stage to save process!', 'warning');
+      } else {
+        this.pipelineService.save({
+          name: this.name.value,
+          stages: this.stages.controls.map((e) => e.value).map((e, i) => ({ ...e, position: i })),
+        }).subscribe((data) => {
+          this.useReload.emit(data);
+          ref.close();
+          this.toastrService.success('', 'Save process successful', { duration: 3000 });
+          localStorage.setItem('selectedPipeline', data.id);
+          this.router.navigate(['core/process']);
+        }, (err) => {
+          this.toastrService.danger('', 'Save process fail', { duration: 3000 });
+        });
+      }
     } else {
       this.name.markAsTouched();
       this.stages.markAsTouched();

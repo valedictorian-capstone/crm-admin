@@ -1,0 +1,28 @@
+<div class="customer-in-month">
+    <h5 class="text-center">Customers joined during the month</h5>
+    <div class="search" *ngIf="customers.length > 0">
+        <nb-form-field>
+            <nb-icon icon="search-outline" nbPrefix></nb-icon>
+            <input [(ngModel)]="search.name" (ngModelChange)="useFilter()" nbInput size="large" status="primary" fullWidth placeholder="Fill something to search" />
+            <button nbSuffix nbButton status="default" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomCenter'" [nzTrigger]="'click'" [nzBackdrop]="false">
+              <nb-icon icon="funnel-outline" nbPrefix></nb-icon>
+            </button>
+        </nb-form-field>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <div nz-menu class="p-0">
+                <button outline (click)="search.group = undefined; useFilter()" nz-menu-item style="height: 3rem; border-radius: 0; display: block; width: 200px; margin-bottom: 0.5rem" nbButton [status]="search.group ? 'default' : 'info'">ALL</button>
+                <button outline nz-menu-item (click)="search.group = group; useFilter()" style="height: 3rem; border-radius: 0; display: block; width: 200px; margin-bottom: 0.5rem" nbButton *ngFor="let group of groups" [status]="search.group?.id !== group.id ? 'default' : 'info'">
+              {{group.name}}
+            </button>
+            </div>
+        </nz-dropdown-menu>
+    </div>
+    <div class="content" *ngIf="customers.length > 0">
+        <div class="w-100 mb-2" *ngFor="let customer of filterCustomers" style="height: fit-content;">
+            <app-reuse-customer-item [customer]="customer" [search]="''"></app-reuse-customer-item>
+        </div>
+    </div>
+    <div class="empty" *ngIf="customers.length === 0">
+        <b>Have no customers in this month</b>
+    </div>
+</div>

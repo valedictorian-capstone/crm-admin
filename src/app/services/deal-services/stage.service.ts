@@ -3,13 +3,23 @@ import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StageService {
 
-  constructor(protected readonly httpClient: HttpClient) { }
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: StageVM | StageVM[]
+  }> => {
+    return this.socket.fromEvent('stages');
+  }
 
   public readonly findAll = (): Observable<StageVM[]> => {
     return this.httpClient.get<StageVM[]>(`${environment.apiEndpont}${environment.api.deal.stage.main}`);

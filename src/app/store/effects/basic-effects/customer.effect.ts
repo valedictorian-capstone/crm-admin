@@ -44,17 +44,17 @@ export class CustomerEffect {
         ))
     )
   );
-  public readonly remove$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CustomerAction.useRemoveAction),
-      switchMap(action =>
-        this.service.remove(action.id).pipe(
-          delay(1000),
-          map(id => CustomerAction.useRemoveSuccessAction({ id, status: action.status })),
-          catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
+  // public readonly remove$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(CustomerAction.useRemoveAction),
+  //     switchMap(action =>
+  //       this.service.remove(action.id).pipe(
+  //         delay(1000),
+  //         map(id => CustomerAction.useRemoveSuccessAction({ id, status: action.status })),
+  //         catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
+  //       ))
+  //   )
+  // );
   public readonly unique$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CustomerAction.useUniqueAction),

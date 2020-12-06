@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, OnChanges, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, OnChanges, EventEmitter, Output, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomerVM } from '@view-models';
@@ -13,40 +13,17 @@ import { NbToastrService } from '@nebular/theme';
   styleUrls: ['./customer-import.page.scss'],
   providers: [DatePipe],
 })
-export class CustomerImportPage implements OnInit, OnChanges {
+export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
   @Input() data: CustomerVM[];
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  customers: FormArray = new FormArray([
-    new FormGroup({
-      phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      fullname: new FormControl(undefined, [Validators.required]),
-      birthDay: new FormControl(''),
-      gender: new FormControl('-1'),
-      source: new FormControl('import'),
-      type: new FormControl('personal', [Validators.required]),
-      frequency: new FormControl(undefined, [Validators.required]),
-      totalSpending: new FormControl(undefined, [Validators.required]),
-      totalDeal: new FormControl(undefined, [Validators.required]),
-      company: new FormControl(''),
-      fax: new FormControl(''),
-      website: new FormControl(''),
-      skypeName: new FormControl(''),
-      facebook: new FormControl(''),
-      twitter: new FormControl(''),
-
-      street: new FormControl(''),
-      city: new FormControl(''),
-      state: new FormControl(''),
-      country: new FormControl(''),
-    })
-  ]);
+  customers: FormArray = new FormArray([]);
   constructor(
     protected readonly customerService: CustomerService,
     protected readonly datePipe: DatePipe,
     protected readonly toastrService: NbToastrService,
+    protected readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -56,26 +33,39 @@ export class CustomerImportPage implements OnInit, OnChanges {
       this.customers.clear();
       for (const item of this.data) {
         const group = new FormGroup({
-          phone: new FormControl('',
-            [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
+          phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
           email: new FormControl('', [Validators.required, Validators.email]),
           fullname: new FormControl(undefined, [Validators.required]),
           birthDay: new FormControl(''),
+          avatar: new FormControl(undefined),
           gender: new FormControl('-1'),
+          phoneStage: new FormControl('done'),
+          emailStage: new FormControl('done'),
+          showBirthday: new FormControl(false),
+          errorImage: new FormControl(false),
+          errorImageMessage: new FormControl(''),
+          source: new FormControl('import'),
           type: new FormControl('personal', [Validators.required]),
+
           frequency: new FormControl(undefined, [Validators.required]),
           totalSpending: new FormControl(undefined, [Validators.required]),
           totalDeal: new FormControl(undefined, [Validators.required]),
+
           company: new FormControl(''),
           fax: new FormControl(''),
           website: new FormControl(''),
+
+          stage: new FormControl(''),
           skypeName: new FormControl(''),
           facebook: new FormControl(''),
           twitter: new FormControl(''),
+
           street: new FormControl(''),
           city: new FormControl(''),
           state: new FormControl(''),
           country: new FormControl(''),
+
+          description: new FormControl(''),
         });
         const elements = [];
         for (const key in item) {
@@ -85,8 +75,6 @@ export class CustomerImportPage implements OnInit, OnChanges {
             if (group.get(key)) {
               if (key === 'birthDay') {
                 group.get(key).setValue(new Date((element - (25567 + 2)) * 86400 * 1000));
-                console.log(new Date((element - (25567 + 2)) * 86400 * 1000));
-                console.log(group.get(key));
 
               } else if (key === 'gender') {
                 switch (element.toLowerCase()) {
@@ -115,21 +103,23 @@ export class CustomerImportPage implements OnInit, OnChanges {
                     group.get(key).setValue('company');
                     break;
                   default:
-                    group.get(key).setValue(undefined);
+                    group.get(key).setValue('personal');
                     break;
                 }
               } else {
                 group.get(key).setValue(element);
               }
+              group.get(key).markAsTouched();
             }
           }
         }
-        (group as any).autoCompleteData = elements;
-        this.useCheckEmail(group);
-        this.useCheckPhone(group);
-        this.customers.controls.push(group);
+        this.customers.push(group);
       }
+      this.customers.markAsTouched();
     }
+  }
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
   useDownload = (table: ElementRef<any>) => {
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
@@ -171,8 +161,7 @@ export class CustomerImportPage implements OnInit, OnChanges {
           this.useUnLoading.emit();
         })
       ).subscribe((data) => {
-        data.forEach((e) => this.customerService.triggerValue$.next({ type: 'create', data: e }));
-        this.toastrService.success('', 'Import customers success!', { duration: 3000 });
+        this.toastrService.success('', 'Import customers successful!', { duration: 3000 });
         this.useChange.emit();
       }, (err) => {
         this.toastrService.danger('', 'Import customers fail! Something wrong at runtime', { duration: 3000 });
@@ -180,33 +169,67 @@ export class CustomerImportPage implements OnInit, OnChanges {
     }
   }
   useCheckPhone = (form: FormGroup) => {
-    if (form.get('phone').value) {
-      (form as any).phoneStage = 'querying';
+    const phone = form.get('phone');
+    if (phone.valid) {
+      form.get('phoneStage').setValue('querying');
       setTimeout(async () => {
-        const phone = form.get('phone');
         const check = await this.customerService.checkUnique('phone', phone.value).toPromise();
         if (phone.valid && check) {
           phone.setErrors({ duplicate: true });
         }
-        (form as any).phoneStage = 'done';
+        form.get('phoneStage').setValue('done');
       }, 1000);
     }
 
   }
   useCheckEmail = (form: FormGroup) => {
-    if (form.get('email').value) {
-      (form as any).emailStage = 'querying';
+    const email = form.get('email');
+    if (email.valid) {
+      form.get('emailStage').setValue('querying');
       setTimeout(async () => {
-        const email = form.get('email');
         const check = await this.customerService.checkUnique('email', email.value).toPromise();
         if (email.valid && check) {
           email.setErrors({ duplicate: true });
         }
-        (form as any).emailStage = 'done';
+        form.get('emailStage').setValue('done');
       }, 1000);
     }
   }
-  toDateFormat = (date: Date) => {
-    return date ? this.datePipe.transform(date, 'dd/MM/yyyy') : '';
+  toDateFormat = (date: Date | string) => {
+    return date && !isNaN(Date.parse(date as string)) ? this.datePipe.transform(new Date(date), 'dd/MM/yyyy') : '';
+  }
+  useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
+    form.get('errorImage').setValue(false);
+    const files: File[] = event.target.files;
+    if (files.length > 1) {
+      form.get('errorImage').setValue(true);
+      form.get('errorImageMessage').setValue('Only one image accepted');
+      input.nodeValue = undefined;
+    } else {
+      if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
+        if (files[0].size > 1024 * 1024 * 18) {
+          form.get('errorImage').setValue(true);
+          form.get('errorImageMessage').setValue('Only image size less than 18MB accept');
+          input.nodeValue = undefined;
+        } else {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            form.get('avatar').setValue(reader.result);
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      } else {
+        form.get('errorImage').setValue(true);
+        form.get('errorImageMessage').setValue('Only one image accepted');
+        input.nodeValue = undefined;
+      }
+    }
+  }
+  useRemoveItem = (index: number) => {
+    this.customers.removeAt(index);
+    if (this.customers.length === 0) {
+      this.data = undefined;
+      this.useChange.emit();
+    }
   }
 }

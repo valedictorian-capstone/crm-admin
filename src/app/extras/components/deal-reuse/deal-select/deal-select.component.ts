@@ -11,6 +11,7 @@ export class DealSelectComponent implements OnInit {
   @Output() useSelect: EventEmitter<DealVM> = new EventEmitter<DealVM>();
   @Output() useAdd: EventEmitter<string> = new EventEmitter<string>();
   @Input() selected: DealVM;
+  @Input() forSearch = false;
   @Input() template: HTMLElement;
   value = '';
   deals: DealVM[] = [];
@@ -22,10 +23,10 @@ export class DealSelectComponent implements OnInit {
 
   ngOnInit() {
     this.dealService.findAll().subscribe((data) => {
-      this.deals = data.filter((deal) => deal.status === 'processing');
+      this.deals = data.filter((deal) => this.forSearch ? true : deal.status === 'processing');
       setTimeout(() => {
         this.stage = 'done';
-        this.filterDeals = data.filter((deal) => deal.status === 'processing');
+        this.filterDeals = data.filter((deal) => this.forSearch ? true : deal.status === 'processing');
       }, 500);
     });
   }

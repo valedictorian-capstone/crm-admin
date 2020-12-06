@@ -1,0 +1,28 @@
+<div class="deal-in-month">
+    <h5 class="text-center">Deals joined during the month</h5>
+    <div class="search" *ngIf="deals.length > 0">
+        <nb-form-field>
+            <nb-icon icon="search-outline" nbPrefix></nb-icon>
+            <input [(ngModel)]="search.title" (ngModelChange)="useFilter()" nbInput size="large" status="primary" fullWidth placeholder="Fill something to search" />
+            <button nbSuffix nbButton status="default" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomCenter'" [nzTrigger]="'click'" [nzBackdrop]="false">
+            <nb-icon icon="funnel-outline" nbPrefix></nb-icon>
+          </button>
+        </nb-form-field>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <div nz-menu class="p-0">
+                <button outline (click)="search.status = undefined; useFilter()" nz-menu-item style="height: 3rem; border-radius: 0; display: block; width: 200px; margin-bottom: 0.5rem" nbButton [status]="search.status ? 'default' : 'info'">ALL</button>
+                <button outline nz-menu-item (click)="search.status = status; useFilter()" style="height: 3rem; border-radius: 0; display: block; width: 200px; margin-bottom: 0.5rem" nbButton *ngFor="let status of statuss" [status]="search.status?.status !== status.status ? 'default' : (status.status === 'Processing' ? 'primary' : (status.status === 'Lost' ? 'danger' :'success'))">
+            {{status.status}}
+          </button>
+            </div>
+        </nz-dropdown-menu>
+    </div>
+    <div class="content" *ngIf="deals.length > 0">
+        <div class="w-100 mb-2" *ngFor="let deal of filterDeals" style="height: fit-content;">
+            <app-reuse-deal-item [deal]="deal"></app-reuse-deal-item>
+        </div>
+    </div>
+    <div class="empty" *ngIf="deals.length === 0">
+        <b>Have no deals in this month</b>
+    </div>
+</div>

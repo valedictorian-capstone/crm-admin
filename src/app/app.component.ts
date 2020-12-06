@@ -9,7 +9,6 @@ export class AppComponent {
   constructor(
     protected readonly iconLibraries: NbIconLibraries
   ) {
-    console.clear();
     this.iconLibraries.setDefaultPack('eva');
     this.iconLibraries.registerFontPack('font-awesome', { iconClassPrefix: 'fa', packClass: 'fa' });
     // this.iconLibraries.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'fa' });

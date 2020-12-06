@@ -24,12 +24,14 @@ import { appConfig } from './app.metadata';
 import { AppRoutes } from './app.routing';
 import { AppSerializer } from './app.serializer';
 import { ExtrasModule } from './extras/extras.module';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 export class HammerConfig extends HammerGestureConfig {
   // tslint:disable-next-line: no-angle-bracket-type-assertion
   overrides = <any> {
     swipe: { direction: Hammer.DIRECTION_ALL }
   };
 }
+const config: SocketIoConfig = { url: environment.socketServer, options: {} };
 @NgModule({
   declarations: [
     AppComponent
@@ -43,6 +45,7 @@ export class HammerConfig extends HammerGestureConfig {
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    SocketIoModule.forRoot(config),
     AngularFireMessagingModule,
     AngularFireModule.initializeApp(environment.firebase.config),
     StoreModule.forRoot(reducers, {

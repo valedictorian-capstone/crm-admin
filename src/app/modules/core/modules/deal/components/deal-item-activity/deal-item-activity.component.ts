@@ -22,23 +22,23 @@ export class DealItemActivityComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.activityService.triggerValue$.subscribe((trigger) => {
+    this.activityService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
         this.activitys.push({
-          ...trigger.data,
-          state: new Date() < new Date(trigger.data.dateStart)
+          ...(trigger.data as ActivityVM),
+          state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
           ? 'notStart'
-          : (new Date() >= new Date(trigger.data.dateStart) && new Date() < new Date(trigger.data.dateEnd) ? 'processing' : 'expired')
+          : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
         });
       } else if (trigger.type === 'update') {
-        this.activitys[this.activitys.findIndex((e) => e.id === trigger.data.id)] = {
-          ...trigger.data,
-          state: new Date() < new Date(trigger.data.dateStart)
+        this.activitys[this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = {
+          ...(trigger.data as ActivityVM),
+          state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
           ? 'notStart'
-          : (new Date() >= new Date(trigger.data.dateStart) && new Date() < new Date(trigger.data.dateEnd) ? 'processing' : 'expired')
+          : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
         };
-      } else {
-        this.activitys.splice(this.activitys.findIndex((e) => e.id === trigger.data.id), 1);
+      } else if (trigger.type === 'remove') {
+        this.activitys.splice(this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id), 1);
       }
     });
     this.dealService.findById(this.deal.id)

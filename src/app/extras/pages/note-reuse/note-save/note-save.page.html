@@ -17,6 +17,7 @@
         <nz-dropdown-menu #dealRef="nzDropdownMenu">
             <app-reuse-deal-select [selected]="form.get('deal').value" #dealSelect (useSelect)="form.get('deal').setValue($event)" [template]="dealInput"></app-reuse-deal-select>
         </nz-dropdown-menu>
+        <span [style.display]="fixDeal ? 'none' : 'block'" *ngIf="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select deal</span>
         <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
     </nb-card-body>
     <nb-card-footer>

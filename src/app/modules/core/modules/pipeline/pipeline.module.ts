@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
-  PipelineActionComponent, PipelineActivityComponent,
-
+  PipelineActionComponent,
+  PipelineActivityComponent,
   PipelineDealComponent,
-  PipelineMovetoComponent, PipelineRunComponent,
-  PipelineStageComponent
+  PipelineMovetoComponent,
+  PipelineRunComponent,
+  PipelineStageComponent,
+  PipelineRestoreComponent,
 } from './components';
 import {
   PipelineAddPage,
@@ -22,7 +24,8 @@ const COMPONENTS = [
   PipelineActivityComponent,
   PipelineActionComponent,
   PipelineDealComponent,
-  PipelineMovetoComponent
+  PipelineMovetoComponent,
+  PipelineRestoreComponent
 ];
 
 const PAGES = [

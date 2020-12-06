@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { GlobalService, ProductService } from '@services';
 import { ProductVM } from '@view-models';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-item',
@@ -15,6 +16,8 @@ export class ProductItemComponent implements OnInit {
     protected readonly globalService: GlobalService,
     protected readonly productService: ProductService,
     protected readonly dialogService: NbDialogService,
+    protected readonly toastrService: NbToastrService,
+    protected readonly router: Router,
   ) {
 
   }
@@ -29,8 +32,13 @@ export class ProductItemComponent implements OnInit {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.productService.remove(this.product.id).subscribe(() =>
-      this.productService.triggerValue$.next({ type: 'remove', data: this.product })
-    );
+    this.productService.remove(this.product.id).subscribe(() => {
+      this.toastrService.success('', 'Disabled product successful', { duration: 3000 });
+    }, () => {
+      this.toastrService.success('', 'Disabled product fail', { duration: 3000 });
+    });
+  }
+  useDetail = () => {
+    this.router.navigate(['core/product/' + this.product.id]);
   }
 }

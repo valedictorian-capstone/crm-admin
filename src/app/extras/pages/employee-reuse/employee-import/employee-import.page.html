@@ -13,67 +13,64 @@
             <td>SE00000</td>
             <td>John Doe</td>
             <td>no-reply@gmail.com</td>
-            <td>'0123456789</td>
+            <td>0123456789</td>
         </tr>
     </tbody>
 </table>
-<div class="data" *ngIf="data">
-    <table class="table table-bordered m-0">
-        <thead>
-            <tr>
-                <th>
-                    <div style="width: 15rem; text-align: center;">CODE</div>
-                </th>
-                <th>
-                    <div style="width: 15rem; text-align: center;">FULLNAME</div>
-                </th>
-                <th>
-                    <div style="width: 15rem; text-align: center;">EMAIL</div>
-                </th>
-                <th>
-                    <div style="width: 15rem; text-align: center;">PHONE</div>
-                </th>
-                <th>
-                    <div style="width: 15rem; text-align: center;">ROLES</div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let form of employees.controls" [formGroup]="form">
-                <th>
-                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['codeStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
-                        <nb-icon [ngStyle]="{'opacity': form['codeStage'] === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
-                        <input (blur)="useCheckCode(form)" [status]="form.get('code').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')" nbInput size="large" />
-                    </nb-form-field>
-                </th>
-                <th>
-                    <nb-form-field style="width: 100%;">
-                        <input [status]="form.get('fullname').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')" nbInput size="large" />
-                    </nb-form-field>
-                </th>
-                <th>
-                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['emailStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
-                        <nb-icon [ngStyle]="{'opacity': form['emailStage'] === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
-                        <input (blur)="useCheckEmail(form)" [status]="form.get('email').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Email'" shape="rectangle" [formControl]="form.get('email')" nbInput size="large" />
-                    </nb-form-field>
-                </th>
-                <th>
-                    <nb-form-field class="not-search" style="width: 100%;" [nbSpinner]="form['phoneStage'] === 'querying'" [nbSpinnerSize]="'tiny'">
-                        <nb-icon [ngStyle]="{'opacity': form['phoneStage'] === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
-                        <input (blur)="useCheckPhone(form)" [status]="form.get('phone').invalid ? 'danger' : 'basic'" fullWidth [placeholder]="'Phone'" shape="rectangle" [formControl]="form.get('phone')" nbInput size="large" />
-                    </nb-form-field>
-                </th>
-                <th>
-                    <nb-form-field style="max-width: 100%;">
-                        <nb-icon icon="pin-outline" nbPrefix></nb-icon>
-                        <nb-select fullWidth multiple placeholder="Role" [formControl]="form.get('roles')">
-                            <nb-option [value]="{id: role.id}" *ngFor="let role of roles">{{role.name}}</nb-option>
-                        </nb-select>
-                    </nb-form-field>
-                </th>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<nb-accordion *ngIf="data">
+    <nb-accordion-item *ngFor="let form of employees['controls']; let i = index" class="mb-2">
+        <nb-accordion-item-header>{{form.value.fullname}}</nb-accordion-item-header>
+        <nb-accordion-item-body>
+            <div class="avatar">
+                <div class="avatar-picker" [class.danger]="form.value.errorImage">
+                    <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
+                    <button *ngIf="!form.get('avatar').value" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                    <img *ngIf="form.get('avatar').value" [src]="form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
+                    <button *ngIf="form.get('avatar').value" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="form.value.errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                </div>
+                <b *ngIf="form.value.errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{form.value.errorImageMessage}}</b>
+            </div>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('code').invalid && (form.get('code').touched || form.get('code').dirty)">Code <span class="text-danger">*</span></span>
+            <nb-form-field class="not-search" [nbSpinner]="form.value.codeStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+                <nb-icon [ngStyle]="{'opacity': form.value.codeStage === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
+                <input style="height: 3rem;" [status]="form.get('code').invalid && (form.get('code').touched || form.get('code').dirty) ? 'danger' : 'basic'" (blur)="useCheckCode(form)" fullWidth nz-dropdown [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')"
+                    nbInput size="large" />
+            </nb-form-field>
+            <span *ngIf="form.get('code').errors?.required && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill code</span>
+            <span *ngIf="form.get('code').errors?.duplicate && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another code. Because this code is exsited</span>
+            <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
+            <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+                <input style="height: 3rem;" [status]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')"
+                    nbInput size="large" />
+            </nb-form-field>
+            <span *ngIf="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
+            <nb-form-field class="not-search" [nbSpinner]="form.value.phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+                <nb-icon [ngStyle]="{'opacity': form.value.phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+                <input style="height: 3rem;" [status]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty) ? 'danger' : 'basic'" (blur)="useCheckPhone(form)" fullWidth nz-dropdown [placeholder]="'Phone'" shape="rectangle" [formControl]="form.get('phone')"
+                    nbInput size="large" />
+            </nb-form-field>
+            <span *ngIf="(form.get('phone').errors?.required || form.get('phone').errors?.pattern) && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
+            <span *ngIf="form.get('phone').errors?.duplicate && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
+            <nb-form-field class="not-search" [nbSpinner]="form.value.emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+                <nb-icon [ngStyle]="{'opacity': form.value.emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+                <input style="height: 3rem;" [status]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty) ? 'danger' : 'basic'" (blur)="useCheckEmail(form)" fullWidth nz-dropdown [placeholder]="'Email'" shape="rectangle" [formControl]="form.get('email')"
+                    nbInput size="large" />
+            </nb-form-field>
+            <span *ngIf="(form.get('email').errors?.required || form.get('email').errors?.pattern) && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
+            <span *ngIf="form.get('email').errors?.duplicate && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Role</span
+            >
+            <nb-form-field style="max-width: 100%; margin-bottom: 1rem">
+              <nb-icon icon="pin-outline" nbPrefix></nb-icon>
+              <nb-select fullWidth multiple placeholder="Role" [formControl]="form.get('roles')">
+                <nb-option [value]="role.id" *ngFor="let role of roles">{{role.name}}</nb-option>
+              </nb-select>
+            </nb-form-field>
+          <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = employees.length === 0 ? undefined : data">Remove</button>
+      </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
 <button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="employees.invalid">Save</button>
 <button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>

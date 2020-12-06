@@ -23,16 +23,16 @@ export class DealMainPage implements OnInit {
 
   ngOnInit() {
     this.useReload();
-    this.useTriggerr();
+    this.useSocket();
   }
-  useTriggerr = () => {
-    this.dealService.triggerValue$.subscribe((trigger) => {
+  useSocket = () => {
+    this.dealService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.deals.push(trigger.data);
+        this.deals.push((trigger.data as DealVM));
       } else if (trigger.type === 'update') {
-        this.deals[this.deals.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-      } else {
-        this.deals.splice(this.deals.findIndex((e) => e.id === trigger.data.id), 1);
+        this.deals[this.deals.findIndex((e) => e.id === (trigger.data as DealVM).id)] = (trigger.data as DealVM);
+      } else if (trigger.type === 'remove') {
+        this.deals.splice(this.deals.findIndex((e) => e.id === (trigger.data as DealVM).id), 1);
       }
       this.useFilter();
     });

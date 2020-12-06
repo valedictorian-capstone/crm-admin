@@ -1,17 +1,26 @@
-import { AttachmentCM, AttachmentUM, AttachmentVM } from '@view-models';
-import { environment } from 'src/environments/environment';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { AttachmentUM, AttachmentVM } from '@view-models';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttachmentService {
 
-  public readonly triggerValue$ = new Subject<{type: 'create' | 'update' | 'remove', data: AttachmentVM[]}>();
-  constructor(protected readonly httpClient: HttpClient) { }
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
 
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: AttachmentVM | AttachmentVM[]
+  }> => {
+    return this.socket.fromEvent('attachments');
+  }
   public readonly findAll = (): Observable<AttachmentVM[]> => {
     return this.httpClient.get<AttachmentVM[]>(`${environment.apiEndpont}${environment.api.deal.attachment.main}`);
   }

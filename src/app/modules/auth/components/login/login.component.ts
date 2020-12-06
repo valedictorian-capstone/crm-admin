@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['auth']);
           },
           (err) => {
-            swal.fire('Login Failed', 'Email or Phone or Password is wrong! Please try again', 'error');
+            swal.fire('Login Failed', 'Email/Phone or Password is wrong! Please try again', 'error');
           }
         );
     } else {

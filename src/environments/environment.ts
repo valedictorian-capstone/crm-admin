@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  // apiEndpont: 'http://localhost:8080/',
+  apiEndpont: 'http://localhost:8080/',
   // apiEndpont: 'https://localhost:8081/',
-  apiEndpont: 'https://crm-capstone-ws.azurewebsites.net/',
-  socketServer: 'https://crm-capstone-ws.azurewebsites.net/',
-  // socketServer: 'http://localhost:8080/',
+  // apiEndpont: 'https://crm-capstone-ws.azurewebsites.net/',
+  // socketServer: 'https://crm-capstone-ws.azurewebsites.net/',
+  socketServer: 'http://localhost:8080/',
   // socketServer: 'https://localhost:8081/',
   token: 'crm-token',
   api: {
@@ -18,6 +18,10 @@ export const environment = {
         getById: 'api/v1/Role/',
         active: 'api/v1/Role/Active',
         deactive: 'api/v1/Role/Deactive',
+      },
+      comment: {
+        main: 'api/v1/Comment',
+        getById: 'api/v1/Comment/',
       },
       notification: {
         main: 'api/v1/Notification',
@@ -51,13 +55,12 @@ export const environment = {
       customer: {
         main: 'api/v1/Customer',
         getById: 'api/v1/Customer/',
-        active: 'api/v1/Customer/Active',
-        deactive: 'api/v1/Customer/Deactive',
+        restore: 'api/v1/Customer/restore',
       },
       product: {
         main: 'api/v1/Product',
         getById: 'api/v1/Product/',
-        active: 'api/v1/Product/Active',
+        restore: 'api/v1/Product/restore',
         deactive: 'api/v1/Product/Deactive',
       },
       ticket: {
@@ -69,8 +72,6 @@ export const environment = {
       event: {
         main: 'api/v1/Event',
         getById: 'api/v1/Event/',
-        active: 'api/v1/Event/Active',
-        deactive: 'api/v1/Event/Deactive',
       },
       trigger: {
         main: 'api/v1/Trigger',
@@ -91,6 +92,12 @@ export const environment = {
       email: {
         main: 'api/v1/Email',
       },
+      statistic: {
+        customerInMonth: 'api/v1/Statistic/CustomerInMonth',
+        dealInMonth: 'api/v1/Statistic/DealInMonth',
+        customerInYear: 'api/v1/Statistic/CustomerInYear',
+        dealInYear: 'api/v1/Statistic/DealInYear',
+      },
       search: {
         main: 'api/v1/Search',
       },
@@ -99,8 +106,6 @@ export const environment = {
       activity: {
         main: 'api/v1/Activity',
         getById: 'api/v1/Activity/',
-        active: 'api/v1/Activity/Active',
-        deactive: 'api/v1/Activity/Deactive',
       },
       stage: {
         main: 'api/v1/Stage',
@@ -111,8 +116,7 @@ export const environment = {
       pipeline: {
         main: 'api/v1/Pipeline',
         getById: 'api/v1/Pipeline/',
-        active: 'api/v1/Pipeline/Active',
-        deactive: 'api/v1/Pipeline/Deactive',
+        restore: 'api/v1/Pipeline/restore',
       },
       deal: {
         main: 'api/v1/Deal',
@@ -234,12 +238,12 @@ export const environment = {
       icon: 'pricetags',
       pack: 'eva',
     },
-    {
-      label: 'Feedback',
-      value: 'feedback',
-      icon: 'headphones',
-      pack: 'eva',
-    },
+    // {
+    //   label: 'Feedback',
+    //   value: 'feedback',
+    //   icon: 'headphones',
+    //   pack: 'eva',
+    // },
     {
       label: 'Product',
       value: 'product',
@@ -247,10 +251,10 @@ export const environment = {
       pack: 'eva',
     },
     {
-      label: 'Account',
-      value: 'account',
-      icon: 'headset',
-      pack: 'font-awesome',
+      label: 'Event',
+      value: 'event',
+      icon: 'gift-outline',
+      pack: 'eva',
     },
   ],
   filterTabs: [
@@ -283,6 +287,12 @@ export const environment = {
       value: 'activity',
       icon: 'calendar-alt',
       pack: 'font-awesome',
+    },
+    {
+      label: 'Event',
+      value: 'event',
+      icon: 'gift-outline',
+      pack: 'eva',
     },
     // {
     //   label: 'Employee',
@@ -330,18 +340,18 @@ export const environment = {
       can: 'canCreateActivity',
     },
     {
+      label: 'Event',
+      value: 'event',
+      icon: 'gift-outline',
+      pack: 'eva',
+      can: 'canCreateEvent',
+    },
+    {
       label: 'Customer',
       value: 'customer',
       icon: 'phone',
       pack: 'eva',
       can: 'canCreateCustomer',
-    },
-    {
-      label: 'Event',
-      value: 'event',
-      icon: 'calendar',
-      pack: 'eva',
-      can: 'canCreateEvent',
     },
     {
       label: 'Deal',
@@ -357,20 +367,20 @@ export const environment = {
       pack: 'eva',
       can: 'canCreateProduct',
     },
-    {
-      label: 'Account',
-      value: 'employee',
-      icon: 'headset',
-      pack: 'font-awesome',
-      can: 'canCreateEmployee',
-    },
-    {
-      label: 'Role',
-      value: 'role',
-      icon: 'pin',
-      pack: 'eva',
-      can: 'canCreateRole',
-    },
+    // {
+    //   label: 'Account',
+    //   value: 'employee',
+    //   icon: 'headset',
+    //   pack: 'font-awesome',
+    //   can: 'canCreateEmployee',
+    // },
+    // {
+    //   label: 'Role',
+    //   value: 'role',
+    //   icon: 'pin',
+    //   pack: 'eva',
+    //   can: 'canCreateRole',
+    // },
     {
       label: 'Note',
       value: 'note',

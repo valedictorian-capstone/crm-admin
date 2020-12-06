@@ -10,7 +10,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
   selector: 'app-reuse-customer-save',
   templateUrl: './customer-save.page.html',
-  styleUrls: ['./customer-save.page.scss']
+  styleUrls: ['./customer-save.page.scss'],
+  providers: [DatePipe]
 })
 export class CustomerSavePage implements OnInit {
   @ViewChild('submitRef') submitRef: TemplateRef<any>;
@@ -54,8 +55,8 @@ export class CustomerSavePage implements OnInit {
     }
 
   }
-  toDateFormat = (date: Date) => {
-    return date ? this.datePipe.transform(date, 'dd/MM/yyyy') : '';
+  toDateFormat = (date: Date | string) => {
+    return date && !isNaN(Date.parse(date as string)) ? this.datePipe.transform(new Date(date), 'dd/MM/yyyy') : '';
   }
   useSetData = () => {
     this.customerService.findById(this.customer.id)
@@ -134,8 +135,7 @@ export class CustomerSavePage implements OnInit {
           })
         )
         .subscribe((data) => {
-          this.customerService.triggerValue$.next({ type: this.customer ? 'update' : 'create', data });
-          this.toastrService.success('', 'Save customer success!', { duration: 3000 });
+          this.toastrService.success('', 'Save customer successful!', { duration: 3000 });
           this.useDone.emit(data);
           this.useClose.emit();
         }, (err) => {
@@ -151,7 +151,7 @@ export class CustomerSavePage implements OnInit {
   }
   useCopy = (data: string) => {
     this.clipboard.copy(data);
-    this.toastrService.show('', 'Copy success', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+    this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
   useSelectImage = (event: any, input: HTMLElement) => {
     this.errorImage = false;
@@ -181,12 +181,12 @@ export class CustomerSavePage implements OnInit {
     }
   }
   useCheckPhone = () => {
-    if (!this.customer || (this.customer && this.customer.phone !== this.form.get('phone').value)) {
+    const phone = this.form.get('phone');
+    if ((!this.customer || (this.customer && this.customer.phone !== phone.value) ) && phone.valid) {
       this.phoneStage = 'querying';
       setTimeout(async () => {
-        const phone = this.form.get('phone');
         const check = await this.customerService.checkUnique('phone', phone.value).toPromise();
-        if (phone.valid && check) {
+        if (check) {
           phone.setErrors({ duplicate: true });
         }
         this.phoneStage = 'done';
@@ -195,12 +195,12 @@ export class CustomerSavePage implements OnInit {
 
   }
   useCheckEmail = () => {
-    if (!this.customer || (this.customer && this.customer.email !== this.form.get('email').value)) {
+    const email = this.form.get('email');
+    if ((!this.customer || (this.customer && this.customer.email !== this.form.get('email').value)) && email.valid) {
       this.emailStage = 'querying';
       setTimeout(async () => {
-        const email = this.form.get('email');
         const check = await this.customerService.checkUnique('email', email.value).toPromise();
-        if (email.valid && check) {
+        if (check) {
           email.setErrors({ duplicate: true });
         }
         this.emailStage = 'done';

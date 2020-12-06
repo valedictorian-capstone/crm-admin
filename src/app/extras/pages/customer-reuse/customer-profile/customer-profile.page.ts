@@ -50,12 +50,7 @@ export class CustomerProfilePage implements OnInit {
     this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
   }
   usePhone = (phone: string) => {
-    if (this.env === 'desktop') {
-      this.clipboard.copy(phone);
-      this.toastrService.show('', 'Copy success', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
-    } else {
-      window.open('tel:' + phone, '_self');
-    }
+    window.open('tel:' + phone, '_self');
   }
   useMail = (email: string) => {
     this.globalService.triggerView$.next({ type: 'mail', payload: { email } });
@@ -65,7 +60,7 @@ export class CustomerProfilePage implements OnInit {
   }
   useCopy = (link: string) => {
     this.clipboard.copy(link);
-    this.toastrService.show('', 'Copy success', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+    this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
   useShowSpinner = () => {
     this.spinner.show('customer-profile');

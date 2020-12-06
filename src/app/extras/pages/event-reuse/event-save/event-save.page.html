@@ -1,3 +1,113 @@
-<p>
-  event-save works!
-</p>
+<nb-card style="position: relative; margin: 0;">
+    <ngx-spinner [name]="'event-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        {{event ? 'Edit' : 'New'}} Event
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+          <nb-icon icon="close"></nb-icon>
+        </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="form">
+        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+            <input style="height: 3rem;" [status]="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown placeHolder="Name" shape="rectangle" [formControl]="form.get('name')" nbInput size="large"
+            />
+        </nb-form-field>
+        <span *ngIf="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-icon nbPrefix icon="clock-outline"></nb-icon>
+            <input fullWidth [status]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateStart').value)" (focus)="showDateStartPicker = true" [nzVisible]="showDateStartPicker"
+                placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+        </nb-form-field>
+        <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
+            <app-reuse-activity-time [date]="form.get('dateStart').value" (useChange)="form.get('dateStart').setValue($event); useCheckTime(); showDateStartPicker = false"></app-reuse-activity-time>
+        </nz-dropdown-menu>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-icon nbPrefix icon="clock-outline"></nb-icon>
+            <input fullWidth [status]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateEnd').value)" (focus)="showDateEndPicker = true" [nzVisible]="showDateEndPicker"
+                placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+        </nb-form-field>
+        <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
+            <app-reuse-activity-time [date]="form.get('dateEnd').value" (useChange)="form.get('dateEnd').setValue($event); useCheckTime(); showDateEndPicker = false"></app-reuse-activity-time>
+        </nz-dropdown-menu>
+        <span *ngIf="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select End Date greater than Start Date</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Group</span>
+        <nb-form-field style="max-width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="people-outline" nbPrefix></nb-icon>
+            <nb-select fullWidth multiple placeholder="Group" [formControl]="form.get('groups')">
+                <nb-option [value]="group.id" *ngFor="let group of groups">{{group.name}}</nb-option>
+            </nb-select>
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Trigger Time Run</span>
+        <div class="w-100" *ngFor="let trigger of form.get('triggers')['controls']; let i = index" [formGroup]="trigger">
+            <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
+                <nb-icon nbPrefix icon="clock-outline"></nb-icon>
+                <input fullWidth [status]="trigger.get('time').invalid && (trigger.get('time').touched || trigger.get('time').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(trigger.get('time').value)" (focus)="trigger.get('showTime').setValue(true)" [nzVisible]="trigger.get('showTime').value"
+                    placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+                <nb-icon nbSuffix (click)="useRemoveTrigger(i)" status="danger" icon="trash-2-outline"></nb-icon>
+            </nb-form-field>
+            <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
+                <app-reuse-activity-time [date]="trigger.get('time').value" (useChange)="trigger.get('time').setValue($event); trigger.get('showTime').setValue(false)"></app-reuse-activity-time>
+            </nz-dropdown-menu>
+        </div>
+        <button nbButton status="success" (click)="useAddTrigger()" size="small" class="my-3">New Trigger Time</button>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description</span>
+        <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
+    </nb-card-body>
+    <nb-card-footer>
+        <button *ngIf="event" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+          <nb-icon icon="more-horizontal-outline"></nb-icon>
+        </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(removeRef)">
+                    <b>Delete</b>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+  Save and hide
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+  Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+  Hide modal
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+  Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove event </nb-card-header>
+        <nb-card-body>Are you sure you wish to remove this event?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useRemove(ref)">
+Remove
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Cancel
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

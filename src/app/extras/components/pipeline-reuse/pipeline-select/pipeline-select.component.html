@@ -1,6 +1,6 @@
 <div nz-menu class="pipeline-select">
     <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
-    <a nz-menu-item [class.selected]="pipeline.id === selected?.id" class="item" *ngFor="let pipeline of filterPipelines" (click)="useSelect.emit(pipeline); this.selected = pipeline">
+    <a nz-menu-item [class.selected]="pipeline.id === selected?.id" class="item" *ngFor="let pipeline of pipelines" (click)="useSelect.emit(pipeline); this.selected = pipeline">
         <nb-icon icon="browser-outline" style="margin-right: 0.5rem;"></nb-icon>
         <pre>{{pipeline.name}}</pre>
     </a>

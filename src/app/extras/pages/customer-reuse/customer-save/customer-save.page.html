@@ -30,6 +30,7 @@
                 nbInput size="large" />
             <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('fullname').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
         <nb-form-field class="not-search" [nbSpinner]="phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon [ngStyle]="{'opacity': phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
@@ -37,6 +38,8 @@
                 [formControl]="form.get('phone')" nbInput size="large" />
             <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('phone').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="(form.get('phone').errors?.required || form.get('phone').errors?.pattern) && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
+        <span *ngIf="form.get('phone').errors?.duplicate && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
         <nb-form-field class="not-search" [nbSpinner]="emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon [ngStyle]="{'opacity': emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
@@ -44,6 +47,8 @@
                 [formControl]="form.get('email')" nbInput size="large" />
             <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('email').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="(form.get('email').errors?.required || form.get('email').errors?.pattern) && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
+        <span *ngIf="form.get('email').errors?.duplicate && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Gender</span>
         <nb-form-field style="max-width: 100%; margin-bottom: 1rem;">
             <nb-icon nbPrefix icon="transgender" pack="font-awesome"></nb-icon>
@@ -66,27 +71,30 @@
         <nb-accordion style="width: 100%; margin-bottom: 1rem; float: left;" multi>
             <nb-accordion-item expanded>
                 <nb-accordion-item-header>
-                    <b class="text-primary">Valuation</b>
+                    <b class="text-primary">Valuation In Month</b>
                 </nb-accordion-item-header>
                 <nb-accordion-item-body>
-                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Frequency</span>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Frequency <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                         <input [readOnly]="isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput
                         />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('frequency').value)"></nb-icon>
                     </nb-form-field>
-                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Total Spending</span>
+                    <span *ngIf="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill frequency</span>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Average Spending <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                         <input [readOnly]="isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')"
                             nbInput />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('totalSpending').value)"></nb-icon>
                     </nb-form-field>
-                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Total Deal</span>
+                    <span *ngIf="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average spending</span>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Average Deal <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                         <input [readOnly]="isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput
                         />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="isProfile" (click)="useCopy(form.get('totalDeal').value)"></nb-icon>
                     </nb-form-field>
+                    <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average deal</span>
                 </nb-accordion-item-body>
             </nb-accordion-item>
             <nb-accordion-item expanded *ngIf="form.get('type')?.value === 'company'">

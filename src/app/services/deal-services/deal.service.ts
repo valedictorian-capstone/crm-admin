@@ -1,15 +1,24 @@
-import { DealCM, DealUM, DealVM } from '@view-models';
-import { environment } from 'src/environments/environment';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { DealCM, DealUM, DealVM } from '@view-models';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DealService {
-  public readonly triggerValue$ = new Subject<{type: 'create' | 'update' | 'remove', data: DealVM}>();
-  constructor(protected readonly httpClient: HttpClient) { }
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: DealVM | DealVM[]
+  }> => {
+    return this.socket.fromEvent('deals');
+  }
   public readonly findAll = (): Observable<DealVM[]> => {
     return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.main}`);
   }

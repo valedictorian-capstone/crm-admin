@@ -9,7 +9,7 @@ export interface DealVM {
   status: string;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
-  feedbackStatus: string;
+  feedbackStatus: boolean;
   feedbackRating: number;
   dealDetails: DealDetailVM[];
   notes: NoteVM[];
@@ -40,7 +40,7 @@ export interface DealUM {
   status: string;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
-  feedbackStatus: string;
+  feedbackStatus: boolean;
   feedbackRating: number;
   dealDetails: DealDetailVM[];
 }

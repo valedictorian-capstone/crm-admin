@@ -25,7 +25,7 @@ export class NavigateComponent implements OnInit {
     this.useCHeckNotification();
   }
   useCHeckNotification = async () => {
-    if (Notification.permission === 'denied' || !('Notification' in window)) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
       this.useRouting(undefined);
     } else {
       const fcmToken = await this.angularFireMessaging.getToken.toPromise();
@@ -34,7 +34,7 @@ export class NavigateComponent implements OnInit {
     }
   }
   useRouting = (fcmToken: string) => {
-    this.authService.auth({id: fcmToken, ...this.deviceService.getDeviceInfo()} as any).subscribe(
+    this.authService.auth({ id: fcmToken, ...this.deviceService.getDeviceInfo() } as any).subscribe(
       (data) => {
         setTimeout(() => {
           this.router.navigate(['core']);

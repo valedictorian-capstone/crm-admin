@@ -8,12 +8,6 @@
             ₫{{deals | totalMoney}}
         </div>
     </div>
-    <!-- <div class="stage-body" #stageBody [class.dragging]="dragging" cdkDropList [cdkDropListData]="deals" (cdkDropListDropped)="useDrop($event)">
-        <app-pipeline-deal (useRemove)="deals.splice(i, 1)" (useMove)="useMove($event)" [dragging]="dragging" (useDragging)="useDragging.emit($event)" *ngFor="let deal of deals; let i = index" [deal]="deal"></app-pipeline-deal>
-        <button (click)="useCreateDeal()" nbButton fullWidth class="stage-plus" size="medium">
-    <nb-icon pack="eva" icon="plus"></nb-icon>
-  </button>
-    </div> -->
     <div class="stage-body" #stageBody [class.dragging]="dragging">
         <smooth-dnd-container [groupName]="'deal'" [dragHandleSelector]="'.canDrag'" [getChildPayload]="usePayload()" (drop)="useDrop($event)" (dragStart)="dragging = true" (dragEnd)="dragging = false">
             <smooth-dnd-draggable *ngFor="let deal of deals; let i = index">

@@ -1,0 +1,62 @@
+<div nz-row class="dashboard-main">
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="mb-2">
+        <nb-card style="margin: auto; width: 98%; position: relative;">
+            <ngx-spinner [name]="'customer-month'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+            <nb-card-header>
+                <button (click)="useLoadCustomerInMonth()" style="float:right" nbButton size="small">
+                  <nb-icon icon="sync"></nb-icon>
+                </button>
+                <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="month" [(ngModel)]="customer.month.selected" (ngModelChange)="useLoadCustomerInMonth()"></nz-date-picker>
+            </nb-card-header>
+            <nb-card-body style="max-width: 100%; overflow: auto; min-height: 30rem; max-height: 30rem;">
+                <app-dashboard-customer-in-month *ngIf="customer.month.data" [data]="customer.month.data"></app-dashboard-customer-in-month>
+            </nb-card-body>
+        </nb-card>
+    </div>
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="mb-2">
+        <nb-card style="margin: auto; width: 98%; position: relative;">
+            <ngx-spinner [name]="'deal-month'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+            <nb-card-header>
+                <button (click)="useLoadDealInMonth()" style="float:right" nbButton size="small">
+                  <nb-icon icon="sync"></nb-icon>
+                </button>
+                <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="month" [(ngModel)]="deal.month.selected" (ngModelChange)="useLoadDealInMonth()"></nz-date-picker>
+            </nb-card-header>
+            <nb-card-body style="max-width: 100%; overflow: auto; min-height: 30rem; max-height: 30rem;">
+                <app-dashboard-deal-in-month *ngIf="deal.month.data" [data]="deal.month.data"></app-dashboard-deal-in-month>
+            </nb-card-body>
+        </nb-card>
+    </div>
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="24" [nzXXl]="24" class="mb-2">
+        <nb-card style="margin: auto; width: 99%; position: relative;">
+            <ngx-spinner [name]="'customer-year'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+            <nb-card-header>
+                <button (click)="useLoadCustomerInYear()" style="float:right" nbButton size="small">
+                  <nb-icon icon="sync"></nb-icon>
+                </button>
+                <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="year" [(ngModel)]="customer.year.selected" (ngModelChange)="useLoadCustomerInYear()"></nz-date-picker>
+            </nb-card-header>
+            <nb-card-body style="width: 100%;">
+                <div style="width: 100%;">
+                    <app-dashboard-customer-in-year *ngIf="customer.year.data" [data]="customer.year.data"></app-dashboard-customer-in-year>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="24" [nzXXl]="24">
+        <nb-card style="margin: auto; width: 99%; position: relative;">
+            <ngx-spinner [name]="'deal-year'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+            <nb-card-header>
+                <button (click)="useLoadDealInYear()" style="float:right" nbButton size="small">
+                  <nb-icon icon="sync"></nb-icon>
+                </button>
+                <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="year" [(ngModel)]="deal.year.selected" (ngModelChange)="useLoadDealInYear()"></nz-date-picker>
+            </nb-card-header>
+            <nb-card-body style="width: 100%;">
+                <div style="width: 100%;">
+                    <app-dashboard-deal-in-year *ngIf="deal.year.data" [data]="deal.year.data"></app-dashboard-deal-in-year>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>

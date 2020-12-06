@@ -60,6 +60,30 @@
   </span>
             </div>
         </div>
+        <div class="crm-deal-detail-feedback" *ngIf="deal?.status !== 'processing'">
+            <nb-card style="width: 100%; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                <nb-card-header>
+                    <nb-icon class="mr-2" icon="headphones-outline"></nb-icon>
+                    <b>Feedback</b>
+                    <button style="float: right;" nbButton status="success" (click)="usePhone(deal?.customer.phone)" outline shape="round" size="small">
+                      <nb-icon icon="phone-outline"></nb-icon>
+                    </button>
+                    <button style="float: right;" nbButton status="danger" (click)="useMail(deal?.customer.email)" class="mr-1" outline shape="round" size="small">
+                      <nb-icon icon="email-outline"></nb-icon>
+                    </button>
+                </nb-card-header>
+                <nb-card-body>
+                    <bar-rating *ngIf="deal" [(ngModel)]="deal.feedbackRating" [max]="5" [theme]="'stars'"></bar-rating>
+                    <textarea *ngIf="deal" [(ngModel)]="deal.feedbackMessage" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
+                </nb-card-body>
+                <nb-card-footer>
+                    <nb-checkbox *ngIf="deal" status="success" [(ngModel)]="deal.feedbackStatus">
+                        <b>Mask as Resolve</b>
+                    </nb-checkbox>
+                    <button (click)="useSaveFeedback()" nbButton status="primary" outline style="float: right" size="small">Save</button>
+                </nb-card-footer>
+            </nb-card>
+        </div>
         <div class="crm-deal-detail-products">
             <app-deal-product [deal]="deal"></app-deal-product>
         </div>

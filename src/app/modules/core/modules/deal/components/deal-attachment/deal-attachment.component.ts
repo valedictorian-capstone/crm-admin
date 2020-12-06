@@ -28,9 +28,7 @@ export class DealAttachmentComponent implements OnInit {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.attachmentService.remove(this.data.id).subscribe(() => {
-      this.attachmentService.triggerValue$.next({ type: 'remove', data: [this.data] });
-    });
+    this.attachmentService.remove(this.data.id).subscribe();
   }
   useDialog(template: TemplateRef<any>) {
     this.dialogService.open(template, { closeOnBackdropClick: true, context: this.data });
@@ -48,7 +46,6 @@ export class DealAttachmentComponent implements OnInit {
       )
       .subscribe(() => {
         (this.data as any).description = this.description.value;
-        this.attachmentService.triggerValue$.next({ type: 'update', data: [this.data] });
       });
   }
 }

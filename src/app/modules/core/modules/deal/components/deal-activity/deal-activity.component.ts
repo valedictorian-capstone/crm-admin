@@ -17,21 +17,16 @@ export class DealActivityComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data);
   }
   useToggleDone = () => {
     this.activityService.update({
       id: this.data.id,
       status: this.data.status === 'processing' ? 'done' : 'processing'
-    } as any).subscribe((data) => {
-      this.activityService.triggerValue$.next({ type: 'update', data });
-    });
+    } as any).subscribe();
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.activityService.remove(this.data.id).subscribe(() => {
-      this.activityService.triggerValue$.next({ type: 'remove', data: this.data });
-    });
+    this.activityService.remove(this.data.id).subscribe();
   }
   useDialog(template: TemplateRef<any>) {
     this.dialogService.open(template, { closeOnBackdropClick: true });

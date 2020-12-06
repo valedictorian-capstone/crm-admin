@@ -4,6 +4,7 @@
 //     }
 // }
 @import '~@ctrl/ngx-emoji-mart/picker';
+@import '~ngx-bar-rating/themes/br-stars-theme';
 .emoji-mart-bar {
     display: none;
 }
@@ -15,6 +16,18 @@
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
 }
 
 ::-webkit-scrollbar-track {
@@ -37,6 +50,58 @@
 
 .create-modal {
     margin-left: 6rem;
+}
+
+.border-danger {
+    border: 1px solid #dc3545;
+}
+
+.border-success {
+    border: 1px solid #28a745;
+}
+
+.border-primary {
+    border: 1px solid#007bff;
+}
+
+.border-warning {
+    border: 1px solid #ffc107;
+}
+
+.border-info {
+    border: 1px solid #17a2b8;
+}
+
+.border-normal {
+    border: 1px solid #e5e5e5;
+}
+
+.border-black {
+    border: 1px solid;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.position-fixed {
+    position: fixed;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-sticky {
+    position: sticky;
 }
 
 ngx-spinner {
@@ -189,7 +254,7 @@ nb-form-field.not-search {
     }
 }
 
-@for $size from 1 through 100 {
+@for $size from 0 through 100 {
     .sub-h-#{$size} {
         height: -$size + vh;
     }
@@ -260,7 +325,7 @@ nb-form-field.not-search {
     }
 }
 
-@for $size from 1 through 10 {
+@for $size from 0 through 10 {
     .border-#{$size} {
         border: ($size + px) solid #bbbfc5;
     }
@@ -312,9 +377,9 @@ nb-form-field.not-search {
     }
 }
 
-@for $size from 1 through 100 {
+@for $size from 0 through 100 {
     .border-radius-#{$size} {
-        border-radius: $size + px;
+        border-radius: $size + px + '!important';
     }
     .border-radius-per-#{$size} {
         border-radius: percentage($number: -$size/100);

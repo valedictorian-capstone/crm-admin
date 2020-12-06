@@ -9,11 +9,11 @@ import {
   PipelineService,
   StageService
 } from '@services';
-import { ActivityVM, AttachmentVM, DealVM, NoteVM, PipelineVM, StageVM } from '@view-models';
+import { ActivityVM, AttachmentVM, DealDetailVM, DealVM, NoteVM, PipelineVM, StageVM } from '@view-models';
 import { ActivatedRoute } from '@angular/router';
 import { pluck, switchMap, tap, map, finalize } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbDialogRef, NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'app-deal-detail',
@@ -44,65 +44,85 @@ export class DealDetailPage implements OnInit {
     protected readonly globalService: GlobalService,
     protected readonly activityService: ActivityService,
     protected readonly attachmentService: AttachmentService,
+    protected readonly toastrService: NbToastrService,
   ) {
     this.useReload();
-    dealService.triggerValue$.subscribe((trigger) => {
+    dealService.triggerSocket().subscribe((trigger) => {
       this.useReload();
     });
-    noteService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data.deal.id === this.deal.id) {
+    noteService.triggerSocket().subscribe((trigger) => {
+      if ((trigger.data as NoteVM).deal.id === this.deal.id) {
         if (trigger.type === 'create') {
-          this.deal.notes.push(trigger.data);
+          this.deal.notes.push((trigger.data as NoteVM));
         } else if (trigger.type === 'update') {
-          this.deal.notes[this.deal.notes.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-        } else {
-          this.deal.notes.splice(this.deal.notes.findIndex((e) => e.id === trigger.data.id), 1);
+          this.deal.notes[this.deal.notes.findIndex((e) => e.id === (trigger.data as NoteVM).id)] = (trigger.data as NoteVM);
+        } else if (trigger.type === 'remove') {
+          this.deal.notes.splice(this.deal.notes.findIndex((e) => e.id === (trigger.data as NoteVM).id), 1);
         }
         this.useFilter();
       }
     });
-    dealDetailService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data.deal.id === this.deal.id) {
+    dealDetailService.triggerSocket().subscribe((trigger) => {
+      if ((trigger.data as DealDetailVM).deal.id === this.deal.id) {
         if (trigger.type === 'create') {
-          this.deal.dealDetails.push(trigger.data);
+          this.deal.dealDetails.push((trigger.data as DealDetailVM));
         } else if (trigger.type === 'update') {
-          this.deal.dealDetails[this.deal.dealDetails.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-        } else {
-          this.deal.dealDetails.splice(this.deal.dealDetails.findIndex((e) => e.id === trigger.data.id), 1);
+          this.deal.dealDetails[this.deal.dealDetails.findIndex((e) => e.id === (trigger.data as DealDetailVM).id)]
+            = (trigger.data as DealDetailVM);
+        } else if (trigger.type === 'remove') {
+          this.deal.dealDetails.splice(this.deal.dealDetails.findIndex((e) => e.id === (trigger.data as DealDetailVM).id), 1);
         }
         this.useFilter();
       }
     });
-    activityService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data.deal.id === this.deal.id) {
+    activityService.triggerSocket().subscribe((trigger) => {
+      if ((trigger.data as ActivityVM).deal.id === this.deal.id) {
         if (trigger.type === 'create') {
-          this.deal.activitys.push(trigger.data);
+          this.deal.activitys.push((trigger.data as ActivityVM));
         } else if (trigger.type === 'update') {
-          this.deal.activitys[this.deal.activitys.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-        } else {
-          this.deal.activitys.splice(this.deal.activitys.findIndex((e) => e.id === trigger.data.id), 1);
+          this.deal.activitys[this.deal.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)]
+            = (trigger.data as ActivityVM);
+        } else if (trigger.type === 'remove') {
+          this.deal.activitys.splice(this.deal.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id), 1);
         }
         this.useFilter();
       }
     });
-    attachmentService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data[0]?.deal.id === this.deal.id) {
-        if (trigger.type === 'create') {
-          trigger.data.forEach((e) => this.deal.attachments.push(e));
+    attachmentService.triggerSocket().subscribe((trigger) => {
+      if ((trigger.data as AttachmentVM[])[0]?.deal.id === this.deal.id) {
+        if (trigger.type === 'list') {
+          (trigger.data as AttachmentVM[]).forEach((e) => this.deal.attachments.push(e));
         } else if (trigger.type === 'update') {
-          trigger.data.forEach((data) => {
-            this.deal.attachments[this.deal.attachments.findIndex((e) => e.id === data.id)] = data;
-          });
-        } else {
-          trigger.data.forEach((data) => {
-            this.deal.attachments.splice(this.deal.attachments.findIndex((e) => e.id === data.id), 1);
-          });
+          this.deal.attachments[this.deal.attachments.findIndex((e) => e.id === (trigger.data as AttachmentVM).id)]
+          = (trigger.data as AttachmentVM);
+        } else if (trigger.type === 'remove') {
+          this.deal.attachments.splice(this.deal.attachments.findIndex((e) => e.id === (trigger.data as AttachmentVM).id), 1);
         }
         this.useFilter();
       }
     });
   }
   ngOnInit() {
+  }
+  useSaveFeedback = () => {
+    this.spinner.show('deal-detail');
+    this.dealService
+      .update({
+      id: this.deal.id,
+      feedbackMessage: this.deal.feedbackMessage,
+      feedbackRating: this.deal.feedbackRating,
+      feedbackStatus: this.deal.feedbackStatus,
+      } as any)
+      .pipe(
+        finalize(() => {
+          this.spinner.hide('deal-detail');
+        })
+      )
+      .subscribe((data) => {
+      this.toastrService.success('', 'Save feedback successful', { duration: 3000 });
+    }, () => {
+      this.toastrService.success('', 'Save feedback fail', { duration: 3000 });
+    });
   }
   useReload = () => {
     this.spinner.show('deal-detail');
@@ -180,7 +200,6 @@ export class DealDetailPage implements OnInit {
         attachments: undefined,
       } as any).subscribe((data) => {
         this.useReload();
-        this.dealService.triggerValue$.next({ type: 'update', data });
       });
     }
   }
@@ -201,7 +220,7 @@ export class DealDetailPage implements OnInit {
   useClose = () => {
     this.dealService.update({
       ...this.deal,
-      status: 'close',
+      status: 'lost',
       activitys: undefined,
       notes: undefined,
       logs: undefined,
@@ -224,5 +243,11 @@ export class DealDetailPage implements OnInit {
   }
   useCustomerProfile = () => {
     this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.deal.customer } });
+  }
+  usePhone = (phone: string) => {
+    window.open('tel:' + phone, '_self');
+  }
+  useMail = (email: string) => {
+    this.globalService.triggerView$.next({ type: 'mail', payload: { email } });
   }
 }

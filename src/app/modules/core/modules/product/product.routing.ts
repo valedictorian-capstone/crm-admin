@@ -1,7 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ProductMainPage } from './pages';
+import { ProductDetailPage, ProductMainPage } from './pages';
 
 const routes: Routes = [
+  { path: ':id', component: ProductDetailPage },
   { path: '', component: ProductMainPage },
 ];
 

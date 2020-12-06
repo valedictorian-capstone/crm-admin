@@ -7,6 +7,15 @@
   </button>
     </nb-card-header>
     <nb-card-body [formGroup]="form">
+        <div class="image">
+            <div class="image-picker" [class.danger]="errorImage">
+                <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, imageSelect)" #imageSelect type="file" style="opacity: 0; height: 0; width: 0" />
+                <button *ngIf="!form.get('image').value" nbButton status="default" size="small" (click)="imageSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                <img *ngIf="form.get('image').value" [src]="form.get('image').value" style="width: 100%; height: 100%;" />
+                <button *ngIf="form.get('image').value" style="position: absolute;" shape="round" nbButton [status]="errorImage ? 'danger' : 'primary'" size="small" (click)="imageSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+            </div>
+            <b *ngIf="errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{message}}</b>
+        </div>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
       form.get('code').invalid &&
       (form.get('code').touched || form.get('code').dirty)
@@ -20,6 +29,8 @@
           : 'basic'
       " (blur)="useCheckCode()" fullWidth nz-dropdown [placeholder]="'Code'" shape="rectangle" [formControl]="form.get('code')" nbInput size="large" />
         </nb-form-field>
+        <span *ngIf="form.get('code').errors?.required && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill code</span>
+        <span *ngIf="form.get('code').errors?.duplicate && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another code. Because this code is exsited</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
       form.get('name').invalid &&
       (form.get('name').touched || form.get('name').dirty)
@@ -33,19 +44,7 @@
           : 'basic'
       " fullWidth [formControl]="form.get('name')" nbInput size="small" />
         </nb-form-field>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
-      form.get('type').invalid &&
-      (form.get('type').touched || form.get('type').dirty)
-    ">Type <span class="text-danger">*</span></span>
-        <nb-form-field style="width: 100%; margin-bottom: 1rem">
-            <nb-icon icon="tape" pack="font-awesome" nbPrefix></nb-icon>
-            <input placeholder="Type" [status]="
-        form.get('type').invalid &&
-        (form.get('type').touched || form.get('type').dirty)
-          ? 'danger'
-          : 'basic'
-      " fullWidth [formControl]="form.get('type')" nbInput size="small" />
-        </nb-form-field>
+        <span *ngIf="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
       form.get('price').invalid &&
       (form.get('price').touched || form.get('price').dirty)
@@ -59,90 +58,62 @@
           : 'basic'
       " placeholder="Price" fullWidth [formControl]="form.get('price')" nbInput size="small" />
         </nb-form-field>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Category</span
-  >
-  <nb-form-field style="width: 100%; margin-bottom: 1rem">
-    <nb-icon icon="compass-outline" nbPrefix></nb-icon>
-    <input
-      #categoryInput
-      fullWidth
-      nz-dropdown
-      [status]="
+        <span *ngIf="form.get('price').invalid && (form.get('price').touched || form.get('price').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill price</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Category <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="compass-outline" nbPrefix></nb-icon>
+            <input #categoryInput fullWidth nz-dropdown [status]="
         form.get('category').invalid &&
         (form.get('category').touched || form.get('category').dirty)
           ? 'danger'
           : 'basic'
-      "
-      [nzDropdownMenu]="categoryRef"
-      placeholder="Category"
-      [nzPlacement]="'bottomCenter'"
-      [nzBackdrop]="false"
-      [nzTrigger]="'click'"
-      [value]="form?.get('category').value?.name"
-      nbInput
-      size="small"
-      (input)="categoryPlus.useChangeValue($event.target.value)"
-    />
-    <nb-icon icon="arrow-down" nbSuffix></nb-icon>
-  </nb-form-field>
-  <nz-dropdown-menu #categoryRef="nzDropdownMenu">
-    <app-reuse-category-select
-    [selected]="form.get('category').value"
-      #categoryPlus
-      (useSelect)="form.get('category').setValue($event)"
-      [template]="categoryInput"
-    ></app-reuse-category-select>
-  </nz-dropdown-menu>
-  <span style="display: block; margin-bottom: 0.5rem; font-weight: 600"
-    >Description</span
-  >
-  <nb-form-field style="width: 100%; margin-bottom: 1rem">
-    <textarea
-      #area
-      placeHolder="Description"
-      fullWidth
-      [formControl]="form.get('description')"
-      (focus)="area.rows = 5"
-      rows="1"
-      (blur)="area.rows = 1"
-      nbInput
-    ></textarea>
-  </nb-form-field>
-  <nb-accordion>
-    <nb-accordion-item>
-      <nb-accordion-item-header>Parameters</nb-accordion-item-header>
-      <nb-accordion-item-body>
-        <smooth-dnd-container [dragHandleSelector]="'.drag-handle'" (drop)="useDrop($event)">
-          <smooth-dnd-draggable *ngFor="let parameter of form.get('parameters')['controls']; let i = index">
-            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
-              <nb-icon class="drag-handle" style="cursor: move;" nbPrefix icon="move-outline"></nb-icon>
-                <input fullWidth [status]="
+      " [nzDropdownMenu]="categoryRef" placeholder="Category" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form?.get('category').value?.name" nbInput size="small" (blur)="form.get('category').markAsTouched()" (input)="categoryPlus.useChangeValue($event.target.value)"
+            />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #categoryRef="nzDropdownMenu">
+            <app-reuse-category-select [selected]="form.get('category').value" #categoryPlus (useSelect)="form.get('category').setValue($event)" [template]="categoryInput"></app-reuse-category-select>
+        </nz-dropdown-menu>
+        <span *ngIf="form.get('category').invalid && (form.get('category').touched || form.get('category').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select category</span>
+        <nb-accordion>
+            <nb-accordion-item>
+                <nb-accordion-item-header>Parameters</nb-accordion-item-header>
+                <nb-accordion-item-body>
+                    <smooth-dnd-container [dragHandleSelector]="'.drag-handle'" (drop)="useDrop($event)">
+                        <smooth-dnd-draggable *ngFor="let parameter of form.get('parameters')['controls']; let i = index">
+                            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+                                <nb-icon class="drag-handle" style="cursor: move;" nbPrefix icon="move-outline"></nb-icon>
+                                <input fullWidth [status]="
                       parameter.get('label').invalid &&
                       (parameter.get('label').touched ||
                         parameter.get('label').dirty)
                         ? 'danger'
                         : 'basic'
                     " [formControl]="parameter.get('label')" placeholder="Label" nbInput size="small" />
-            </nb-form-field>
-            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
-                <input fullWidth [status]="
+                            </nb-form-field>
+                            <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+                                <input fullWidth [status]="
                       parameter.get('value').invalid &&
                       (parameter.get('value').touched ||
                         parameter.get('value').dirty)
                         ? 'danger'
                         : 'basic'
                     " [formControl]="parameter.get('value')" placeholder="Value" nbInput size="small" />
-                <nb-icon (click)="useRemoveParameter(i)" style="cursor: pointer;" nbSuffix icon="trash-2-outline" status="danger"></nb-icon>
-            </nb-form-field>
-          </smooth-dnd-draggable>
-      </smooth-dnd-container>
-      <button (click)="useAddParameter()" nbButton status="success" size="small">
+                                <nb-icon (click)="useRemoveParameter(i)" style="cursor: pointer;" nbSuffix icon="trash-2-outline" status="danger"></nb-icon>
+                            </nb-form-field>
+                        </smooth-dnd-draggable>
+                    </smooth-dnd-container>
+                    <button (click)="useAddParameter()" nbButton status="success" size="small">
           <nb-icon icon="plus"></nb-icon>
           <b>Add new parameter</b>
         </button>
-      </nb-accordion-item-body>
-      </nb-accordion-item>
-      </nb-accordion>
+                </nb-accordion-item-body>
+            </nb-accordion-item>
+        </nb-accordion>
+        <span style="display: block; margin: 1rem 0 0.5rem 0; font-weight: 600">Description</span
+  >
+  <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
+
   </nb-card-body>
   <nb-card-footer>
       <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef)">
