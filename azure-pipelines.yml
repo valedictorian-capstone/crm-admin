@@ -23,8 +23,8 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure for Students(1)(fd8b1d07-0cd0-42d3-a131-1503ed53e201)'
     appType: 'webAppLinux'
     WebAppName: 'crm-capstone-admin'
-    ConnectedServiceName: 'crm-capstone-admin'
     packageForLinux: 'dist/'
     RuntimeStack: 'NODE|12-lts'
