@@ -25,5 +25,6 @@ steps:
     ConnectionType: 'AzureRM'
     appType: 'webAppLinux'
     WebAppName: 'crm-capstone-admin'
+    ConnectedServiceName: 'crm-capstone-admin'
     packageForLinux: 'dist/'
     RuntimeStack: 'NODE|12-lts'
