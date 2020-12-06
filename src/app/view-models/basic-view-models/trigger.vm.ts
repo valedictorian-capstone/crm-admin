@@ -3,7 +3,7 @@ import { EventVM } from '@view-models';
 
 export interface TriggerVM {
   id: string;
-  time: string;
+  time: Date;
   event: EventVM;
   isDelete: boolean;
   createdBy: string;
@@ -13,12 +13,12 @@ export interface TriggerVM {
 }
 
 export interface TriggerCM {
-  time: string;
+  time: Date;
   event: EventVM;
 }
 
 export interface TriggerUM {
   id: string;
-  time: string;
+  time: Date;
   event: EventVM;
 }

@@ -1,0 +1,127 @@
+.role-main {
+    min-width: 70%;
+    margin: auto;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    overflow-y: hidden;
+    padding: 1rem 0.5rem;
+    white-space: nowrap;
+    .role {
+        display: inline-block;
+        height: 100%;
+        max-height: 100%;
+        overflow: auto;
+        width: 25rem;
+        padding: 0 0 1rem 0;
+        min-width: 60%;
+        position: relative;
+        background: white;
+        border: 3px solid #e5e5e5;
+        &:first-child {
+            width: 23rem;
+            min-width: 20%;
+            border-radius: 10px 0 0 10px;
+        }
+        &:last-child {
+            width: 23rem;
+            min-width: 20%;
+            border-radius: 0 10px 10px 0;
+        }
+        .name {
+            padding: 0 1rem;
+            width: 80%;
+            height: 4rem;
+            margin: 1rem auto 1rem auto;
+            font: 600 14px/16px monospace, sans-serif;
+            color: #747678;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+        .cant-edit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: calc(90% - 6rem);
+            padding: 1rem;
+            p {
+                font: 600 16px/16px monospace, sans-serif;
+                color: #747678;
+                white-space: break-spaces;
+                font-weight: bold;
+            }
+        }
+        .search {
+            width: 100%;
+            height: 10%;
+            padding: 0 1rem;
+            nb-form-field {
+                width: 100%;
+                input {
+                    height: 3rem;
+                }
+            }
+        }
+        .content {
+            padding: 0 1rem;
+            width: 100%;
+            max-height: calc(90% - 6rem);
+            text-align: initial;
+            overflow: auto;
+        }
+        .footer {
+            width: 100%;
+            padding: 0 1rem;
+            height: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .items {
+            width: 100%;
+            padding: 0 1rem;
+            height: calc(90% - 6rem);
+            max-height: calc(90% - 6rem);
+            overflow: auto;
+            .item {
+                width: 100%;
+                height: 3rem;
+                display: flex;
+                background: white;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                align-items: center;
+                font: 600 14px/16px monospace, sans-serif;
+                color: #747678;
+                font-weight: bold;
+                padding: 1rem 3rem 1rem 3rem;
+                margin-bottom: 0.5rem;
+                &:hover {
+                    cursor: pointer;
+                    background: #e5e5e5;
+                }
+                &.selected {
+                    color: white;
+                    background: #404346;
+                }
+                &.add {
+                    justify-content: center;
+                    padding: 0;
+                    nb-icon {
+                        font-size: 2.5rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media(max-width: 789px) {
+    .role-main {
+        padding: 1rem 0.5rem;
+    }
+}

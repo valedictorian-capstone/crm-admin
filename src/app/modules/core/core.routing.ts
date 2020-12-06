@@ -5,7 +5,11 @@ import { LayoutPage } from './pages';
 const routes: Routes = [
   {
     path: '', component: LayoutPage, children: [
-      { path: '', redirectTo: 'process' },
+      { path: '', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.DashboardModule),
+      },
       {
         path: 'customer',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ContactModule),
@@ -19,16 +23,22 @@ const routes: Routes = [
         data: { permission: 'Customer' }
       },
       {
-        path: 'account',
-        loadChildren: () => import('@app/modules/core/modules').then((m) => m.EmployeeModule),
-        canLoad: [CoreGuard],
-        data: { permission: 'Employee' }
+        path: 'event',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.EventModule),
+        // canLoad: [CoreGuard],
+        // data: { permission: 'Event' }
       },
       {
         path: 'process',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.PipelineModule),
         canLoad: [CoreGuard],
         data: { permission: 'Process' }
+      },
+      {
+        path: 'ticket',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.TicketModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Ticket' }
       },
       {
         path: 'deal',
@@ -47,6 +57,12 @@ const routes: Routes = [
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ActivityModule),
         canLoad: [CoreGuard],
         data: { permission: 'Activity' }
+      },
+      {
+        path: 'setting',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.RoleModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Role' }
       },
       {
         path: 'call',

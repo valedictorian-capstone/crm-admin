@@ -22,7 +22,6 @@ export class EmployeeSelectComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.you);
     this.accountService.findAll().subscribe((data) => {
       this.accounts = data;
       setTimeout(() => {

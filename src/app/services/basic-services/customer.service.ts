@@ -2,16 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { CustomerCM, CustomerUM, CustomerVM } from '@view-models';
-import { Observable, Subject } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  public readonly triggerValue$ = new Subject<{ type: 'create' | 'update' | 'delete', data: CustomerVM}>();
-  constructor(protected readonly httpClient: HttpClient) { }
-
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: CustomerVM | CustomerVM[]
+  }> => {
+    return this.socket.fromEvent('customers');
+  }
   public readonly findAll = (): Observable<CustomerVM[]> => {
     return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}`);
   }
@@ -34,16 +42,12 @@ export class CustomerService {
     return this.httpClient.put<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.main}`, data);
   }
 
-  public readonly remove = (id: string): Observable<string> => {
-    return this.httpClient.delete<string>(`${environment.apiEndpont}${environment.api.basic.customer.getById}${id}`);
+  public readonly disabled = (id: string): Observable<CustomerVM> => {
+    return this.httpClient.delete<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.getById}${id}`);
   }
 
-  public readonly active = (ids: string[]): Observable<CustomerVM> => {
-    return this.httpClient.put<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.active}`, ids);
-  }
-
-  public readonly deactive = (ids: string[]): Observable<CustomerVM> => {
-    return this.httpClient.put<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.deactive}`, ids);
+  public readonly restore = (id: string): Observable<CustomerVM> => {
+    return this.httpClient.put<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.restore}/${id}`, {});
   }
 
   public readonly checkUnique = (label: string, value: string): Observable<boolean> => {

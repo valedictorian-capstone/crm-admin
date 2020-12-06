@@ -33,11 +33,9 @@ export class DealProductComponent implements OnInit, OnChanges {
   useRemoveDetail = (id: string, index: number) => {
     this.details.removeAt(index);
     if (id) {
-      this.dealDetailService.remove(id).pipe(tap(() => {
-        this.dealDetailService.triggerValue$.next({ type: 'remove', data: { id, deal: this.deal } as any });
-      })).subscribe();
+      this.dealDetailService.remove(id).subscribe();
     }
-    this.toastrService.success('', 'Remove product success!', { duration: 3000 });
+    this.toastrService.success('', 'Remove product successful!', { duration: 3000 });
 
   }
   usePlusDetail = (detail?: DealDetailVM) => {
@@ -68,8 +66,7 @@ export class DealProductComponent implements OnInit, OnChanges {
             if (!detail.value.id) {
               detail.addControl('id', new FormControl(data.id));
             }
-            this.dealDetailService.triggerValue$.next({ type: detail.value.id ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save product success!', { duration: 3000 });
+            this.toastrService.success('', 'Save product successful!', { duration: 3000 });
           })
         ).subscribe();
     }

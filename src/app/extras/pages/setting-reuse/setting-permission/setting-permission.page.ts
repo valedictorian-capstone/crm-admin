@@ -32,7 +32,7 @@ export class SettingPermissionPage implements OnInit {
 
   ngOnInit() {
     this.useReLoad();
-    this.useTrigger();
+    this.useSocket();
   }
   useReLoad = () => {
     this.useShowSpinner();
@@ -56,24 +56,25 @@ export class SettingPermissionPage implements OnInit {
         }));
       });
   }
-  useTrigger = () => {
-    this.roleService.triggerValue$.subscribe((trigger) => {
+  useSocket = () => {
+    this.roleService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.roles.push(trigger.data);
+        this.roles.push((trigger.data as RoleVM));
       } else if (trigger.type === 'update') {
-        this.roles[this.roles.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-      } else {
-        this.roles.splice(this.roles.findIndex((e) => e.id === trigger.data.id), 1);
+        this.roles[this.roles.findIndex((e) => e.id === (trigger.data as RoleVM).id)] = (trigger.data as RoleVM);
+      } else if (trigger.type === 'remove') {
+        this.roles.splice(this.roles.findIndex((e) => e.id === (trigger.data as RoleVM).id), 1);
       }
     });
-    this.employeeService.triggerValue$.subscribe((trigger) => {
-      if (this.selectedRole && trigger.data.roles.find((role) => role.id === this.selectedRole.id)) {
+    this.employeeService.triggerSocket().subscribe((trigger) => {
+      if (this.selectedRole && (trigger.data as AccountVM).roles.find((role) => role.id === this.selectedRole.id)) {
         if (trigger.type === 'create') {
-          this.selectedRole.accounts.push(trigger.data);
+          this.selectedRole.accounts.push((trigger.data as AccountVM));
         } else if (trigger.type === 'update') {
-          this.selectedRole.accounts[this.selectedRole.accounts.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-        } else {
-          this.selectedRole.accounts.splice(this.selectedRole.accounts.findIndex((e) => e.id === trigger.data.id), 1);
+          this.selectedRole.accounts[this.selectedRole.accounts.findIndex((e) => e.id === (trigger.data as AccountVM).id)] =
+            (trigger.data as AccountVM);
+        } else if (trigger.type === 'remove') {
+          this.selectedRole.accounts.splice(this.selectedRole.accounts.findIndex((e) => e.id === (trigger.data as AccountVM).id), 1);
         }
       }
     });

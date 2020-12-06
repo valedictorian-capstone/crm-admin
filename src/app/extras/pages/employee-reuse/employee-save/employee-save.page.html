@@ -24,12 +24,15 @@
                 [formControl]="form.get('code')" nbInput size="large" />
             <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('code').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="form.get('code').errors?.required && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill code</span>
+        <span *ngIf="form.get('code').errors?.duplicate && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another code. Because this code is exsited</span>
         <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem;">
             <input [readOnly]="isProfile" style="height: 3rem;" [status]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')"
                 nbInput size="large" />
             <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('fullname').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
         <nb-form-field class="not-search" [nbSpinner]="phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon [ngStyle]="{'opacity': phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
@@ -37,6 +40,8 @@
                 [formControl]="form.get('phone')" nbInput size="large" />
             <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('phone').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="(form.get('phone').errors?.required || form.get('phone').errors?.pattern) && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
+        <span *ngIf="form.get('phone').errors?.duplicate && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
         <nb-form-field class="not-search" [nbSpinner]="emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon [ngStyle]="{'opacity': emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
@@ -44,6 +49,8 @@
                 [formControl]="form.get('email')" nbInput size="large" />
             <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('email').value)"></nb-icon>
         </nb-form-field>
+        <span *ngIf="(form.get('email').errors?.required || form.get('email').errors?.pattern) && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
+        <span *ngIf="form.get('email').errors?.duplicate && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
         <span *ngIf="!isProfile" style="display: block; margin-bottom: 0.5rem; font-weight: 600">Role</span
         >
         <nb-form-field *ngIf="!isProfile" style="max-width: 100%; margin-bottom: 1rem">

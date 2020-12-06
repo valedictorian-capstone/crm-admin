@@ -1,6 +1,6 @@
-<nb-card style="width: 95%; margin: auto;">
-    <nb-card-header style="display: flex; align-items: center; min-height: 6rem; border-radius: 5px;">
-        <div style="width: calc(100% - 3rem); float: left">
+<nb-card style="width: 95%; margin: auto; border-radius: 10px">
+    <nb-card-header style="display: flex; align-items: center; border-radius: 5px;">
+        <div style="width: calc(100% - 3rem); float: left" (click)="useDetail()">
             <div style="display: block; text-overflow: ellipsis; width: 100%; white-space: nowrap; overflow: hidden;">
                 <span>
                 <b class="text-warning" [innerHTML]="product.code  | mask: search"></b> - <b [innerHTML]="product.name | mask: search"></b>

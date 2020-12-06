@@ -27,16 +27,16 @@ export class ContactMainPage implements OnInit {
   ngOnInit() {
     this.useLoadGroup();
     this.useReload();
-    this.useTrigger();
+    this.useSocket();
   }
-  useTrigger = () => {
-    this.customerService.triggerValue$.subscribe((trigger) => {
+  useSocket = () => {
+    this.customerService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.customers.push(trigger.data);
+        this.customers.push(trigger.data as CustomerVM);
       } else if (trigger.type === 'update') {
-        this.customers[this.customers.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-      } else {
-        this.customers.splice(this.customers.findIndex((e) => e.id === trigger.data.id), 1);
+        this.customers[this.customers.findIndex((e) => e.id === (trigger.data as CustomerVM).id)] = (trigger.data as CustomerVM);
+      } else if (trigger.type === 'remove') {
+        this.customers.splice(this.customers.findIndex((e) => e.id === (trigger.data as CustomerVM).id), 1);
       }
       this.useFilter();
     });
@@ -61,18 +61,7 @@ export class ContactMainPage implements OnInit {
     this.filterCustomers = this.customers.filter((e) =>
       (e.fullname.toLowerCase().includes(this.search.toLowerCase()) ||
         e.phone.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.email.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.facebook.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.fax.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.company.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.city.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.type.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.country.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.skypeName.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.state.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.street.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.twitter.toLowerCase().includes(this.search.toLowerCase()) ||
-        e.website.toLowerCase().includes(this.search.toLowerCase()))
+        e.email.toLowerCase().includes(this.search.toLowerCase()))
       && e.groups.filter((group) => group.id.includes(this.selectedGroup)).length > 0
     );
   }

@@ -37,7 +37,7 @@
                 <div class="stage" [class.selected]="i === active" (click)="active = i" [formGroup]="stage">
                     <div class="stage-header">
                         <button class="plus-left" (click)="usePlus(i)" status="default" nbButton size="tiny" shape="round"><nb-icon icon="plus"></nb-icon></button>
-                        <button class="plus-right" (click)="usePlus(i + 1)" status="default" nbButton size="tiny" shape="round"><nb-icon icon="plus"></nb-icon></button>
+                        <button class="plus-right" *ngIf="i === stages.controls.length - 1" (click)="usePlus(i + 1)" status="default" nbButton size="tiny" shape="round"><nb-icon icon="plus"></nb-icon></button>
                         <svg *ngIf="i !== stages.length - 1" class="arrow-right" width="16" height="56"><g fill="none" fill-rule="evenodd"><path class="arrow__right" fill="#edf1f7" d="M0 0h16v56H0z" [class.near]="active === i + 1 && active !== -1"></path><path class="arrow__border" fill="#E5E5E5" d="M1 0l8 28-8 28H0V0z"></path><path class="arrow__left" fill="#edf1f7" d="M0 1l8 27-8 27z"></path></g></svg>
                         <div class="stage-header-name">
                             {{stage.value.name}}
@@ -87,7 +87,7 @@ This represents your confidence in winning a deal by the expected close date. Pr
                         </div>
                     </div>
                     <div class="stage-footer">
-                        <a (click)="useDialog(removeRef, -1)">
+                        <a (click)="useDialog(removeRef, i)">
                             <nb-icon icon="trash-2" style="margin-right: 0.5rem;"></nb-icon>
                             <span>Delete stage</span>
                         </a>

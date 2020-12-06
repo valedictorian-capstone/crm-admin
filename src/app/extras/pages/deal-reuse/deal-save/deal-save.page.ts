@@ -97,7 +97,12 @@ export class DealSavePage implements OnInit {
         }),
         switchMap(() => this.pipelineService.findAll()),
         tap((data) => {
-          this.pipelines = data;
+          if (this.pipeline) {
+            this.pipelines = data.filter((pipeline) => pipeline.id === this.pipeline.id
+              || (pipeline.id !== this.pipeline.id && !pipeline.isDelete));
+          } else {
+            this.pipelines = data.filter((pipeline) => !pipeline.isDelete);
+          }
         }),
         finalize(() => {
           this.useHideSpinner();
@@ -109,7 +114,7 @@ export class DealSavePage implements OnInit {
     this.pipelineService.findAll()
       .pipe(
         tap((data) => {
-          this.pipelines = data;
+          this.pipelines = data.filter((pipeline) => !pipeline.isDelete);
           if (!this.pipeline) {
             const selectedPipeline = localStorage.getItem('selectedPipeline');
             if (!selectedPipeline && this.pipelines[0]) {
@@ -177,9 +182,8 @@ export class DealSavePage implements OnInit {
             this.useHideSpinner();
           })
         ).subscribe((data) => {
-          this.dealService.triggerValue$.next({ type: this.deal ? 'update' : 'create', data });
           this.useDone.emit(data);
-          this.toastrService.success('', 'Save deal success!', { duration: 3000 });
+          this.toastrService.success('', 'Save deal successful!', { duration: 3000 });
           this.useClose.emit();
         }, (err) => {
           this.toastrService.danger('', 'Save deal fail! Something wrong at runtime', { duration: 3000 });

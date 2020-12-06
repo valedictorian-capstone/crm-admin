@@ -16,7 +16,8 @@ import {
   DealItemComponent,
   FeedbackItemComponent,
   TicketItemComponent,
-  EmployeeItemComponent
+  EmployeeItemComponent,
+  CustomerItemComponent
 } from './components';
 import {
   ActivitySavePage,
@@ -38,7 +39,7 @@ import {
   SettingPasswordPage,
   SettingPermissionPage,
   SettingProfilePage,
-  EventSavePage
+  EventSavePage,
 } from './pages';
 import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -73,7 +74,9 @@ export const REUSE_COMPONENTS = [
   DealItemComponent,
   FeedbackItemComponent,
   TicketItemComponent,
-  EmployeeItemComponent
+  EmployeeItemComponent,
+  CustomerItemComponent
+
 ];
 
 export const REUSE_PAGES = [

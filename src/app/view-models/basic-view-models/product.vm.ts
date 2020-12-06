@@ -1,10 +1,11 @@
+import { CategoryVM } from './category.vm';
 
 export interface ProductVM {
   id: string;
   code: string;
   name: string;
-  type: string;
-  category: string;
+  image: string;
+  category: CategoryVM;
   price: number;
   unit: string;
   description: string;
@@ -20,10 +21,10 @@ export interface ProductCM {
   id: string;
   code: string;
   name: string;
-  type: string;
-  category: string;
+  category: CategoryVM;
   price: number;
   unit: string;
+  image: string;
   parameters: {label: string, value: string}[];
   description: string;
 }
@@ -32,9 +33,9 @@ export interface ProductUM {
   id: string;
   code: string;
   name: string;
-  category: string;
+  category: CategoryVM;
   price: number;
-  type: string;
+  image: string;
   unit: string;
   parameters: {label: string, value: string}[];
   description: string;

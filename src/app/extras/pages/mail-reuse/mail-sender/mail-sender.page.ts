@@ -68,7 +68,7 @@ export class MailSenderPage implements OnInit {
     }).pipe(finalize(() => { this.useHideSpinner(); })).subscribe(
       () => {
         this.useClose.emit();
-        this.toastrService.success('', 'Send mail success!', { duration: 3000 });
+        this.toastrService.success('', 'Send mail successful!', { duration: 3000 });
       },
       () => {
         this.toastrService.danger('', 'Send mail fail! Something wrong at runtime', { duration: 3000 });

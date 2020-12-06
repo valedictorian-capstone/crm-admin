@@ -2,15 +2,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { AccountCM, AccountUM, AccountVM } from '@view-models';
-import { Observable, Subject } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-  public readonly triggerValue$ = new Subject<{type: 'create' | 'update' | 'remove', data: AccountVM}>();
-  constructor(protected readonly httpClient: HttpClient) { }
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
+
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: AccountVM | AccountVM[]
+  }> => {
+    return this.socket.fromEvent('accounts');
+  }
 
   public readonly findAll = (): Observable<AccountVM[]> => {
     return this.httpClient.get<AccountVM[]>(`${environment.apiEndpont}${environment.api.basic.account.main}`);

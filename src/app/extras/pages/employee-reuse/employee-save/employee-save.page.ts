@@ -71,7 +71,6 @@ export class EmployeeSavePage implements OnInit {
       ...this.employee,
       roles: this.employee.roles.map((role) => role.id)
     });
-    console.log(this.form);
   }
   useInitForm = () => {
     this.form = new FormGroup({
@@ -101,8 +100,7 @@ export class EmployeeSavePage implements OnInit {
             })
           )
           .subscribe((data) => {
-            this.employeeService.triggerValue$.next({ type: this.employee ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save account success!', { duration: 3000 });
+            this.toastrService.success('', 'Save account successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }, (err) => {
@@ -145,12 +143,12 @@ export class EmployeeSavePage implements OnInit {
     }
   }
   useCheckPhone = () => {
-    if (!this.employee || (this.employee && this.employee.phone !== this.form.get('phone').value)) {
+    const phone = this.form.get('phone');
+    if ((!this.employee || (this.employee && this.employee.phone !== this.form.get('phone').value)) && phone.valid) {
       this.phoneStage = 'querying';
       setTimeout(async () => {
-        const phone = this.form.get('phone');
         const check = await this.employeeService.checkUnique('phone', phone.value).toPromise();
-        if (phone.valid && check) {
+        if (check) {
           phone.setErrors({ duplicate: true });
         }
         this.phoneStage = 'done';
@@ -159,15 +157,15 @@ export class EmployeeSavePage implements OnInit {
   }
   useCopy = (data: string) => {
     this.clipboard.copy(data);
-    this.toastrService.show('', 'Copy success', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+    this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
   useCheckEmail = () => {
-    if (!this.employee || (this.employee && this.employee.email !== this.form.get('email').value)) {
+    const email = this.form.get('email');
+    if ((!this.employee || (this.employee && this.employee.email !== this.form.get('email').value)) && email.valid) {
       this.emailStage = 'querying';
       setTimeout(async () => {
-        const email = this.form.get('email');
         const check = await this.employeeService.checkUnique('email', email.value).toPromise();
-        if (email.valid && check) {
+        if (check) {
           email.setErrors({ duplicate: true });
         }
         this.emailStage = 'done';
@@ -175,12 +173,12 @@ export class EmployeeSavePage implements OnInit {
     }
   }
   useCheckCode = () => {
-    if (!this.employee || (this.employee && this.employee.code !== this.form.get('code').value)) {
+    const code = this.form.get('code');
+    if ((!this.employee || (this.employee && this.employee.code !== this.form.get('code').value)) && code.valid) {
       this.codeStage = 'querying';
       setTimeout(async () => {
-        const code = this.form.get('code');
         const check = await this.employeeService.checkUnique('code', code.value).toPromise();
-        if (code.valid && check) {
+        if (check) {
           code.setErrors({ duplicate: true });
         }
         this.codeStage = 'done';

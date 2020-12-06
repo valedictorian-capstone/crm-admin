@@ -5,6 +5,7 @@ export * from './event.service';
 export * from './group.service';
 export * from './role.service';
 export * from './product.service';
+export * from './comment.service';
 export * from './category.service';
 export * from './notification.service';
 export * from './ticket.service';

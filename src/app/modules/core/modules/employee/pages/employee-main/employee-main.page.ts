@@ -23,18 +23,18 @@ export class EmployeeMainPage implements OnInit {
 
   ngOnInit() {
     this.useReload();
-    this.useTrigger();
+    this.useSocket();
   }
-  useTrigger = () => {
-    this.employeeService.triggerValue$.subscribe((trigger) => {
-        if (trigger.type === 'create') {
-          this.employees.push(trigger.data);
-        } else if (trigger.type === 'update') {
-          this.employees[this.employees.findIndex((e) => e.id === trigger.data.id)] = trigger.data;
-        } else {
-          this.employees.splice(this.employees.findIndex((e) => e.id === trigger.data.id), 1);
-        }
-        this.useFilter();
+  useSocket = () => {
+    this.employeeService.triggerSocket().subscribe((trigger) => {
+      if (trigger.type === 'create') {
+        this.employees.push((trigger.data as AccountVM));
+      } else if (trigger.type === 'update') {
+        this.employees[this.employees.findIndex((e) => e.id === (trigger.data as AccountVM).id)] = (trigger.data as AccountVM);
+      } else if (trigger.type === 'remove') {
+        this.employees.splice(this.employees.findIndex((e) => e.id === (trigger.data as AccountVM).id), 1);
+      }
+      this.useFilter();
     });
   }
   useReload = () => {

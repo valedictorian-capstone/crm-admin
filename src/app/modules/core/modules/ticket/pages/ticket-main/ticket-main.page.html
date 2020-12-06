@@ -1,0 +1,18 @@
+<div class="crm-ticket">
+    <div class='crm-ticket-header'>
+        <div class="filter">
+            <nb-form-field class="not-search" style="max-width: 100%; width: 500px; margin-bottom: 1rem;" [nbSpinner]="stage === 'querying'" [nbSpinnerSize]="'tiny'">
+                <nb-icon [ngStyle]="{'opacity': stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
+                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search" nbInput size="large" />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class='crm-ticket-body'>
+        <ngx-spinner [name]="'ticket-main'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+        <div nz-row style="width: 90%; margin: auto">
+            <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6" *ngFor="let ticket of filterTickets">
+                <app-ticket-item [ticket]="ticket"></app-ticket-item>
+            </div>
+        </div>
+    </div>
+</div>

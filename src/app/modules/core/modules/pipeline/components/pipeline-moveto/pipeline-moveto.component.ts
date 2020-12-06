@@ -28,7 +28,7 @@ export class PipelineMovetoComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        this.pipelines = data;
+        this.pipelines = data.filter((pipeline) => !pipeline.isDelete);
         if (!this.pipeline) {
           const selectedPipeline = localStorage.getItem('selectedPipeline');
           this.useSelectPipeline(selectedPipeline, this.selectedStage);

@@ -172,8 +172,7 @@ export class RoleSavePage implements OnInit {
             })
           )
           .subscribe((data) => {
-            this.roleService.triggerValue$.next({ type: this.role ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save role success!', { duration: 3000 });
+            this.toastrService.success('', 'Save role successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }, (err) => {

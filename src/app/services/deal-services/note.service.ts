@@ -1,15 +1,24 @@
-import { NoteCM, NoteUM, NoteVM } from '@view-models';
-import { environment } from 'src/environments/environment';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { NoteCM, NoteUM, NoteVM } from '@view-models';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteService {
-  public readonly triggerValue$ = new Subject<{type: 'create' | 'update' | 'remove', data: NoteVM}>();
-  constructor(protected readonly httpClient: HttpClient) { }
+  constructor(
+    protected readonly httpClient: HttpClient,
+    protected readonly socket: Socket,
+  ) { }
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: NoteVM | NoteVM[]
+  }> => {
+    return this.socket.fromEvent('notes');
+  }
 
   public readonly findAll = (): Observable<NoteVM[]> => {
     return this.httpClient.get<NoteVM[]>(`${environment.apiEndpont}${environment.api.deal.note.main}`);

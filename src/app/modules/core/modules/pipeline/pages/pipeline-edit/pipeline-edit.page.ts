@@ -7,7 +7,7 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { DealService, PipelineService, StageService } from '@services';
 import { DealVM, PipelineVM, StageVM } from '@view-models';
 import { of } from 'rxjs';
-import { switchMap, finalize, map } from 'rxjs/operators';
+import { switchMap, finalize, map, catchError } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
@@ -18,38 +18,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class PipelineEditPage implements OnInit {
   @Output() useReload: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
   name = new FormControl('Old Pipeline', [Validators.required]);
-  stages = new FormArray([
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Qualified', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Contact Made', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Prospect Qualified', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Needs Defined', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Proposal Made', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-    new FormGroup({
-      id: new FormControl(undefined),
-      name: new FormControl('Negotiations Started', [Validators.required]),
-      probability: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
-    }),
-  ]);
+  stages = new FormArray([]);
   active = -1;
   dragging = false;
   constructor(
@@ -79,8 +48,12 @@ export class PipelineEditPage implements OnInit {
         //   name: new FormControl(e.name, [Validators.required]),
         //   probability: new FormControl(e.probability, [Validators.required, Validators.min(0), Validators.max(100)]),
         // })));
-        this.stages.patchValue(data.stages);
-        console.log(this.stages);
+        this.stages.clear();
+        data.stages.forEach((stage) => this.stages.push(new FormGroup({
+          id: new FormControl(stage.id),
+          name: new FormControl(stage.name, [Validators.required]),
+          probability: new FormControl(stage.probability, [Validators.required, Validators.min(0), Validators.max(100)]),
+        })));
       });
   }
   useUpdate = (ref: NbDialogRef<any>) => {
@@ -89,7 +62,7 @@ export class PipelineEditPage implements OnInit {
       this.pipelineService.save({
         id: localStorage.getItem('selectedPipeline'),
         name: this.name.value,
-        stages: this.stages.value.map((e, i) => ({
+        stages: this.stages.controls.map((e) => e.value).map((e, i) => ({
           ...e,
           position: i,
           id: e.id != null ? e.id : undefined,
@@ -104,11 +77,11 @@ export class PipelineEditPage implements OnInit {
         .subscribe((data) => {
           this.useReload.emit(data);
           ref.close();
-          this.toastrService.success('', 'Success to save process');
+          this.toastrService.success('', 'Success to save process', { duration: 3000 });
           localStorage.setItem('selectedPipeline', data.id);
           this.router.navigate(['core/process']);
         }, (err) => {
-          this.toastrService.danger('', 'Fail to save process');
+          this.toastrService.danger('', 'Fail to save process', { duration: 3000 });
         });
     } else {
       this.name.markAsTouched();
@@ -139,21 +112,42 @@ export class PipelineEditPage implements OnInit {
   }
   useDialog(template: TemplateRef<any>, index: number, stage?: StageVM) {
     if (stage) {
-      this.stageService
-        .findById(stage.id)
-        .subscribe((data) => this.dialogService.open(template, {
-          context: {
-            index,
-            stage: { ...stage, deals: data.deals.map((e) => ({ ...e, stage: data })) }
-          }, closeOnBackdropClick: false
-        }));
+      if (stage.id) {
+        this.stageService
+          .findById(stage.id)
+          .subscribe((data) => this.dialogService.open(template, {
+            context: {
+              index,
+              stage: { ...stage, deals: data.deals.map((e) => ({ ...e, stage: data })) }
+            }, closeOnBackdropClick: false
+          }));
+      } else {
+        this.dialogService.open(template, { context: { index, stage: { ...stage, deals: [] } }, closeOnBackdropClick: false });
+      }
     } else {
       this.dialogService.open(template, { context: { index }, closeOnBackdropClick: false });
     }
   }
-  useRemove = (index: number, ref: NbDialogRef<any>) => {
-    this.stages.removeAt(index);
-    ref.close();
+  useRemove = (index: number, stage: StageVM, ref?: NbDialogRef<any>) => {
+    if (stage) {
+      this.spinner.show('edit-pipeline');
+      this.stageService.remove(stage.id)
+        .pipe(
+          finalize(() => {
+            this.spinner.hide('edit-pipeline');
+            ref.close();
+          }),
+        )
+        .subscribe(() => {
+          this.stages.removeAt(index);
+          this.toastrService.success('', 'Remove stage successful', { duration: 3000 });
+        }, () => {
+          this.toastrService.success('', 'Remove stage fail', { duration: 3000 });
+        });
+    } else {
+      ref.close();
+      this.stages.removeAt(index);
+    }
   }
   useMoveAndRemove = (index: number, ref: NbDialogRef<any>, deals: DealVM[], stage: StageVM, oldStage: StageVM) => {
     this.spinner.show('edit-pipeline');
@@ -170,11 +164,14 @@ export class PipelineEditPage implements OnInit {
         switchMap(() => this.stageService.remove(oldStage.id)),
         finalize(() => {
           this.spinner.hide('edit-pipeline');
+          ref.close();
         })
       )
       .subscribe(() => {
         this.stages.removeAt(index);
-        ref.close();
+        this.toastrService.success('', 'Remove stage successful', { duration: 3000 });
+      }, () => {
+        this.toastrService.success('', 'Remove stage fail', { duration: 3000 });
       });
   }
 }

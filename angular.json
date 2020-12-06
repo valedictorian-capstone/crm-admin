@@ -32,7 +32,8 @@
                             "@firebase/component",
                             "firebase/app",
                             "@firebase/app",
-                            "@firebase/database"
+                            "@firebase/database",
+                            "hammerjs"
                         ],
                         "outputPath": "dist/crm-admin",
                         "index": "src/index.html",

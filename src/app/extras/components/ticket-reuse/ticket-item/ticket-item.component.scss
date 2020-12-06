@@ -1,0 +1,40 @@
+.ticket {
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    .content {
+        height: auto;
+        min-height: 3rem;
+        background: #fffcdc;
+        padding: 1rem;
+        font: 600 14px/16px monospace, sans-serif;
+        color: #747678;
+        display: flex;
+        align-items: center;
+        border-radius: 10px 10px 0 0;
+    }
+    .time {
+        position: relative;
+        height: auto;
+        min-height: 3rem;
+        display: flex;
+        padding: 1rem;
+        align-items: center;
+        font: 600 13px/16px monospace, sans-serif;
+        color: #747678;
+    }
+    .customer {
+        position: relative;
+        border-top: 1px dashed #e5e5e5;
+        height: auto;
+        min-height: 3rem;
+        display: flex;
+        padding: 1rem;
+        align-items: center;
+        font: 600 13px/16px monospace, sans-serif;
+        color: #747678;
+    }
+}

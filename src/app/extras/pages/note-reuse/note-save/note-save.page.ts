@@ -82,8 +82,6 @@ export class NoteSavePage implements OnInit, OnChanges {
     });
   }
   useInput = () => {
-    console.log(this.fixDeal);
-    console.log(this.deal);
     if (this.fixDeal && this.deal) {
       this.form.get('deal').setValue(this.deal);
     }
@@ -105,8 +103,7 @@ export class NoteSavePage implements OnInit, OnChanges {
             })
           )
           .subscribe((data) => {
-            this.noteService.triggerValue$.next({ type: this.note ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save note success!', { duration: 3000 });
+            this.toastrService.success('', 'Save note successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }, (err) => {

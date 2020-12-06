@@ -28,22 +28,29 @@ export class PipelineStageComponent implements OnInit, OnChanges {
     protected readonly dealService: DealService,
     protected readonly spinner: NgxSpinnerService,
   ) {
-    dealService.triggerValue$.subscribe((trigger) => {
-      if (trigger.data.stage.id === this.stage.id) {
+    dealService.triggerSocket().subscribe((trigger) => {
+      if ((trigger.data as DealVM).stage.id === this.stage.id) {
         if (trigger.type === 'create') {
-          this.stage.deals.push(trigger.data);
+          this.stage.deals.push((trigger.data as DealVM));
         } else if (trigger.type === 'update') {
-          const pos = this.stage.deals.findIndex((e) => e.id === trigger.data.id);
+          const pos = this.stage.deals.findIndex((e) => e.id === (trigger.data as DealVM).id);
           if (pos > -1) {
-            this.stage.deals[pos] = trigger.data;
+            this.stage.deals[pos] = (trigger.data as DealVM);
           } else {
-            this.stage.deals.push(trigger.data);
+            this.stage.deals.push((trigger.data as DealVM));
           }
-        } else {
-          this.stage.deals.splice(this.stage.deals.findIndex((e) => e.id === trigger.data.id), 1);
+        } else if (trigger.type === 'remove') {
+          this.stage.deals.splice(this.stage.deals.findIndex((e) => e.id === (trigger.data as DealVM).id), 1);
         }
-        this.useFilter(this.status);
+      } else {
+        if (trigger.type === 'update') {
+          const pos = this.stage.deals.findIndex((e) => e.id === (trigger.data as DealVM).id);
+          if (pos > -1) {
+            this.stage.deals.splice(pos, 1);
+          }
+        }
       }
+      this.useFilter(this.status);
     });
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -107,9 +114,7 @@ export class PipelineStageComponent implements OnInit, OnChanges {
   useMove = (res: { deal: DealVM & { changing?: boolean }, moveToStage: StageVM }) => {
     this.stage.deals.splice(this.deals.findIndex(d => d.id === res.deal.id), 1);
     this.useFilter(this.status);
-    this.dealService.update({ ...res.deal, stage: { id: res.moveToStage.id } as any }).subscribe((data) => {
-      this.dealService.triggerValue$.next({ type: 'update', data });
-    });
+    this.dealService.update({ ...res.deal, stage: { id: res.moveToStage.id } as any }).subscribe();
   }
   useFilter = (status: string) => {
     this.deals = this.stage.deals.filter((deal) => deal.status.includes(status));

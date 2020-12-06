@@ -37,7 +37,6 @@ export class RoleSelectComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        console.log(this.level);
         this.roles = data.filter((e) => e.level > this.level);
       });
   }

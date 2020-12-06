@@ -105,8 +105,16 @@ export class ActivitySavePage implements OnInit, OnChanges {
       this.form.get('dateEnd').setValue(new Date(this.time.getTime() + 86400000));
     }
   }
-  toDateFormat = (date: Date) => {
-    return date ? this.datePipe.transform(new Date(date), 'HH:mm dd/MM/yyyy') : '';
+  useCheckTime = () => {
+    const start = this.form.get('dateStart');
+    const end = this.form.get('dateEnd');
+    if (new Date(start.value) >= new Date(end.value)) {
+      this.form.get('dateEnd').setErrors({ than: true });
+      this.form.get('dateEnd').markAsTouched();
+    }
+  }
+  toDateFormat = (date: Date | string) => {
+    return date && !isNaN(Date.parse(date as string)) ? this.datePipe.transform(new Date(date), 'HH:mm dd/MM/yyyy') : '';
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
@@ -125,8 +133,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
             })
           )
           .subscribe((data) => {
-            this.activityService.triggerValue$.next({ type: this.activity ? 'update' : 'create', data });
-            this.toastrService.success('', 'Save activity success!', { duration: 3000 });
+            this.toastrService.success('', 'Save activity successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }, (err) => {
@@ -143,19 +150,28 @@ export class ActivitySavePage implements OnInit, OnChanges {
       id: this.activity.id,
       status: this.activity.status === 'processing' ? 'done' : 'processing'
     } as any).subscribe((data) => {
-      this.activityService.triggerValue$.next({ type: 'update', data });
-      this.toastrService.success('', 'Save activity success!', { duration: 3000 });
+      this.toastrService.success('', 'Save activity successful!', { duration: 3000 });
       this.useDone.emit(data);
       this.useClose.emit();
+    }, (err) => {
+      this.toastrService.danger('', 'Save activity fail!', { duration: 3000 });
     });
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.activityService.remove(this.activity.id).subscribe(() => {
-      this.activityService.triggerValue$.next({ type: 'remove', data: this.activity });
-      this.toastrService.success('', 'Remove activity success!', { duration: 3000 });
-      this.useClose.emit();
-    });
+    this.useShowSpinner();
+    this.activityService.remove(this.activity.id)
+      .pipe(
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe(() => {
+        this.toastrService.success('', 'Remove activity successful!', { duration: 3000 });
+        this.useClose.emit();
+      }, (err) => {
+        this.toastrService.danger('', 'Remove activity fail!', { duration: 3000 });
+      });
   }
   useInitForm = () => {
     this.form = new FormGroup({
@@ -168,15 +184,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
       dateEnd: new FormControl(new Date(new Date().getTime() + 86400000), [Validators.required]),
       description: new FormControl(''),
       assignee: new FormControl(undefined, [Validators.required]),
-    },
-      {
-        validators: (group: FormGroup) => {
-          const start = group.get('dateStart').value;
-          const end = group.get('dateEnd').value;
-          group.get('dateEnd').setErrors(start < end ? null : { than: true });
-          return start < end ? null : { than: true };
-        }
-      });
+    });
   }
   useShowSpinner = () => {
     this.spinner.show('activity-save');
@@ -199,7 +207,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
     this.form.get('name').setValidators([Validators.required,
     Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]);
     this.form.get('name').markAsTouched();
-    if (this.activity && this.activity.type === 'phone') {
+    if (this.activity && this.activity.type === 'call') {
       this.form.get('name').setValue(this.activity.name);
     } else {
       this.form.get('name').setValue('');
@@ -208,7 +216,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
   useSetValidatorNormal = () => {
     this.form.get('name').setValidators([Validators.required]);
     this.form.get('name').markAsTouched();
-    if (this.activity && this.activity.type !== 'email' && this.activity.type !== 'phone') {
+    if (this.activity && this.activity.type !== 'email' && this.activity.type !== 'call') {
       this.form.get('name').setValue(this.activity.name);
     } else {
       this.form.get('name').setValue('');

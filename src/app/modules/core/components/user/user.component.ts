@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, GlobalService } from '@services';
+import { AuthService, DeviceService, GlobalService } from '@services';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
@@ -18,15 +18,14 @@ export class UserComponent implements OnInit {
     protected readonly globalService: GlobalService,
     protected readonly authService: AuthService,
     protected readonly deviceService: DeviceDetectorService,
+    protected readonly service: DeviceService,
   ) {
-    activatedRoute.data.subscribe((data) => console.log(data));
   }
 
   ngOnInit() {
-    this.useTrigger();
+    this.useSocket();
     this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
       .subscribe((data) => {
-        console.log(data);
         this.fullname = data.fullname;
         this.avatar = data.avatar;
         localStorage.setItem('fullname', JSON.stringify(data.fullname));
@@ -36,7 +35,7 @@ export class UserComponent implements OnInit {
         }
       });
   }
-  useTrigger = () => {
+  useSocket = () => {
     this.authService.triggerValue$.subscribe((data) => {
       this.fullname = data.fullname;
       this.avatar = data.avatar;
@@ -44,8 +43,17 @@ export class UserComponent implements OnInit {
       localStorage.setItem('avatar', JSON.stringify(data.avatar));
     });
   }
-  useOut = () => {
+  useOut = async () => {
+    const fcmToken = localStorage.getItem('fcmToken');
+    console.log(fcmToken);
+    if (fcmToken) {
+      await this.service.remove(fcmToken).toPromise();
+    }
+    const selectedPipeline = localStorage.getItem('selectedPipeline');
     localStorage.clear();
+    if (selectedPipeline) {
+      localStorage.setItem('selectedPipeline', selectedPipeline);
+    }
     this.router.navigate(['auth']);
   }
   useProfile = () => {
@@ -55,6 +63,6 @@ export class UserComponent implements OnInit {
     this.globalService.triggerView$.next({ type: 'setting-password', payload: {} });
   }
   useSetting = () => {
-    this.globalService.triggerView$.next({ type: 'setting-permission', payload: {} });
+    this.router.navigate(['core/setting']);
   }
 }

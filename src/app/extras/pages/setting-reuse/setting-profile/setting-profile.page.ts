@@ -68,7 +68,7 @@ export class SettingProfilePage implements OnInit {
           localStorage.setItem('avatar', data.avatar);
           localStorage.setItem('fullname', data.fullname);
           this.authService.triggerValue$.next(data);
-          this.toastrService.success('', 'Update profile success!', { duration: 3000 });
+          this.toastrService.success('', 'Update profile successful!', { duration: 3000 });
           this.useClose.emit();
         }, (err) => {
           this.toastrService.danger('', 'Update profile fail! Something wrong at runtime', { duration: 3000 });

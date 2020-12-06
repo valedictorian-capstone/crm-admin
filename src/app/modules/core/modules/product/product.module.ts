@@ -2,17 +2,23 @@ import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
   ProductItemComponent,
+  ProductRestoreComponent
 } from './components';
-import { ProductMainPage } from './pages';
+import {
+  ProductMainPage,
+  ProductDetailPage
+} from './pages';
 // import { } from './directives';
 // import { } from './pipes';
 import { ProductRoutes } from './product.routing';
 const COMPONENTS = [
-  ProductItemComponent
+  ProductItemComponent,
+  ProductRestoreComponent
 ];
 
 const PAGES = [
-  ProductMainPage
+  ProductMainPage,
+  ProductDetailPage
 ];
 
 const PIPES = [

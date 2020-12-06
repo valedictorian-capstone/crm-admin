@@ -9,6 +9,7 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { NgxSmoothDnDModule } from 'ngx-smooth-dnd';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BarRatingModule } from 'ngx-bar-rating';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { environment } from '@environments/environment';
 import * as echarts from 'echarts';
@@ -30,7 +31,8 @@ export const NGX_MODULES = [
   NgxSmoothDnDModule,
   ClickOutsideModule,
   ImageCropperModule,
-  AngularEditorModule
+  AngularEditorModule,
+  BarRatingModule
 ];
 @NgModule({
   exports: [...NGX_MODULES]

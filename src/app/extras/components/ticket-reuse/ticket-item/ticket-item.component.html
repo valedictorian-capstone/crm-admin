@@ -1,3 +1,24 @@
-<p>
-  ticket-item works!
-</p>
+<div class="ticket">
+    <div class="content">
+        {{ticket.description}}
+    </div>
+    <div class="time">
+        {{ticket.createdAt | time}}
+        <b class="float-left" style="text-transform: capitalize; position: absolute; right: 0.75rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
+    </div>
+    <div class="customer">
+        <button *ngIf="ticket.status === 'waiting'" style="position: absolute; right: 0.75rem" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+          <nb-icon icon="more-horizontal-outline"></nb-icon>
+        </button>
+        <nz-dropdown-menu *ngIf="ticket.status === 'waiting'" #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useResolve()">
+                    <b>Mask as resolve</b>
+                </li>
+                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useRemove()">
+                    <b>Delete</b>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+    </div>
+</div>

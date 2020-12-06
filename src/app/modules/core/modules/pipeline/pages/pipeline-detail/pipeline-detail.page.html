@@ -1,6 +1,6 @@
 <div class="crm-pipeline">
     <div class="crm-pipeline-header">
-        <div class="crm-pipeline-navigation">
+        <div class="crm-pipeline-navigation" *ngIf="selectedPipeline?.stages.length > 0">
             <a class="crm-pipeline-navigation-item selected" [nbTooltip]="'Process'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon pack="eva" icon="bar-chart-outline"></nb-icon>
             </a>
@@ -8,9 +8,12 @@
                 <nb-icon pack="eva" icon="menu-outline"></nb-icon>
             </a>
         </div>
-        <div class="crm-pipeline-plus">
-            <button (click)="useCreateDeal()" nbButton size="small" status="success">
+        <div class="crm-pipeline-plus" *ngIf="selectedPipeline?.stages.length > 0">
+            <button (click)="useCreateDeal()" class="non-responsive" nbButton size="small" status="success">
         <nb-icon pack="eva" icon="plus"></nb-icon><b>Deal</b>
+      </button>
+            <button (click)="useCreateDeal()" class="responsive" shape="round" nbButton size="large" status="success">
+        <nb-icon pack="eva" icon="plus"></nb-icon>
       </button>
         </div>
         <div class="crm-pipeline-actions">
@@ -19,7 +22,7 @@
                     <nb-icon pack="eva" icon="sync-outline"></nb-icon>
                 </a>
                 <a class="crm-pipeline-action-item" (click)="useAdd()">
-                    <nb-icon pack="eva" icon="plus-outline"></nb-icon>
+                    <nb-icon status="success" pack="eva" icon="plus-outline"></nb-icon>
                 </a>
                 <a class="crm-pipeline-action-item dropdown" nz-dropdown [nzDropdownMenu]="pipelineRef" [nzBackdrop]="false" [nzTrigger]="'click'" [nzPlacement]="'bottomRight'">
                     <nb-icon class="icon-left" icon="bar-chart-outline"></nb-icon>
@@ -27,7 +30,13 @@
                     <nb-icon class="icon-right" icon="arrow-down-outline"></nb-icon>
                 </a>
                 <a class="crm-pipeline-action-item responsive" (click)="useEdit()">
-                    <nb-icon pack="eva" icon="edit-outline"></nb-icon>
+                    <nb-icon status="primary" pack="eva" icon="edit-outline"></nb-icon>
+                </a>
+                <a class="crm-pipeline-action-item responsive" (click)="useDialog(removeRef)">
+                    <nb-icon pack="eva" status="danger" icon="trash-2-outline"></nb-icon>
+                </a>
+                <a *ngIf="restores.length > 0" class="crm-pipeline-action-item responsive" (click)="useDialog(restoreRef)">
+                    <nb-icon status="warning" pack="font-awesome" icon="trash-restore"></nb-icon>
                 </a>
                 <a class="crm-pipeline-action-item mobile" nz-dropdown [nzDropdownMenu]="pipelineRef" [nzBackdrop]="false" [nzTrigger]="'click'" [nzPlacement]="'bottomRight'">
                     <nb-icon pack="eva" icon="bar-chart-outline"></nb-icon>
@@ -59,7 +68,30 @@
     <div class="crm-pipeline-body">
         <div class="stages" cdkDropListGroup>
             <app-pipeline-stage [status]="status" (useDragging)="dragging = $event" [dragging]="dragging" *ngFor="let stage of (selectedPipeline ? selectedPipeline.stages : []); let i = index" [stage]="stage" [index]="i" [selectedPipeline]="selectedPipeline"></app-pipeline-stage>
+            <ngx-spinner [name]="'pipeline-deatail'" bdColor="transparent" [zIndex]="1000" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
         </div>
-        <ngx-spinner [name]="'pipeline-deatail'" bdColor="transparent" [zIndex]="1000" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+        <div class="empty" *ngIf="selectedPipeline?.stages.length === 0">
+            <div class="text-center">
+                <p style="font-weight: bold;">Dont't have any stage</p>
+                <button (click)="useEdit()" nbButton size="small" status="success">
+            <nb-icon icon="plus-outline"></nb-icon>
+            New Stage
+          </button>
+            </div>
+
+        </div>
     </div>
-</div>
+    <ng-template #removeRef let-data let-ref="dialogRef">
+        <nb-card>
+            <nb-card-header>Remove process
+            </nb-card-header>
+            <nb-card-body>Are you sure you wish remove this process?</nb-card-body>
+            <nb-card-footer>
+                <button style="float: right;" status="primary" nbButton size="small" (click)="useRemove(ref)">Remove</button>
+                <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+            </nb-card-footer>
+        </nb-card>
+    </ng-template>
+    <ng-template #restoreRef let-data let-ref="dialogRef">
+        <app-pipeline-restore [pipelines]="restores" (useClose)="ref.close()" (useDone)="useRestore($event)"></app-pipeline-restore>
+    </ng-template>

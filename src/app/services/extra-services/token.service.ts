@@ -24,6 +24,10 @@ export class TokenService {
   }
 
   clearToken() {
+    const selectedPipeline = localStorage.getItem('selectedPipeline');
     localStorage.clear();
+    if (selectedPipeline) {
+      localStorage.setItem('selectedPipeline', selectedPipeline);
+    }
   }
 }

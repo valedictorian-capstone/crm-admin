@@ -65,8 +65,7 @@ export class AttachmentSavePage implements OnInit, OnChanges {
           })
         )
         .subscribe((data) => {
-          this.attachmentService.triggerValue$.next({ type: 'create', data });
-          this.toastrService.success('', 'Save attachment success!', { duration: 3000 });
+          this.toastrService.success('', 'Save attachment successful!', { duration: 3000 });
           this.useDone.emit(data);
           this.useClose.emit();
         }, (err) => {

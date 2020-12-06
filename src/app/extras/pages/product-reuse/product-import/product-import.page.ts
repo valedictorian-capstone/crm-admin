@@ -5,6 +5,9 @@ import { ProductService } from '@services';
 import { ProductVM } from '@view-models';
 import * as XLSX from 'xlsx';
 import { finalize } from 'rxjs/operators';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { DropResult } from 'ngx-smooth-dnd';
 
 @Component({
   selector: 'app-product-import',
@@ -16,15 +19,35 @@ export class ProductImportPage implements OnInit, OnChanges {
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  products: FormArray = new FormArray([
-    new FormGroup({
-      code: new FormControl('New Code', [Validators.required]),
-      name: new FormControl('New Product', [Validators.required]),
-      type: new FormControl('', [Validators.required]),
-      price: new FormControl(undefined, [Validators.required, Validators.min(0)]),
-      category: new FormControl(undefined),
-    })
-  ]);
+  products: FormArray = new FormArray([]);
+  config: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '20rem',
+    minHeight: '5rem',
+    placeholder: 'Enter text here...',
+    translate: 'no',
+    defaultParagraphSeparator: 'p',
+    defaultFontName: 'Arial',
+    toolbarHiddenButtons: [
+      ['bold']
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ]
+  };
   constructor(
     protected readonly productService: ProductService,
     protected readonly toastrService: NbToastrService,
@@ -40,9 +63,14 @@ export class ProductImportPage implements OnInit, OnChanges {
         const group = new FormGroup({
           code: new FormControl('New Code', [Validators.required]),
           name: new FormControl('New Product', [Validators.required]),
-          type: new FormControl('', [Validators.required]),
           price: new FormControl(undefined, [Validators.required, Validators.min(0)]),
+          image: new FormControl(undefined),
+          parameters: new FormArray([]),
           category: new FormControl(undefined),
+          codeStage: new FormControl('done'),
+          errorImage: new FormControl(false),
+          errorImageMessage: new FormControl(''),
+          description: new FormControl(''),
         });
         const elements = [];
         for (const key in item) {
@@ -51,12 +79,11 @@ export class ProductImportPage implements OnInit, OnChanges {
             elements.push(element);
             if (group.get(key)) {
               group.get(key).setValue(element);
+              group.get(key).markAsTouched();
             }
           }
         }
-        (group as any).autoCompleteData = elements;
-        this.useCheckCode(group);
-        this.products.controls.push(group);
+        this.products.push(group);
       }
     }
   }
@@ -71,8 +98,7 @@ export class ProductImportPage implements OnInit, OnChanges {
           this.useUnLoading.emit();
         })
       ).subscribe((data) => {
-        data.forEach((e) => this.productService.triggerValue$.next({ type: 'create', data: e }));
-        this.toastrService.success('', 'Import products success!', { duration: 3000 });
+        this.toastrService.success('', 'Import products successful!', { duration: 3000 });
         this.useChange.emit();
       }, (err) => {
         this.toastrService.danger('', 'Import products fail! Something wrong at runtime', { duration: 3000 });
@@ -88,15 +114,63 @@ export class ProductImportPage implements OnInit, OnChanges {
   }
   useCheckCode = (form: FormGroup) => {
     if (form.get('code').value) {
-      (form as any).codeStage = 'querying';
+      form.get('codeStage').setValue('querying');
       setTimeout(async () => {
-        const code = form.get('code');
-        const check = await this.productService.checkUnique('code', code.value).toPromise();
-        if (code.valid && check) {
-          code.setErrors({ duplicate: true });
+        form.get('code');
+        const check = await this.productService.checkUnique('code', form.get('code').value).toPromise();
+        if (form.get('code').valid && check) {
+          form.get('code').setErrors({ duplicate: true });
         }
-        (form as any).codeStage = 'done';
+        form.get('codeStage').setValue('done');
       }, 1000);
+    }
+  }
+  useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
+    form.get('errorImage').setValue(false);
+    const files: File[] = event.target.files;
+    if (files.length > 1) {
+      form.get('errorImage').setValue(true);
+      form.get('errorImageMessage').setValue('Only one image accepted');
+      input.nodeValue = undefined;
+    } else {
+      if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
+        if (files[0].size > 1024 * 1024 * 18) {
+          form.get('errorImage').setValue(true);
+          form.get('errorImageMessage').setValue('Only image size less than 18MB accept');
+          input.nodeValue = undefined;
+        } else {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            form.get('image').setValue(reader.result);
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      } else {
+        form.get('errorImage').setValue(true);
+        form.get('errorImageMessage').setValue('Only one image accepted');
+        input.nodeValue = undefined;
+      }
+    }
+  }
+  useRemoveItem = (index: number) => {
+    this.products.removeAt(index);
+    if (this.products.length === 0) {
+      this.data = undefined;
+      this.useChange.emit();
+    }
+  }
+  useRemoveParameter = (index: number, form: FormGroup) => {
+    (form.get('parameters') as FormArray).removeAt(index);
+  }
+  useAddParameter = (form: FormGroup) => {
+    (form.get('parameters') as FormArray).push(new FormGroup({
+      label: new FormControl('', [Validators.required]),
+      value: new FormControl('', [Validators.required]),
+    }));
+  }
+  useDrop = (event: DropResult, form: FormGroup) => {
+    if (event.removedIndex != null && event.addedIndex != null) {
+      moveItemInArray((form.get('parameters') as FormArray).controls, event.removedIndex, event.addedIndex);
     }
   }
 }

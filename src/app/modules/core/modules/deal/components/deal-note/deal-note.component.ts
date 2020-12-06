@@ -20,15 +20,11 @@ export class DealNoteComponent implements OnInit {
   }
 
   useTogglePin = () => {
-    this.noteService.update({ id: this.data.id, pin: !this.data.pin } as any).subscribe((data) => {
-      this.noteService.triggerValue$.next({ type: 'update', data });
-    });
+    this.noteService.update({ id: this.data.id, pin: !this.data.pin } as any).subscribe();
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.noteService.remove(this.data.id).subscribe(() => {
-      this.noteService.triggerValue$.next({ type: 'remove', data: this.data });
-    });
+    this.noteService.remove(this.data.id).subscribe();
   }
   useDialog(template: TemplateRef<any>) {
     this.dialogService.open(template, { closeOnBackdropClick: true });
