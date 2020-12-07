@@ -26,7 +26,7 @@ export class NotificationService {
   public readonly seen = (id: string): Observable<NotificationVM[]> => {
     return this.httpClient.put<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.seen}/${id}`, {});
   }
-  public readonly seenAll = (ids: string[]): Observable<NotificationVM[]> => {
+  public readonly seenAll = (ids: NotificationVM[]): Observable<NotificationVM[]> => {
     return this.httpClient.put<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.seen}`, ids);
   }
 }

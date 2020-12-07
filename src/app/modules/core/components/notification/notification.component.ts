@@ -76,13 +76,15 @@ export class NotificationComponent implements OnInit {
     notSeens.forEach((notification) => {
       this.notifications[this.notifications.findIndex((e) => e.id === notification.id)].isSeen = true;
     });
-    this.notificationService.seenAll(notSeens.map((e) => e.id)).subscribe();
+    this.notificationService.seenAll(notSeens).subscribe();
+    this.useSetBadge();
   }
   useSelect = (notification: NotificationVM) => {
     this.notifications[this.notifications.findIndex((e) => e.id === notification.id)].isSeen = true;
     this.notificationService.seen(notification.id).subscribe();
     this.globalService.triggerView$.next({ type: notification.name, payload: {[notification.name]: notification.data} });
     this.showNotification = false;
+    this.useSetBadge();
   }
   useShowSpinner = () => {
     this.spinner.show('notifications');
