@@ -1,5 +1,5 @@
 <a class="crm-notification-circle" #bell (click)="useToggleNotification()">
-    <div class="badge" *ngIf="notifications.length > 0">{{notifications.length > 99 ? '99+' : notifications.length}}</div>
+    <div class="badge" *ngIf="badge > 0">{{badge > 99 ? '99+' : badge}}</div>
     <nb-icon [class.new]="new" [icon]="'bell'"></nb-icon>
 </a>
 <nb-card (clickOutside)="useHideNotification($event, bell)" [class.show]="showNotification" class="notification-list">

@@ -11,6 +11,7 @@ import { tap, finalize } from 'rxjs/operators';
 export class NotificationComponent implements OnInit {
   showNotification = false;
   new = false;
+  badge = 0;
   notifications: NotificationVM[] = [];
   constructor(
     protected readonly notificationService: NotificationService,
@@ -29,6 +30,7 @@ export class NotificationComponent implements OnInit {
       .pipe(
         tap((data) => this.notifications = data),
         finalize(() => {
+          this.useSetBadge();
           this.useHideSpinner();
         })
       ).subscribe();
@@ -54,7 +56,11 @@ export class NotificationComponent implements OnInit {
             notification;
         });
       }
+      this.useSetBadge();
     });
+  }
+  useSetBadge = () => {
+    this.badge = this.notifications.filter((notification) => !notification.isSeen).length;
   }
   useToggleNotification = () => {
     this.showNotification = !this.showNotification;
