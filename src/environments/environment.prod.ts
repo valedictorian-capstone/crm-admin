@@ -146,82 +146,53 @@ export const environment = {
   },
   categories: [
     {
-      label: 'Dashboard',
-      value: 'dashboard',
-      icon: 'home',
-      pack: 'eva',
-    },
-    {
       label: 'Activity',
       value: 'activity',
-      icon: 'activity',
-      pack: 'eva',
+      icon: 'calendar-alt',
+      pack: 'font-awesome',
+      can: 'canAccessDeal'
     },
     {
       label: 'Lead',
       value: 'lead',
-      icon: 'paper-plane',
-      pack: 'eva',
+      icon: 'binoculars',
+      pack: 'font-awesome',
+      can: 'canAccessCustomer'
     },
     {
       label: 'Deal',
-      value: 'deal',
+      value: 'process',
       icon: 'donate',
       pack: 'font-awesome',
+      can: 'canAccessDeal'
     },
     {
       label: 'Customer',
       value: 'customer',
       icon: 'phone',
       pack: 'eva',
-    },
-    {
-      label: 'Account',
-      value: 'account',
-      icon: 'person-done',
-      pack: 'eva',
-    },
-    {
-      label: 'Employee',
-      value: 'employee',
-      icon: 'mic',
-      pack: 'eva',
-    },
-    {
-      label: 'Role',
-      value: 'role',
-      icon: 'pin',
-      pack: 'eva',
-    },
-    {
-      label: 'Process',
-      value: 'process',
-      icon: 'browser',
-      pack: 'eva',
+      can: 'canAccessCustomer'
     },
     {
       label: 'Ticket',
       value: 'ticket',
       icon: 'pricetags',
       pack: 'eva',
-    },
-    {
-      label: 'Feedback',
-      value: 'feedback',
-      icon: 'headphones',
-      pack: 'eva',
+      can: 'canAccessTicket'
     },
     {
       label: 'Product',
       value: 'product',
       icon: 'shopping-cart',
       pack: 'eva',
+      can: 'canAccessProduct'
     },
     {
       label: 'Event',
       value: 'event',
-      icon: 'calendar',
+      icon: 'gift-outline',
       pack: 'eva',
+      can: 'canAccessEvent'
     },
 
   ],
@@ -231,12 +202,14 @@ export const environment = {
       value: 'customer',
       icon: 'phone',
       pack: 'eva',
+      can: 'canAccessCustomer',
     },
     {
       label: 'Ticket',
       value: 'ticket',
       icon: 'pricetags',
       pack: 'eva',
+      can: 'canAccessTicket',
     },
     // {
     //   label: 'Feedback',
@@ -249,21 +222,17 @@ export const environment = {
       value: 'product',
       icon: 'shopping-cart',
       pack: 'eva',
+      can: 'canAccessProduct',
     },
     {
       label: 'Event',
       value: 'event',
       icon: 'gift-outline',
       pack: 'eva',
+      can: 'canAccessEvent',
     },
   ],
   filterTabs: [
-    // {
-    //   label: 'Group',
-    //   value: 'group',
-    //   icon: 'layers',
-    //   pack: 'eva',
-    // },
     {
       label: 'Lead',
       value: 'lead',
@@ -337,7 +306,7 @@ export const environment = {
       value: 'activity',
       icon: 'calendar-plus',
       pack: 'font-awesome',
-      can: 'canCreateActivity',
+      can: 'canUpdateDeal',
     },
     {
       label: 'Event',
@@ -367,33 +336,19 @@ export const environment = {
       pack: 'eva',
       can: 'canCreateProduct',
     },
-    // {
-    //   label: 'Account',
-    //   value: 'employee',
-    //   icon: 'headset',
-    //   pack: 'font-awesome',
-    //   can: 'canCreateEmployee',
-    // },
-    // {
-    //   label: 'Role',
-    //   value: 'role',
-    //   icon: 'pin',
-    //   pack: 'eva',
-    //   can: 'canCreateRole',
-    // },
     {
       label: 'Note',
       value: 'note',
       icon: 'comment-alt',
       pack: 'font-awesome',
-      can: 'canCreateNote',
+      can: 'canUpdateDeal',
     },
     {
       label: 'Attachment',
       value: 'attachment',
       icon: 'attach-outline',
       pack: 'eva',
-      can: 'canCreateAttachment',
+      can: 'canUpdateDeal',
     },
     {
       label: 'Import',

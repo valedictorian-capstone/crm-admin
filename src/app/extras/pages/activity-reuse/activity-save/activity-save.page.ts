@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { ActivityService } from '@services';
-import { ActivityVM, DealVM } from '@view-models';
+import { AccountVM, ActivityVM, DealVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 
@@ -16,6 +16,7 @@ import { finalize } from 'rxjs/operators';
 export class ActivitySavePage implements OnInit, OnChanges {
   @Input() activity: ActivityVM;
   @Input() time: Date;
+  @Input() you: AccountVM;
   @Input() deal: DealVM;
   @Input() inside: boolean;
   @Input() fixDeal = false;
@@ -25,6 +26,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
   today = new Date();
   showDateStartPicker = false;
   showDateEndPicker = false;
+  canAssign = false;
   config: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
@@ -64,6 +66,9 @@ export class ActivitySavePage implements OnInit, OnChanges {
     this.useInitForm();
   }
   ngOnInit() {
+    if (this.you) {
+      this.canAssign = this.you.roles.filter((role) => role.canAssignActivity).length > 0;
+    }
     if (this.activity) {
       this.useSetData();
     } else {
@@ -72,6 +77,9 @@ export class ActivitySavePage implements OnInit, OnChanges {
     }
   }
   ngOnChanges() {
+    if (this.you) {
+      this.canAssign = this.you.roles.filter((role) => role.canAssignActivity).length > 0;
+    }
     this.useInput();
   }
   useSetData = () => {
@@ -110,6 +118,7 @@ export class ActivitySavePage implements OnInit, OnChanges {
       this.form.get('dateStart').setValue(this.time);
       this.form.get('dateEnd').setValue(new Date(this.time.getTime() + 86400000));
     }
+    this.form.get('assignee').setValue(this.you);
   }
   useCheckTime = () => {
     const start = this.form.get('dateStart');

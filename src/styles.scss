@@ -18,6 +18,77 @@
     height: 5px;
 }
 
+nz-notification-container {
+    .ant-notification-notice {
+        padding: 0;
+        border-radius: 5px;
+        .notification {
+            width: 100%;
+            border-radius: 10px;
+            padding: 0.75rem;
+            height: fit-content;
+            display: block;
+            float: left;
+            &:hover {
+                background: #e5e5e5;
+                cursor: pointer;
+            }
+            .avatar {
+                width: 4rem;
+                height: 4rem;
+                display: flex;
+                float: left;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                border: 1px solid #747678;
+                background: #e5e5e5;
+                img {
+                    border-radius: 50%;
+                    width: 100%;
+                    height: 100%;
+                }
+                b {
+                    font: 600 17px/16px monospace, sans-serif;
+                    color: #747678;
+                }
+            }
+            .body {
+                height: auto;
+                width: calc(100% - 5rem);
+                margin-left: 1rem;
+                display: block;
+                float: left;
+                padding: 0.5rem 0;
+                b {
+                    font: 600 17px/16px monospace, sans-serif;
+                    color: #747678;
+                    white-space: pre-wrap;
+                    white-space: -moz-pre-wrap;
+                    white-space: -pre-wrap;
+                    white-space: -o-pre-wrap;
+                    word-wrap: break-word;
+                }
+                .time {
+                    height: 3rem;
+                    display: flex;
+                    align-items: flex-end;
+                    position: relative;
+                    b {
+                        font: 600 17px/16px monospace, sans-serif;
+                        color: #747678;
+                        white-space: pre-wrap;
+                        white-space: -moz-pre-wrap;
+                        white-space: -pre-wrap;
+                        white-space: -o-pre-wrap;
+                        word-wrap: break-word;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .display-flex {
     display: flex;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   ActivityService,
   AttachmentService,
+  AuthService,
   DealDetailService,
   DealService,
   GlobalService,
@@ -32,6 +33,9 @@ export class DealDetailPage implements OnInit {
   close = true;
   stageMove = 'done';
   pins: NoteVM[] = [];
+  canAdd = false;
+  canUpdate = false;
+  canRemove = false;
   constructor(
     protected readonly dealService: DealService,
     protected readonly dealDetailService: DealDetailService,
@@ -45,6 +49,7 @@ export class DealDetailPage implements OnInit {
     protected readonly activityService: ActivityService,
     protected readonly attachmentService: AttachmentService,
     protected readonly toastrService: NbToastrService,
+    protected readonly authService: AuthService,
   ) {
     this.useReload();
     dealService.triggerSocket().subscribe((trigger) => {
@@ -103,6 +108,7 @@ export class DealDetailPage implements OnInit {
     });
   }
   ngOnInit() {
+    this.useLoadMine();
   }
   useSaveFeedback = () => {
     this.spinner.show('deal-detail');
@@ -122,6 +128,13 @@ export class DealDetailPage implements OnInit {
       this.toastrService.success('', 'Save feedback successful', { duration: 3000 });
     }, () => {
       this.toastrService.success('', 'Save feedback fail', { duration: 3000 });
+    });
+  }
+  useLoadMine = () => {
+    this.authService.auth(undefined).subscribe((data) => {
+      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
+      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
+      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
     });
   }
   useReload = () => {

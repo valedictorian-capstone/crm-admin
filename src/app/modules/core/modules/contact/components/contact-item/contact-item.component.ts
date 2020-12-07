@@ -14,6 +14,8 @@ import { finalize } from 'rxjs/operators';
 })
 export class ContactItemComponent implements OnInit {
   @Input() customer: CustomerVM;
+  @Input() canUpdate = false;
+  @Input() canRemove = false;
   @Input() search: string;
   constructor(
     protected readonly globalService: GlobalService,

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NotificationService, GlobalService } from '@services';
-import { NotificationVM } from '@view-models';
+import { AccountVM, NotificationVM } from '@view-models';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { tap, finalize } from 'rxjs/operators';
 @Component({
@@ -9,6 +10,8 @@ import { tap, finalize } from 'rxjs/operators';
   styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent implements OnInit {
+  @ViewChild('template', { static: false }) template: TemplateRef<{}>;
+  @Input() you: AccountVM;
   showNotification = false;
   new = false;
   badge = 0;
@@ -17,6 +20,7 @@ export class NotificationComponent implements OnInit {
     protected readonly notificationService: NotificationService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly globalService: GlobalService,
+    protected readonly notificationZoro: NzNotificationService
   ) { }
 
   ngOnInit() {
@@ -37,11 +41,15 @@ export class NotificationComponent implements OnInit {
   }
   useSocket = () => {
     this.notificationService.triggerSocket().subscribe((trigger) => {
-      if (trigger.type === 'create') {
+      if (trigger.type === 'create' && (trigger.data as NotificationVM).account.id === this.you.id) {
         if (!this.showNotification) {
           this.new = true;
         }
         this.notifications.push(trigger.data as NotificationVM);
+        this.notificationZoro.template(this.template, {
+          nzData: trigger.data as NotificationVM, nzPlacement: 'bottomLeft'
+          , nzCloseIcon: ''
+        });
         if (!this.showNotification) {
           setTimeout(() => {
             this.new = false;
@@ -82,7 +90,7 @@ export class NotificationComponent implements OnInit {
   useSelect = (notification: NotificationVM) => {
     this.notifications[this.notifications.findIndex((e) => e.id === notification.id)].isSeen = true;
     this.notificationService.seen(notification.id).subscribe();
-    this.globalService.triggerView$.next({ type: notification.name, payload: {[notification.name]: notification.data} });
+    this.globalService.triggerView$.next({ type: notification.name, payload: { [notification.name]: notification.data } });
     this.showNotification = false;
     this.useSetBadge();
   }

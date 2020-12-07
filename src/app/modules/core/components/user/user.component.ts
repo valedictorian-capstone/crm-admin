@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, DeviceService, GlobalService } from '@services';
+import { AccountVM } from '@view-models';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
@@ -9,9 +10,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  fullname = JSON.parse(localStorage.getItem('fullname'));
-  avatar = localStorage.getItem('avatar') ? JSON.parse(localStorage.getItem('avatar')) : undefined;
-  canSetting = false;
+  @Input() you: AccountVM;
+  @Input() canSetting = false;
   constructor(
     protected readonly router: Router,
     protected readonly activatedRoute: ActivatedRoute,
@@ -23,25 +23,6 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.useSocket();
-    this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
-      .subscribe((data) => {
-        this.fullname = data.fullname;
-        this.avatar = data.avatar;
-        localStorage.setItem('fullname', JSON.stringify(data.fullname));
-        localStorage.setItem('avatar', JSON.stringify(data.avatar));
-        if (Math.min(...data.roles.map((e) => e.level)) <= 0) {
-          this.canSetting = true;
-        }
-      });
-  }
-  useSocket = () => {
-    this.authService.triggerValue$.subscribe((data) => {
-      this.fullname = data.fullname;
-      this.avatar = data.avatar;
-      localStorage.setItem('fullname', JSON.stringify(data.fullname));
-      localStorage.setItem('avatar', JSON.stringify(data.avatar));
-    });
   }
   useOut = async () => {
     const fcmToken = localStorage.getItem('fcmToken');

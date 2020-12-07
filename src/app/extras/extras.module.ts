@@ -37,7 +37,6 @@ import {
   MailSenderPage,
   CustomerProfilePage,
   SettingPasswordPage,
-  SettingPermissionPage,
   SettingProfilePage,
   EventSavePage,
 } from './pages';
@@ -97,7 +96,6 @@ export const REUSE_PAGES = [
   MailSenderPage,
   CustomerProfilePage,
   SettingPasswordPage,
-  SettingPermissionPage,
   SettingProfilePage,
   EventSavePage
 ];

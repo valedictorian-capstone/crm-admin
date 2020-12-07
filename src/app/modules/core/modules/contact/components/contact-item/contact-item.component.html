@@ -18,13 +18,13 @@
             <button nbButton status="danger" (click)="useMail(customer.email)" class="mr-1 mt-1" outline shape="round" size="small">
             <nb-icon icon="email-outline"></nb-icon>
           </button>
-            <button nbButton status="primary" (click)="useEdit()" class="mr-1 mt-1" outline shape="round" size="small">
+            <button *ngIf="canUpdate" nbButton status="primary" (click)="useEdit()" class="mr-1 mt-1" outline shape="round" size="small">
             <nb-icon icon="edit-2-outline"></nb-icon>
           </button>
             <button nbButton status="info" (click)="useView()" class="mr-1 mt-1" outline shape="round" size="small">
             <nb-icon icon="eye-outline"></nb-icon>
           </button>
-            <button (click)="useToggleState()" nbButton [status]="!customer.isDelete ? 'success' : 'danger'" class="mr-1 mt-1 position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+            <button *ngIf="canRemove" (click)="useToggleState()" nbButton [status]="!customer.isDelete ? 'success' : 'danger'" class="mr-1 mt-1 position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
             {{!customer.isDelete ? 'Active' : 'Disabled'}}
           </button>
         </div>

@@ -20,79 +20,43 @@ export class RoleMainPage implements OnInit {
   selectedRole = new FormGroup({
     id: new FormControl(undefined),
     name: new FormControl('', [Validators.required]),
-    notChange: new FormControl(false),
     level: new FormControl(0),
     description: new FormControl(''),
     accounts: new FormControl([]),
-    canAccessRole: new FormControl(false),
-    canCreateRole: new FormControl(false),
-    canUpdateRole: new FormControl(false),
-    canRemoveRole: new FormControl(false),
-    canImportRole: new FormControl(false),
-    canExportRole: new FormControl(false),
-
-    canAccessEmployee: new FormControl(false),
-    canCreateEmployee: new FormControl(false),
-    canUpdateEmployee: new FormControl(false),
-    canRemoveEmployee: new FormControl(false),
-    canImportEmployee: new FormControl(false),
-    canExportEmployee: new FormControl(false),
-
     canAccessDeal: new FormControl(false),
+    canGetAllDeal: new FormControl(false),
+    canAssignDeal: new FormControl(false),
     canCreateDeal: new FormControl(false),
     canUpdateDeal: new FormControl(false),
     canRemoveDeal: new FormControl(false),
-    canImportDeal: new FormControl(false),
-    canExportDeal: new FormControl(false),
-
-    canAccessActivity: new FormControl(false),
-    canCreateActivity: new FormControl(false),
-    canUpdateActivity: new FormControl(false),
-    canRemoveActivity: new FormControl(false),
-    canImportActivity: new FormControl(false),
-    canExportActivity: new FormControl(false),
-
+    canCreateProcess: new FormControl(false),
+    canUpdateProcess: new FormControl(false),
+    canRemoveProcess: new FormControl(false),
+    canAccessRole: new FormControl(false),
     canAccessCustomer: new FormControl(false),
+    canAssignCustomer: new FormControl(false),
+    canGetAllCustomer: new FormControl(false),
     canCreateCustomer: new FormControl(false),
     canUpdateCustomer: new FormControl(false),
     canRemoveCustomer: new FormControl(false),
     canImportCustomer: new FormControl(false),
-    canExportCustomer: new FormControl(false),
-
+    canAssignActivity: new FormControl(false),
+    canGetAllActivity: new FormControl(false),
+    canAccessTicket: new FormControl(false),
+    canGetTicketDeal: new FormControl(false),
+    canGetTicketSupport: new FormControl(false),
+    canUpdateTicket: new FormControl(false),
+    canRemoveTicket: new FormControl(false),
+    canImportEmployee: new FormControl(false),
     canAccessProduct: new FormControl(false),
     canCreateProduct: new FormControl(false),
     canUpdateProduct: new FormControl(false),
     canRemoveProduct: new FormControl(false),
     canImportProduct: new FormControl(false),
-    canExportProduct: new FormControl(false),
-
-    canAccessTicket: new FormControl(false),
-    canCreateTicket: new FormControl(false),
-    canUpdateTicket: new FormControl(false),
-    canRemoveTicket: new FormControl(false),
-    canImportTicket: new FormControl(false),
-    canExportTicket: new FormControl(false),
-
-    canAccessFeedback: new FormControl(false),
-    canCreateFeedback: new FormControl(false),
-    canUpdateFeedback: new FormControl(false),
-    canRemoveFeedback: new FormControl(false),
-    canImportFeedback: new FormControl(false),
-    canExportFeedback: new FormControl(false),
-
-    canAccessProcess: new FormControl(false),
-    canCreateProcess: new FormControl(false),
-    canUpdateProcess: new FormControl(false),
-    canRemoveProcess: new FormControl(false),
-    canImportProcess: new FormControl(false),
-    canExportProcess: new FormControl(false),
-
     canAccessEvent: new FormControl(false),
     canCreateEvent: new FormControl(false),
     canUpdateEvent: new FormControl(false),
     canRemoveEvent: new FormControl(false),
-    canImportEvent: new FormControl(false),
-    canExportEvent: new FormControl(false),
   });
   type = 'edit';
   search = {
@@ -105,32 +69,144 @@ export class RoleMainPage implements OnInit {
       stage: 'done'
     }
   };
-  permissions = ['Role', 'Employee', 'Deal', 'Customer', 'Activity', 'Ticket', 'Feedback', 'Process', 'Event'].map((role) => ([
+  permissions = [[
     {
-      label: 'Access ' + role,
-      value: 'canAccess' + role,
+      label: 'AccessDeal',
+      value: 'canAccessDeal'
     },
     {
-      label: 'Create ' + role,
-      value: 'canCreate' + role,
+      label: 'GetAllDeal',
+      value: 'canGetAllDeal'
     },
     {
-      label: 'Update ' + role,
-      value: 'canUpdate' + role,
+      label: 'AssignDeal',
+      value: 'canAssignDeal'
     },
     {
-      label: 'Remove ' + role,
-      value: 'canRemove' + role,
+      label: 'CreateDeal',
+      value: 'canCreateDeal'
     },
     {
-      label: 'Import ' + role,
-      value: 'canImport' + role,
+      label: 'UpdateDeal',
+      value: 'canUpdateDeal'
     },
     {
-      label: 'Export ' + role,
-      value: 'canExport' + role,
+      label: 'RemoveDeal',
+      value: 'canRemoveDeal'
     },
-  ]));
+    {
+      label: 'CreateProcess',
+      value: 'canCreateProcess'
+    },
+    {
+      label: 'UpdateProcess',
+      value: 'canUpdateProcess'
+    },
+    {
+      label: 'RemoveProcess',
+      value: 'canRemoveProcess'
+    },
+    {
+      label: 'AccessRole',
+      value: 'canAccessRole'
+    },
+    {
+      label: 'AccessCustomer',
+      value: 'canAccessCustomer'
+    },
+    {
+      label: 'AssignCustomer',
+      value: 'canAssignCustomer'
+    },
+    {
+      label: 'GetAllCustomer',
+      value: 'canGetAllCustomer'
+    },
+    {
+      label: 'CreateCustomer',
+      value: 'canCreateCustomer'
+    },
+    {
+      label: 'UpdateCustomer',
+      value: 'canUpdateCustomer'
+    },
+    {
+      label: 'RemoveCustomer',
+      value: 'canRemoveCustomer'
+    },
+    {
+      label: 'ImportCustomer',
+      value: 'canImportCustomer'
+    },
+    {
+      label: 'AssignActivity',
+      value: 'canAssignActivity'
+    },
+    {
+      label: 'GetAllActivity',
+      value: 'canGetAllActivity'
+    },
+    {
+      label: 'AccessTicket',
+      value: 'canAccessTicket'
+    },
+    {
+      label: 'GetTicketDeal',
+      value: 'canGetTicketDeal'
+    },
+    {
+      label: 'GetTicketSupport',
+      value: 'canGetTicketSupport'
+    },
+    {
+      label: 'UpdateTicket',
+      value: 'canUpdateTicket'
+    },
+    {
+      label: 'RemoveTicket',
+      value: 'canRemoveTicket'
+    },
+    {
+      label: 'ImportEmployee',
+      value: 'canImportEmployee'
+    },
+    {
+      label: 'AccessProduct',
+      value: 'canAccessProduct'
+    },
+    {
+      label: 'CreateProduct',
+      value: 'canCreateProduct'
+    },
+    {
+      label: 'UpdateProduct',
+      value: 'canUpdateProduct'
+    },
+    {
+      label: 'RemoveProduct',
+      value: 'canRemoveProduct'
+    },
+    {
+      label: 'ImportProduct',
+      value: 'canImportProduct'
+    },
+    {
+      label: 'AccessEvent',
+      value: 'canAccessEvent'
+    },
+    {
+      label: 'CreateEvent',
+      value: 'canCreateEvent'
+    },
+    {
+      label: 'UpdateEvent',
+      value: 'canUpdateEvent'
+    },
+    {
+      label: 'RemoveEvent',
+      value: 'canRemoveEvent'
+    },
+  ]];
   constructor(
     protected readonly roleService: RoleService,
     protected readonly accountService: AccountService,
@@ -140,6 +216,7 @@ export class RoleMainPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.permissions);
     this.useReload();
     this.useSocketAccount();
     this.useSocket();
@@ -195,69 +272,42 @@ export class RoleMainPage implements OnInit {
       id: undefined,
       name: '',
       accounts: [],
-      notChange: false,
       level: 10,
       description: '',
-      canAccessRole: false,
-      canCreateRole: false,
-      canUpdateRole: false,
-      canRemoveRole: false,
-      canImportRole: false,
-      canExportRole: false,
-      canAccessEmployee: false,
-      canCreateEmployee: false,
-      canUpdateEmployee: false,
-      canRemoveEmployee: false,
-      canImportEmployee: false,
-      canExportEmployee: false,
       canAccessDeal: false,
+      canGetAllDeal: false,
+      canAssignDeal: false,
       canCreateDeal: false,
       canUpdateDeal: false,
       canRemoveDeal: false,
-      canImportDeal: false,
-      canExportDeal: false,
-      canAccessActivity: false,
-      canCreateActivity: false,
-      canUpdateActivity: false,
-      canRemoveActivity: false,
-      canImportActivity: false,
-      canExportActivity: false,
+      canCreateProcess: false,
+      canUpdateProcess: false,
+      canRemoveProcess: false,
+      canAccessRole: false,
       canAccessCustomer: false,
+      canAssignCustomer: false,
+      canGetAllCustomer: false,
       canCreateCustomer: false,
       canUpdateCustomer: false,
       canRemoveCustomer: false,
       canImportCustomer: false,
-      canExportCustomer: false,
+      canAssignActivity: false,
+      canGetAllActivity: false,
+      canAccessTicket: false,
+      canGetTicketDeal: false,
+      canGetTicketSupport: false,
+      canUpdateTicket: false,
+      canRemoveTicket: false,
+      canImportEmployee: false,
       canAccessProduct: false,
       canCreateProduct: false,
       canUpdateProduct: false,
       canRemoveProduct: false,
       canImportProduct: false,
-      canExportProduct: false,
-      canAccessTicket: false,
-      canCreateTicket: false,
-      canUpdateTicket: false,
-      canRemoveTicket: false,
-      canImportTicket: false,
-      canExportTicket: false,
-      canAccessFeedback: false,
-      canCreateFeedback: false,
-      canUpdateFeedback: false,
-      canRemoveFeedback: false,
-      canImportFeedback: false,
-      canExportFeedback: false,
-      canAccessProcess: false,
-      canCreateProcess: false,
-      canUpdateProcess: false,
-      canRemoveProcess: false,
-      canImportProcess: false,
-      canExportProcess: false,
       canAccessEvent: false,
       canCreateEvent: false,
       canUpdateEvent: false,
       canRemoveEvent: false,
-      canImportEvent: false,
-      canExportEvent: false,
     });
     this.useSetAccountRole();
     this.useHideSpinner();

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService, GlobalService, GroupService } from '@services';
+import { AuthService, CustomerService, GlobalService, GroupService } from '@services';
 import { CustomerVM, GroupVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
@@ -16,15 +16,21 @@ export class ContactMainPage implements OnInit {
   search = '';
   stage = 'done';
   selectedGroup = '';
+  canAdd = false;
+  canImport = false;
+  canUpdate = false;
+  canRemove = false;
   constructor(
     protected readonly customerService: CustomerService,
     protected readonly groupService: GroupService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly authService: AuthService,
   ) {
   }
 
   ngOnInit() {
+    this.useLoadMine();
     this.useLoadGroup();
     this.useReload();
     this.useSocket();
@@ -39,6 +45,14 @@ export class ContactMainPage implements OnInit {
         this.customers.splice(this.customers.findIndex((e) => e.id === (trigger.data as CustomerVM).id), 1);
       }
       this.useFilter();
+    });
+  }
+  useLoadMine = () => {
+    this.authService.auth(undefined).subscribe((data) => {
+      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
+      this.canImport = data.roles.filter((role) => role.canImportCustomer).length > 0;
+      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
+      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
     });
   }
   useLoadGroup = () => {

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivityService, GlobalService } from '@services';
-import { ActivityVM } from '@view-models';
-import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 import { DatePipe } from '@angular/common';
-import { Socket } from 'ngx-socket-io';
+import { Component, OnInit } from '@angular/core';
+import { ActivityService, AuthService, GlobalService } from '@services';
+import { AccountVM, ActivityVM } from '@view-models';
+import { CalendarEvent, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
 @Component({
   selector: 'app-activity-main',
   templateUrl: './activity-main.page.html',
@@ -17,6 +16,7 @@ export class ActivityMainPage implements OnInit {
   activitys: ActivityVM[] = [];
   type = 'day';
   viewStage = false;
+  you: AccountVM;
   stage = 'calendar';
   search = {
     states: [],
@@ -26,18 +26,31 @@ export class ActivityMainPage implements OnInit {
   };
   showDateStartPicker = false;
   showDateEndPicker = false;
+  canUpdateDeal = false;
+  canGetAll = false;
+  canAssign = false;
   constructor(
     protected readonly activityService: ActivityService,
     protected readonly globalService: GlobalService,
     protected readonly datePipe: DatePipe,
+    protected readonly authService: AuthService,
   ) { }
 
   ngOnInit() {
+    this.useLoadMine();
     this.activityService.findAll().subscribe((data) => {
       this.activitys = data;
       this.useFilter();
     });
     this.useSocket();
+  }
+  useLoadMine = () => {
+    this.authService.auth(undefined).subscribe((data) => {
+      this.you = data;
+      this.canUpdateDeal = data.roles.filter((role) => role.canUpdateDeal).length > 0;
+      this.canGetAll = data.roles.filter((role) => role.canGetAllActivity).length > 0;
+      this.canAssign = data.roles.filter((role) => role.canAssignActivity).length > 0;
+    });
   }
   useFilter = () => {
     this.events = this.activitys.map((e) => ({
@@ -52,11 +65,17 @@ export class ActivityMainPage implements OnInit {
   useSocket = () => {
     this.activityService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.activitys.push(trigger.data as ActivityVM);
+        if ((trigger.data as ActivityVM).assignee.id === this.you.id || this.canGetAll) {
+          this.activitys.push(trigger.data as ActivityVM);
+        }
       } else if (trigger.type === 'update') {
-        this.activitys[this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = (trigger.data as ActivityVM);
+        if ((trigger.data as ActivityVM).assignee.id === this.you.id || this.canGetAll) {
+          this.activitys[this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = (trigger.data as ActivityVM);
+        } else {
+          this.activitys = this.activitys.filter((activity) => activity.id !== (trigger.data as ActivityVM).id);
+        }
       } else if (trigger.type === 'remove') {
-        this.activitys.splice(this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id), 1);
+        this.activitys = this.activitys.filter((activity) => activity.id !== (trigger.data as ActivityVM).id);
       }
       if (this.stage === 'calendar') {
         this.useFilter();
@@ -92,7 +111,9 @@ export class ActivityMainPage implements OnInit {
     } as any).subscribe();
   }
   eventClicked({ event }: { event: CalendarEvent }): void {
-    this.globalService.triggerView$.next({ type: 'activity', payload: { activity: event } });
+    if (this.canUpdateDeal) {
+      this.globalService.triggerView$.next({ type: 'activity', payload: { activity: event } });
+    }
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'activity', payload: {} });

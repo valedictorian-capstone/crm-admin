@@ -14,13 +14,13 @@
             <span>₫{{[deal] | totalMoney}}</span>
         </div>
     </div>
-    <button nbButton *ngIf="deal.status === 'processing'" size="tiny" shape="round" class="deal-move" (click)="useDialog(movetoRef)">
+    <button nbButton *ngIf="deal.status === 'processing' && canUpdate" size="tiny" shape="round" class="deal-move" (click)="useDialog(movetoRef)">
       <nb-icon pack="eva" icon="car-outline"></nb-icon>
     </button>
-    <button nbButton *ngIf="deal.status === 'processing'" size="tiny" shape="round" class="deal-more" nz-dropdown [nzDropdownMenu]="more" [nzBackdrop]="false" [nzTrigger]="'click'" nzPlacement="bottomCenter">
+    <button nbButton *ngIf="deal.status === 'processing' && canUpdate" size="tiny" shape="round" class="deal-more" nz-dropdown [nzDropdownMenu]="more" [nzBackdrop]="false" [nzTrigger]="'click'" nzPlacement="bottomCenter">
       <nb-icon pack="eva" icon="more-horizontal-outline"></nb-icon>
     </button>
-    <button nbButton *ngIf="deal.status === 'processing'" size="tiny" shape="round" class="deal-activity" [nbPopover]="activityRef" nbPopoverPlacement="end">
+    <button nbButton *ngIf="deal.status === 'processing' && canUpdate" size="tiny" shape="round" class="deal-activity" [nbPopover]="activityRef" nbPopoverPlacement="end">
       <nb-icon pack="eva" icon="alert-triangle-outline" status="warning"></nb-icon>
     </button>
     <span *ngIf="deal.status !== 'processing'" [class.bg-danger]="deal.status === 'lost'" style="display: flex; position: absolute; top: 2.2rem; right: 0.5rem; padding: 0.2rem; border-radius: 5px; width: 80px; letter-spacing: 2px; justify-content: center; align-items: center;"

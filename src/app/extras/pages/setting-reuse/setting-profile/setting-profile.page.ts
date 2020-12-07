@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { AccountService, AuthService } from '@services';
@@ -13,7 +13,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class SettingProfilePage implements OnInit {
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
-  profile: AccountVM;
+  @Input() you: AccountVM;
   form: FormGroup;
   showBirthday = false;
   errorImage = false;
@@ -35,16 +35,8 @@ export class SettingProfilePage implements OnInit {
     this.useLoad();
   }
   useLoad = () => {
-    this.employeeService.findById(JSON.parse(localStorage.getItem('id')))
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => {
-        this.form.patchValue(data);
-        this.profile = data;
-      });
+    this.form.patchValue(this.you);
+    this.useHideSpinner();
   }
   useInitForm = () => {
     this.form = new FormGroup({
@@ -109,7 +101,7 @@ export class SettingProfilePage implements OnInit {
     }
   }
   useCheckPhone = () => {
-    if (this.profile && this.profile.phone !== this.form.get('phone').value) {
+    if (this.you && this.you.phone !== this.form.get('phone').value) {
       this.phoneStage = 'querying';
       setTimeout(async () => {
         const phone = this.form.get('phone');
@@ -122,7 +114,7 @@ export class SettingProfilePage implements OnInit {
     }
   }
   useCheckEmail = () => {
-    if (this.profile && this.profile.email !== this.form.get('email').value) {
+    if (this.you && this.you.email !== this.form.get('email').value) {
       this.emailStage = 'querying';
       setTimeout(async () => {
         const email = this.form.get('email');
@@ -135,7 +127,7 @@ export class SettingProfilePage implements OnInit {
     }
   }
   useCheckCode = () => {
-    if (this.profile && this.profile.code !== this.form.get('code').value) {
+    if (this.you && this.you.code !== this.form.get('code').value) {
       this.codeStage = 'querying';
       setTimeout(async () => {
         const code = this.form.get('code');

@@ -1,7 +1,7 @@
 <div class="crm-activity">
     <div class='crm-activity-header'>
         <div class="float-left mb-2" [style.height]="'40px'">
-            <button class="float-left border-radius-0" outline (click)="usePlus()" nbButton status="success" size="small" [style.height]="'40px'" [style.width]="'40px'">
+            <button *ngIf="canUpdateDeal" class="float-left border-radius-0" outline (click)="usePlus()" nbButton status="success" size="small" [style.height]="'40px'" [style.width]="'40px'">
               <nb-icon icon="plus-outline"></nb-icon>
             </button>
             <nb-form-field class="float-left">

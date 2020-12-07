@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, ElementRef, OnChanges, EventEmitter, Output, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import * as XLSX from 'xlsx';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CustomerVM } from '@view-models';
-import { CustomerService } from '@services';
 import { DatePipe } from '@angular/common';
-import { finalize } from 'rxjs/operators';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
+import { CustomerService } from '@services';
+import { CustomerVM } from '@view-models';
+import { finalize } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-customer-import',

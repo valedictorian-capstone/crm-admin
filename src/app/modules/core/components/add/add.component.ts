@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AccountVM } from '@view-models';
 
 @Component({
   selector: 'app-add',
@@ -6,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add.component.scss']
 })
 export class AddComponent implements OnInit {
+  @Input() you: AccountVM;
   toggle = false;
   constructor() { }
 
   ngOnInit() {
   }
-
 }

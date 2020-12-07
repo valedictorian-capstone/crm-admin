@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService, GlobalService } from '@services';
-import { CustomerVM } from '@view-models';
+import { AuthService, CustomerService, GlobalService } from '@services';
+import { AccountVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 
@@ -14,16 +14,31 @@ export class LeadMainPage implements OnInit {
   filterCustomers: CustomerVM[] = [];
   search = '';
   stage = 'done';
+  you: AccountVM;
+  canAdd = false;
+  canImport = false;
+  canUpdate = false;
+  canRemove = false;
   constructor(
     protected readonly customerService: CustomerService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly authService: AuthService,
   ) {
   }
 
   ngOnInit() {
+    this.useLoadMine();
     this.useReload();
     this.useSocket();
+  }
+  useLoadMine = () => {
+    this.authService.auth(undefined).subscribe((data) => {
+      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
+      this.canImport = data.roles.filter((role) => role.canImportCustomer).length > 0;
+      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
+      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
+    });
   }
   useSocket = () => {
     this.customerService.triggerSocket().subscribe((trigger) => {
