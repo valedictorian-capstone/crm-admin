@@ -1,4 +1,4 @@
-<a class="crm-user-circle" [nbTooltip]="fullname" nz-dropdown [nzDropdownMenu]="options" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false" [nbTooltipPlacement]="'end-bottom'">
+<a class="crm-user-circle" nz-dropdown [nzDropdownMenu]="options" [nzPlacement]="'bottomRight'">
     <span *ngIf="!avatar">{{ fullname | fullnameShort }}</span>
     <img *ngIf="avatar" [src]="avatar">
 </a>

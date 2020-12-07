@@ -68,14 +68,20 @@ export class ActivitySavePage implements OnInit, OnChanges {
       this.useSetData();
     } else {
       this.useInput();
+      this.useHideSpinner();
     }
-    this.useHideSpinner();
   }
   ngOnChanges() {
     this.useInput();
   }
   useSetData = () => {
-    this.activityService.findById(this.activity.id).subscribe((data) => {
+    this.activityService.findById(this.activity.id)
+      .pipe(
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe((data) => {
       this.activity = data;
       this.form.addControl('id', new FormControl(this.activity.id));
       this.form.patchValue({
