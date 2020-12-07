@@ -25,14 +25,14 @@ const routes: Routes = [
       {
         path: 'event',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.EventModule),
-        // canLoad: [CoreGuard],
-        // data: { permission: 'Event' }
+        canLoad: [CoreGuard],
+        data: { permission: 'Event' }
       },
       {
         path: 'process',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.PipelineModule),
         canLoad: [CoreGuard],
-        data: { permission: 'Process' }
+        data: { permission: 'Deal' }
       },
       {
         path: 'ticket',
@@ -56,7 +56,7 @@ const routes: Routes = [
         path: 'activity',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ActivityModule),
         canLoad: [CoreGuard],
-        data: { permission: 'Activity' }
+        data: { permission: 'Deal' }
       },
       {
         path: 'setting',

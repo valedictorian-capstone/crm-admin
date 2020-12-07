@@ -1,6 +1,6 @@
 <a class="crm-user-circle" nz-dropdown [nzDropdownMenu]="options" [nzPlacement]="'bottomRight'">
-    <span *ngIf="!avatar">{{ fullname | fullnameShort }}</span>
-    <img *ngIf="avatar" [src]="avatar">
+    <span *ngIf="!you?.avatar">{{ you?.fullname | fullnameShort }}</span>
+    <img *ngIf="you?.avatar" [src]="you.avatar">
 </a>
 <nz-dropdown-menu #options="nzDropdownMenu">
     <div nz-menu class="items">

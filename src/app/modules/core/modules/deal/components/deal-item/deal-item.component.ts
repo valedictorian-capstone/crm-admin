@@ -15,6 +15,7 @@ export class DealItemComponent implements OnInit {
     new EventEmitter<{ deal: DealVM & { changing?: boolean }, moveToStage: StageVM }>();
   @Input() deal: DealVM & { changing?: boolean };
   @Input() dragging = false;
+  @Input() canUpdate = false;
   constructor(
     protected readonly router: Router,
     protected readonly dealService: DealService,
@@ -64,6 +65,8 @@ export class DealItemComponent implements OnInit {
     this.dealService.remove(this.deal.id).subscribe(() => this.useRemove.emit());
   }
   useDetail = () => {
-    this.router.navigate(['core/deal/' + this.deal.id]);
+    if (this.canUpdate) {
+      this.router.navigate(['core/deal/' + this.deal.id]);
+    }
   }
 }

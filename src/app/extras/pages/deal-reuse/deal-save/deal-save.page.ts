@@ -4,7 +4,7 @@ import { PipelineSelectComponent, ProductSelectComponent } from '@extras/compone
 import { CustomerSavePage } from '@extras/pages';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { DealService, PipelineService, ProductService, StageService } from '@services';
-import { DealDetailVM, DealVM, PipelineVM, ProductVM, StageVM } from '@view-models';
+import { AccountVM, DealDetailVM, DealVM, PipelineVM, ProductVM, StageVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize, switchMap, tap } from 'rxjs/operators';
 @Component({
@@ -21,8 +21,10 @@ export class DealSavePage implements OnInit {
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<DealVM> = new EventEmitter<DealVM>();
   @Input() deal: DealVM;
+  @Input() you: AccountVM;
   @Input() inside = false;
   @Input() stage: StageVM;
+  canAssign = false;
   @Input() pipeline: PipelineVM;
   pipelines: PipelineVM[] = [];
   form: FormGroup;
@@ -41,6 +43,9 @@ export class DealSavePage implements OnInit {
   }
 
   ngOnInit() {
+    if (this.you) {
+      this.canAssign = this.you.roles.filter((role) => role.canAssignActivity).length > 0;
+    }
     if (this.deal) {
       this.useSetData();
     } else {
@@ -55,6 +60,7 @@ export class DealSavePage implements OnInit {
       status: new FormControl('processing'),
       stage: new FormControl(undefined, [Validators.required]),
       customer: new FormControl(undefined, [Validators.required]),
+      assignee: new FormControl(undefined, [Validators.required]),
       dealDetails: new FormArray([
         new FormGroup({
           product: new FormGroup({
@@ -126,6 +132,9 @@ export class DealSavePage implements OnInit {
               this.stage = this.pipeline.stages[0];
             }
             this.form.get('stage').setValue(this.stage);
+          }
+          if (this.you) {
+            this.form.get('assignee').setValue(this.you);
           }
         }),
         finalize(() => {

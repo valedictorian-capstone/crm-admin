@@ -3,6 +3,7 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import * as XLSX from 'xlsx';
 import { NbToastrService } from '@nebular/theme';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AccountVM } from '@view-models';
 
 @Component({
   selector: 'app-reuse-import-data',
@@ -12,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class ImportDataPage implements OnInit {
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Input() importType: string;
+  @Input() you: AccountVM;
   type = 'customer';
   data: any[];
   constructor(

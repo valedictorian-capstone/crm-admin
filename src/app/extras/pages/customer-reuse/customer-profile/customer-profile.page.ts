@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { CustomerVM } from '@view-models';
+import { AccountVM, CustomerVM } from '@view-models';
 import { CustomerService, GlobalService } from '@services';
 import { DatePipe } from '@angular/common';
 import { NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
@@ -15,6 +15,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 })
 export class CustomerProfilePage implements OnInit {
   @Input() customer: CustomerVM;
+  @Input() you: AccountVM;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   env = 'desktop';
   visible = false;

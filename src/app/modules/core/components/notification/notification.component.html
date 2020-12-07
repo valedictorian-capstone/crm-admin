@@ -39,3 +39,17 @@
       </button>
     </nb-card-footer>
 </nb-card>
+<ng-template #template let-noti="data" let-notification>
+    <div class="notification" (click)="notification.close(); useSelect(noti);">
+        <div class="avatar">
+            <img *ngIf="noti.icon" [src]="noti.icon" />
+            <b *ngIf="!noti.icon">CRM</b>
+        </div>
+        <div class="body">
+            <b>{{noti.body}}</b>
+            <div class="time">
+                <b>{{noti.createdAt | time}}</b>
+            </div>
+        </div>
+    </div>
+</ng-template>

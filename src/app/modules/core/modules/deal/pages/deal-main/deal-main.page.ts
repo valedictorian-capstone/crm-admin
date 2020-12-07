@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DealService, GlobalService } from '@services';
+import { AuthService, DealService, GlobalService } from '@services';
 import { DealVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
@@ -14,14 +14,19 @@ export class DealMainPage implements OnInit {
   deals: DealVM[] = [];
   filterDeals: DealVM[] = [];
   status = '';
+  canAdd = false;
+  canUpdate = false;
+  canRemove = false;
   constructor(
     protected readonly router: Router,
     protected readonly dealService: DealService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly authService: AuthService,
   ) { }
 
   ngOnInit() {
+    this.useLoadMine();
     this.useReload();
     this.useSocket();
   }
@@ -49,6 +54,13 @@ export class DealMainPage implements OnInit {
         this.deals = data;
         this.useFilter();
       });
+  }
+  useLoadMine = () => {
+    this.authService.auth(undefined).subscribe((data) => {
+      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
+      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
+      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
+    });
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'deal', payload: {} });

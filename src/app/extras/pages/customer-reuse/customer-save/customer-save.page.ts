@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerVM } from '@view-models';
+import { AccountVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -17,6 +17,7 @@ export class CustomerSavePage implements OnInit {
   @ViewChild('submitRef') submitRef: TemplateRef<any>;
   @ViewChild('cancelRef') cancelRef: TemplateRef<any>;
   @Input() customer: CustomerVM;
+  @Input() you: AccountVM;
   @Input() isProfile = false;
   @Input() inside: boolean;
   @Input() fullname: string;

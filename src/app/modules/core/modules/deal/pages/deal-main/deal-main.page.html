@@ -8,7 +8,7 @@
                 <nb-icon pack="eva" icon="menu-outline"></nb-icon>
             </a>
         </div>
-        <div class="crm-deal-plus">
+        <div class="crm-deal-plus" *ngIf="canAdd">
             <button (click)="usePlus()" nbButton size="small" status="success">
       <nb-icon pack="eva" icon="plus"></nb-icon><b>Deal</b>
     </button>
@@ -41,7 +41,7 @@
     <div class="crm-deal-body">
         <div class="deals" nz-row>
             <div class="p-2 mb-2" *ngFor="let deal of filterDeals" nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8" [nzXl]="6" [nzXXl]="4">
-                <app-deal-item [deal]="deal"></app-deal-item>
+                <app-deal-item [canUpdate]="canUpdate" [deal]="deal"></app-deal-item>
             </div>
         </div>
         <ngx-spinner [name]="'deal-list'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>

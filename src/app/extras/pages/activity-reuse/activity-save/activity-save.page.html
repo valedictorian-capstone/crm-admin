@@ -56,8 +56,8 @@
             <nb-icon nbPrefix icon="pin-outline"></nb-icon>
             <input fullWidth [formControl]="form.get('location')" nbInput />
         </nb-form-field>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)">Owner <span class="text-danger">*</span></span>
-        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+        <span *ngIf="canAssign" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)">Owner <span class="text-danger">*</span></span>
+        <nb-form-field *ngIf="canAssign" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon icon="person-outline" nbPrefix></nb-icon>
             <input #assigneeInput fullWidth (blur)="form.get('assignee').markAsTouched()" [status]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'"
                 [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('assignee').value?.fullname ? form.get('assignee').value.fullname : ''" nbInput size="small" (input)="employee.useChangeValue($event.target.value)" />
@@ -65,7 +65,7 @@
         </nb-form-field>
         <span *ngIf="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select owner</span>
         <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-            <app-reuse-employee-select [selected]="form.get('assignee').value" (useNone)="form.get('assignee').setValue(undefined)" #employee (useSelect)="form.get('assignee').setValue($event)" [template]="assigneeInput"></app-reuse-employee-select>
+            <app-reuse-employee-select [selected]="form.get('assignee').value" (useNone)="form.get('assignee').setValue(undefined)" #employee (useSelect)="form.get('assignee').setValue($event)"></app-reuse-employee-select>
         </nz-dropdown-menu>
         <span [style.display]="fixDeal ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)">Deal <span class="text-danger">*</span></span>
         <nb-form-field [style.display]="fixDeal ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
