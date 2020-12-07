@@ -11,6 +11,7 @@ import { tap, finalize } from 'rxjs/operators';
 export class NotificationComponent implements OnInit {
   showNotification = false;
   new = false;
+  badge = 0;
   notifications: NotificationVM[] = [];
   constructor(
     protected readonly notificationService: NotificationService,
@@ -29,6 +30,7 @@ export class NotificationComponent implements OnInit {
       .pipe(
         tap((data) => this.notifications = data),
         finalize(() => {
+          this.useSetBadge();
           this.useHideSpinner();
         })
       ).subscribe();
@@ -54,7 +56,11 @@ export class NotificationComponent implements OnInit {
             notification;
         });
       }
+      this.useSetBadge();
     });
+  }
+  useSetBadge = () => {
+    this.badge = this.notifications.filter((notification) => !notification.isSeen).length;
   }
   useToggleNotification = () => {
     this.showNotification = !this.showNotification;
@@ -70,13 +76,15 @@ export class NotificationComponent implements OnInit {
     notSeens.forEach((notification) => {
       this.notifications[this.notifications.findIndex((e) => e.id === notification.id)].isSeen = true;
     });
-    this.notificationService.seenAll(notSeens.map((e) => e.id)).subscribe();
+    this.notificationService.seenAll(notSeens).subscribe();
+    this.useSetBadge();
   }
   useSelect = (notification: NotificationVM) => {
     this.notifications[this.notifications.findIndex((e) => e.id === notification.id)].isSeen = true;
     this.notificationService.seen(notification.id).subscribe();
     this.globalService.triggerView$.next({ type: notification.name, payload: {[notification.name]: notification.data} });
     this.showNotification = false;
+    this.useSetBadge();
   }
   useShowSpinner = () => {
     this.spinner.show('notifications');
