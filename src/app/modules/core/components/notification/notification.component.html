@@ -1,4 +1,41 @@
-<a class="crm-notification-circle" [nbTooltip]="'Notifications'" [nbTooltipPlacement]="'bottom'">
-    <div class="badge">99+</div>
-    <nb-icon [icon]="'bell'"></nb-icon>
+<a class="crm-notification-circle" #bell (click)="useToggleNotification()">
+    <div class="badge" *ngIf="notifications.length > 0">{{notifications.length > 99 ? '99+' : notifications.length}}</div>
+    <nb-icon [class.new]="new" [icon]="'bell'"></nb-icon>
 </a>
+<nb-card (clickOutside)="useHideNotification($event, bell)" [class.show]="showNotification" class="notification-list">
+    <ngx-spinner [name]="'notifications'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header>
+        Notifications
+        <button class="float-right" nbButton size="small" status="default" shape="round" outline>
+        <nb-icon icon="more-horizontal-outline"></nb-icon>
+      </button>
+        <button (click)="useReload()" class="float-right mr-2" nbButton size="small" status="default" shape="round" outline>
+        <nb-icon icon="sync-outline"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="notification" [class.notSeen]="!notification.isSeen" (click)="useSelect(notification)" *ngFor="let notification of notifications">
+            <div class="avatar">
+                <img *ngIf="notification.icon" [src]="notification.icon" />
+                <b *ngIf="!notification.icon">CRM</b>
+            </div>
+            <div class="body">
+                <b>{{notification.body}}</b>
+                <div class="time">
+                    <b>{{notification.createdAt | time}}</b>
+                </div>
+            </div>
+        </div>
+        <div class="empty" *ngIf="notifications.length === 0">
+            <b>Empty Notifications</b>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <button (click)="showNotification = false" class="float-left" nbButton size="small" status="warning" shape="round" outline>
+        <nb-icon icon="arrowhead-up-outline"></nb-icon>
+      </button>
+        <button class="float-right" (click)="useSeenAll()" nbButton size="small" status="info" shape="round" outline>
+        <nb-icon icon="eye-outline"></nb-icon>
+      </button>
+    </nb-card-footer>
+</nb-card>

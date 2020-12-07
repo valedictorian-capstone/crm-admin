@@ -59,9 +59,11 @@ export class LeadItemComponent implements OnInit {
       )
       .subscribe((data) => {
         this.customer.isDelete = !this.customer.isDelete;
-        this.toastrService.success('', 'Disabled customer successful', { duration: 3000 });
+        this.toastrService.success('', !this.customer.isDelete
+        ? 'Disabled customer successful' : 'Active customer successful', { duration: 3000 });
       }, (err) => {
-        this.toastrService.danger('', 'Disabled customer fail', { duration: 3000 });
+        this.toastrService.danger('', !this.customer.isDelete
+        ? 'Disabled customer fail' : 'Active customer fail', { duration: 3000 });
       });
   }
   useShowSpinner = () => {

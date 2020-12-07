@@ -13,6 +13,11 @@ a.crm-notification-circle {
         font-size: 27px;
         font-family: inherit;
         color: #747678;
+        &.new {
+            color: #6d8afd;
+            animation: bellshake 0.5s;
+            animation-iteration-count: infinite;
+        }
     }
     &:hover {
         background: #e5e5e5;
@@ -33,9 +38,160 @@ a.crm-notification-circle {
     }
 }
 
+@keyframes bellshake {
+    0% {
+        transform: rotate(0) scale(1.3);
+    }
+    15% {
+        transform: rotate(10deg) scale(1.3);
+    }
+    30% {
+        transform: rotate(-10deg) scale(1.3);
+    }
+    45% {
+        transform: rotate(8deg) scale(1.3);
+    }
+    60% {
+        transform: rotate(-8deg) scale(1.3);
+    }
+    75% {
+        transform: rotate(4deg) scale(1.3);
+    }
+    85% {
+        transform: rotate(-4deg) scale(1.3);
+    }
+    92% {
+        transform: rotate(2deg) scale(1.3);
+    }
+    100% {
+        transform: rotate(0) scale(1.2);
+    }
+}
+
 @media (max-width: 789px) {
     a.crm-notification-circle {
         background: #e5e5e5;
         right: 65px;
+    }
+}
+
+.notification-list {
+    width: 600px;
+    height: 0;
+    position: fixed;
+    right: 1rem;
+    top: 56px;
+    overflow: hidden;
+    transition: height .25s ease-in-out;
+    border-radius: 10px;
+    &::-webkit-scrollbar-thumb {
+        background-color: white;
+        transition: background-color 2s ease-in-out;
+    }
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(91, 155, 213, 0.5);
+        }
+    }
+    &.show {
+        height: calc(100vh - 160px);
+        overflow: auto;
+    }
+    nb-card-body {
+        width: 100%;
+        height: 100%;
+        padding: 1rem 0 !important;
+        .notification {
+            width: 100%;
+            border-radius: 10px;
+            padding: 0.75rem;
+            height: fit-content;
+            display: block;
+            float: left;
+            margin-bottom: 0.5rem;
+            &:hover {
+                background: #e5e5e5;
+                cursor: pointer;
+            }
+            &.notSeen {
+                background: #c3bebe;
+            }
+            .avatar {
+                width: 4rem;
+                height: 4rem;
+                display: flex;
+                float: left;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                border: 1px solid #747678;
+                background: #e5e5e5;
+                img {
+                    border-radius: 50%;
+                    width: 100%;
+                    height: 100%;
+                }
+                b {
+                    font: 600 17px/16px monospace, sans-serif;
+                    color: #747678;
+                }
+            }
+            .body {
+                height: auto;
+                width: calc(100% - 5rem);
+                margin-left: 1rem;
+                display: block;
+                float: left;
+                padding: 0.5rem 0;
+                b {
+                    font: 600 17px/16px monospace, sans-serif;
+                    color: #747678;
+                    white-space: pre-wrap;
+                    white-space: -moz-pre-wrap;
+                    white-space: -pre-wrap;
+                    white-space: -o-pre-wrap;
+                    word-wrap: break-word;
+                }
+                .time {
+                    height: 3rem;
+                    display: flex;
+                    align-items: flex-end;
+                    position: relative;
+                    b {
+                        font: 600 17px/16px monospace, sans-serif;
+                        color: #747678;
+                        white-space: pre-wrap;
+                        white-space: -moz-pre-wrap;
+                        white-space: -pre-wrap;
+                        white-space: -o-pre-wrap;
+                        word-wrap: break-word;
+                    }
+                }
+            }
+        }
+        .empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            overflow: hidden;
+            height: 100%;
+            b {
+                font: 600 17px/16px monospace, sans-serif;
+                color: #747678;
+                white-space: pre-wrap;
+                white-space: -moz-pre-wrap;
+                white-space: -pre-wrap;
+                white-space: -o-pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .notification-list {
+        width: 90vw;
+        right: 5vw;
     }
 }
