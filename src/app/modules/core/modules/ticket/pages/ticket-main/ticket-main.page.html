@@ -11,7 +11,7 @@
         <ngx-spinner [name]="'ticket-main'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
         <div nz-row style="width: 90%; margin: auto">
             <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6" *ngFor="let ticket of filterTickets">
-                <app-ticket-item [ticket]="ticket"></app-ticket-item>
+                <app-ticket-item [you]="you" [ticket]="ticket"></app-ticket-item>
             </div>
         </div>
     </div>

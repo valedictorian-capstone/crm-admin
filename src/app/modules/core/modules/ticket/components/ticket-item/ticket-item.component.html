@@ -17,8 +17,11 @@
         </button>
         <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(editRef)">
+                <li *ngIf="ticket.assignee" nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useDialog(editRef)">
                     <b>Edit</b>
+                </li>
+                <li *ngIf="!ticket.assignee" nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useAssign()">
+                    <b>Assign to me</b>
                 </li>
                 <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useRemove()">
                     <b>Delete</b>

@@ -3,7 +3,7 @@ import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { NbToastrService, NbDialogRef, NbDialogService } from '@nebular/theme';
 import { GlobalService, TicketService } from '@services';
-import { TicketVM } from '@view-models';
+import { AccountVM, TicketVM } from '@view-models';
 import { finalize } from 'rxjs/operators';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
@@ -14,6 +14,7 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 })
 export class TicketItemComponent implements OnInit {
   @Input() ticket: TicketVM;
+  @Input() you: AccountVM;
   form: FormGroup;
   config: AngularEditorConfig = {
     editable: true,
@@ -90,15 +91,34 @@ export class TicketItemComponent implements OnInit {
       .subscribe((data) => {
       this.toastrService.success('', 'Update ticket successful!', { duration: 3000 });
     }, (err) => {
-      this.toastrService.success('', 'Update ticket successful!', { duration: 3000 });
+      this.toastrService.danger('', 'Update ticket fail!', { duration: 3000 });
+    });
+  }
+  useAssign = () => {
+    this.useShowSpinner();
+    this.ticketService.update({
+      id: this.ticket.id,
+      assignee: {id: this.you.id}
+    } as any)
+      .pipe(
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe((data) => {
+      this.toastrService.success('', 'Assign ticket successful!', { duration: 3000 });
+    }, (err) => {
+      this.toastrService.danger('', 'Assign ticket fail!', { duration: 3000 });
     });
   }
   useShowSpinner = () => {
     this.spinner.show('ticket-edit');
   }
-  useHideSpinner = (ref: NbDialogRef<any>) => {
+  useHideSpinner = (ref?: NbDialogRef<any>) => {
+    if (ref) {
+      ref.close();
+    }
     this.spinner.hide('ticket-edit');
-    ref.close();
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
