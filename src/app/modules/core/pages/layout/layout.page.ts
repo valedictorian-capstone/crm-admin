@@ -22,6 +22,9 @@ export class LayoutPage implements OnInit {
 
   ngOnInit() {
     this.useSocket();
+    this.useLoadMine();
+  }
+  useLoadMine = () => {
     this.authService.auth(undefined).subscribe((data) => {
       this.you = data;
       if (Math.min(...data.roles.map((e) => e.level)) <= 0) {

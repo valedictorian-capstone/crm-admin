@@ -9,7 +9,6 @@ export interface TicketVM {
   customer: CustomerVM;
   assignee: AccountVM;
   status: string;
-  feedbackAssignee: AccountVM;
   feedbackMessage: string;
   feedbackStatus: string;
   feedbackRating: number;
@@ -26,6 +25,7 @@ export interface TicketCM {
   type: string;
   ability: number;
   customer: CustomerVM;
+  assignee: AccountVM;
   status: string;
 }
 
@@ -36,8 +36,8 @@ export interface TicketUM {
   type: string;
   ability: number;
   customer: CustomerVM;
+  assignee: AccountVM;
   status: string;
-  feedbackAssignee: AccountVM;
   feedbackMessage: string;
   feedbackStatus: string;
   feedbackRating: number;

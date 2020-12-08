@@ -17,7 +17,7 @@ export class TicketService {
     type: 'update' | 'create' | 'remove' | 'view' | 'list',
     data: TicketVM | TicketVM[]
   }> => {
-    return this.socket.fromEvent('roles');
+    return this.socket.fromEvent('tickets');
   }
 
   public readonly findAll = (): Observable<TicketVM[]> => {
