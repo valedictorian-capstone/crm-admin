@@ -7,13 +7,11 @@ const events = createSelector(eventFeatureSelector, eventAdapter.getSelectors().
 const entities = createSelector(eventFeatureSelector, eventAdapter.getSelectors().selectEntities);
 const ids = createSelector(eventFeatureSelector, eventAdapter.getSelectors().selectIds);
 const total = createSelector(eventFeatureSelector, eventAdapter.getSelectors().selectTotal);
-const error = createSelector(eventFeatureSelector, (state) => state.error);
-const status = createSelector(eventFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(eventFeatureSelector, (state) => state.firstLoad);
 export const eventSelector = {
   events,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad
 };

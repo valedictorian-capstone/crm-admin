@@ -1,11 +1,11 @@
 <div nz-menu class="product-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
-    <a nz-menu-item [class.selected]="product.id === selected?.id" class="item" *ngFor="let product of filterProducts" (click)="useSelect.emit(product); this.selected = product">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="state.status === 'finding'"></div>
+    <a nz-menu-item [class.selected]="product.id === selected?.id" class="item" *ngFor="let product of state.filterArray" (click)="useSelect.emit(product); this.selected = product">
         <nb-icon icon="shopping-bag-outline" style="margin-right: 0.5rem;"></nb-icon>
         <pre>{{product.name | maxLength: 50}}</pre>
     </a>
-    <a nz-menu-item class="item" *ngIf="filterProducts.length === 0 && stage !== 'finding'" (click)="useAdd.emit(value); useChangeValue('')">
+    <a nz-menu-item class="item" *ngIf="state.filterArray.length === 0 && state.status !== 'finding'" (click)="useAdd.emit(state.search); useSearch('')">
         <nb-icon icon="plus" style="margin-right: 1rem;"></nb-icon>
-        <pre>{{value === '' ? 'Add new product' : 'Add ' + (value | maxLength: 10) + ' as new product'}}</pre>
+        <pre>{{state.search === '' ? 'Add new product' : 'Add ' + (state.search | maxLength: 10) + ' as new product'}}</pre>
     </a>
 </div>

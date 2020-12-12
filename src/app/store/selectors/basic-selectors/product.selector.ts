@@ -7,15 +7,11 @@ const products = createSelector(productFeatureSelector, productAdapter.getSelect
 const entities = createSelector(productFeatureSelector, productAdapter.getSelectors().selectEntities);
 const ids = createSelector(productFeatureSelector, productAdapter.getSelectors().selectIds);
 const total = createSelector(productFeatureSelector, productAdapter.getSelectors().selectTotal);
-const error = createSelector(productFeatureSelector, (state) => state.error);
-const status = createSelector(productFeatureSelector, (state) => state.status);
-const unique = createSelector(productFeatureSelector, (state) => state.unique);
+const firstLoad = createSelector(productFeatureSelector, (state) => state.firstLoad);
 export const productSelector = {
   products,
   entities,
   ids,
   total,
-  error,
-  status,
-  unique
+  firstLoad,
 };

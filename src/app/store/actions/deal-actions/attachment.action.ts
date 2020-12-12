@@ -1,76 +1,41 @@
 import { createAction, props } from '@ngrx/store';
-import { AttachmentCM, AttachmentUM, AttachmentVM } from '@view-models';
-const AttachmentActionType = {
-  FIND: {
-    FETCH: '[Attachment] Fetch Action',
-    SUCCESS: '[Attachment] Fetch Action Success',
-  },
-  CREATE: {
-    FETCH: '[Attachment] Create Action',
-    SUCCESS: '[Attachment] Create Action Success',
-  },
-  UPDATE: {
-    FETCH: '[Attachment] Update Action',
-    SUCCESS: '[Attachment] Update Action Success',
-  },
-  REMOVE: {
-    FETCH: '[Attachment] Remove Action',
-    SUCCESS: '[Attachment] Remove Action Success',
-  },
-  RESET: {
-    FETCH: '[Attachment] Reset Action',
-  },
-  ERROR: '[Attachment] Action Error',
-};
-const useFindAllAction = createAction(
-  AttachmentActionType.FIND.FETCH,
-  props<{ status: string }>()
+import { AttachmentUM, AttachmentVM } from '@view-models';
+const FindAllAction = createAction(
+  '[Attachment] Fetch Action',
+  props<{
+    success?: (res: AttachmentVM[]) => void,
+    error?: (err: Error) => void,
+    finalize?: () => void,
+  }>()
 );
-const useFindAllSuccessAction = createAction(
-  AttachmentActionType.FIND.SUCCESS,
-  props<{ attachments: AttachmentVM[], status: string }>()
+const FindAllSuccessAction = createAction(
+  '[Attachment] Fetch Action Success',
+  props<{ res: AttachmentVM[] }>()
 );
-const useCreateAction = createAction(
-  AttachmentActionType.CREATE.FETCH,
-  props<{ attachment: FormData, status: string }>()
+const CreateSuccessAction = createAction(
+  '[Attachment] Create Success Action',
+  props<{ res: AttachmentVM[] }>()
 );
-const useCreateSuccessAction = createAction(
-  AttachmentActionType.CREATE.SUCCESS,
-  props<{ attachment: AttachmentVM[], status: string }>()
+const UpdateSuccessAction = createAction(
+  '[Attachment] Update Success Action',
+  props<{ res: AttachmentVM }>()
 );
-const useUpdateAction = createAction(
-  AttachmentActionType.UPDATE.FETCH,
-  props<{ attachment: AttachmentUM, status: string }>()
+const RemoveSuccessAction = createAction(
+  '[Attachment] Remove Success Action',
+  props<{ id: string }>()
 );
-const useUpdateSuccessAction = createAction(
-  AttachmentActionType.UPDATE.SUCCESS,
-  props<{ attachment: AttachmentVM, status: string }>()
+const SocketAction = createAction(
+  '[Attachment] Socket Action',
 );
-const useRemoveAction = createAction(
-  AttachmentActionType.REMOVE.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useRemoveSuccessAction = createAction(
-  AttachmentActionType.REMOVE.SUCCESS,
-  props<{ id: string, status: string }>()
-);
-const useErrorAction = createAction(
-  AttachmentActionType.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  AttachmentActionType.RESET.FETCH,
-  props<{ attachments: AttachmentVM[] }>()
+const ResetAction = createAction(
+  '[Attachment] Reset Action',
 );
 export const AttachmentAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useCreateAction,
-  useCreateSuccessAction,
-  useUpdateAction,
-  useUpdateSuccessAction,
-  useRemoveAction,
-  useRemoveSuccessAction,
-  useErrorAction,
-  useResetAction
+  FindAllAction,
+  FindAllSuccessAction,
+  CreateSuccessAction,
+  UpdateSuccessAction,
+  RemoveSuccessAction,
+  SocketAction,
+  ResetAction
 };

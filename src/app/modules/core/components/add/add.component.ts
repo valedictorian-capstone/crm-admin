@@ -7,7 +7,6 @@ import { AccountVM } from '@view-models';
   styleUrls: ['./add.component.scss']
 })
 export class AddComponent implements OnInit {
-  @Input() you: AccountVM;
   toggle = false;
   constructor() { }
 

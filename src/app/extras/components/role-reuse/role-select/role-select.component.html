@@ -1,7 +1,0 @@
-<div nz-menu class="role-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
-    <a nz-menu-item [class.selected]="role.id === selected?.id" class="item" *ngFor="let role of roles" (click)="useSelect.emit(role); this.selected = role">
-        <nb-icon icon="pin-outline" style="margin-right: 0.5rem;"></nb-icon>
-        <pre>{{role.name}}</pre>
-    </a>
-</div>

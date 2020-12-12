@@ -5,77 +5,28 @@ import { AccountState } from '@states';
 export const accountFeatureKey = 'account';
 export const accountReducer = createReducer(
   accountInitialState,
-  on(AccountAction.useFindAllAction,
-    (state, action) => accountAdapter.setAll<AccountState>([], {
+  on(AccountAction.FindAllSuccessAction,
+    (state, action) => accountAdapter.setAll<AccountState>((state.ids as string[]).map((id) => state.entities[id]), {
       ...state,
-      status: action.status
+      firstLoad: true
     })
   ),
-  on(AccountAction.useFindAllSuccessAction,
-    (state, action) => accountAdapter.setAll<AccountState>(action.accounts, {
+  on(AccountAction.FindAllSuccessAction,
+    (state, action) => accountAdapter.setAll<AccountState>(action.res, {
       ...state,
-      status: action.status
     })
   ),
-  on(AccountAction.useUpdateAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
+  on(AccountAction.SaveSuccessAction,
+    (state, action) => accountAdapter.upsertOne<AccountState>(action.res, {
       ...state,
-      status: action.status
-    }),
-  ),
-  on(AccountAction.useUpdateSuccessAction,
-    (state, action) => accountAdapter.updateOne<AccountState>({
-      id: action.account.id,
-      changes: action.account
-    }, state)
-  ),
-  on(AccountAction.useCreateAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(AccountAction.useCreateSuccessAction,
-    (state, action) => accountAdapter.addOne<AccountState>(action.account, state)
-  ),
-  on(AccountAction.useRemoveAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(AccountAction.useRemoveSuccessAction,
-    (state, action) => accountAdapter.removeOne<AccountState>(action.id, state)
-  ),
-  on(AccountAction.useResetAction,
-    (state, action) => accountAdapter.setAll<AccountState>(action.accounts, accountInitialState)
-  ),
-  on(AccountAction.useUniqueAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
-      ...state,
-      status: action.status,
-      unique: {
-        label: action.data.label,
-        value: action.data.value,
-        exist: false,
-      }
-    }),
-  ),
-  on(AccountAction.useUniqueSuccessAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
-      ...state,
-      status: 'done',
-      unique: {
-        ...state.unique,
-        exist: action.result,
-      }
     })
   ),
-  on(AccountAction.useErrorAction,
-    (state, action) => accountAdapter.setOne<AccountState>(undefined, {
+  on(AccountAction.RemoveSuccessAction,
+    (state, action) => accountAdapter.removeOne<AccountState>(action.id, {
       ...state,
-      status: action.status,
-      error: action.error
     })
+  ),
+  on(AccountAction.ResetAction,
+    () => accountAdapter.setAll<AccountState>([], accountInitialState)
   ),
 );

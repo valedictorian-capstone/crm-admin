@@ -7,6 +7,7 @@ export interface DealVM {
   customer: CustomerVM;
   stage: StageVM;
   status: string;
+  assignee: AccountVM;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
   feedbackStatus: boolean;
@@ -38,6 +39,7 @@ export interface DealUM {
   customer: CustomerVM;
   stage: StageVM;
   status: string;
+  assignee: AccountVM;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
   feedbackStatus: boolean;

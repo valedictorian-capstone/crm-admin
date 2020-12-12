@@ -1,11 +1,14 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { AuthService, GlobalService } from '@services';
+import { GlobalService } from '@services';
 import { AccountVM } from '@view-models';
-import { DeviceDetectorService } from 'ngx-device-detector';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { State } from '@store/states';
+import { Store } from '@ngrx/store';
+import { authSelector } from '@store/selectors';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-role-account',
@@ -17,36 +20,30 @@ export class RoleAccountComponent implements OnInit {
   @Input() employee: AccountVM & { selected?: boolean };
   @Input() level: number;
   @Input() search: string;
-  env = 'desktop';
   you: AccountVM;
-  canEdit = false;
+  canUpdate = false;
   constructor(
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
-    protected readonly deviceService: DeviceDetectorService,
-    protected readonly authService: AuthService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
   ) {
-    if (deviceService.isMobile()) {
-      this.env = 'mobile';
-    }
   }
 
   ngOnInit() {
-    this.useShowSpinner();
-    this.authService.auth({ id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo() } as any)
+    this.useLoadMine();
+  }
+  useLoadMine = () => {
+    this.store.select(authSelector.profile)
       .pipe(
-        finalize(() => {
-          this.useHideSpinner();
+        tap((profile) => {
+          this.you = profile;
+          this.canUpdate = this.you.roles.filter((role) => role.canAccessRole).length > 0 && Math.min(...this.you.roles.map((e) => e.level)) < Math.min(...this.employee.roles.map((e) => e.level));
         })
       )
-      .subscribe((data) => {
-        this.you = data;
-        if (Math.min(...data.roles.map((e) => e.level)) < Math.min(...this.employee.roles.map((e) => e.level))) {
-          this.canEdit = true;
-        }
-      });
+      .subscribe()
   }
   useEdit = () => {
     this.globalService.triggerView$.next({ type: 'employee', payload: { employee: this.employee } });

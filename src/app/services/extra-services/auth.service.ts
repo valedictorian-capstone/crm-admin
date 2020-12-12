@@ -18,7 +18,7 @@ export class AuthService {
   public readonly auth = (data: DeviceVM): Observable<AccountVM> => {
     return this.httpClient.put<AccountVM>(`${environment.apiEndpont}${environment.api.extra.auth.main}`, data);
   }
-  public readonly updatePassword = (data: { password: string }): Observable<AccountVM> => {
+  public readonly updatePassword = (data: { password: string, old: string }): Observable<AccountVM> => {
     return this.httpClient.put<AccountVM>(`${environment.apiEndpont}${environment.api.extra.auth.main}/password`, data);
   }
   public readonly updateProfile = (data: AccountVM): Observable<AccountVM> => {

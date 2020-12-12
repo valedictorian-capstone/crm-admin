@@ -1,11 +1,14 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbDialogRef, NbToastrService } from '@nebular/theme';
 import { GlobalService, PipelineService } from '@services';
-import { PipelineVM } from '@view-models';
+import { AccountVM, PipelineVM } from '@view-models';
 import { DropResult } from 'ngx-smooth-dnd';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { delay, finalize } from 'rxjs/operators';
+import { delay, finalize, tap } from 'rxjs/operators';
+import { State } from '@store/states';
+import { Store } from '@ngrx/store';
+import { authSelector } from '@store/selectors';
 
 @Component({
   selector: 'app-pipeline-detail',
@@ -19,6 +22,10 @@ export class PipelineDetailPage implements OnInit {
   pipelines: PipelineVM[] = [];
   restores: PipelineVM[] = [];
   status = '';
+  you: AccountVM;
+  canAdd = false;
+  canUpdate = false;
+  canRemove = false;
   constructor(
     protected readonly router: Router,
     protected readonly pipelineService: PipelineService,
@@ -26,9 +33,25 @@ export class PipelineDetailPage implements OnInit {
     protected readonly spinner: NgxSpinnerService,
     protected readonly dialogService: NbDialogService,
     protected readonly toastrService: NbToastrService,
-  ) { }
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+  }
   ngOnInit() {
     this.useReload();
+  }
+  useLoadMine = () => {
+    this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.you = profile;
+          this.canAdd = this.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+          this.canUpdate = this.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          this.canRemove = this.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+        })
+      )
+      .subscribe()
   }
   useRemove = (ref: NbDialogRef<any>) => {
     this.useShowSpinner();

@@ -1,64 +1,65 @@
 <nb-card style="position: relative;">
     <ngx-spinner [name]="'deal-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5">
-        {{deal ? 'Edit' : 'New'}} deal
+        {{payload.deal ? 'Edit' : 'New'}} deal
         <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
     <nb-icon icon="close"></nb-icon>
   </button>
     </nb-card-header>
-    <nb-card-body [formGroup]="form">
+    <nb-card-body [formGroup]="state.form">
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
-      form.get('customer').invalid &&
-      (form.get('customer').touched || form.get('customer').dirty)
+      state.form.get('customer').invalid &&
+      (state.form.get('customer').touched || state.form.get('customer').dirty)
     ">Customer <span class="text-danger">*</span></span>
-        <nb-form-field [style.display]="adding ? 'none' : null" style="width: 100%; margin-bottom: 1rem">
+        <nb-form-field [style.display]="state.adding ? 'none' : null" style="width: 100%; margin-bottom: 1rem">
             <nb-icon icon="person-outline" nbPrefix></nb-icon>
             <input #customerInput fullWidth nz-dropdown [status]="
-          form.get('customer').invalid &&
-          (form.get('customer').touched || form.get('customer').dirty) ? 'danger' : 'basic'
-        " (blur)="form.get('customer').markAsTouched()" [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="customerSave ? customerSave.form?.get('fullname').value : form.get('customer').value?.fullname"
-                nbInput size="small" (input)="select.useChangeValue($event.target.value)" />
+          state.form.get('customer').invalid &&
+          (state.form.get('customer').touched || state.form.get('customer').dirty) ? 'danger' : 'basic'
+        " (blur)="state.form.get('customer').markAsTouched()" [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="customerSave ? customerSave.state.form?.get('fullname').value : state.form.get('customer').value?.fullname"
+                nbInput size="small" (input)="select.useSearch($event.target.value)" />
             <nb-icon icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #customerRef="nzDropdownMenu">
-            <app-reuse-customer-select #select [selected]="form.get('customer').value" (useSelect)="form.get('customer').setValue($event); adding = false" (useAdd)="form.get('customer').setValue({fullname: $event}); adding = true" [template]="customerInput"></app-reuse-customer-select>
+            <app-reuse-customer-select #select [selected]="state.form.get('customer').value" (useSelect)="state.form.get('customer').setValue($event); state.adding = false" (useAdd)="state.form.get('customer').setValue({fullname: $event}); state.adding = true"></app-reuse-customer-select>
         </nz-dropdown-menu>
-        <span *ngIf="form.get('customer').invalid && (form.get('customer').touched || form.get('customer').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select Customer</span>
-        <nb-accordion *ngIf="adding" style="width: 100%; margin-bottom: 1rem">
+        <span *ngIf="state.form.get('customer').invalid && (state.form.get('customer').touched || state.form.get('customer').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select Customer</span>
+        <nb-accordion *ngIf="state.adding" style="width: 100%; margin-bottom: 1rem">
             <nb-accordion-item>
                 <nb-accordion-item-header style="padding: 1rem 0.7rem;">
-                    <button (click)="adding = false; form.get('customer').setValue(undefined)" nbButton status="primary" size="tiny" style="margin-right: 0.5rem;">
-                    Change '{{customerSave ? customerSave.form?.get('fullname').value : form.get('customer').value?.fullname}}'
+                    <button (click)="state.adding = false; state.form.get('customer').setValue(undefined)" nbButton status="primary" size="tiny" style="margin-right: 0.5rem;">
+                    Change '{{customerSave ? customerSave.state.form?.get('fullname').value : state.form.get('customer').value?.fullname}}'
                   </button>
                 </nb-accordion-item-header>
                 <nb-accordion-item-body>
-                    <app-reuse-customer-save #customerSave [inside]="true" [fullname]="form.get('customer').value.fullname"></app-reuse-customer-save>
+                    <app-reuse-customer-save #customerSave [payload]="{inside: true, fullname: state.form.get('customer').value.fullname}"></app-reuse-customer-save>
                 </nb-accordion-item-body>
             </nb-accordion-item>
         </nb-accordion>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
-      form.get('title').invalid &&
-      (form.get('title').touched || form.get('title').dirty)
+      state.form.get('title').invalid &&
+      (state.form.get('title').touched || state.form.get('title').dirty)
     ">Title <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem">
             <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
             <input [status]="
-          form.get('title').invalid &&
-          (form.get('title').touched || form.get('title').dirty) ? 'danger' : 'basic'
-        " fullWidth [formControl]="form.get('title')" nbInput size="small" />
+          state.form.get('title').invalid &&
+          (state.form.get('title').touched || state.form.get('title').dirty) ? 'danger' : 'basic'
+        " fullWidth [formControl]="state.form.get('title')" nbInput size="small" />
         </nb-form-field>
-        <span *ngIf="form.get('title').invalid && (form.get('title').touched || form.get('title').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill title</span>
-        <span *ngIf="canAssign" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)">Owner <span class="text-danger">*</span></span>
-        <nb-form-field *ngIf="canAssign" style="width: 100%; margin-bottom: 1rem;">
+        <span *ngIf="state.form.get('title').invalid && (state.form.get('title').touched || state.form.get('title').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill title</span>
+        <span *ngIf="state.canAssign" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('assignee').invalid && (state.form.get('assignee').touched || state.form.get('assignee').dirty)">Owner <span class="text-danger">*</span></span>
+        <nb-form-field *ngIf="state.canAssign" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon icon="person-outline" nbPrefix></nb-icon>
-            <input #assigneeInput fullWidth (blur)="form.get('assignee').markAsTouched()" [status]="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'"
-                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('assignee').value?.fullname ? form.get('assignee').value.fullname : ''" nbInput size="small" (input)="employee.useChangeValue($event.target.value)" />
+            <input #assigneeInput fullWidth (blur)="state.form.get('assignee').markAsTouched()" [status]="state.form.get('assignee').invalid && (state.form.get('assignee').touched || state.form.get('assignee').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="assigneeRef"
+                [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('assignee').value?.fullname ? state.form.get('assignee').value.fullname : ''" nbInput size="small" (input)="employee.useSearch($event.target.value)"
+            />
             <nb-icon icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-            <app-reuse-employee-select [selected]="form.get('assignee').value" (useNone)="form.get('assignee').setValue(undefined)" #employee (useSelect)="form.get('assignee').setValue($event)"></app-reuse-employee-select>
+            <app-reuse-employee-select [selected]="state.form.get('assignee').value" (useNone)="state.form.get('assignee').setValue(undefined)" #employee (useSelect)="state.form.get('assignee').setValue($event)"></app-reuse-employee-select>
         </nz-dropdown-menu>
-        <span *ngIf="form.get('assignee').invalid && (form.get('assignee').touched || form.get('assignee').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select owner</span>
+        <span *ngIf="state.form.get('assignee').invalid && (state.form.get('assignee').touched || state.form.get('assignee').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select owner</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Process</span
   >
   <nb-form-field style="width: 100%; margin-bottom: 1rem">
@@ -68,48 +69,46 @@
       fullWidth
       nz-dropdown
       [nzDropdownMenu]="pipelineRef"
-      [value]="pipeline?.name"
+      [value]="payload.pipeline?.name"
       [nzPlacement]="'bottomCenter'"
       [nzBackdrop]="false"
       [nzTrigger]="'click'"
       readonly
-      (focus)="pipelineSelect.useChangeValue(pipeline ? pipeline.name : '')"
+      (focus)="pipelineSelect.useSearch(payload.pipeline ? payload.pipeline.name : '')"
       nbInput
       size="small"
-      (input)="pipelineSelect.useChangeValue($event.target.value)"
+      (input)="pipelineSelect.useSearch($event.target.value)"
     />
     <nb-icon icon="arrow-down" nbSuffix></nb-icon>
   </nb-form-field>
   <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
     <app-reuse-pipeline-select
-      [selected]="pipeline"
-      [pipelines]="pipelines"
+      [selected]="payload.pipeline"
       #pipelineSelect
       (useSelect)="useSelectPipeline($event.id)"
-      [template]="pipelineInput"
     ></app-reuse-pipeline-select>
   </nz-dropdown-menu>
   <span
-    *ngIf="pipeline"
+    *ngIf="payload.pipeline"
     style="display: block; margin-bottom: 0.5rem; font-weight: 600"
     >Stage</span
   >
-  <div *ngIf="pipeline" class="stages">
+  <div *ngIf="payload.pipeline" class="stages">
     <label
       class="stage"
-      (click)="form.get('stage').setValue(stage)"
+      (click)="state.form.get('stage').setValue(stage)"
       [class.selected]="
-        form.get('stage').value &&
-        stage.position <= form.get('stage').value.position
+        state.form.get('stage').value &&
+        stage.position <= state.form.get('stage').value.position
       "
-      *ngFor="let stage of pipeline.stages; let i = index"
+      *ngFor="let stage of payload.pipeline.stages; let i = index"
     ></label>
   </div>
-  <nb-accordion *ngIf="!inside" style="width: 100%; margin-bottom: 1rem;">
+  <nb-accordion *ngIf="!payload.inside" style="width: 100%; margin-bottom: 1rem;">
     <nb-accordion-item [expanded]="true">
         <nb-accordion-item-header>Cart</nb-accordion-item-header>
         <nb-accordion-item-body>
-          <nb-card style="width: 100%; margin-bottom: 1rem" *ngFor="let detail of form.get('dealDetails')['controls']; let in = index" [formGroup]="detail">
+          <nb-card style="width: 100%; margin-bottom: 1rem" *ngFor="let detail of state.form.get('dealDetails')['controls']; let in = index" [formGroup]="detail">
             <nb-card-body>
               <nb-form-field style="width: 100%; margin-bottom: 1rem">
                 <nb-icon icon="shopping-cart-outline" nbPrefix></nb-icon>
@@ -132,7 +131,7 @@
                 "
                   nbInput
                   size="small"
-                  (input)="product.useChangeValue($event.target.value)"
+                  (input)="product.useSearch($event.target.value)"
                 />
                 <nb-icon icon="arrow-down" nbSuffix></nb-icon>
               </nb-form-field>
@@ -142,7 +141,6 @@
                   [selected]="detail.get('product')"
                   (useSelect)="useChangeDealDetail($event, detail.get('product'), false)"
                   (useAdd)="useChangeDealDetail({name: $event}, detail.get('product'), true)"
-                  [template]="productInput"
                 ></app-reuse-product-select>
               </nz-dropdown-menu>
               <span *ngIf="detail.get('product').invalid && (detail.get('product').touched || detail.get('product').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select Product</span>
@@ -195,7 +193,7 @@
         </nb-form-field>
         <nb-form-field style="width: 40%; margin-top: 0; float: left">
             <input fullWidth readonly [value]="useAmount(detail)" placeholder="Amout" nbInput size="small" />
-            <button nbSuffix nbButton status="danger" size="small" outline (click)="useRemoveDealDetail(in)" *ngIf="form.get('dealDetails')['controls'].length > 1"><nb-icon icon="trash-2-outline"></nb-icon></button>
+            <button nbSuffix nbButton status="danger" size="small" outline (click)="useRemoveDealDetail(in)" *ngIf="state.form.get('dealDetails')['controls'].length > 1"><nb-icon icon="trash-2-outline"></nb-icon></button>
         </nb-form-field>
     </nb-card-body>
 </nb-card>
@@ -205,14 +203,14 @@
 </nb-accordion>
 <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Description</span>
 <nb-form-field style="width: 100%; margin-bottom: 1rem">
-    <textarea #area placeHolder="Description" fullWidth [formControl]="form.get('description')" (focus)="area.rows = 5" rows="1" (blur)="area.rows = 1" nbInput></textarea>
+    <textarea #area placeHolder="Description" fullWidth [formControl]="state.form.get('description')" (focus)="area.rows = 5" rows="1" (blur)="area.rows = 1" nbInput></textarea>
 </nb-form-field>
 </nb-card-body>
 <nb-card-footer>
     <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef)">
     Cancel
   </button>
-    <button style="float: right; margin-right: 0.5rem" [disabled]="form.invalid || (adding && customerSave && customerSave.form && customerSave.form.invalid)" status="primary" (click)="useDialog(submitRef)" nbButton size="small">
+    <button style="float: right; margin-right: 0.5rem" [disabled]="state.form.invalid || (state.adding && customerSave && customerSave.state.form && customerSave.state.form.invalid)" status="primary" (click)="useDialog(submitRef)" nbButton size="small">
     Save
   </button>
 </nb-card-footer>

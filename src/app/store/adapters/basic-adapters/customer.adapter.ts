@@ -5,9 +5,7 @@ import { CustomerVM } from '@view-models';
 export const customerAdapter: EntityAdapter<CustomerVM> = createEntityAdapter<CustomerVM>();
 
 export const customerInitialState: CustomerState = customerAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
-  unique: undefined,
+  firstLoad: false
 });

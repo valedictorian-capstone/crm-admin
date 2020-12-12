@@ -1,23 +1,24 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { CustomerService, GlobalService } from '@services';
 import { CustomerVM } from '@view-models';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lead-item',
   templateUrl: './lead-item.component.html',
   styleUrls: ['./lead-item.component.scss']
 })
-export class LeadItemComponent implements OnInit {
+export class LeadItemComponent implements OnDestroy {
   @Input() customer: CustomerVM;
   @Input() canUpdate = false;
   @Input() canRemove = false;
   @Input() search: string;
-  env = 'desktop';
+  subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
@@ -26,12 +27,6 @@ export class LeadItemComponent implements OnInit {
     protected readonly customerService: CustomerService,
     protected readonly spinner: NgxSpinnerService,
   ) {
-    if (deviceService.isMobile()) {
-      this.env = 'mobile';
-    }
-  }
-
-  ngOnInit() {
   }
   useEdit = () => {
     this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
@@ -51,29 +46,37 @@ export class LeadItemComponent implements OnInit {
   }
   useToggleState = () => {
     this.useShowSpinner();
-    (!this.customer.isDelete
-      ? this.customerService.disabled(this.customer.id)
-      : this.customerService.restore(this.customer.id))
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => {
-        this.customer.isDelete = !this.customer.isDelete;
-        this.toastrService.success('', !this.customer.isDelete
-        ? 'Disabled customer successful' : 'Active customer successful', { duration: 3000 });
-      }, (err) => {
-        this.toastrService.danger('', !this.customer.isDelete
-        ? 'Disabled customer fail' : 'Active customer fail', { duration: 3000 });
-      });
+    this.subscriptions.push(
+      (!this.customer.isDelete
+        ? this.customerService.disabled(this.customer.id)
+        : this.customerService.restore(this.customer.id))
+        .pipe(
+          tap((data) => {
+            this.customer.isDelete = !this.customer.isDelete;
+            this.toastrService.success('', !this.customer.isDelete
+              ? 'Disabled customer successful' : 'Active customer successful', { duration: 3000 });
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', (!this.customer.isDelete
+              ? 'Disabled customer fail! ' : 'Active customer fail! ') + err.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe()
+    );
   }
   useShowSpinner = () => {
-    this.spinner.show('contact-item-' + this.customer.id);
+    this.spinner.show('lead-item-' + this.customer.id);
   }
   useHideSpinner = () => {
     setTimeout(() => {
-      this.spinner.hide('contact-item-' + this.customer.id);
+      this.spinner.hide('lead-item-' + this.customer.id);
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

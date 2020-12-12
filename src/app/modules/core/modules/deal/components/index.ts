@@ -4,3 +4,4 @@ export * from './deal-note/deal-note.component';
 export * from './deal-item/deal-item.component';
 export * from './deal-item-activity/deal-item-activity.component';
 export * from './deal-product/deal-product.component';
+export * from './deal-search/deal-search.component';

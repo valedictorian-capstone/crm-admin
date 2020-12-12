@@ -5,6 +5,11 @@ import { AccountService, GlobalService, RoleService } from '@services';
 import { AccountVM, RoleVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { switchMap, tap, finalize } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { State } from '@store/states';
+import { Store } from '@ngrx/store';
+import { authSelector, roleSelector } from '@store/selectors';
+import { AccountAction, RoleAction } from '@actions';
 
 @Component({
   selector: 'app-role-main',
@@ -12,7 +17,7 @@ import { switchMap, tap, finalize } from 'rxjs/operators';
   styleUrls: ['./role-main.page.scss']
 })
 export class RoleMainPage implements OnInit {
-
+  you: AccountVM;
   roles: RoleVM[] = [];
   filterRoles: RoleVM[] = [];
   accounts: (AccountVM & { selected?: boolean })[] = [];
@@ -213,13 +218,34 @@ export class RoleMainPage implements OnInit {
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
     protected readonly spinner: NgxSpinnerService,
-  ) { }
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
+  ) {
+    // store.dispatch(AccountAction.FindAllAction());
+    store.dispatch(RoleAction.FindAllAction({}));
+    store.select(roleSelector.roles)
+      .pipe(
+        tap((data) => {
+          console.log('test-store', data);
+        })
+      ).subscribe();
+    this.useLoadMine();
+  }
 
   ngOnInit() {
     console.log(this.permissions);
     this.useReload();
     this.useSocketAccount();
     this.useSocket();
+  }
+  useLoadMine = () => {
+    this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.you = profile;
+        })
+      )
+      .subscribe()
   }
   useReload = () => {
     this.useShowSpinner();

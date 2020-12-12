@@ -7,13 +7,11 @@ const deals = createSelector(dealFeatureSelector, dealAdapter.getSelectors().sel
 const entities = createSelector(dealFeatureSelector, dealAdapter.getSelectors().selectEntities);
 const ids = createSelector(dealFeatureSelector, dealAdapter.getSelectors().selectIds);
 const total = createSelector(dealFeatureSelector, dealAdapter.getSelectors().selectTotal);
-const error = createSelector(dealFeatureSelector, (state) => state.error);
-const status = createSelector(dealFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(dealFeatureSelector, (state) => state.firstLoad);
 export const dealSelector = {
   deals,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

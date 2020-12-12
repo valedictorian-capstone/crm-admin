@@ -1,61 +1,70 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { ProductService } from '@services';
 import { ProductVM } from '@view-models';
 import { DropResult } from 'ngx-smooth-dnd';
-import { finalize } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { Subscription, of } from 'rxjs';
+import { finalize, tap, catchError } from 'rxjs/operators';
 
+interface IProductSavePageState {
+  form: FormGroup;
+  stage: 'done' | 'querying';
+  errorImage: boolean;
+  message: string;
+  config: AngularEditorConfig;
+}
 @Component({
   selector: 'app-reuse-product-save',
   templateUrl: './product-save.page.html',
   styleUrls: ['./product-save.page.scss']
 })
-export class ProductSavePage implements OnInit {
+export class ProductSavePage implements OnInit, OnDestroy {
   @Input() product: ProductVM;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<ProductVM> = new EventEmitter<ProductVM>();
-  form: FormGroup;
-  stage = 'done';
-  errorImage = false;
-  message = '';
-  config: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: '20rem',
-    minHeight: '5rem',
-    placeholder: 'Enter text here...',
-    translate: 'no',
-    defaultParagraphSeparator: 'p',
-    defaultFontName: 'Arial',
-    toolbarHiddenButtons: [
-      ['bold']
-    ],
-    customClasses: [
-      {
-        name: 'quote',
-        class: 'quote',
-      },
-      {
-        name: 'redText',
-        class: 'redText'
-      },
-      {
-        name: 'titleText',
-        class: 'titleText',
-        tag: 'h1',
-      },
-    ]
-  };
+  subscriptions: Subscription[] = [];
+  state: IProductSavePageState = {
+      form: undefined,
+      stage: 'done',
+      errorImage: false,
+      message: '',
+      config: {
+        editable: true,
+        spellcheck: true,
+        height: '20rem',
+        minHeight: '5rem',
+        placeholder: 'Enter text here...',
+        translate: 'no',
+        defaultParagraphSeparator: 'p',
+        defaultFontName: 'Arial',
+        toolbarHiddenButtons: [
+          ['bold']
+        ],
+        customClasses: [
+          {
+            name: 'quote',
+            class: 'quote',
+          },
+          {
+            name: 'redText',
+            class: 'redText'
+          },
+          {
+            name: 'titleText',
+            class: 'titleText',
+            tag: 'h1',
+          },
+        ]
+      }
+    };
   constructor(
-    protected readonly datePipe: DatePipe,
+    protected readonly service: ProductService,
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
-    protected readonly productService: ProductService,
     protected readonly spinner: NgxSpinnerService,
   ) {
     this.useShowSpinner();
@@ -68,7 +77,7 @@ export class ProductSavePage implements OnInit {
     this.useHideSpinner();
   }
   useInitForm = () => {
-    this.form = new FormGroup({
+    this.state.form = new FormGroup({
       code: new FormControl(this.product ? this.product.code : 'New Code', [Validators.required]),
       name: new FormControl(this.product ? this.product.name : 'New Product', [Validators.required]),
       price: new FormControl(this.product ? this.product.price : undefined, [Validators.required, Validators.min(0)]),
@@ -82,96 +91,113 @@ export class ProductSavePage implements OnInit {
     });
   }
   useSetData = () => {
-    this.productService.findById(this.product.id).subscribe((data) => {
-      this.product = data;
-      this.form.addControl('id', new FormControl(this.product.id));
-      this.form.patchValue(this.product);
-    });
+    this.subscriptions.push(
+      this.service.findById(this.product.id)
+        .pipe(
+          tap((data) => {
+            this.product = data;
+            this.state.form.addControl('id', new FormControl(this.product.id));
+            this.state.form.patchValue(this.product);
+          })
+        )
+        .subscribe()
+    );
   }
   useSelectImage = (event: any, input: HTMLElement) => {
-    this.errorImage = false;
+    this.state.errorImage = false;
     const files: File[] = event.target.files;
     if (files.length > 1) {
-      this.errorImage = true;
-      this.message = 'Only one image accepted';
+      this.state.errorImage = true;
+      this.state.message = 'Only one image accepted';
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
         if (files[0].size > 1024 * 1024 * 18) {
-          this.errorImage = true;
-          this.message = 'Only image size less than 18MB accept';
+          this.state.errorImage = true;
+          this.state.message = 'Only image size less than 18MB accept';
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();
           reader.onloadend = () => {
-            this.form.get('image').setValue(reader.result);
+            this.state.form.get('image').setValue(reader.result);
           };
           reader.readAsDataURL(files[0]);
         }
       } else {
-        this.errorImage = true;
-        this.message = 'Only image file accept';
+        this.state.errorImage = true;
+        this.state.message = 'Only image file accept';
         input.nodeValue = undefined;
       }
     }
   }
   useRemoveParameter = (index: number) => {
-    (this.form.get('parameters') as FormArray).removeAt(index);
+    (this.state.form.get('parameters') as FormArray).removeAt(index);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
   useAddParameter = () => {
-    (this.form.get('parameters') as FormArray).push(new FormGroup({
+    (this.state.form.get('parameters') as FormArray).push(new FormGroup({
       label: new FormControl('', [Validators.required]),
       value: new FormControl('', [Validators.required]),
     }));
   }
   useCheckCode = () => {
-    const code = this.form.get('code');
+    const code = this.state.form.get('code');
     if (code.valid) {
-      this.stage = 'querying';
-      setTimeout(async () => {
-        const check = await this.productService.checkUnique('code', code.value).toPromise();
-        if (code.valid && check) {
-          code.setErrors({ duplicate: true });
-        }
-        this.stage = 'done';
-      }, 1000);
+      this.state.stage = 'querying';
+      this.subscriptions.push(
+        this.service.checkUnique('code', code.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                code.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                this.state.stage = 'done';
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
   }
   useSubmit = (ref: NbDialogRef<any>) => {
     ref.close();
-    if (this.form.valid) {
+    if (this.state.form.valid) {
       this.useShowSpinner();
-      setTimeout(() => {
-        (this.product ? this.productService.update({
-          ...this.form.value,
-          price: parseInt(this.form.value.price, 0)
-        }) : this.productService.insert({
-          ...this.form.value,
-          price: parseInt(this.form.value.price, 0)
+      this.subscriptions.push(
+        (this.product ? this.service.update({
+          ...this.state.form.value,
+          price: parseInt(this.state.form.value.price, 0)
+        }) : this.service.insert({
+          ...this.state.form.value,
+          price: parseInt(this.state.form.value.price, 0)
         }))
           .pipe(
+            tap((data) => {
+              this.useDone.emit(data);
+              this.toastrService.success('', 'Save product successful!', { duration: 3000 });
+              this.useClose.emit();
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Save product fail! ' + err.error.message, { duration: 3000 });
+              return of(undefined);
+            }),
             finalize(() => {
               this.useHideSpinner();
             })
-          ).subscribe((data) => {
-            this.useDone.emit(data);
-            this.toastrService.success('', 'Save product successful!', { duration: 3000 });
-            this.useClose.emit();
-          }, (err) => {
-            this.toastrService.danger('', 'Save product fail! Something wrong at runtime', { duration: 3000 });
-          });
-      }, 2000);
+          ).subscribe()
+      );
     } else {
-      this.form.markAsUntouched();
-      this.form.markAsTouched();
+      this.state.form.markAsUntouched();
+      this.state.form.markAsTouched();
     }
   }
   useDrop = (event: DropResult) => {
     if (event.removedIndex != null && event.addedIndex != null) {
-      moveItemInArray((this.form.get('parameters') as FormArray).controls, event.removedIndex, event.addedIndex);
+      moveItemInArray((this.state.form.get('parameters') as FormArray).controls, event.removedIndex, event.addedIndex);
     }
   }
   useShowSpinner = () => {
@@ -181,5 +207,8 @@ export class ProductSavePage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('product-save');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

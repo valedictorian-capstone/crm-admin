@@ -90,7 +90,7 @@ nz-notification-container {
 }
 
 .display-flex {
-    display: flex;
+    display: flex !important;
 }
 
 .float-left {
@@ -268,16 +268,16 @@ nb-form-field.not-search {
         width: percentage($number: $size/100);
     }
     .mh-#{$size} {
-        height: $size + vh;
+        max-height: $size + vh;
     }
     .mh-per-#{$size} {
-        height: percentage($number: $size/100);
+        max-height: percentage($number: $size/100);
     }
     .mw-#{$size} {
-        height: $size + vw;
+        max-height: $size + vw;
     }
     .mw-per-#{$size} {
-        width: percentage($number: $size/100);
+        max-width: percentage($number: $size/100);
     }
     .mt-per-#{$size} {
         margin-top: percentage($number: $size/100);

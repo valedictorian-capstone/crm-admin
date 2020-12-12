@@ -4,20 +4,20 @@
         <div class="crm-deal-detail-information">
             <div class="deal-header">
                 <div class="deal-header-left" (click)="useEdit()">
-                    <b><nb-icon icon="edit-2-outline"></nb-icon> {{deal?.title}}</b>
+                    <b><nb-icon icon="edit-2-outline"></nb-icon> {{state.deal?.title}}</b>
                     <nb-icon icon="pricetags-outline"></nb-icon>
                 </div>
                 <div class="deal-header-right">
-                    <button *ngIf="deal?.status === 'processing'" outline (click)="useWon()" nbButton size="small" class="desktop" status="success">WON</button>
-                    <button *ngIf="deal?.status === 'processing'" outline (click)="useWon()" nbButton size="tiny" class="small-mobile" status="success">
+                    <button *ngIf="state.deal?.status === 'processing'" outline (click)="useWon()" nbButton size="small" class="desktop" status="success">WON</button>
+                    <button *ngIf="state.deal?.status === 'processing'" outline (click)="useWon()" nbButton size="tiny" class="small-mobile" status="success">
                       <nb-icon icon="star-outline"></nb-icon>
                     </button>
-                    <button *ngIf="deal?.status === 'processing'" outline (click)="useClose()" nbButton size="small" class="desktop" status="danger">LOST</button>
-                    <button *ngIf="deal?.status === 'processing'" outline (click)="useClose()" nbButton size="tiny" class="small-mobile" status="danger">
+                    <button *ngIf="state.deal?.status === 'processing'" outline (click)="useClose()" nbButton size="small" class="desktop" status="danger">LOST</button>
+                    <button *ngIf="state.deal?.status === 'processing'" outline (click)="useClose()" nbButton size="tiny" class="small-mobile" status="danger">
                       <nb-icon icon="close-outline"></nb-icon>
                     </button>
-                    <button *ngIf="deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="small" class="desktop" status="warning">REOPEN</button>
-                    <button *ngIf="deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="tiny" class="small-mobile" status="warning">REOPEN</button>
+                    <button *ngIf="state.deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="small" class="desktop" status="warning">REOPEN</button>
+                    <button *ngIf="state.deal?.status !== 'processing'" outline (click)="useReopen()" nbButton size="tiny" class="small-mobile" status="warning">REOPEN</button>
                     <!-- <button nbButton class="desktop" size="small" outline (click)="useDialog(deleteRef)">
                     <nb-icon icon="trash-2-outline"></nb-icon>
                   </button>
@@ -32,52 +32,52 @@
                   </button>
                 </div>
             </div>
-            <div class="deal-stages" *ngIf="pipeline">
+            <div class="deal-stages" *ngIf="state.pipeline">
                 <label class="deal-stage" [class.selected]="
-                s.position <= stage.position
-              " *ngFor="let s of pipeline.stages; let i = index" (click)="useMoveTo(s)"></label>
+                s.position <= state.stage.position
+              " *ngFor="let s of state.pipeline.stages; let i = index" (click)="useMoveTo(s)"></label>
             </div>
-            <div class="deal-stage-deail" style="position: relative;" (click)="stageMove = 'processing'" *ngIf="pipeline" nz-dropdown [nzDropdownMenu]="moveToRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="deal.status === 'processing' ? 'click' : 'hover'"
-                [nzVisible]="stageMove === 'processing' && deal.status === 'processing'">
-                <span>{{pipeline.name}}</span>
+            <div class="deal-stage-deail" style="position: relative;" (click)="state.stageMove = 'processing'" *ngIf="state.pipeline" nz-dropdown [nzDropdownMenu]="moveToRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="state.deal.status === 'processing' ? 'click' : 'hover'"
+                [nzVisible]="state.stageMove === 'processing' && state.deal.status === 'processing'">
+                <span>{{state.pipeline.name}}</span>
                 <span><nb-icon icon="arrow-ios-forward-outline"></nb-icon></span>
-                <span>{{stage.name}}</span>
+                <span>{{state.stage.name}}</span>
             </div>
             <nz-dropdown-menu #moveToRef="nzDropdownMenu">
-                <app-reuse-pipeline-move-to (useClose)="stageMove = 'done'" *ngIf="deal && deal.status === 'processing'" [deal]="deal" (useMove)="useMoveTo($event)"></app-reuse-pipeline-move-to>
+                <app-reuse-pipeline-move-to (useClose)="state.stageMove = 'done'" *ngIf="state.deal && state.deal.status === 'processing'" [payload]="{deal: state.deal}" (useMove)="useMoveTo($event)"></app-reuse-pipeline-move-to>
             </nz-dropdown-menu>
             <div class="deal-customer">
                 <div class="deal-customer-avatar" (click)="useCustomerProfile()">
-                    <img class="avatar" *ngIf="deal?.customer.avatar" [src]="deal?.customer.avatar" />
-                    <div class="none-avatar" *ngIf="!deal?.customer.avatar">
-                        <b>{{deal?.customer.fullname.substring(0, 1)}}</b>
+                    <img class="avatar" *ngIf="state.deal?.customer.avatar" [src]="state.deal?.customer.avatar" />
+                    <div class="none-avatar" *ngIf="!state.deal?.customer.avatar">
+                        <b>{{state.deal?.customer.fullname.substring(0, 1)}}</b>
                     </div>
-                    <p class="fullname">{{deal?.customer.fullname | short}}</p>
+                    <p class="fullname">{{state.deal?.customer.fullname | short}}</p>
                 </div>
-                <span *ngIf="deal?.status" style="display: flex; position: absolute; right: 0rem; padding: 0.2rem; border-radius: 5px; width: 6rem;font-size: 0.7rem; letter-spacing: 2px; justify-content: center; align-items: center;" [class.bg-success]="deal.status === 'won'"
-                    [class.bg-primary]="deal.status === 'processing'" [class.bg-danger]="deal.status === 'lost'">
-      <b style="text-transform: uppercase; color: white; font-family: victor mono, Menlo, Monaco, 'Courier New', monospace;">{{deal.status}}</b>
+                <span *ngIf="state.deal?.status" style="display: flex; position: absolute; right: 0rem; padding: 0.2rem; border-radius: 5px; width: 6rem;font-size: 0.7rem; letter-spacing: 2px; justify-content: center; align-items: center;" [class.bg-success]="state.deal.status === 'won'"
+                    [class.bg-primary]="state.deal.status === 'processing'" [class.bg-danger]="state.deal.status === 'lost'">
+      <b style="text-transform: uppercase; color: white; font-family: victor mono, Menlo, Monaco, 'Courier New', monospace;">{{state.deal.status}}</b>
   </span>
             </div>
         </div>
-        <div class="crm-deal-detail-feedback" *ngIf="deal?.status !== 'processing'">
+        <div class="crm-deal-detail-feedback" *ngIf="state.deal?.status !== 'processing'">
             <nb-card style="width: 100%; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                 <nb-card-header>
                     <nb-icon class="mr-2" icon="headphones-outline"></nb-icon>
                     <b>Feedback</b>
-                    <button style="float: right;" nbButton status="success" (click)="usePhone(deal?.customer.phone)" outline shape="round" size="small">
+                    <button style="float: right;" nbButton status="success" (click)="usePhone(state.deal?.customer.phone)" outline shape="round" size="small">
                       <nb-icon icon="phone-outline"></nb-icon>
                     </button>
-                    <button style="float: right;" nbButton status="danger" (click)="useMail(deal?.customer.email)" class="mr-1" outline shape="round" size="small">
+                    <button style="float: right;" nbButton status="danger" (click)="useMail(state.deal?.customer.email)" class="mr-1" outline shape="round" size="small">
                       <nb-icon icon="email-outline"></nb-icon>
                     </button>
                 </nb-card-header>
                 <nb-card-body>
-                    <bar-rating *ngIf="deal" [(ngModel)]="deal.feedbackRating" [max]="5" [theme]="'stars'"></bar-rating>
-                    <textarea *ngIf="deal" [(ngModel)]="deal.feedbackMessage" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
+                    <bar-rating *ngIf="state.deal" [(ngModel)]="state.deal.feedbackRating" [max]="5" [theme]="'stars'"></bar-rating>
+                    <textarea *ngIf="state.deal" [(ngModel)]="state.deal.feedbackMessage" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
                 </nb-card-body>
                 <nb-card-footer>
-                    <nb-checkbox *ngIf="deal" status="success" [(ngModel)]="deal.feedbackStatus">
+                    <nb-checkbox *ngIf="state.deal" status="success" [(ngModel)]="state.deal.feedbackStatus">
                         <b>Mask as Resolve</b>
                     </nb-checkbox>
                     <button (click)="useSaveFeedback()" nbButton status="primary" outline style="float: right" size="small">Save</button>
@@ -85,44 +85,44 @@
             </nb-card>
         </div>
         <div class="crm-deal-detail-products">
-            <app-deal-product [deal]="deal"></app-deal-product>
+            <app-deal-product [deal]="state.deal"></app-deal-product>
         </div>
         <div class="crm-deal-detail-content">
-            <div class="crm-deal-detail-content-pin" *ngIf="pins.length > 0">
-                <app-deal-note *ngFor="let pin of pins" [data]="pin"></app-deal-note>
+            <div class="crm-deal-detail-content-pin" *ngIf="state.pins.length > 0">
+                <app-deal-note *ngFor="let pin of state.pins" [data]="pin"></app-deal-note>
             </div>
             <div class="crm-deal-detail-content-navigation">
                 <div class="crm-deal-detail-content-navigation-bar">
                     <div class="desktop">
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'note' ? 'primary' : 'default'" (click)="type = 'note'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'note' ? 'primary' : 'default'" (click)="state.type = 'note'">
                           <nb-icon icon="comment-alt" pack="font-awesome"  style="display: flex; align-items: center; justify-content: center;"></nb-icon><b>Note</b>
                         </button>
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'attachment' ? 'primary' : 'default'" (click)="type = 'attachment'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'attachment' ? 'primary' : 'default'" (click)="state.type = 'attachment'">
                           <nb-icon icon="attach-outline"></nb-icon><b>Attachment</b>
                         </button>
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'activity' ? 'primary' : 'default'" (click)="type = 'activity'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'activity' ? 'primary' : 'default'" (click)="state.type = 'activity'">
                           <nb-icon icon="calendar-plus" pack="font-awesome"  style="display: flex; align-items: center; justify-content: center;"></nb-icon><b>Activity</b>
                         </button>
                     </div>
                     <div class="small-mobile" style="display: none;">
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'note' ? 'primary' : 'default'" (click)="type = 'note'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'note' ? 'primary' : 'default'" (click)="state.type = 'note'">
                           <nb-icon icon="comment-alt" pack="font-awesome"  style="display: flex; align-items: center; justify-content: center;"></nb-icon>
                         </button>
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'attachment' ? 'primary' : 'default'" (click)="type = 'attachment'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'attachment' ? 'primary' : 'default'" (click)="state.type = 'attachment'">
                           <nb-icon icon="attach-outline"></nb-icon>
                         </button>
-                        <button nbButton outline size="small" class="mr-2" [status]="type === 'activity' ? 'primary' : 'default'" (click)="type = 'activity'">
+                        <button nbButton outline size="small" class="mr-2" [status]="state.type === 'activity' ? 'primary' : 'default'" (click)="state.type = 'activity'">
                           <nb-icon icon="calendar-plus" pack="font-awesome"  style="display: flex; align-items: center; justify-content: center;"></nb-icon>
                         </button>
                     </div>
                 </div>
                 <div class="crm-deal-detail-content-navigation-plus">
-                    <div class="no-content" *ngIf="close" (click)="close = false">
-                        <b>Click here to take {{type}}...</b>
+                    <div class="no-content" *ngIf="state.close" (click)="state.close = false">
+                        <b>Click here to take {{state.type}}...</b>
                     </div>
-                    <app-reuse-activity-save (useClose)="close = true" [fixDeal]="true" [inside]="true" [deal]="deal" *ngIf="!close && type === 'activity'"></app-reuse-activity-save>
-                    <app-reuse-note-save (useClose)="close = true" [inside]="true" [fixDeal]="true" [deal]="deal" *ngIf="!close && type === 'note'"></app-reuse-note-save>
-                    <app-reuse-attachment-save (useClose)="close = true" [inside]="true" [fixDeal]="true" [deal]="deal" *ngIf="!close && type === 'attachment'"></app-reuse-attachment-save>
+                    <app-reuse-activity-save (useClose)="state.close = true" [payload]="{fixDeal: true, inside: true, deal: state.deal}" *ngIf="!state.close && state.type === 'activity'"></app-reuse-activity-save>
+                    <app-reuse-note-save (useClose)="state.close = true" [payload]="{inside: true, fixDeal: true, deal: state.deal}" *ngIf="!state.close && state.type === 'note'"></app-reuse-note-save>
+                    <app-reuse-attachment-save (useClose)="state.close = true" [inside]="true" [fixDeal]="true" [deal]="state.deal" *ngIf="!state.close && state.type === 'attachment'"></app-reuse-attachment-save>
                 </div>
             </div>
             <div class="crm-deal-detail-content-plan">
@@ -131,8 +131,8 @@
                 </div>
                 <div class="plans">
                     <!-- <ng-container appDealDynamic [type]="'activity'" [data]="plan" *ngFor="let plan of plans"></ng-container> -->
-                    <nz-timeline *ngIf="plans.length > 0" nzMode="left" nzPendingDot>
-                        <nz-timeline-item nzColor="#b9babb" [nzDot]="dotTemplate" *ngFor="let plan of plans; let i = index">
+                    <nz-timeline *ngIf="state.plans.length > 0" nzMode="left" nzPendingDot>
+                        <nz-timeline-item nzColor="#b9babb" [nzDot]="dotTemplate" *ngFor="let plan of state.plans; let i = index">
                             <ng-container appDealDynamic [type]="'activity'" [data]="plan"></ng-container>
                             <ng-template #dotTemplate>
                                 <div style="background: white; display: flex; justify-content: center; align-items:  center; width: 2.5rem; height: 2.5rem; border-radius: 50%;">
@@ -141,7 +141,7 @@
                             </ng-template>
                         </nz-timeline-item>
                     </nz-timeline>
-                    <div class="empty" style="height: 6rem;" *ngIf="plans.length === 0">
+                    <div class="empty" style="height: 6rem;" *ngIf="state.plans.length === 0">
                         <div class="text-center">
                             <p style="font-weight: bold;">Dont't have any plan</p>
                             <button (click)="usePlus('activity')" nbButton size="small" status="primary" outline>
@@ -160,10 +160,10 @@
                 </div>
                 <div class="dones">
                     <div class="navigation">
-                        <a (click)="done = ''; useSelectDone()" [class.dot-active]="done === ''" class="item">
+                        <a (click)="state.done = ''; useSelectDone()" [class.dot-active]="state.done === ''" class="item">
                             <b>ALL</b>
                         </a>
-                        <a (click)="done = 'activity'; useSelectDone()" [class.dot-active]="done === 'activity'" class="item">
+                        <a (click)="state.done = 'activity'; useSelectDone()" [class.dot-active]="state.done === 'activity'" class="item">
                             <span class="data">
                               <nb-icon icon="calendar-plus" pack="font-awesome"></nb-icon>
                               <span  *ngIf="useLength('activity') > 0">
@@ -171,21 +171,21 @@
                               </span>
                             </span>
                         </a>
-                        <a (click)="done = 'note'; useSelectDone()" [class.dot-active]="done === 'note'" class="item">
+                        <a (click)="state.done = 'note'; useSelectDone()" [class.dot-active]="state.done === 'note'" class="item">
                             <span class="data">
                               <nb-icon icon="comment-alt" pack="font-awesome"></nb-icon>
                               <span *ngIf="useLength('note') > 0"><b style="color: #b9babb">{{useLength('note')}}</b></span>
                             </span>
                         </a>
-                        <a (click)="done = 'attachment'; useSelectDone()" [class.dot-active]="done === 'attachment'" class="item">
+                        <a (click)="state.done = 'attachment'; useSelectDone()" [class.dot-active]="state.done === 'attachment'" class="item">
                             <span class="data">
                               <nb-icon icon="attach-outline"></nb-icon>
                               <span *ngIf="useLength('attachment') > 0"><b style="color: #b9babb">{{useLength('attachment')}}</b></span>
                             </span>
                         </a>
                     </div>
-                    <nz-timeline *ngIf="filterDones.length > 0" nzMode="left" nzPendingDot>
-                        <nz-timeline-item nzColor="#b9babb" [nzDot]="dotTemplate" *ngFor="let do of filterDones">
+                    <nz-timeline *ngIf="state.filterDones.length > 0" nzMode="left" nzPendingDot>
+                        <nz-timeline-item nzColor="#b9babb" [nzDot]="dotTemplate" *ngFor="let do of state.filterDones">
                             <ng-container appDealDynamic [type]="do.subType" [data]="do"></ng-container>
                             <ng-template #dotTemplate>
                                 <div style="background: white; display: flex; justify-content: center; align-items:  center; width: 2.5rem; height: 2.5rem; border-radius: 50%;">
@@ -196,20 +196,20 @@
                             </ng-template>
                         </nz-timeline-item>
                     </nz-timeline>
-                    <div class="empty" style="height: 10rem;" *ngIf="filterDones.length === 0">
+                    <div class="empty" style="height: 10rem;" *ngIf="state.filterDones.length === 0">
                         <div class="text-center">
                             <p style="font-weight: bold;">Dont't have any data</p>
-                            <button (click)="usePlus('note')" class="mb-2" *ngIf="done === 'note' || done === ''" nbButton size="small" status="primary" outline>
+                            <button (click)="usePlus('note')" class="mb-2" *ngIf="state.done === 'note' || state.done === ''" nbButton size="small" status="primary" outline>
                               <nb-icon icon="plus-outline"></nb-icon>
                               Note
                             </button>
-                            <br *ngIf="done === 'note' || done === ''">
-                            <button (click)="usePlus('activity')" class="mb-2" *ngIf="done === 'activity' || done === ''" nbButton size="small" status="primary" outline>
+                            <br *ngIf="state.done === 'note' || state.done === ''">
+                            <button (click)="usePlus('activity')" class="mb-2" *ngIf="state.done === 'activity' || state.done === ''" nbButton size="small" status="primary" outline>
                           <nb-icon icon="plus-outline"></nb-icon>
                           Activity
                         </button>
-                            <br *ngIf="done === 'activity' || done === ''">
-                            <button (click)="usePlus('attachment')" class="mb-2" *ngIf="done === 'attachment' || done === ''" nbButton size="small" status="primary" outline>
+                            <br *ngIf="state.done === 'activity' || state.done === ''">
+                            <button (click)="usePlus('attachment')" class="mb-2" *ngIf="state.done === 'attachment' || state.done === ''" nbButton size="small" status="primary" outline>
                           <nb-icon icon="plus-outline"></nb-icon>
                           Attachment
                         </button>
@@ -224,7 +224,7 @@
     <nb-card>
         <nb-card-header>Confirm
         </nb-card-header>
-        <nb-card-body>Are you sure to delete deal?</nb-card-body>
+        <nb-card-body>Are you sure to delete state.deal?</nb-card-body>
         <nb-card-footer class="p-2">
             <button style="float: right;" status="danger" nbButton size="small" (click)="useDelete(ref)">Delete</button>
             <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>

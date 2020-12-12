@@ -4,6 +4,7 @@ export * from './device.action';
 export * from './event.action';
 export * from './group.action';
 export * from './role.action';
+export * from './comment.action';
 export * from './product.action';
 export * from './category.action';
 export * from './notification.action';

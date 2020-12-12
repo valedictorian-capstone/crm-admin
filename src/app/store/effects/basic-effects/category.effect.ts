@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { CategoryService } from '@services';
 import { CategoryAction } from '@actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { CategoryVM } from '@view-models';
 
 @Injectable()
 export class CategoryEffect {
@@ -10,49 +12,56 @@ export class CategoryEffect {
     protected readonly actions$: Actions,
     protected readonly service: CategoryService
   ) { }
-  public readonly find$ = createEffect(() =>
+  public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(CategoryAction.useFindAllAction),
+      ofType(CategoryAction.SocketAction),
+      tap(() => console.log('socket')),
       switchMap(action =>
-        this.service.findAll().pipe(
-          delay(1000),
-          map(categorys => CategoryAction.useFindAllSuccessAction({ categorys, status: action.status })),
-          catchError(async (error) => CategoryAction.useErrorAction({ error, status: action.status })),
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return CategoryAction.SaveSuccessAction({ res: trigger.data as CategoryVM });
+            } else if (trigger.type === 'update') {
+              return CategoryAction.SaveSuccessAction({ res: trigger.data as CategoryVM });
+            } else if (trigger.type === 'remove') {
+              return CategoryAction.RemoveSuccessAction({ id: (trigger.data as CategoryVM).id });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
         )
       )
     )
   );
-  public readonly create$ = createEffect(() =>
+  public readonly find$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(CategoryAction.useCreateAction),
+      ofType(CategoryAction.FindAllAction),
       switchMap(action =>
-        this.service.insert(action.category).pipe(
-          delay(1000),
-          map(category => CategoryAction.useCreateSuccessAction({ category, status: action.status })),
-          catchError(async (error) => CategoryAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly update$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CategoryAction.useUpdateAction),
-      switchMap(action =>
-        this.service.update(action.category).pipe(
-          delay(1000),
-          map(category => CategoryAction.useUpdateSuccessAction({ category, status: action.status })),
-          catchError(async (error) => CategoryAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly remove$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CategoryAction.useRemoveAction),
-      switchMap(action =>
-        this.service.remove(action.id).pipe(
-          delay(1000),
-          map(id => CategoryAction.useRemoveSuccessAction({ id, status: action.status })),
-          catchError(async (error) => CategoryAction.useErrorAction({ error, status: action.status })),
-        ))
+        this.service.findAll().pipe(
+
+          map(res => CategoryAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
     )
   );
 }

@@ -7,13 +7,11 @@ const roles = createSelector(roleFeatureSelector, roleAdapter.getSelectors().sel
 const entities = createSelector(roleFeatureSelector, roleAdapter.getSelectors().selectEntities);
 const ids = createSelector(roleFeatureSelector, roleAdapter.getSelectors().selectIds);
 const total = createSelector(roleFeatureSelector, roleAdapter.getSelectors().selectTotal);
-const error = createSelector(roleFeatureSelector, (state) => state.error);
-const status = createSelector(roleFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(roleFeatureSelector, (state) => state.firstLoad);
 export const roleSelector = {
   roles,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

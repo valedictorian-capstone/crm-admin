@@ -1,31 +1,48 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
 import { GlobalService } from '@services';
-import { CustomerVM } from '@view-models';
-import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { authSelector } from '@store/selectors';
+import { State } from '@store/states';
+import { AccountVM, CustomerVM } from '@view-models';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+interface ICustomerItemComponentState {
+  you: AccountVM;
+  canUpdate: boolean;
+}
 @Component({
   selector: 'app-reuse-customer-item',
   templateUrl: './customer-item.component.html',
   styleUrls: ['./customer-item.component.scss']
 })
-export class CustomerItemComponent implements OnInit {
+export class CustomerItemComponent implements OnDestroy {
   @Input() customer: CustomerVM;
   @Input() search: string;
-  env = 'desktop';
+  subscriptions: Subscription[] = [];
+  state: ICustomerItemComponentState = {
+    you: undefined,
+    canUpdate: false
+  };
   constructor(
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
-    protected readonly deviceService: DeviceDetectorService,
+    protected readonly store: Store<State>
   ) {
-    if (deviceService.isMobile()) {
-      this.env = 'mobile';
-    }
+    this.useLoadMine();
   }
-
-  ngOnInit() {
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+        })
+      )
+      .subscribe());
   }
   useEdit = () => {
     this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
@@ -42,5 +59,8 @@ export class CustomerItemComponent implements OnInit {
   useCopy = (link: string) => {
     this.clipboard.copy(link);
     this.toastrService.show('', 'Copy successfull', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

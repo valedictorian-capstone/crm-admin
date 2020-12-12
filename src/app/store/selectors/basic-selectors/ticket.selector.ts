@@ -7,13 +7,11 @@ const tickets = createSelector(ticketFeatureSelector, ticketAdapter.getSelectors
 const entities = createSelector(ticketFeatureSelector, ticketAdapter.getSelectors().selectEntities);
 const ids = createSelector(ticketFeatureSelector, ticketAdapter.getSelectors().selectIds);
 const total = createSelector(ticketFeatureSelector, ticketAdapter.getSelectors().selectTotal);
-const error = createSelector(ticketFeatureSelector, (state) => state.error);
-const status = createSelector(ticketFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(ticketFeatureSelector, (state) => state.firstLoad);
 export const ticketSelector = {
   tickets,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad
 };

@@ -1,82 +1,149 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService, DealService, GlobalService } from '@services';
-import { DealVM } from '@view-models';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DealService, GlobalService } from '@services';
+import { AccountVM, DealVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
-
+import { finalize, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
+import { authSelector, dealSelector } from '@store/selectors';
+import { Subscription } from 'rxjs';
+import { DealAction } from '@store/actions';
+interface IDealMainPageState {
+  you: AccountVM;
+  array: DealVM[];
+  filterArray: DealVM[];
+  search: {
+    status: string,
+    range: {start: Date, end: Date},
+    name: string,
+    customer: CustomerVM,
+    assignees: AccountVM[],
+  };
+  canAdd: boolean;
+  canUpdate: boolean;
+  canAssign: boolean;
+  canRemove: boolean;
+}
 @Component({
   selector: 'app-deal-main',
   templateUrl: './deal-main.page.html',
   styleUrls: ['./deal-main.page.scss']
 })
-export class DealMainPage implements OnInit {
-  deals: DealVM[] = [];
-  filterDeals: DealVM[] = [];
-  status = '';
-  canAdd = false;
-  canUpdate = false;
-  canRemove = false;
+export class DealMainPage implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
+  state: IDealMainPageState = {
+    you: undefined,
+    array: [],
+    filterArray: [],
+    search: {
+      assignees: [],
+      customer: undefined,
+      status: '',
+      name: '',
+      range: undefined
+    },
+    canUpdate: false,
+    canAssign: false,
+    canAdd: false,
+    canRemove: false
+  }
   constructor(
+    protected readonly service: DealService,
     protected readonly router: Router,
-    protected readonly dealService: DealService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
-    protected readonly authService: AuthService,
-  ) { }
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+  }
 
   ngOnInit() {
-    this.useLoadMine();
-    this.useReload();
-    this.useSocket();
+    this.useDispatch();
+    this.useData();
   }
-  useSocket = () => {
-    this.dealService.triggerSocket().subscribe((trigger) => {
-      if (trigger.type === 'create') {
-        this.deals.push((trigger.data as DealVM));
-      } else if (trigger.type === 'update') {
-        this.deals[this.deals.findIndex((e) => e.id === (trigger.data as DealVM).id)] = (trigger.data as DealVM);
-      } else if (trigger.type === 'remove') {
-        this.deals.splice(this.deals.findIndex((e) => e.id === (trigger.data as DealVM).id), 1);
-      }
-      this.useFilter();
-    });
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(dealSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(dealSelector.deals)
+        .pipe(
+          tap((data) => {
+            this.state.array = data;
+            this.useFilter();
+          })
+        ).subscribe());
   }
   useReload = () => {
     this.useShowSpinner();
-    this.dealService.findAll()
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        }),
-      )
-      .subscribe(async (data) => {
-        this.deals = data;
-        this.useFilter();
-      });
+    this.store.dispatch(DealAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
   }
   useLoadMine = () => {
-    this.authService.auth(undefined).subscribe((data) => {
-      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
-      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
-      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
-    });
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+        })
+      )
+      .subscribe()
+    )
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'deal', payload: {} });
   }
   useShowSpinner = () => {
-    this.spinner.show('deal-list');
+    this.spinner.show('deal-main');
   }
   useHideSpinner = () => {
     setTimeout(() => {
-      this.spinner.hide('deal-list');
+      this.spinner.hide('deal-main');
     }, 1000);
   }
   useViewPipeline = () => {
     this.router.navigate(['core/process/detail']);
   }
+  useSearch = (search: {
+    status: string,
+    range: {start: Date, end: Date},
+    name: string,
+    customer: CustomerVM,
+    assignees: [],
+  }) => {
+    this.state.search = { ...this.state.search, ...search };
+    this.useFilter();
+  }
   useFilter = () => {
-    this.filterDeals = this.deals.filter((deal) => deal.status.includes(this.status));
+    this.state.filterArray = this.state.array.filter((deal) => deal.status.includes(this.state.search.status));
+    this.state.filterArray = this.state.array.filter((deal) =>
+      (deal.status.includes(this.state.search.status)) &&
+      (deal.title.toLowerCase().includes(this.state.search.name.toLowerCase())) &&
+      (this.state.search.range?.start ? new Date(deal.createdAt).getTime() >= new Date(this.state.search.range.start).getTime() : true) &&
+      (this.state.search.range?.end ? new Date(deal.createdAt).getTime() <= new Date(this.state.search.range.end).getTime() : true) &&
+      (this.state.search.customer ? deal.customer.id === this.state.search.customer.id : true) &&
+      (this.state.search.assignees.length > 0
+        ? (this.state.search.assignees.findIndex((assingee) => assingee.id === deal.assignee?.id) > -1) : true)
+    );
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

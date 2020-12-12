@@ -1,0 +1,28 @@
+.employee-filter {
+    width: 100%;
+    min-width: 350px;
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+    position: relative;
+    background: white;
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    .empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+        height: 350px;
+        b {
+            font: 600 17px/16px monospace, sans-serif;
+            color: #747678;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+        }
+    }
+}

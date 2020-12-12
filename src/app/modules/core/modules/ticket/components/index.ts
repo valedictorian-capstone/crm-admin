@@ -1,1 +1,1 @@
-export * from './ticket-item/ticket-item.component';
+export * from './ticket-search/ticket-search.component';

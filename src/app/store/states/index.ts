@@ -7,6 +7,7 @@ export * from './deal-states';
 export interface State {
   router: fromRouter.RouterReducerState;
   account: fromNormal.AccountState;
+  comment: fromNormal.CommentState;
   category: fromNormal.CategoryState;
   customer: fromNormal.CustomerState;
   device: fromNormal.DeviceState;
@@ -23,4 +24,5 @@ export interface State {
   note: fromNormal.NoteState;
   pipeline: fromNormal.PipelineState;
   stage: fromNormal.StageState;
+  auth: fromNormal.AuthState;
 }

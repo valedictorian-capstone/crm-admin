@@ -14,7 +14,7 @@
                 {{activity.name}}
             </div>
             <div class="time" [class.processing]="activity.status === 'processing'" [class.done]="activity.status === 'done'">
-                <span class="text" [class.text-success]="activity.state === 'processing' && activity.status === 'processing'" [class.text-danger]="activity.state === 'expired' && activity.status === 'processing'">{{activity.dateStart | time}}</span>
+                <span class="text" [class.text-success]="activity.state === 'processing' && activity.status === 'processing'" [class.text-danger]="activity.state === 'expired' && activity.status === 'processing'">{{activity.dateStart  | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
             </div>
         </div>
     </div>

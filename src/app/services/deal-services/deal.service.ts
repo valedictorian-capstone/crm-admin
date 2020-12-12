@@ -25,6 +25,9 @@ export class DealService {
   public readonly findById = (id: string): Observable<DealVM> => {
     return this.httpClient.get<DealVM>(`${environment.apiEndpont}${environment.api.deal.deal.getById}${id}`);
   }
+  public readonly findByCustomerId = (id: string): Observable<DealVM[]> => {
+    return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.getById}customer/${id}`);
+  }
   public readonly findByStage = (id: string): Observable<DealVM[]> => {
     return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.getById}stage/${id}`);
   }

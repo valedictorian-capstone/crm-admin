@@ -1,5 +1,6 @@
 export * from './account.reducer';
 export * from './customer.reducer';
+export * from './comment.reducer';
 export * from './device.reducer';
 export * from './event.reducer';
 export * from './group.reducer';

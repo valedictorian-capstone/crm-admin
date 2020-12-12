@@ -1,44 +1,79 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { ProductService } from '@services';
+import { ProductAction } from '@store/actions';
+import { productSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { ProductVM } from '@view-models';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
+interface IProductSelectComponentState {
+  search: string;
+  array: ProductVM[];
+  filterArray: ProductVM[];
+  status: 'finding' | 'done';
+}
 @Component({
   selector: 'app-reuse-product-select',
   templateUrl: './product-select.component.html',
   styleUrls: ['./product-select.component.scss']
 })
-export class ProductSelectComponent implements OnInit {
+export class ProductSelectComponent implements OnInit, OnDestroy {
   @Output() useSelect: EventEmitter<ProductVM> = new EventEmitter<ProductVM>();
   @Output() useAdd: EventEmitter<string> = new EventEmitter<string>();
-  @Input() template: HTMLElement;
   @Input() selected: ProductVM;
-  value = '';
-  products: ProductVM[] = [];
-  filterProducts: ProductVM[] = [];
-  stage = 'finding';
+  subscriptions: Subscription[] = [];
+  state: IProductSelectComponentState = {
+    search: '',
+    array: [],
+    filterArray: [],
+    status: 'done',
+  }
   constructor(
-    protected readonly productService: ProductService,
+    protected readonly store: Store<State>
   ) { }
 
   ngOnInit() {
-    this.productService.findAll().subscribe((data) => {
-      this.products = data;
-      setTimeout(() => {
-        this.stage = 'done';
-        this.filterProducts = data;
-      }, 500);
-    });
-    setTimeout(() => {
-      this.stage = 'done';
-    }, 500);
+    this.useDispatch();
+    this.useData();
   }
-
-  useChangeValue = (value: string) => {
-    this.stage = 'finding';
-    setTimeout(() => {
-      this.value = value;
-      this.filterProducts = this.products.filter((product) => product.name.toLowerCase().includes(value.toLowerCase()));
-      this.stage = 'done';
-    }, 500);
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(productSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(productSelector.products)
+        .pipe(
+          tap((data) => {
+            this.state.array = data;
+            this.useSearch('');
+          })
+        ).subscribe()
+    );
+  }
+  useReload = () => {
+    this.state.status = 'finding';
+    this.store.dispatch(ProductAction.FindAllAction({
+      finalize: () => {
+        this.state.status = 'done';
+      }
+    }));
+  }
+  useSearch = (value: string) => {
+    this.state.search = value;
+    this.state.filterArray = this.state.array.filter((product) => product.name.toLowerCase().includes(value.toLowerCase()));
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

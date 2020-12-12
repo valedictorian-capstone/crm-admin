@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
   ProductItemComponent,
-  ProductRestoreComponent
+  ProductRestoreComponent,
+  ProductSearchComponent
 } from './components';
 import {
   ProductMainPage,
@@ -13,7 +14,8 @@ import {
 import { ProductRoutes } from './product.routing';
 const COMPONENTS = [
   ProductItemComponent,
-  ProductRestoreComponent
+  ProductRestoreComponent,
+  ProductSearchComponent
 ];
 
 const PAGES = [

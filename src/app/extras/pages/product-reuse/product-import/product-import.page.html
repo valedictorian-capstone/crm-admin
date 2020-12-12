@@ -16,7 +16,7 @@
     </tbody>
 </table>
 <nb-accordion *ngIf="data">
-    <nb-accordion-item *ngFor="let form of products['controls']; let i = index" class="mb-2">
+    <nb-accordion-item *ngFor="let form of state.formArray['controls']; let i = index" class="mb-2">
         <nb-accordion-item-header>{{form.value.name}}</nb-accordion-item-header>
         <nb-accordion-item-body>
             <div class="image">
@@ -78,7 +78,7 @@
           [value]="form?.get('category').value?.name"
           nbInput
           size="small"
-          (input)="categoryPlus.useChangeValue($event.target.value)"
+          (input)="categoryPlus.useSearch($event.target.value)"
         />
         <nb-icon icon="arrow-down" nbSuffix></nb-icon>
       </nb-form-field>
@@ -87,7 +87,6 @@
         [selected]="form.get('category').value"
           #categoryPlus
           (useSelect)="form.get('category').setValue($event)"
-          [template]="categoryInput"
         ></app-reuse-category-select>
       </nz-dropdown-menu>
       <span *ngIf="form.get('category').invalid && (form.get('category').touched || form.get('category').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select category</span>
@@ -128,10 +127,10 @@
             </nb-accordion>
             <span style="display: block; margin: 1rem 0 0.5rem 0; font-weight: 600">Description</span
       >
-      <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
-            <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = products.length === 0 ? undefined : data">Remove</button>
+      <angular-editor [formControl]="form.get('description')" [config]="state.config"></angular-editor>
+            <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = state.formArray.length === 0 ? undefined : data">Remove</button>
         </nb-accordion-item-body>
     </nb-accordion-item>
 </nb-accordion>
-<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="products.invalid">Save</button>
+<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="state.formArray.invalid">Save</button>
 <button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>

@@ -1,36 +1,35 @@
-<div class="crm-customer">
-    <div class='crm-customer-header'>
-        <div class="navigation" *ngIf="canAdd || canImport">
-            <button *ngIf="canAdd" nbButton status="success" (click)="usePlus()" outline class="mr-2" size="small">New Customer</button>
-            <button *ngIf="canImport" nbButton status="primary" (click)="useImport()" outline class="mr-2" size="small">Import</button>
-            <button nbButton status="default" (click)="useReload()" class="mr-2" outline size="small">
-              <nb-icon icon="sync-outline"></nb-icon>
-            </button>
-            <button nz-dropdown [nzDropdownMenu]="filter" [nzBackdrop]="false" [nzTrigger]="'click'" nzPlacement="bottomCenter" nbButton status="default" outline size="small">
-              <nb-icon icon="funnel-outline"></nb-icon>
-            </button>
-            <nz-dropdown-menu #filter="nzDropdownMenu">
-                <ul nz-menu style="border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
-                    <li nz-menu-item (click)="selectedGroup = ''; useFilter()" [ngStyle]="{'background': selectedGroup === '' ? '#e6e6e6' : 'white'}" style="min-width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;">ALL</li>
-                    <li *ngFor="let group of groups" nz-menu-item [ngStyle]="{'background': selectedGroup === group.id ? '#e6e6e6' : 'white'}" (click)="selectedGroup = group.id; useFilter()" style="min-width: 200px; display: flex; justify-content: center; align-items: center;  font-weight: 600; padding: 1rem;"
-                        class="text-primary">{{group.name}}</li>
-                </ul>
-            </nz-dropdown-menu>
-        </div>
-        <div class="filter">
-            <nb-form-field class="not-search" style="max-width: 100%; width: 500px; margin-bottom: 1rem;" [nbSpinner]="stage === 'querying'" [nbSpinnerSize]="'tiny'">
-                <nb-icon [ngStyle]="{'opacity': stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
-                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search" nbInput size="large" />
-
-            </nb-form-field>
-        </div>
-    </div>
-    <div class='crm-customer-body'>
-        <ngx-spinner [name]="'contact-main'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-        <div nz-row style="width: 90%; margin: auto">
-            <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="8" [nzXXl]="8" *ngFor="let customer of filterCustomers">
-                <app-contact-item [canUpdate]="canUpdate" [canRemove]="canRemove" [search]="search" [customer]="customer"></app-contact-item>
+<nb-card class="h-100 w-100 position-relative">
+    <ngx-spinner [name]="'contact-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 2.25rem;">
+        <span class="display-flex align-items-center float-left h-100">
+    <nb-icon icon="calendar-outline" class="mr-2"></nb-icon>
+      <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Customer</b>
+    </span>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+      <nb-icon icon="sync-outline"></nb-icon>
+      </button>
+        <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="contactSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
+        <nb-icon icon="search-outline"></nb-icon>
+        </button>
+        <button *ngIf="state.canImport" class="float-right mr-2" (click)="useImport()" status="info" outline nbButton size="small">
+          <nb-icon icon="upload" class="display-flex justify-content-center align-items-center" pack="font-awesome"></nb-icon>
+          </button>
+        <button *ngIf="state.canAdd" class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
+          <nb-icon icon="plus-outline"></nb-icon>
+          </button>
+        <nz-dropdown-menu #contactSearch="nzDropdownMenu">
+            <app-contact-search class="display-block" style="margin-left: 1.75rem;" (useSearch)="useSearch($event)" [search]="state.search"></app-contact-search>
+        </nz-dropdown-menu>
+    </nb-card-header>
+    <nb-card-body class="p-0">
+        <div class="crm-customer">
+            <div class='crm-customer-body'>
+                <div nz-row style="width: 90%; margin: auto">
+                    <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="8" [nzXXl]="8" *ngFor="let customer of state.filterArray">
+                        <app-contact-item [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" [search]="state.search.value" [customer]="customer"></app-contact-item>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </nb-card-body>
+</nb-card>

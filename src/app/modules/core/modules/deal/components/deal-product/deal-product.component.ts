@@ -1,24 +1,30 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DealDetailService, DealService, ProductService } from '@services';
 import { DealDetailVM, DealVM, ProductVM } from '@view-models';
 import { tap } from 'rxjs/operators';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
+import { productSelector } from '@store/selectors';
+import { ProductAction } from '@store/actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-deal-product',
   templateUrl: './deal-product.component.html',
   styleUrls: ['./deal-product.component.scss']
 })
-export class DealProductComponent implements OnInit, OnChanges {
+export class DealProductComponent implements OnInit, OnChanges, OnDestroy {
   @Input() deal: DealVM;
   details: FormArray = new FormArray([]);
   products: ProductVM[] = [];
+  subscriptions: Subscription[] = [];
   constructor(
     protected readonly dealService: DealService,
     protected readonly dealDetailService: DealDetailService,
-    protected readonly productService: ProductService,
     protected readonly toastrService: NbToastrService,
+    protected readonly store: Store<State>
   ) { }
   ngOnChanges() {
     if (this.deal) {
@@ -26,14 +32,40 @@ export class DealProductComponent implements OnInit, OnChanges {
       this.deal.dealDetails.forEach(this.usePlusDetail);
     }
   }
-
   ngOnInit() {
-    this.productService.findAll().pipe(tap((data) => this.products = data)).subscribe();
+    this.useDispatch();
+    this.useData();
+  }
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(productSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(productSelector.products)
+        .pipe(
+          tap((data) => {
+            this.products = data
+          })
+        ).subscribe());
+  }
+  useReload = () => {
+    this.store.dispatch(ProductAction.FindAllAction({}));
   }
   useRemoveDetail = (id: string, index: number) => {
     this.details.removeAt(index);
     if (id) {
-      this.dealDetailService.remove(id).subscribe();
+      this.subscriptions.push(
+        this.dealDetailService.remove(id).subscribe()
+      );
     }
     this.toastrService.success('', 'Remove product successful!', { duration: 3000 });
 
@@ -56,19 +88,21 @@ export class DealProductComponent implements OnInit, OnChanges {
   }
   useSaveDetail = (detail: FormGroup) => {
     if (detail.valid) {
-      (detail.value.id ? this.dealDetailService.update(detail.value) : this.dealDetailService.insert({
-        ...detail.value,
-        code: detail.value.product.name + '-' + Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
-              .map((x) => x[Math.floor(Math.random() * x.length)]).join('')
-      }))
-        .pipe(
-          tap((data) => {
-            if (!detail.value.id) {
-              detail.addControl('id', new FormControl(data.id));
-            }
-            this.toastrService.success('', 'Save product successful!', { duration: 3000 });
-          })
-        ).subscribe();
+      this.subscriptions.push(
+        (detail.value.id ? this.dealDetailService.update(detail.value) : this.dealDetailService.insert({
+          ...detail.value,
+          code: detail.value.product.name + '-' + Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+                .map((x) => x[Math.floor(Math.random() * x.length)]).join('')
+        }))
+          .pipe(
+            tap((data) => {
+              if (!detail.value.id) {
+                detail.addControl('id', new FormControl(data.id));
+              }
+              this.toastrService.success('', 'Save product successful!', { duration: 3000 });
+            })
+          ).subscribe()
+      );
     }
   }
   useChangeDealDetail = (product: ProductVM, group: FormGroup, isNew: boolean) => {
@@ -87,5 +121,8 @@ export class DealProductComponent implements OnInit, OnChanges {
   }
   useCanDelete = () => {
     return (this.details.value as DealDetailVM[]).filter((e) => e.id != null).length > 1;
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

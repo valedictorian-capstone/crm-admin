@@ -1,76 +1,37 @@
 import { createAction, props } from '@ngrx/store';
-import { ActivityCM, ActivityUM, ActivityVM } from '@view-models';
-const ActivityActionType = {
-  FIND: {
-    FETCH: '[Activity] Fetch Action',
-    SUCCESS: '[Activity] Fetch Action Success',
-  },
-  CREATE: {
-    FETCH: '[Activity] Create Action',
-    SUCCESS: '[Activity] Create Action Success',
-  },
-  UPDATE: {
-    FETCH: '[Activity] Update Action',
-    SUCCESS: '[Activity] Update Action Success',
-  },
-  REMOVE: {
-    FETCH: '[Activity] Remove Action',
-    SUCCESS: '[Activity] Remove Action Success',
-  },
-  RESET: {
-    FETCH: '[Activity] Reset Action',
-  },
-  ERROR: '[Activity] Action Error',
-};
-const useFindAllAction = createAction(
-  ActivityActionType.FIND.FETCH,
-  props<{ status: string }>()
+import { AccountVM, ActivityCM, ActivityUM, ActivityVM } from '@view-models';
+const FindAllAction = createAction(
+  '[Activity] Fetch Action',
+  props<{
+    success?: (res: ActivityVM[]) => void,
+    error?: (err: Error) => void,
+    finalize?: () => void,
+  }>()
 );
-const useFindAllSuccessAction = createAction(
-  ActivityActionType.FIND.SUCCESS,
-  props<{ activitys: ActivityVM[], status: string }>()
+const FindAllSuccessAction = createAction(
+  '[Activity] Fetch Action Success',
+  props<{ res: ActivityVM[] }>()
 );
-const useCreateAction = createAction(
-  ActivityActionType.CREATE.FETCH,
-  props<{ activity: ActivityCM, status: string }>()
+const SaveSuccessAction = createAction(
+  '[Activity] Save Success Action',
+  props<{ res: ActivityVM }>()
 );
-const useCreateSuccessAction = createAction(
-  ActivityActionType.CREATE.SUCCESS,
-  props<{ activity: ActivityVM, status: string }>()
+const RemoveSuccessAction = createAction(
+  '[Activity] Remove Success Action',
+  props<{ id: string }>()
 );
-const useUpdateAction = createAction(
-  ActivityActionType.UPDATE.FETCH,
-  props<{ activity: ActivityUM, status: string }>()
+const SocketAction = createAction(
+  '[Activity] Socket Action',
+  props<{ requester: AccountVM }>()
 );
-const useUpdateSuccessAction = createAction(
-  ActivityActionType.UPDATE.SUCCESS,
-  props<{ activity: ActivityVM, status: string }>()
-);
-const useRemoveAction = createAction(
-  ActivityActionType.REMOVE.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useRemoveSuccessAction = createAction(
-  ActivityActionType.REMOVE.SUCCESS,
-  props<{ id: string, status: string }>()
-);
-const useErrorAction = createAction(
-  ActivityActionType.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  ActivityActionType.RESET.FETCH,
-  props<{ activitys: ActivityVM[] }>()
+const ResetAction = createAction(
+  '[Activity] Reset Action',
 );
 export const ActivityAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useCreateAction,
-  useCreateSuccessAction,
-  useUpdateAction,
-  useUpdateSuccessAction,
-  useRemoveAction,
-  useRemoveSuccessAction,
-  useErrorAction,
-  useResetAction
+  FindAllAction,
+  FindAllSuccessAction,
+  SaveSuccessAction,
+  RemoveSuccessAction,
+  SocketAction,
+  ResetAction
 };

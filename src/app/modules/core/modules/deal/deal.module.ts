@@ -7,7 +7,8 @@ import {
   DealNoteComponent,
   DealProductComponent,
   DealItemActivityComponent,
-  DealItemComponent
+  DealItemComponent,
+  DealSearchComponent
 } from './components';
 import {
   DealDetailPage,
@@ -21,7 +22,8 @@ const COMPONENTS = [
   DealNoteComponent,
   DealProductComponent,
   DealItemActivityComponent,
-  DealItemComponent
+  DealItemComponent,
+  DealSearchComponent
 ];
 
 const PAGES = [

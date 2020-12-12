@@ -3,21 +3,20 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AntModule, NebularModule, PrimeModule, NgxModule } from './modules';
 import {
-  ActivityTimeComponent,
   CategorySelectComponent,
   CustomerSelectComponent,
-  CustomerBirthdayComponent,
   DealSelectComponent,
   EmployeeSelectComponent,
+  EmployeeItemComponent,
+  EmployeeFilterComponent,
   PipelineSelectComponent,
   ProductSelectComponent,
-  RoleSelectComponent,
-  CustomerColumnComponent,
   DealItemComponent,
   FeedbackItemComponent,
   TicketItemComponent,
-  EmployeeItemComponent,
-  CustomerItemComponent
+  CustomerItemComponent,
+  SelectDateComponent,
+  SelectDateTimeComponent
 } from './components';
 import {
   ActivitySavePage,
@@ -27,10 +26,8 @@ import {
   EmployeeSavePage,
   NoteSavePage,
   ProductSavePage,
-  RoleSavePage,
   PipelineMovetoPage,
   CustomerImportPage,
-  DealImportPage,
   EmployeeImportPage,
   ImportDataPage,
   ProductImportPage,
@@ -60,22 +57,20 @@ export const ANGULAR_MODULES = [
   ClipboardModule
 ];
 export const REUSE_COMPONENTS = [
-  ActivityTimeComponent,
   CategorySelectComponent,
   CustomerSelectComponent,
-  CustomerBirthdayComponent,
   DealSelectComponent,
   EmployeeSelectComponent,
+  EmployeeItemComponent,
+  EmployeeFilterComponent,
   PipelineSelectComponent,
   ProductSelectComponent,
-  RoleSelectComponent,
-  CustomerColumnComponent,
   DealItemComponent,
   FeedbackItemComponent,
   TicketItemComponent,
-  EmployeeItemComponent,
-  CustomerItemComponent
-
+  CustomerItemComponent,
+  SelectDateComponent,
+  SelectDateTimeComponent
 ];
 
 export const REUSE_PAGES = [
@@ -86,10 +81,8 @@ export const REUSE_PAGES = [
   EmployeeSavePage,
   NoteSavePage,
   ProductSavePage,
-  RoleSavePage,
   PipelineMovetoPage,
   CustomerImportPage,
-  DealImportPage,
   EmployeeImportPage,
   ImportDataPage,
   ProductImportPage,

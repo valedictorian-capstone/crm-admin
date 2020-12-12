@@ -6,7 +6,7 @@
         <div class="search">
             <nb-form-field class="not-search" [nbSpinner]="search.role.stage === 'querying'" [nbSpinnerSize]="'tiny'">
                 <nb-icon [ngStyle]="{'opacity': search.role.stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
-                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search.role.value" nbInput size="large" />
+                <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search.role.value" nbInput size="medium" />
             </nb-form-field>
         </div>
         <div class="items">
@@ -23,14 +23,14 @@
             Account List
         </div>
         <div class="search">
-            <button style="height: 3rem; width: 3rem; float: left" (click)="usePlusAccount()" nbButton status="success" outline>
+            <button style="float: left" (click)="usePlusAccount()" nbButton status="success" outline>
             <nb-icon icon="plus-outline"></nb-icon>
           </button>
             <nb-form-field style="width: calc(100% - 6rem); float: left;" class="not-search" [nbSpinner]="search.account.stage === 'querying'" [nbSpinnerSize]="'tiny'">
                 <nb-icon [ngStyle]="{'opacity': search.account.stage === 'done' ? '1' : '0'}" nbPrefix icon="search-outline"></nb-icon>
                 <input (input)="useFilterAccount()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="search.account.value" nbInput size="large" />
             </nb-form-field>
-            <button style="height: 3rem; width: 3rem" (click)="useReload()" nbButton status="default" outline>
+            <button (click)="useReload()" nbButton status="default" outline>
               <nb-icon icon="sync-outline"></nb-icon>
             </button>
         </div>

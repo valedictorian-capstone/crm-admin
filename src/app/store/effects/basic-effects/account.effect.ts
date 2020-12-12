@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AccountService } from '@services';
 import { AccountAction } from '@actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { AccountVM } from '@view-models';
 
 @Injectable()
 export class AccountEffect {
@@ -10,60 +12,54 @@ export class AccountEffect {
     protected readonly actions$: Actions,
     protected readonly service: AccountService
   ) { }
-  public readonly find$ = createEffect(() =>
+  public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AccountAction.useFindAllAction),
+      ofType(AccountAction.SocketAction),
+      tap(() => console.log('socket')),
       switchMap(action =>
-        this.service.findAll().pipe(
-          delay(1000),
-          map(accounts => AccountAction.useFindAllSuccessAction({ accounts, status: action.status })),
-          catchError(async (error) => AccountAction.useErrorAction({ error, status: action.status })),
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return AccountAction.SaveSuccessAction({ res: trigger.data as AccountVM });
+            } else if (trigger.type === 'update') {
+              return AccountAction.SaveSuccessAction({ res: trigger.data as AccountVM });
+            } else if (trigger.type === 'remove') {
+              return AccountAction.RemoveSuccessAction({ id: (trigger.data as AccountVM).id });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
         )
       )
     )
   );
-  public readonly create$ = createEffect(() =>
+  public readonly find$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AccountAction.useCreateAction),
+      ofType(AccountAction.FindAllAction),
       switchMap(action =>
-        this.service.insert(action.account).pipe(
-          delay(1000),
-          map(account => AccountAction.useCreateSuccessAction({ account, status: action.status })),
-          catchError(async (error) => AccountAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly update$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AccountAction.useUpdateAction),
-      switchMap(action =>
-        this.service.update(action.account).pipe(
-          delay(1000),
-          map(account => AccountAction.useUpdateSuccessAction({ account, status: action.status })),
-          catchError(async (error) => AccountAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly remove$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AccountAction.useRemoveAction),
-      switchMap(action =>
-        this.service.remove(action.id).pipe(
-          delay(1000),
-          map(id => AccountAction.useRemoveSuccessAction({ id, status: action.status })),
-          catchError(async (error) => AccountAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly unique$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AccountAction.useUniqueAction),
-      switchMap(action =>
-        this.service.checkUnique(action.data.label, action.data.value).pipe(
-          delay(1000),
-          map(result => AccountAction.useUniqueSuccessAction({ result, status: action.status })),
-          catchError(async (error) => AccountAction.useErrorAction({ error, status: action.status })),
-        ))
+        this.service.findAll().pipe(
+          map(res => AccountAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
     )
   );
 }

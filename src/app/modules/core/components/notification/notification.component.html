@@ -1,9 +1,9 @@
 <a class="crm-notification-circle" #bell (click)="useToggleNotification()">
-    <div class="badge" *ngIf="badge > 0">{{badge > 99 ? '99+' : badge}}</div>
-    <nb-icon [class.new]="new" [icon]="'bell'"></nb-icon>
+    <div class="badge" *ngIf="state.badge > 0">{{state.badge > 99 ? '99+' : state.badge}}</div>
+    <nb-icon [class.new]="state.new" [icon]="'bell'"></nb-icon>
 </a>
-<nb-card (clickOutside)="useHideNotification($event, bell)" [class.show]="showNotification" class="notification-list">
-    <ngx-spinner [name]="'notifications'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+<nb-card (clickOutside)="useHideNotification($event, bell)" [class.show]="state.show" class="notification-list">
+    <ngx-spinner [name]="'state.array'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header>
         Notifications
         <button class="float-right" nbButton size="small" status="default" shape="round" outline>
@@ -14,7 +14,7 @@
       </button>
     </nb-card-header>
     <nb-card-body>
-        <div class="notification" [class.notSeen]="!notification.isSeen" (click)="useSelect(notification)" *ngFor="let notification of notifications">
+        <div class="notification" [class.notSeen]="!notification.isSeen" (click)="useSelect(notification)" *ngFor="let notification of state.array">
             <div class="avatar">
                 <img *ngIf="notification.icon" [src]="notification.icon" />
                 <b *ngIf="!notification.icon">CRM</b>
@@ -22,16 +22,16 @@
             <div class="body">
                 <b>{{notification.body}}</b>
                 <div class="time">
-                    <b>{{notification.createdAt | time}}</b>
+                    <b>{{notification.createdAt  | date: 'EEEE, MMMM d, y, h:mm a'}}</b>
                 </div>
             </div>
         </div>
-        <div class="empty" *ngIf="notifications.length === 0">
+        <div class="empty" *ngIf="state.array.length === 0">
             <b>Empty Notifications</b>
         </div>
     </nb-card-body>
     <nb-card-footer>
-        <button (click)="showNotification = false" class="float-left" nbButton size="small" status="warning" shape="round" outline>
+        <button (click)="state.show = false" class="float-left" nbButton size="small" status="warning" shape="round" outline>
         <nb-icon icon="arrowhead-up-outline"></nb-icon>
       </button>
         <button class="float-right" (click)="useSeenAll()" nbButton size="small" status="info" shape="round" outline>
@@ -48,7 +48,7 @@
         <div class="body">
             <b>{{noti.body}}</b>
             <div class="time">
-                <b>{{noti.createdAt | time}}</b>
+                <b>{{noti.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</b>
             </div>
         </div>
     </div>

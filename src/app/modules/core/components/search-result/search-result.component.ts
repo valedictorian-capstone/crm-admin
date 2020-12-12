@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 export class SearchResultComponent implements OnInit {
   @Output() isSearch: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() value: string;
-  @Input() template: HTMLElement;
   menus = environment.filterTabs;
   stage = 'all';
   loading = false;

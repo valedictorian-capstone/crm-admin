@@ -7,7 +7,7 @@
             <span>{{deal.title}}</span>
             <br>
             <nb-icon pack="eva" icon="calendar" style="margin-right: 0.3rem;"></nb-icon>
-            <span>{{deal.createdAt | time}}</span>
+            <span>{{deal.createdAt  | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
         </div>
         <div class="deal-value">
             <nb-icon pack="eva" icon="person" style="margin-right: 0.3rem;"></nb-icon>
@@ -39,5 +39,5 @@
     <app-pipeline-activity [deal]="deal"></app-pipeline-activity>
 </nz-dropdown-menu>
 <ng-template #movetoRef let-data let-ref="dialogRef">
-    <app-reuse-pipeline-move-to [deal]="deal" (useMove)="useMoveTo($event); ref.close()" (useClose)="ref.close()"></app-reuse-pipeline-move-to>
+    <app-reuse-pipeline-move-to [payload]="{deal: deal}" (useMove)="useMoveTo($event); ref.close()" (useClose)="ref.close()"></app-reuse-pipeline-move-to>
 </ng-template>

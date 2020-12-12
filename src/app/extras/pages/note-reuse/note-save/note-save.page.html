@@ -1,28 +1,28 @@
-<nb-card style="position: relative; margin: 0;" [class.inside]="inside">
+<nb-card style="position: relative; margin: 0;" [class.inside]="payload.inside">
     <ngx-spinner [name]="'note-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
-        {{note ? 'Edit' : 'New'}} Note
+        {{payload.note ? 'Edit' : 'New'}} Note
         <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
 <nb-icon icon="close"></nb-icon>
 </button>
     </nb-card-header>
-    <nb-card-body [formGroup]="form">
-        <span [style.display]="fixDeal ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)">Deal <span class="text-danger">*</span></span>
-        <nb-form-field [style.display]="fixDeal ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
+    <nb-card-body [formGroup]="state.form">
+        <span [style.display]="payload.fixDeal ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty)">Deal <span class="text-danger">*</span></span>
+        <nb-form-field [style.display]="payload.fixDeal ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
-            <input #dealInput fullWidth (blur)="form.get('deal').markAsTouched()" [status]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'"
-                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useChangeValue($event.target.value)" />
+            <input #dealInput fullWidth (blur)="state.form.get('deal').markAsTouched()" [status]="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'"
+                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useSearch($event.target.value)" />
             <nb-icon icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #dealRef="nzDropdownMenu">
-            <app-reuse-deal-select [selected]="form.get('deal').value" #dealSelect (useSelect)="form.get('deal').setValue($event)" [template]="dealInput"></app-reuse-deal-select>
+            <app-reuse-deal-select [selected]="state.form.get('deal').value" #dealSelect (useSelect)="state.form.get('deal').setValue($event)"></app-reuse-deal-select>
         </nz-dropdown-menu>
-        <span [style.display]="fixDeal ? 'none' : 'block'" *ngIf="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select deal</span>
-        <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
+        <span [style.display]="payload.fixDeal ? 'none' : 'block'" *ngIf="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select deal</span>
+        <angular-editor [formControl]="state.form.get('description')" [config]="state.config"></angular-editor>
     </nb-card-body>
     <nb-card-footer>
-        <button style="float: right;" status="default" nbButton size="small" (click)="inside ? useClose.emit() : useDialog(cancelRef)">Cancel</button>
-        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="inside ? useSubmit() : useDialog(submitRef)" nbButton size="small">Save</button>
+        <button style="float: right;" status="default" nbButton size="small" (click)="payload.inside ? useClose.emit() : useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="payload.inside ? useSubmit() : useDialog(submitRef)" nbButton size="small">Save</button>
     </nb-card-footer>
 </nb-card>
 <ng-template #submitRef let-data let-ref="dialogRef">

@@ -1,61 +1,62 @@
 <nb-card style="position: relative; margin: 0;">
     <ngx-spinner [name]="'event-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
-        {{event ? 'Edit' : 'New'}} Event
+        {{payload.event ? 'Edit' : 'New'}} Event
         <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
           <nb-icon icon="close"></nb-icon>
         </button>
     </nb-card-header>
-    <nb-card-body [formGroup]="form">
+    <nb-card-body [formGroup]="state.form">
         <nb-form-field style="width: 100%; margin-bottom: 1rem;">
-            <input style="height: 3rem;" [status]="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown placeHolder="Name" shape="rectangle" [formControl]="form.get('name')" nbInput size="large"
-            />
+            <input style="height: 3rem;" [status]="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown placeHolder="Name" shape="rectangle" [formControl]="state.form.get('name')"
+                nbInput size="large" />
         </nb-form-field>
-        <span *ngIf="form.get('name').invalid && (form.get('name').touched || form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
+        <span *ngIf="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
             <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-            <input fullWidth [status]="form.get('dateStart').invalid && (form.get('dateStart').touched || form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateStart').value)" (focus)="showDateStartPicker = true" [nzVisible]="showDateStartPicker"
-                placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input fullWidth [status]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateStart').value | date: 'HH:mm dd/MM/yyyy'" (focus)="state.showDateStartPicker = true"
+                [nzVisible]="state.showDateStartPicker" placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
-            <app-reuse-activity-time [date]="form.get('dateStart').value" (useChange)="form.get('dateStart').setValue($event); useCheckTime(); showDateStartPicker = false"></app-reuse-activity-time>
+            <app-reuse-select-date-time [date]="state.form.get('dateStart').value" [min]="state.min" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-reuse-select-date-time>
         </nz-dropdown-menu>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
             <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-            <input fullWidth [status]="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('dateEnd').value)" (focus)="showDateEndPicker = true" [nzVisible]="showDateEndPicker"
-                placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input fullWidth [status]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateEnd').value | date: 'HH:mm dd/MM/yyyy'" (focus)="state.showDateEndPicker = true"
+                [nzVisible]="state.showDateEndPicker" placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
-            <app-reuse-activity-time [date]="form.get('dateEnd').value" (useChange)="form.get('dateEnd').setValue($event); useCheckTime(); showDateEndPicker = false"></app-reuse-activity-time>
+            <app-reuse-select-date-time [date]="state.form.get('dateEnd').value" [min]="state.minEnd" [max]="state.max" (useChange)="state.form.get('dateEnd').setValue($event); useCheckTime(); state.showDateEndPicker = false"></app-reuse-select-date-time>
         </nz-dropdown-menu>
-        <span *ngIf="form.get('dateEnd').invalid && (form.get('dateEnd').touched || form.get('dateEnd').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select End Date greater than Start Date</span>
+        <span *ngIf="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select End Date greater than Start Date!</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Group</span>
         <nb-form-field style="max-width: 100%; margin-bottom: 1rem">
             <nb-icon icon="people-outline" nbPrefix></nb-icon>
-            <nb-select fullWidth multiple placeholder="Group" [formControl]="form.get('groups')">
-                <nb-option [value]="group.id" *ngFor="let group of groups">{{group.name}}</nb-option>
+            <nb-select fullWidth multiple placeholder="Group" [formControl]="state.form.get('groups')">
+                <nb-option [value]="group.id" *ngFor="let group of state.groups">{{group.name}}</nb-option>
             </nb-select>
         </nb-form-field>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Trigger Time Run</span>
-        <div class="w-100" *ngFor="let trigger of form.get('triggers')['controls']; let i = index" [formGroup]="trigger">
+        <div class="w-100" *ngFor="let trigger of state.form.get('triggers')['controls']; let i = index" [formGroup]="trigger">
             <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                 <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-                <input fullWidth [status]="trigger.get('time').invalid && (trigger.get('time').touched || trigger.get('time').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(trigger.get('time').value)" (focus)="trigger.get('showTime').setValue(true)" [nzVisible]="trigger.get('showTime').value"
-                    placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+                <input fullWidth [status]="trigger.get('time').invalid && (trigger.get('time').touched || trigger.get('time').dirty) ? 'danger' : 'basic'" [value]="trigger.get('time').value | date: 'HH:mm dd/MM/yyyy'" (focus)="trigger.get('showTime').setValue(true)"
+                    [nzVisible]="trigger.get('showTime').value" placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
                 <nb-icon nbSuffix (click)="useRemoveTrigger(i)" status="danger" icon="trash-2-outline"></nb-icon>
             </nb-form-field>
+            <span *ngIf="trigger.get('time').invalid && (trigger.get('time').touched || trigger.get('time').dirty)" class="text-danger mb-3 display-block font-weight-bold">Trigger time must be greater than Start Date and less than End Date</span>
             <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
-                <app-reuse-activity-time [date]="trigger.get('time').value" (useChange)="trigger.get('time').setValue($event); trigger.get('showTime').setValue(false)"></app-reuse-activity-time>
+                <app-reuse-select-date-time [date]="trigger.get('time').value" [min]="state.form.get('dateStart').value" [max]="state.form.get('dateEnd').value" (useChange)="trigger.get('time').setValue($event); trigger.get('showTime').setValue(false)"></app-reuse-select-date-time>
             </nz-dropdown-menu>
         </div>
         <button nbButton status="success" (click)="useAddTrigger()" size="small" class="my-3">New Trigger Time</button>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description</span>
-        <angular-editor [formControl]="form.get('description')" [config]="config"></angular-editor>
+        <angular-editor [formControl]="state.form.get('description')" [config]="state.config"></angular-editor>
     </nb-card-body>
     <nb-card-footer>
-        <button *ngIf="event" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
+        <button *ngIf="payload.event" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
           <nb-icon icon="more-horizontal-outline"></nb-icon>
         </button>
         <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -66,7 +67,7 @@
             </ul>
         </nz-dropdown-menu>
         <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
-        <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
     </nb-card-footer>
 </nb-card>
 <ng-template #submitRef let-data let-ref="dialogRef">

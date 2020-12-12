@@ -7,13 +7,11 @@ const attachments = createSelector(attachmentFeatureSelector, attachmentAdapter.
 const entities = createSelector(attachmentFeatureSelector, attachmentAdapter.getSelectors().selectEntities);
 const ids = createSelector(attachmentFeatureSelector, attachmentAdapter.getSelectors().selectIds);
 const total = createSelector(attachmentFeatureSelector, attachmentAdapter.getSelectors().selectTotal);
-const error = createSelector(attachmentFeatureSelector, (state) => state.error);
-const status = createSelector(attachmentFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(attachmentFeatureSelector, (state) => state.firstLoad);
 export const attachmentSelector = {
   attachments,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

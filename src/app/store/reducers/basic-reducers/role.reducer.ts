@@ -1,60 +1,32 @@
-import { RoleAction } from '@actions';
-import { roleAdapter, roleInitialState } from '@adapters';
 import { createReducer, on } from '@ngrx/store';
+import { roleAdapter, roleInitialState } from '@adapters';
+import { RoleAction } from '@actions';
 import { RoleState } from '@states';
 export const roleFeatureKey = 'role';
 export const roleReducer = createReducer(
   roleInitialState,
-  on(RoleAction.useFindAllAction,
-    (state, action) => roleAdapter.setAll<RoleState>([], {
+  on(RoleAction.FindAllSuccessAction,
+    (state, action) => roleAdapter.setAll<RoleState>((state.ids as string[]).map((id) => state.entities[id]), {
       ...state,
-      status: action.status
+      firstLoad: true
     })
   ),
-  on(RoleAction.useFindAllSuccessAction,
-    (state, action) => roleAdapter.setAll<RoleState>(action.roles, {
+  on(RoleAction.FindAllSuccessAction,
+    (state, action) => roleAdapter.setAll<RoleState>(action.res, {
       ...state,
-      status: action.status
     })
   ),
-  on(RoleAction.useUpdateAction,
-    (state, action) => roleAdapter.setOne<RoleState>(undefined, {
+  on(RoleAction.SaveSuccessAction,
+    (state, action) => roleAdapter.upsertOne<RoleState>(action.res, {
       ...state,
-      status: action.status
-    }),
-  ),
-  on(RoleAction.useUpdateSuccessAction,
-    (state, action) => roleAdapter.updateOne<RoleState>({
-      id: action.role.id,
-      changes: action.role
-    }, state)
-  ),
-  on(RoleAction.useCreateAction,
-    (state, action) => roleAdapter.setOne<RoleState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(RoleAction.useCreateSuccessAction,
-    (state, action) => roleAdapter.addOne<RoleState>(action.role, state)
-  ),
-  on(RoleAction.useRemoveAction,
-    (state, action) => roleAdapter.setOne<RoleState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(RoleAction.useRemoveSuccessAction,
-    (state, action) => roleAdapter.removeOne<RoleState>(action.id, state)
-  ),
-  on(RoleAction.useResetAction,
-    (state, action) => roleAdapter.setAll<RoleState>(action.roles, roleInitialState)
-  ),
-  on(RoleAction.useErrorAction,
-    (state, action) => roleAdapter.setOne<RoleState>(undefined, {
-      ...state,
-      status: action.status,
-      error: action.error
     })
+  ),
+  on(RoleAction.RemoveSuccessAction,
+    (state, action) => roleAdapter.removeOne<RoleState>(action.id, {
+      ...state,
+    })
+  ),
+  on(RoleAction.ResetAction,
+    () => roleAdapter.setAll<RoleState>([], roleInitialState)
   ),
 );

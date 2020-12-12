@@ -1,6 +1,7 @@
 export * from './account.adapter';
 export * from './customer.adapter';
 export * from './device.adapter';
+export * from './comment.adapter';
 export * from './event.adapter';
 export * from './group.adapter';
 export * from './role.adapter';

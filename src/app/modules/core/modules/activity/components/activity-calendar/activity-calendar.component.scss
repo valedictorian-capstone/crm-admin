@@ -1,0 +1,15 @@
+mwl-calendar-month-view {
+     ::ng-deep {
+        div.cal-month-view {
+            min-width: 50rem;
+        }
+    }
+}
+
+mwl-calendar-week-view {
+     ::ng-deep {
+        div.cal-week-view {
+            min-width: 50rem;
+        }
+    }
+}

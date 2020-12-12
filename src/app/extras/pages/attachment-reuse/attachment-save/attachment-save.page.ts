@@ -1,23 +1,28 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
 import { AttachmentService } from '@services';
+import { AttachmentAction } from '@store/actions';
+import { State } from '@store/states';
 import { AttachmentVM, DealVM } from '@view-models';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
+import { finalize, tap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reuse-attachment-save',
   templateUrl: './attachment-save.page.html',
   styleUrls: ['./attachment-save.page.scss']
 })
-export class AttachmentSavePage implements OnInit, OnChanges {
+export class AttachmentSavePage implements OnInit, OnChanges, OnDestroy {
   @Input() deal: DealVM;
   @Input() inside: boolean;
   @Input() fixDeal = false;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<AttachmentVM[]> = new EventEmitter<AttachmentVM[]>();
+  subscriptions: Subscription[] = [];
   form: FormGroup;
   files: NzUploadFile[] = [];
   constructor(
@@ -25,6 +30,7 @@ export class AttachmentSavePage implements OnInit, OnChanges {
     protected readonly dialogService: NbDialogService,
     protected readonly attachmentService: AttachmentService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly store: Store<State>
   ) {
     this.useShowSpinner();
     this.useInitForm();
@@ -58,19 +64,24 @@ export class AttachmentSavePage implements OnInit, OnChanges {
         formData.append('files', file as any);
       }
       formData.append('deal', this.form.value.deal.id);
-      this.attachmentService.insert(formData)
-        .pipe(
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe((data) => {
-          this.toastrService.success('', 'Save attachment successful!', { duration: 3000 });
-          this.useDone.emit(data);
-          this.useClose.emit();
-        }, (err) => {
-          this.toastrService.danger('', 'Save attachment fail! Something wrong at runtime', { duration: 3000 });
-        });
+      this.subscriptions.push(
+        this.attachmentService.insert(formData)
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Save attachment successful!', { duration: 3000 });
+              this.useDone.emit(data);
+              this.useClose.emit();
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Save attachment fail! ' + err.message, { duration: 3000 });
+              return of(undefined);
+            }),
+            finalize(() => {
+              this.useHideSpinner();
+            })
+          )
+          .subscribe()
+      );
     } else {
       this.form.markAsUntouched();
       this.form.markAsTouched();
@@ -92,5 +103,8 @@ export class AttachmentSavePage implements OnInit, OnChanges {
     setTimeout(() => {
       this.spinner.hide('attachment-save');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

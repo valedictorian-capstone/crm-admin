@@ -1,101 +1,41 @@
-<div class="crm-activity">
-    <div class='crm-activity-header'>
-        <div class="float-left mb-2" [style.height]="'40px'">
-            <button *ngIf="canUpdateDeal" class="float-left border-radius-0" outline (click)="usePlus()" nbButton status="success" size="small" [style.height]="'40px'" [style.width]="'40px'">
-              <nb-icon icon="plus-outline"></nb-icon>
-            </button>
-            <nb-form-field class="float-left">
-                <nb-icon *ngIf="stage === 'calendar'" icon="calendar-outline" nbPrefix></nb-icon>
-                <input class="border-radius-0" *ngIf="stage === 'calendar'" readonly size="small" [nbDatepicker]="datePicker" [style.height]="'40px'" [style.maxWidth]="'150px'" nbInput [value]="viewDate | date: 'dd/MM/yyyy'">
-                <input class="border-radius-0" placeholder="Select deal" *ngIf="stage === 'list'" readonly size="small" [style.height]="'40px'" [style.maxWidth]="'150px'" nbInput nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false"
-                    [nzTrigger]="'click'" [value]="search.deal?.title" />
-                <nb-icon nbSuffix *ngIf="stage === 'list' && search.deal" (click)="search.deal = undefined; useFilterList()" icon="close-circle-outline" status="danger"></nb-icon>
-                <nb-datepicker (dateChange)="viewDate = $event" [format]="'dd/MM/yyyy'" #datePicker></nb-datepicker>
-                <nz-dropdown-menu #dealRef="nzDropdownMenu">
-                    <app-reuse-deal-select [selected]="search.deal" #dealSelect [forSearch]="true" (useSelect)="search.deal = $event; useFilterList()"></app-reuse-deal-select>
-                </nz-dropdown-menu>
-            </nb-form-field>
-            <button class="float-left border-radius-0" (click)="stage = 'calendar'; useFilter()" outline nbButton [status]="stage === 'calendar' ? 'primary' : 'default'" [style.height]="'40px'" [style.width]="'40px'" size="small">
-              <nb-icon icon="calendar-outline"></nb-icon>
-            </button>
-            <button class="float-left border-radius-0" (click)="stage = 'list'; useFilterList()" outline nbButton [status]="stage === 'list' ? 'primary' : 'default'" [style.height]="'40px'" [style.width]="'40px'" size="small">
-              <nb-icon icon="menu-outline"></nb-icon>
-            </button>
-        </div>
-        <div *ngIf="stage === 'calendar'" class="float-left mb-2" [style.minWidth]="'360px'">
-            <nb-form-field class="float-left border-radius-0">
-                <nb-select size="small" [style.height]="'40px'" [style.width]="'120px'" placeholder="Type" [(ngModel)]="type">
-                    <nb-option value="month">Month</nb-option>
-                    <nb-option value="week">Week</nb-option>
-                    <nb-option value="day">Day</nb-option>
-                </nb-select>
-            </nb-form-field>
-            <button nbButton status="primary" class="float-left border-radius-0" [style.height]="'40px'" [style.width]="'40px'" size="small" mwlCalendarPreviousView [view]="type" [(viewDate)]="viewDate">
-            <nb-icon icon="arrow-ios-back-outline"></nb-icon>
-            </button>
-            <button nbButton status="default" class="float-left border-radius-0" [style.height]="'40px'" [style.width]="'80px'" size="small" mwlCalendarToday [(viewDate)]="viewDate">
-                Today
-            </button>
-            <button nbButton status="primary" class="float-left border-radius-0" [style.height]="'40px'" [style.width]="'40px'" size="small" mwlCalendarNextView [view]="type" [(viewDate)]="viewDate">
-              <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
-            </button>
-        </div>
-        <div *ngIf="stage === 'list'" class="float-left mb-2" [style.minHeight]="'40px'">
-            <nb-form-field class="float-left mb-2">
-                <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-                <input readonly class="border-radius-0" [(ngModel)]="search.range" (ngModelChange)="useFilterList()" [style.maxWidth]="'300px'" [style.height]="'40px'" fullWidth placeholder="Start Time - End Time" nbInput [nbDatepicker]="formpicker" />
-                <nb-rangepicker #formpicker format="yyyy-MM-dd"></nb-rangepicker>
-            </nb-form-field>
-            <div class="display-block float-left mb-2">
-                <button (click)="useToggleFilterList('notStart')" outline nbButton [status]="search.states.indexOf('notStart') > -1 ? 'primary' : 'default'" class="float-left border-radius-0" [style.height]="'40px'" size="small">
-              Not Started
-            </button>
-                <button (click)="useToggleFilterList('processing')" outline nbButton [status]="search.states.indexOf('processing') > -1 ? 'success' : 'default'" class="float-left border-radius-0" [style.height]="'40px'" size="small">
-              Processing
-            </button>
-                <button (click)="useToggleFilterList('expired')" outline nbButton [status]="search.states.indexOf('expired') > -1 ? 'danger' : 'default'" class="float-left border-radius-0" [style.height]="'40px'" size="small">
-              Expired
-            </button>
+<nb-card class="h-100 w-100 position-relative">
+    <ngx-spinner [name]="'activity-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 2.25rem;">
+        <span class="display-flex align-items-center float-left h-100">
+      <nb-icon icon="calendar-outline" class="mr-2"></nb-icon>
+        <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Activity</b>
+      </span>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+        <nb-icon icon="sync-outline"></nb-icon>
+        </button>
+        <button *ngIf="state.stage === 'calendar'" class="float-right mr-2" (click)="state.stage = 'list'" outline nbButton size="small" status="info">
+          <nb-icon icon="menu-outline"></nb-icon>
+        </button>
+        <button *ngIf="state.stage === 'list'" class="float-right mr-2" (click)="state.stage = 'calendar'" outline nbButton size="small" status="info">
+          <nb-icon icon="calendar-outline"></nb-icon>
+        </button>
+        <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="activitySearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
+          <nb-icon icon="search-outline"></nb-icon>
+          </button>
+        <button *ngIf="state.canAssign" class="float-right mr-2" nz-dropdown [nzDropdownMenu]="assigneeSearch" [nzTrigger]="'click'" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" outline nbButton status="info" size="small">
+        <nb-icon icon="people-outline"></nb-icon>
+        </button>
+        <button *ngIf="state.canUpdateDeal" class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
+          <nb-icon icon="plus-outline"></nb-icon>
+          </button>
+        <nz-dropdown-menu #assigneeSearch="nzDropdownMenu">
+            <app-reuse-employee-filter [selectedEmployees]="state.search.assignees" class="display-block" style="margin-left: 1.75rem;" (useSearch)="state.search.assignees = $event; useFilter()"></app-reuse-employee-filter>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #activitySearch="nzDropdownMenu">
+            <app-activity-search class="display-block" style="margin-left: 1.75rem;" [stage]="state.stage" (useSearch)="useSearch($event)" [search]="state.search"></app-activity-search>
+        </nz-dropdown-menu>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="crm-activity">
+            <div class="crm-activity-body">
+                <app-activity-calendar *ngIf="state.stage === 'calendar'" [events]="state.events" [type]="state.search.type" [viewDate]="state.search.viewDate" [view]="state.search.view" [canAdd]="state.canUpdateDeal" [canUpdate]="state.canUpdateDeal"></app-activity-calendar>
+                <app-activity-list *ngIf="state.stage === 'list'" [canAssign]="state.canAssign" [events]="state.events" [canUpdate]="state.canUpdateDeal"></app-activity-list>
             </div>
         </div>
-    </div>
-    <div class='crm-activity-body'>
-        <div *ngIf="stage === 'calendar'" [ngSwitch]="type">
-            <mwl-calendar-month-view *ngSwitchCase="'month'" (dayClicked)="usePlusWithDay($event)" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
-            </mwl-calendar-month-view>
-            <mwl-calendar-week-view *ngSwitchCase="'week'" (hourSegmentClicked)="usePlusWithHour($event)" [eventTemplate]="dayEvent" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
-            </mwl-calendar-week-view>
-            <mwl-calendar-day-view *ngSwitchCase="'day'" (hourSegmentClicked)="usePlusWithHour($event)" [eventTemplate]="dayEvent" [viewDate]="viewDate" [events]="events" (eventClicked)="eventClicked($event)" (eventTimesChanged)="eventTimesChanged($event)">
-            </mwl-calendar-day-view>
-        </div>
-        <div nz-row *ngIf="stage === 'list'">
-            <div nz-col *ngFor="let event of events" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6">
-                <div class="activity" (click)="eventClicked({ event: event })">
-                    <div class="icon">
-                        <nb-icon *ngIf="event.type === 'email'" status="danger" icon="email-outline"></nb-icon>
-                        <nb-icon *ngIf="event.type === 'call'" status="success" icon="phone-outline"></nb-icon>
-                        <nb-icon *ngIf="event.type === 'meetting'" icon="people-outline"></nb-icon>
-                        <nb-icon *ngIf="event.type === 'task'" status="primary" icon="clock-outline"></nb-icon>
-                        <nb-icon *ngIf="event.type === 'deadline'" status="warning" icon="flag-outline"></nb-icon>
-                        <nb-icon *ngIf="event.type === 'lunch'" status="info" icon="utensils" pack="font-awesome"></nb-icon>
-                    </div>
-                    <div class="content">
-                        {{event.name}}
-                    </div>
-                    <div class="time" [class.processing]="event.status === 'processing'" [class.done]="event.status === 'done'">
-                        <span class="text" [class.text-success]="event.state === 'processing' && event.status === 'processing'" [class.text-danger]="event.state === 'expired' && event.status === 'processing'">{{event.dateStart | time}}</span>
-                        <nz-tag style="position: absolute; right: 0;" [nzColor]="event.state === 'processing' ? 'cyan' : (event.state === 'expired' ? 'volcano' : 'geekblue')">
-                            {{event.state === 'processing' ? 'Processing' : (event.state === 'expired' ? 'Expired' : 'Not Started')}}
-                        </nz-tag>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<ng-template #dayEvent let-weekEvent="weekEvent">
-    <!-- {{weekEvent. title}} asndlasdlsakjd -->
-    <button nbButton outline [status]="weekEvent.event.state === 'notStart' ? 'default' : (weekEvent.event.state === 'processing' ? 'primary' : 'success')" size="small" (click)="eventClicked({event: weekEvent.event})">
-      <nb-icon [icon]="useIcon(weekEvent.event.type).icon" [pack]="useIcon(weekEvent.event.type).pack"></nb-icon>
-    </button>
-</ng-template>
+    </nb-card-body>
+</nb-card>

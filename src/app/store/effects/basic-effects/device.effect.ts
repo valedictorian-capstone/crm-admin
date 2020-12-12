@@ -1,114 +1,68 @@
-import { createAction, props } from '@ngrx/store';
-import { DeviceCM, DeviceUM, DeviceVM } from '@view-models';
-const DeviceActionType = {
-  FIND: {
-    FETCH: '[Device] Fetch Actions',
-    SUCCESS: '[Device] Fetch Actions Success',
-    ERROR: '[Device] Fetch Actions Error',
-  },
-  CREATE: {
-    FETCH: '[Device] Create Actions',
-    SUCCESS: '[Device] Create Actions Success',
-    ERROR: '[Device] Create Actions Error',
-  },
-  UPDATE: {
-    FETCH: '[Device] Update Actions',
-    SUCCESS: '[Device] Update Actions Success',
-    ERROR: '[Device] Update Actions Error',
-  },
-  REMOVE: {
-    FETCH: '[Device] Remove Actions',
-    SUCCESS: '[Device] Remove Actions Success',
-    ERROR: '[Device] Remove Actions Error',
-  },
-  UNIQUE: {
-    FETCH: '[Device] Unique Actions',
-    SUCCESS: '[Device] Unique Actions Success',
-    ERROR: '[Device] Unique Actions Error',
-  },
-  RESET: {
-    FETCH: '[Device] Reset Actions',
-  },
-};
-const useFindAllAction = createAction(
-  DeviceActionType.FIND.FETCH,
-  props<{ status: string }>()
-);
-const useFindAllSuccessAction = createAction(
-  DeviceActionType.FIND.SUCCESS,
-  props<{ devices: DeviceVM[], status: string }>()
-);
-const useFindAllErrorAction = createAction(
-  DeviceActionType.FIND.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useCreateAction = createAction(
-  DeviceActionType.CREATE.FETCH,
-  props<{ device: DeviceCM, status: string }>()
-);
-const useCreateSuccessAction = createAction(
-  DeviceActionType.CREATE.SUCCESS,
-  props<{ device: DeviceVM, status: string }>()
-);
-const useCreateErrorAction = createAction(
-  DeviceActionType.CREATE.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useUpdateAction = createAction(
-  DeviceActionType.UPDATE.FETCH,
-  props<{ device: DeviceUM, status: string }>()
-);
-const useUpdateSuccessAction = createAction(
-  DeviceActionType.UPDATE.SUCCESS,
-  props<{ device: DeviceVM, status: string }>()
-);
-const useUpdateErrorAction = createAction(
-  DeviceActionType.UPDATE.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useRemoveAction = createAction(
-  DeviceActionType.REMOVE.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useRemoveSuccessAction = createAction(
-  DeviceActionType.REMOVE.SUCCESS,
-  props<{ message: string, status: string }>()
-);
-const useRemoveErrorAction = createAction(
-  DeviceActionType.REMOVE.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useUniqueAction = createAction(
-  DeviceActionType.REMOVE.FETCH,
-  props<{ data: { label: string, value: string }, status: string }>()
-);
-const useUniqueSuccessAction = createAction(
-  DeviceActionType.REMOVE.SUCCESS,
-  props<{ result: boolean, status: string }>()
-);
-const useUniqueErrorAction = createAction(
-  DeviceActionType.REMOVE.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  DeviceActionType.RESET.FETCH,
-  props<{ devices: DeviceVM[] }>()
-);
-export const DeviceAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useFindAllErrorAction,
-  useCreateAction,
-  useCreateSuccessAction,
-  useCreateErrorAction,
-  useUpdateAction,
-  useUpdateSuccessAction,
-  useUpdateErrorAction,
-  useRemoveAction,
-  useRemoveSuccessAction,
-  useRemoveErrorAction,
-  useUniqueAction,
-  useUniqueSuccessAction,
-  useUniqueErrorAction,
-  useResetAction
-};
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { DeviceService } from '@services';
+import { DeviceAction } from '@actions';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { DeviceVM } from '@view-models';
+
+@Injectable()
+export class DeviceEffect {
+  constructor(
+    protected readonly actions$: Actions,
+    protected readonly service: DeviceService
+  ) { }
+  public readonly socket$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DeviceAction.SocketAction),
+      tap(() => console.log('socket')),
+      switchMap(action =>
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return DeviceAction.SaveSuccessAction({ res: trigger.data as DeviceVM });
+            } else if (trigger.type === 'update') {
+              return DeviceAction.SaveSuccessAction({ res: trigger.data as DeviceVM });
+            } else if (trigger.type === 'remove') {
+              return DeviceAction.RemoveSuccessAction({ id: (trigger.data as DeviceVM).id });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
+        )
+      )
+    )
+  );
+  public readonly find$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DeviceAction.FindAllAction),
+      switchMap(action =>
+        this.service.findAll().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(res => DeviceAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
+    )
+  );
+}

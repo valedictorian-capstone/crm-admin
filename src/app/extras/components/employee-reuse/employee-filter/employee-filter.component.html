@@ -1,0 +1,15 @@
+<div class="employee-filter">
+    <ngx-spinner [name]="'employee-filter'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-form-field class="not-search" style="width: 100%; margin-bottom: 1rem;">
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input (input)="useFilter()" fullWidth [placeholder]="'Search'" shape="rectangle" [(ngModel)]="state.search" nbInput size="large" />
+
+    </nb-form-field>
+    <div class="w-100 h-100 position-relative" *ngFor="let employee of state.filterArray">
+        <app-reuse-employee-item [search]="state.search" [employee]="employee"></app-reuse-employee-item>
+        <nb-checkbox [checked]="useChecked(employee)" (checkedChange)="useSelect($event, employee)" status="info" class="position-absolute" style="top: 0.5rem; left: 0.5rem; z-index: 1;"></nb-checkbox>
+    </div>
+    <div class="empty" *ngIf="state.filterArray.length === 0">
+        <b>Empty Employees</b>
+    </div>
+</div>

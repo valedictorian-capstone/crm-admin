@@ -4,8 +4,7 @@ import { NoteVM } from '@view-models';
 export const noteAdapter: EntityAdapter<NoteVM> = createEntityAdapter<NoteVM>();
 
 export const noteInitialState: NoteState = noteAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
+  firstLoad: false
 });

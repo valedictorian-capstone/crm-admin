@@ -5,8 +5,7 @@ import { DeviceVM } from '@view-models';
 export const deviceAdapter: EntityAdapter<DeviceVM> = createEntityAdapter<DeviceVM>();
 
 export const deviceInitialState: DeviceState = deviceAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
+  firstLoad: false
 });

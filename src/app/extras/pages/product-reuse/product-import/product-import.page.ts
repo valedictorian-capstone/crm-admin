@@ -1,64 +1,68 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ElementRef } from '@angular/core';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { NbToastrService } from '@nebular/theme';
 import { ProductService } from '@services';
 import { ProductVM } from '@view-models';
-import * as XLSX from 'xlsx';
-import { finalize } from 'rxjs/operators';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { DropResult } from 'ngx-smooth-dnd';
-
+import { Subscription, of } from 'rxjs';
+import { finalize, tap, catchError } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
+interface IProductImportPageState {
+  formArray: FormArray;
+  config: AngularEditorConfig;
+}
 @Component({
   selector: 'app-product-import',
   templateUrl: './product-import.page.html',
   styleUrls: ['./product-import.page.scss']
 })
-export class ProductImportPage implements OnInit, OnChanges {
+export class ProductImportPage implements OnChanges, OnDestroy {
   @Input() data: ProductVM[];
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  products: FormArray = new FormArray([]);
-  config: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: '20rem',
-    minHeight: '5rem',
-    placeholder: 'Enter text here...',
-    translate: 'no',
-    defaultParagraphSeparator: 'p',
-    defaultFontName: 'Arial',
-    toolbarHiddenButtons: [
-      ['bold']
-    ],
-    customClasses: [
-      {
-        name: 'quote',
-        class: 'quote',
-      },
-      {
-        name: 'redText',
-        class: 'redText'
-      },
-      {
-        name: 'titleText',
-        class: 'titleText',
-        tag: 'h1',
-      },
-    ]
-  };
+  subscriptions: Subscription[] = [];
+  state: IProductImportPageState = {
+    formArray: new FormArray([]),
+    config: {
+      editable: true,
+      spellcheck: true,
+      height: '20rem',
+      minHeight: '5rem',
+      placeholder: 'Enter text here...',
+      translate: 'no',
+      defaultParagraphSeparator: 'p',
+      defaultFontName: 'Arial',
+      toolbarHiddenButtons: [
+        ['bold']
+      ],
+      customClasses: [
+        {
+          name: 'quote',
+          class: 'quote',
+        },
+        {
+          name: 'redText',
+          class: 'redText'
+        },
+        {
+          name: 'titleText',
+          class: 'titleText',
+          tag: 'h1',
+        },
+      ]
+    },
+  }
   constructor(
-    protected readonly productService: ProductService,
+    protected readonly service: ProductService,
     protected readonly toastrService: NbToastrService,
   ) { }
 
-  ngOnInit() {
-
-  }
   ngOnChanges() {
     if (this.data) {
-      this.products.clear();
+      this.state.formArray.clear();
       for (const item of this.data) {
         const group = new FormGroup({
           code: new FormControl('New Code', [Validators.required]),
@@ -83,26 +87,31 @@ export class ProductImportPage implements OnInit, OnChanges {
             }
           }
         }
-        this.products.push(group);
+        this.state.formArray.push(group);
       }
     }
   }
   useImport = () => {
-    if (this.products.valid) {
+    if (this.state.formArray.valid) {
       this.useLoading.emit();
-      this.productService.import(this.products.controls.map((e) => ({
-        ...e.value,
-        price: parseInt(e.value.price, 0)
-      }))).pipe(
-        finalize(() => {
-          this.useUnLoading.emit();
-        })
-      ).subscribe((data) => {
-        this.toastrService.success('', 'Import products successful!', { duration: 3000 });
-        this.useChange.emit();
-      }, (err) => {
-        this.toastrService.danger('', 'Import products fail! Something wrong at runtime', { duration: 3000 });
-      });
+      this.subscriptions.push(
+        this.service.import(this.state.formArray.controls.map((e) => ({
+          ...e.value,
+          price: parseInt(e.value.price, 0)
+        }))).pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Import products successful!', { duration: 3000 });
+            this.useChange.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Import products fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useUnLoading.emit();
+          })
+        ).subscribe()
+      );
     }
   }
   useDownload = (table: ElementRef<any>) => {
@@ -113,16 +122,24 @@ export class ProductImportPage implements OnInit, OnChanges {
     XLSX.writeFile(wb, 'product-example' + new Date().getTime() + '.xlsx');
   }
   useCheckCode = (form: FormGroup) => {
-    if (form.get('code').value) {
+    const code = form.get('code');
+    if (code.valid) {
       form.get('codeStage').setValue('querying');
-      setTimeout(async () => {
-        form.get('code');
-        const check = await this.productService.checkUnique('code', form.get('code').value).toPromise();
-        if (form.get('code').valid && check) {
-          form.get('code').setErrors({ duplicate: true });
-        }
-        form.get('codeStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('code', code.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                code.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('codeStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
@@ -153,8 +170,8 @@ export class ProductImportPage implements OnInit, OnChanges {
     }
   }
   useRemoveItem = (index: number) => {
-    this.products.removeAt(index);
-    if (this.products.length === 0) {
+    this.state.formArray.removeAt(index);
+    if (this.state.formArray.length === 0) {
       this.data = undefined;
       this.useChange.emit();
     }
@@ -172,5 +189,8 @@ export class ProductImportPage implements OnInit, OnChanges {
     if (event.removedIndex != null && event.addedIndex != null) {
       moveItemInArray((form.get('parameters') as FormArray).controls, event.removedIndex, event.addedIndex);
     }
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

@@ -18,7 +18,7 @@
     </tbody>
 </table>
 <nb-accordion *ngIf="data">
-    <nb-accordion-item *ngFor="let form of employees['controls']; let i = index" class="mb-2">
+    <nb-accordion-item *ngFor="let form of state.formArray['controls']; let i = index" class="mb-2">
         <nb-accordion-item-header>{{form.value.fullname}}</nb-accordion-item-header>
         <nb-accordion-item-body>
             <div class="avatar">
@@ -65,12 +65,12 @@
             <nb-form-field style="max-width: 100%; margin-bottom: 1rem">
               <nb-icon icon="pin-outline" nbPrefix></nb-icon>
               <nb-select fullWidth multiple placeholder="Role" [formControl]="form.get('roles')">
-                <nb-option [value]="role.id" *ngFor="let role of roles">{{role.name}}</nb-option>
+                <nb-option [value]="role.id" *ngFor="let role of state.roles">{{role.name}}</nb-option>
               </nb-select>
             </nb-form-field>
-          <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = employees.length === 0 ? undefined : data">Remove</button>
+          <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = state.formArray.length === 0 ? undefined : data">Remove</button>
       </nb-accordion-item-body>
   </nb-accordion-item>
 </nb-accordion>
-<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="employees.invalid">Save</button>
+<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="state.formArray.invalid">Save</button>
 <button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>
