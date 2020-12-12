@@ -9,4 +9,3 @@ export * from './comment.service';
 export * from './category.service';
 export * from './notification.service';
 export * from './ticket.service';
-export * from './trigger.service';

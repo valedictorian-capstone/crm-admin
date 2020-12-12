@@ -1,6 +1,6 @@
 <nb-card class="position-relative">
     <ngx-spinner [name]="'pipeline-move-to'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <nb-card-header *ngIf="!inside">
+    <nb-card-header *ngIf="!payload.inside">
         Move deal
         <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
         <nb-icon icon="close"></nb-icon>
@@ -18,62 +18,60 @@
         fullWidth
         nz-dropdown
         [nzDropdownMenu]="pipelineRef"
-        [value]="pipeline?.name"
+        [value]="state.pipeline?.name"
         [nzPlacement]="'bottomCenter'"
         [nzBackdrop]="false"
         [nzTrigger]="'click'"
-        [value]="pipeline?.name"
+        [value]="state.pipeline?.name"
         readonly
-        (focus)="pipelinePlus.useChangeValue(pipeline ? pipeline.name : '')"
+        (focus)="pipelinePlus.useSearch(state.pipeline ? state.pipeline.name : '')"
         nbInput
         size="small"
-        (input)="pipelinePlus.useChangeValue($event.target.value)"
+        (input)="pipelinePlus.useSearch($event.target.value)"
       />
       <nb-icon icon="arrow-down" nbSuffix></nb-icon>
     </nb-form-field>
     <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
       <app-reuse-pipeline-select
-        [selected]="pipeline"
-        [pipelines]="pipelines"
+        [selected]="state.pipeline"
         #pipelinePlus
         (useSelect)="useSelectPipeline($event.id)"
-        [template]="pipelineInput"
       ></app-reuse-pipeline-select>
     </nz-dropdown-menu>
     <span
-      *ngIf="pipeline"
+      *ngIf="state.pipeline"
       style="display: block; margin-bottom: 0.5rem; font-weight: 600"
       >Stage</span
     >
-    <div *ngIf="pipeline" class="stages">
+    <div *ngIf="state.pipeline" class="stages">
       <label
         class="stage"
-        (click)="selectedStage = stage"
+        (click)="state.selectedStage = stage"
         [class.selected]="
-        selectedStage &&
-          stage.position <= selectedStage.position
+        state.selectedStage &&
+          stage.position <= state.selectedStage.position
         "
-        *ngFor="let stage of pipeline.stages; let i = index"
+        *ngFor="let stage of state.pipeline.stages; let i = index"
       ></label>
     </div>
 </nb-card-body>
 <nb-card-footer class="p-2">
   <button
     style="float: right"
-    [status]="inside ? 'danger' : 'primary'"
+    [status]="payload.inside ? 'danger' : 'primary'"
     nbButton
     size="small"
-    [disabled]="inside ? (deal.stage.id === selectedStage.id) : false"
-    (click)="useMove.emit(selectedStage)"
+    [disabled]="payload.inside ? (payload.deal.stage.id === state.selectedStage.id) : false"
+    (click)="useMove.emit(state.selectedStage)"
   >
-    {{inside ? 'Move and delete stage' : 'Move'}}
+    {{payload.inside ? 'Move and delete stage' : 'Move'}}
   </button>
   <button
     style="float: right; margin-right: 0.5rem"
     status="default"
     nbButton
     size="small"
-    (click)="useClose.emit()"
+    (click)="useCancel()"
   >
     Cancel
   </button>

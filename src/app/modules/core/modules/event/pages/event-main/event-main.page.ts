@@ -1,105 +1,183 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { EventService, GlobalService } from '@services';
-import { EventVM } from '@view-models';
+import { AccountVM, EventVM } from '@view-models';
 import { CalendarView, CalendarEvent, CalendarEventTimesChangedEvent } from 'angular-calendar';
-
+import { State } from '@store/states';
+import { authSelector, eventSelector } from '@store/selectors';
+import { Store } from '@ngrx/store';
+import { tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { EventAction } from '@store/actions';
+import { NgxSpinnerService } from 'ngx-spinner';
+interface IEventMainPageState {
+  events: (CalendarEvent & EventVM & { state: string })[],
+  array: EventVM[],
+  viewStage: boolean,
+  you: AccountVM,
+  stage: 'calendar' | 'list',
+  search: {
+    view: CalendarView,
+    viewDate: Date,
+    type: 'day' | 'month' | 'week',
+    states: string[],
+    range: { start: Date, end: Date },
+    name: string,
+  },
+  showDateStartPicker: boolean;
+  showDateEndPicker: boolean;
+  canAdd: boolean;
+  canUpdate: boolean;
+  canRemove: boolean;
+}
 @Component({
   selector: 'app-event-main',
   templateUrl: './event-main.page.html',
   styleUrls: ['./event-main.page.scss']
 })
-export class EventMainPage implements OnInit {
-  view: CalendarView = CalendarView.Day;
-  viewDate: Date = new Date();
-  calendarEvents: (CalendarEvent & EventVM & { state: string })[] = [];
-  events: EventVM[] = [];
-  type = 'month';
-  viewStage = false;
-  stage = 'calendar';
-  search = {
-    states: [],
-    range: undefined,
-    name: '',
+export class EventMainPage implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
+  state: IEventMainPageState = {
+    events: [],
+    array: [],
+    viewStage: false,
+    you: undefined,
+    stage: 'calendar',
+    search: {
+      view: CalendarView.Day,
+      viewDate: new Date(),
+      type: 'day',
+      states: [],
+      range: undefined,
+      name: '',
+    },
+    showDateStartPicker: false,
+    showDateEndPicker: false,
+    canAdd: false,
+    canUpdate: false,
+    canRemove: false,
   };
   constructor(
     protected readonly eventService: EventService,
     protected readonly globalService: GlobalService,
-  ) { }
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly spinner: NgxSpinnerService,
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+  }
 
   ngOnInit() {
+    // this.useSocket();
+    this.useDispatch();
+    this.useData();
+  }
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateEvent).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateEvent).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveEvent).length > 0;
+          })
+        )
+        .subscribe()
+    );
+  }
+  useSocket = () => {
     this.eventService.triggerSocket().subscribe((trigger) => {
       if (trigger.type === 'create') {
-        this.events.push((trigger.data as EventVM));
+        this.state.array.push((trigger.data as EventVM));
       } else if (trigger.type === 'update') {
-        this.events[this.events.findIndex((e) => e.id === (trigger.data as EventVM).id)] = (trigger.data as EventVM);
+        this.state.array[this.state.array.findIndex((e) => e.id === (trigger.data as EventVM).id)] = (trigger.data as EventVM);
       } else if (trigger.type === 'remove') {
-        this.events.splice(this.events.findIndex((e) => e.id === (trigger.data as EventVM).id), 1);
+        this.state.array.splice(this.state.array.findIndex((e) => e.id === (trigger.data as EventVM).id), 1);
       }
-      if (this.stage === 'calendar') {
-        this.useFilter();
-      } else {
-        this.useFilterList();
-      }
-    });
-    this.eventService.findAll().subscribe((data) => {
-      this.events = data;
       this.useFilter();
     });
   }
-  useFilter = () => {
-    this.calendarEvents = this.events.map((e) => ({
-      id: e.id,
-      title: e.name,
-      start: new Date(e.dateStart),
-      end: new Date(e.dateEnd),
-      state: new Date() < new Date(e.dateStart) ? 'notStart' : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired'),
-      ...e,
-    }));
-  }
-  useFilterList = () => {
-    this.calendarEvents = this.events.map((event) => ({
-      id: event.id,
-      title: event.name,
-      start: new Date(event.dateStart),
-      state: new Date() < new Date(event.dateStart)
-        ? 'notStart' : (new Date() >= new Date(event.dateStart) && new Date() < new Date(event.dateEnd) ? 'processing' : 'expired'),
-      ...event,
-      draggable: true,
-    })).filter((event) =>
-      (this.search.states.length === 0 ? true : this.search.states.includes(event.state)) &&
-      (this.search.range?.start ? new Date(event.dateStart).getTime() >= new Date(this.search.range.start).getTime() : true) &&
-      (this.search.range?.end ? new Date(event.dateEnd).getTime() <= new Date(this.search.range.end).getTime() : true) &&
-      event.name.toLowerCase().includes(this.search.name.toLowerCase())
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(eventSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
     );
   }
-  useCalendarEventTimesChanged(e: CalendarEventTimesChangedEvent): void {
-    e.event.start = e.newStart;
-    e.event.end = e.newEnd;
-    this.eventService.save({
-      id: e.event.id,
-      dateStart: e.newStart,
-      // dateEnd: e.newEnd
-    } as any).subscribe();
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(eventSelector.events)
+        .pipe(
+          tap((data) => {
+            this.state.array = data;
+            this.useFilter();
+          })
+        ).subscribe());
   }
-  useCalendarEventClicked({ event }: { event: CalendarEvent }): void {
-    this.globalService.triggerView$.next({ type: 'event', payload: { event } });
+  useReload = () => {
+    this.useShowSpinner();
+    this.store.dispatch(EventAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
+  }
+  useFilter = () => {
+    console.log(this.state.array);
+    if (this.state.stage === 'calendar') {
+      this.state.events = this.state.array.map((e) => ({
+        id: e.id,
+        title: e.name,
+        start: new Date(e.dateStart),
+        state: new Date() < new Date(e.dateStart) ? 'notStart' : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired'),
+        ...e,
+      }));
+    } else {
+      this.state.events = this.state.array.map((event) => ({
+        id: event.id,
+        title: event.name,
+        start: new Date(event.dateStart),
+        state: new Date() < new Date(event.dateStart)
+          ? 'notStart' : (new Date() >= new Date(event.dateStart) && new Date() < new Date(event.dateEnd) ? 'processing' : 'expired'),
+        ...event,
+      })).filter((event) =>
+        (this.state.search.states.length === 0 ? true : this.state.search.states.includes(event.state)) &&
+        (this.state.search.range?.start ? new Date(event.dateStart).getTime() >= new Date(this.state.search.range.start).getTime() : true) &&
+        (this.state.search.range?.end ? new Date(event.dateEnd).getTime() <= new Date(this.state.search.range.end).getTime() : true) &&
+        event.name.toLowerCase().includes(this.state.search.name.toLowerCase())
+      );
+    }
+  }
+  useSearch = (search: {
+    view: CalendarView,
+    viewDate: Date,
+    type: 'day' | 'month' | 'week',
+    states: string[],
+    range: { start: Date, end: Date },
+    name: string,
+  }) => {
+    console.log(search);
+    this.state.search = { ...this.state.search, ...search };
+    this.useFilter();
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'event', payload: {} });
   }
-  usePlusWithHour = (event) => {
-    this.globalService.triggerView$.next({ type: 'event', payload: { time: event.date } });
+  useShowSpinner = () => {
+    this.spinner.show('event-main');
   }
-  usePlusWithDay = (event) => {
-    this.globalService.triggerView$.next({ type: 'event', payload: { time: event.day.date } });
+  useHideSpinner = () => {
+    setTimeout(() => {
+      this.spinner.hide('event-main');
+    }, 1000);
   }
-  useToggleFilterList = (state: string) => {
-    const pos = this.search.states.findIndex((s) => s === state);
-    if (pos > -1) {
-      this.search.states.splice(pos, 1);
-    } else {
-      this.search.states.push(state);
-    }
-    this.useFilterList();
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

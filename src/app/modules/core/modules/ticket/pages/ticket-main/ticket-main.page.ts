@@ -1,68 +1,112 @@
+import { TicketAction } from '@actions';
 import { Component, OnInit } from '@angular/core';
-import { TicketService, GlobalService, AuthService } from '@services';
-import { AccountVM, TicketVM } from '@view-models';
+import { Store } from '@ngrx/store';
+import { GlobalService } from '@services';
+import { authSelector, ticketSelector } from '@store/selectors';
+import { State } from '@store/states';
+import { AccountVM, CustomerVM, TicketVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
-
+import { tap } from 'rxjs/operators';
+interface ITicketMainPageState {
+  you: AccountVM;
+  array: TicketVM[];
+  filterArray: TicketVM[];
+  search: {
+    statuss: string[],
+    types: string[],
+    range: { start: Date, end: Date },
+    name: string,
+    assignees: AccountVM[],
+    customer: CustomerVM,
+  };
+  stage: 'done' | 'finding';
+  canRemove: boolean;
+  canUpdate: boolean;
+  canAssign: boolean;
+}
 @Component({
   selector: 'app-ticket-main',
   templateUrl: './ticket-main.page.html',
   styleUrls: ['./ticket-main.page.scss']
 })
 export class TicketMainPage implements OnInit {
-  you: AccountVM;
-  tickets: TicketVM[] = [];
-  filterTickets: TicketVM[] = [];
-  search = '';
-  stage = 'done';
+  state: ITicketMainPageState = {
+    you: undefined,
+    array: [],
+    filterArray: [],
+    search: {
+      statuss: [],
+      types: [],
+      range: undefined,
+      name: '',
+      assignees: [],
+      customer: undefined,
+    },
+    stage: 'done',
+    canRemove: false,
+    canUpdate: false,
+    canAssign: false
+  };
   constructor(
-    protected readonly ticketService: TicketService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
-    protected readonly authService: AuthService,
+    protected readonly store: Store<State>
   ) {
-  }
-
-  ngOnInit() {
     this.useLoadMine();
-    this.useReload();
-    this.useSocket();
+  }
+  ngOnInit() {
+    this.useDispatch();
+    this.useData();
+  }
+  useDispatch = () => {
+    this.store.select(ticketSelector.firstLoad)
+      .pipe(
+        tap((firstLoad) => {
+          if (!firstLoad) {
+            this.useReload();
+          }
+        })
+      ).subscribe();
+  }
+  useData = () => {
+    this.store.select(ticketSelector.tickets)
+      .pipe(
+        tap((data) => {
+          this.state.array = data;
+          this.useFilter();
+        })
+      ).subscribe();
   }
   useLoadMine = () => {
-    this.authService.auth(undefined).subscribe((data) => {
-      this.you = data;
-    });
+    this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignCustomer).length > 0;
+        })
+      )
+      .subscribe()
   }
   useReload = () => {
     this.useShowSpinner();
-    this.ticketService.findAll()
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => {
-        this.tickets = data;
-        this.useFilter();
-      });
+    this.store.dispatch(TicketAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
   }
   useFilter = () => {
-    this.filterTickets = this.tickets.filter((e) =>
-      e.customer.fullname.toLowerCase().includes(this.search.toLowerCase())
+    this.state.filterArray = this.state.array.filter((ticket) =>
+      (this.state.search.statuss.length === 0 ? true : this.state.search.statuss.includes(ticket.status)) &&
+      (this.state.search.types.length === 0 ? true : this.state.search.types.includes(ticket.type)) &&
+      (this.state.search.range?.start ? new Date(ticket.createdAt).getTime() >= new Date(this.state.search.range.start).getTime() : true) &&
+      (this.state.search.range?.end ? new Date(ticket.createdAt).getTime() <= new Date(this.state.search.range.end).getTime() : true) &&
+      (this.state.search.customer ? ticket.customer.id === this.state.search.customer.id : true) &&
+      (this.state.search.assignees.length > 0
+        ? (this.state.search.assignees.findIndex((assingee) => assingee.id === ticket.assignee?.id) > -1) : true)
     );
-  }
-  useSocket = () => {
-    this.ticketService.triggerSocket().subscribe((trigger) => {
-      console.log(trigger);
-      if (trigger.type === 'create') {
-        this.tickets.push((trigger.data as TicketVM));
-      } else if (trigger.type === 'update') {
-        this.tickets[this.tickets.findIndex((e) => e.id === (trigger.data as TicketVM).id)] = (trigger.data as TicketVM);
-      } else if (trigger.type === 'remove') {
-        this.tickets.splice(this.tickets.findIndex((e) => e.id === (trigger.data as TicketVM).id), 1);
-      }
-      this.useFilter();
-    });
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'ticket', payload: {} });
@@ -77,5 +121,16 @@ export class TicketMainPage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('ticket-main');
     }, 1000);
+  }
+  useSearch = (search: {
+    statuss: [],
+    types: [],
+    range: undefined,
+    name: '',
+    assignees: [],
+    customer: undefined,
+  }) => {
+    this.state.search = { ...this.state.search, ...search };
+    this.useFilter();
   }
 }

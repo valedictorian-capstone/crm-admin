@@ -7,13 +7,11 @@ const notifications = createSelector(notificationFeatureSelector, notificationAd
 const entities = createSelector(notificationFeatureSelector, notificationAdapter.getSelectors().selectEntities);
 const ids = createSelector(notificationFeatureSelector, notificationAdapter.getSelectors().selectIds);
 const total = createSelector(notificationFeatureSelector, notificationAdapter.getSelectors().selectTotal);
-const error = createSelector(notificationFeatureSelector, (state) => state.error);
-const status = createSelector(notificationFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(notificationFeatureSelector, (state) => state.firstLoad);
 export const notificationSelector = {
   notifications,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

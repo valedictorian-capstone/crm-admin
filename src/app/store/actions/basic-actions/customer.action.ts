@@ -1,90 +1,36 @@
 import { createAction, props } from '@ngrx/store';
 import { CustomerCM, CustomerUM, CustomerVM } from '@view-models';
-const CustomerActionType = {
-  FIND: {
-    FETCH: '[Customer] Fetch Action',
-    SUCCESS: '[Customer] Fetch Action Success',
-  },
-  CREATE: {
-    FETCH: '[Customer] Create Action',
-    SUCCESS: '[Customer] Create Action Success',
-  },
-  UPDATE: {
-    FETCH: '[Customer] Update Action',
-    SUCCESS: '[Customer] Update Action Success',
-  },
-  REMOVE: {
-    FETCH: '[Customer] Remove Action',
-    SUCCESS: '[Customer] Remove Action Success',
-  },
-  UNIQUE: {
-    FETCH: '[Customer] Unique Action',
-    SUCCESS: '[Customer] Unique Action Success',
-  },
-  RESET: {
-    FETCH: '[Customer] Reset Action',
-  },
-  ERROR: '[Customer] Action Error'
-};
-const useFindAllAction = createAction(
-  CustomerActionType.FIND.FETCH,
-  props<{ status: string }>()
+const FindAllAction = createAction(
+  '[Customer] Fetch Action',
+  props<{
+    success?: (res: CustomerVM[]) => void,
+    error?: (err: Error) => void,
+    finalize?: () => void,
+  }>()
 );
-const useFindAllSuccessAction = createAction(
-  CustomerActionType.FIND.SUCCESS,
-  props<{ customers: CustomerVM[], status: string }>()
+const FindAllSuccessAction = createAction(
+  '[Customer] Fetch Action Success',
+  props<{ res: CustomerVM[] }>()
 );
-const useCreateAction = createAction(
-  CustomerActionType.CREATE.FETCH,
-  props<{ customer: CustomerCM, status: string }>()
+const ImportSuccessAction = createAction(
+  '[Customer] Import Success Action',
+  props<{ res: CustomerVM[] }>()
 );
-const useCreateSuccessAction = createAction(
-  CustomerActionType.CREATE.SUCCESS,
-  props<{ customer: CustomerVM, status: string }>()
+const SaveSuccessAction = createAction(
+  '[Customer] Save Success Action',
+  props<{ res: CustomerVM }>()
 );
-const useUpdateAction = createAction(
-  CustomerActionType.UPDATE.FETCH,
-  props<{ customer: CustomerUM, status: string }>()
+const ResetAction = createAction(
+  '[Customer] Reset Action',
 );
-const useUpdateSuccessAction = createAction(
-  CustomerActionType.UPDATE.SUCCESS,
-  props<{ customer: CustomerVM, status: string }>()
-);
-const useRemoveAction = createAction(
-  CustomerActionType.REMOVE.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useRemoveSuccessAction = createAction(
-  CustomerActionType.REMOVE.SUCCESS,
-  props<{ id: string, status: string }>()
-);
-const useUniqueAction = createAction(
-  CustomerActionType.REMOVE.FETCH,
-  props<{ data: { label: string, value: string }, status: string }>()
-);
-const useUniqueSuccessAction = createAction(
-  CustomerActionType.REMOVE.SUCCESS,
-  props<{ result: boolean, status: string }>()
-);
-const useErrorAction = createAction(
-  CustomerActionType.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  CustomerActionType.RESET.FETCH,
-  props<{ customers: CustomerVM[] }>()
+const SocketAction = createAction(
+  '[Customer] Socket Action',
 );
 export const CustomerAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useCreateAction,
-  useCreateSuccessAction,
-  useUpdateAction,
-  useUpdateSuccessAction,
-  useRemoveAction,
-  useRemoveSuccessAction,
-  useUniqueAction,
-  useUniqueSuccessAction,
-  useErrorAction,
-  useResetAction
+  FindAllAction,
+  FindAllSuccessAction,
+  SaveSuccessAction,
+  ImportSuccessAction,
+  SocketAction,
+  ResetAction
 };

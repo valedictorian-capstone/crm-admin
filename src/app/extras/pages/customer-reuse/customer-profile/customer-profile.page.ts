@@ -1,54 +1,89 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { AccountVM, CustomerVM } from '@view-models';
-import { CustomerService, GlobalService } from '@services';
-import { DatePipe } from '@angular/common';
-import { NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { CustomerService, DealService, GlobalService, TicketService } from '@services';
+import { AccountVM, CustomerVM, DealVM, TicketVM } from '@view-models';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
+import { finalize, switchMap, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
+import { authSelector } from '@store/selectors';
 
+interface ICustomerProfilePageState {
+  you: AccountVM;
+  tickets: TicketVM[];
+  deals: DealVM[];
+  visible: boolean;
+}
 @Component({
   selector: 'app-reuse-customer-profile',
   templateUrl: './customer-profile.page.html',
   styleUrls: ['./customer-profile.page.scss']
 })
-export class CustomerProfilePage implements OnInit {
-  @Input() customer: CustomerVM;
-  @Input() you: AccountVM;
+export class CustomerProfilePage implements OnInit, OnDestroy {
+  @Input() payload: {
+    customer: CustomerVM
+  } = {
+      customer: undefined
+    };
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
-  env = 'desktop';
-  visible = false;
+  subscriptions: Subscription[] = [];
+  state: ICustomerProfilePageState = {
+    you: undefined,
+    tickets: [],
+    deals: [],
+    visible: false
+  };
   constructor(
-    protected readonly customerService: CustomerService,
-    protected readonly datePipe: DatePipe,
+    protected readonly service: CustomerService,
+    protected readonly ticketService: TicketService,
+    protected readonly dealService: DealService,
     protected readonly globalService: GlobalService,
     protected readonly toastrService: NbToastrService,
     protected readonly clipboard: Clipboard,
     protected readonly spinner: NgxSpinnerService,
-    protected readonly deviceService: DeviceDetectorService,
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
   ) {
-    if (deviceService.isMobile()) {
-      this.env = 'mobile';
-    }
+    this.useLoadMine();
   }
 
   ngOnInit() {
     this.useReload();
   }
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+          })
+        )
+        .subscribe()
+    );
+  }
   useReload = () => {
     this.useShowSpinner();
-    this.customerService
-      .findById(this.customer.id)
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => this.customer = data);
+    this.subscriptions.push(
+      this.service
+        .findById(this.payload.customer.id)
+        .pipe(
+          tap((data) => this.payload.customer = data),
+          switchMap(() => this.ticketService.findByCustomerId(this.payload.customer.id)),
+          tap((data) => this.state.tickets = data),
+          switchMap(() => this.dealService.findByCustomerId(this.payload.customer.id)),
+          tap((data) => this.state.deals = data),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe()
+    );
   }
   useEdit = () => {
-    this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
+    this.globalService.triggerView$.next({ type: 'customer', payload: this.payload });
   }
   usePhone = (phone: string) => {
     window.open('tel:' + phone, '_self');
@@ -70,5 +105,8 @@ export class CustomerProfilePage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('customer-profile');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

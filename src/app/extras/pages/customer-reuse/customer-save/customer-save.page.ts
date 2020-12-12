@@ -1,84 +1,113 @@
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbDialogRef, NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
+import { ActivatedRoute } from '@angular/router';
+import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { AccountVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
-import { Clipboard } from '@angular/cdk/clipboard';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
+import { authSelector } from '@store/selectors';
+
+interface ICustomerSavePageState {
+  you: AccountVM;
+    form: FormGroup;
+    showBirthday: boolean;
+    errorImage: boolean;
+    message: string;
+    phoneStage: 'querying' | 'done';
+    emailStage: 'querying' | 'done';
+    min: Date;
+    max: Date;
+}
 @Component({
   selector: 'app-reuse-customer-save',
   templateUrl: './customer-save.page.html',
   styleUrls: ['./customer-save.page.scss'],
-  providers: [DatePipe]
 })
-export class CustomerSavePage implements OnInit {
-  @ViewChild('submitRef') submitRef: TemplateRef<any>;
-  @ViewChild('cancelRef') cancelRef: TemplateRef<any>;
-  @Input() customer: CustomerVM;
-  @Input() you: AccountVM;
-  @Input() isProfile = false;
-  @Input() inside: boolean;
-  @Input() fullname: string;
+export class CustomerSavePage implements OnInit, OnDestroy {
+  @Input() payload = {
+    customer: undefined,
+    isProfile: false,
+    inside: false,
+    fullname: undefined,
+  };
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
-  form: FormGroup;
-  showBirthday = false;
-  errorImage = false;
-  message = '';
-  phoneStage = 'done';
-  emailStage = 'done';
+  subscriptions: Subscription[] = [];
+  state: ICustomerSavePageState = {
+      you: undefined,
+      form: undefined,
+      showBirthday: false,
+      errorImage: false,
+      message: '',
+      phoneStage: 'done',
+      emailStage: 'done',
+      max: new Date(),
+      min: new Date(new Date().setFullYear(new Date().getFullYear() - 80)),
+    };
   constructor(
-    protected readonly datePipe: DatePipe,
-    protected readonly customerService: CustomerService,
+    protected readonly service: CustomerService,
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly clipboard: Clipboard,
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
   ) {
-    if (!this.inside && !this.isProfile) {
+    this.useLoadMine();
+    if (!this.payload.inside && !this.payload.isProfile) {
       this.useShowSpinner();
     }
     this.useInitForm();
   }
-
   ngOnInit() {
-    if (this.inside) {
-      this.form.get('fullname').setValue(this.fullname);
+    if (this.payload.inside) {
+      this.state.form.get('fullname').setValue(this.payload.fullname);
       this.useHideSpinner();
     } else {
-      if (this.customer) {
+      if (this.payload.customer) {
         this.useSetData();
       } else {
         this.useHideSpinner();
       }
     }
-
   }
-  toDateFormat = (date: Date | string) => {
-    return date && !isNaN(Date.parse(date as string)) ? this.datePipe.transform(new Date(date), 'dd/MM/yyyy') : '';
-  }
-  useSetData = () => {
-    this.customerService.findById(this.customer.id)
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
       .pipe(
-        finalize(() => {
-          setTimeout(() => {
-            this.spinner.hide('customer-save');
-          }, 1000);
+        tap((profile) => {
+          this.state.you = profile;
         })
       )
-      .subscribe((data) => {
-        this.customer = data;
-        this.form.addControl('id', new FormControl(this.customer.id));
-        this.form.patchValue({
-          ...this.customer,
-          birthDay: new Date(this.customer.birthDay),
-        });
-      });
+      .subscribe()
+    );
+  }
+  useSetData = () => {
+    this.subscriptions.push(
+      this.service.findById(this.payload.customer.id)
+      .pipe(
+        tap((data) => {
+          this.payload.customer = data;
+          this.state.form.addControl('id', new FormControl(this.payload.customer.id));
+          this.state.form.patchValue({
+            ...this.payload.customer,
+            birthDay: new Date(this.payload.customer.birthDay),
+          });
+        }),
+        finalize(() => {
+            this.useHideSpinner();
+        })
+      )
+      .subscribe()
+    );
   }
   useInitForm = () => {
-    this.form = new FormGroup({
+    this.state.form = new FormGroup({
       phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       fullname: new FormControl(undefined, [Validators.required]),
@@ -110,41 +139,46 @@ export class CustomerSavePage implements OnInit {
     });
   }
   useSubmit = (ref: NbDialogRef<any>) => {
-    if (!this.inside) {
+    if (!this.payload.inside) {
       ref.close();
     }
-    if (this.form.valid && !this.isProfile) {
-      if (!this.inside) {
+    if (this.state.form.valid && !this.payload.isProfile) {
+      if (!this.payload.inside) {
         this.useShowSpinner();
       }
-      (this.customer ? this.customerService.update({
-        ...this.form.value,
-        frequency: parseInt(this.form.value.frequency, 0),
-        totalSpending: parseInt(this.form.value.totalSpending, 0),
-        totalDeal: parseInt(this.form.value.totalDeal, 0),
-      }) : this.customerService.insert({
-        ...this.form.value,
-        frequency: parseInt(this.form.value.frequency, 0),
-        totalSpending: parseInt(this.form.value.totalSpending, 0),
-        totalDeal: parseInt(this.form.value.totalDeal, 0),
-      }))
-        .pipe(
-          finalize(() => {
-            if (!this.inside) {
-              this.useHideSpinner();
-            }
-          })
-        )
-        .subscribe((data) => {
-          this.toastrService.success('', 'Save customer successful!', { duration: 3000 });
-          this.useDone.emit(data);
-          this.useClose.emit();
-        }, (err) => {
-          this.toastrService.danger('', 'Save customer fail! Something wrong at runtime', { duration: 3000 });
-        });
+      this.subscriptions.push(
+        (this.payload.customer ? this.service.update({
+          ...this.state.form.value,
+          frequency: parseFloat(this.state.form.value.frequency),
+          totalSpending: parseFloat(this.state.form.value.totalSpending),
+          totalDeal: parseFloat(this.state.form.value.totalDeal),
+        }) : this.service.insert({
+          ...this.state.form.value,
+          frequency: parseFloat(this.state.form.value.frequency),
+          totalSpending: parseFloat(this.state.form.value.totalSpending),
+          totalDeal: parseFloat(this.state.form.value.totalDeal),
+        }))
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Save customer successful!', { duration: 3000 });
+              this.useDone.emit(data);
+              this.useClose.emit();
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Save customer fail! ' + err.error.message, { duration: 3000 });
+              return of(undefined);
+            }),
+            finalize(() => {
+              if (!this.payload.inside) {
+                this.useHideSpinner();
+              }
+            })
+          )
+          .subscribe()
+      );
     } else {
-      this.form.markAsUntouched();
-      this.form.markAsTouched();
+      this.state.form.markAsUntouched();
+      this.state.form.markAsTouched();
     }
   }
   useDialog = (template: TemplateRef<any>) => {
@@ -155,57 +189,73 @@ export class CustomerSavePage implements OnInit {
     this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
   useSelectImage = (event: any, input: HTMLElement) => {
-    this.errorImage = false;
+    this.state.errorImage = false;
     const files: File[] = event.target.files;
     if (files.length > 1) {
-      this.errorImage = true;
-      this.message = 'Only one image accepted';
+      this.state.errorImage = true;
+      this.state.message = 'Only one image accepted';
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
         if (files[0].size > 1024 * 1024 * 18) {
-          this.errorImage = true;
-          this.message = 'Only image size less than 18MB accept';
+          this.state.errorImage = true;
+          this.state.message = 'Only image size less than 18MB accept';
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();
           reader.onloadend = () => {
-            this.form.get('avatar').setValue(reader.result);
+            this.state.form.get('avatar').setValue(reader.result);
           };
           reader.readAsDataURL(files[0]);
         }
       } else {
-        this.errorImage = true;
-        this.message = 'Only image file accept';
+        this.state.errorImage = true;
+        this.state.message = 'Only image file accept';
         input.nodeValue = undefined;
       }
     }
   }
   useCheckPhone = () => {
-    const phone = this.form.get('phone');
-    if ((!this.customer || (this.customer && this.customer.phone !== phone.value) ) && phone.valid) {
-      this.phoneStage = 'querying';
-      setTimeout(async () => {
-        const check = await this.customerService.checkUnique('phone', phone.value).toPromise();
-        if (check) {
-          phone.setErrors({ duplicate: true });
-        }
-        this.phoneStage = 'done';
-      }, 1000);
+    const phone = this.state.form.get('phone');
+    if ((!this.payload.customer || (this.payload.customer && this.payload.customer.phone !== phone.value)) && phone.valid) {
+      this.state.phoneStage = 'querying';
+      this.subscriptions.push(
+        this.service.checkUnique('phone', phone.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              phone.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.phoneStage = 'done';
+            }, 1000);
+          })
+        ).subscribe()
+      );
     }
 
   }
   useCheckEmail = () => {
-    const email = this.form.get('email');
-    if ((!this.customer || (this.customer && this.customer.email !== this.form.get('email').value)) && email.valid) {
-      this.emailStage = 'querying';
-      setTimeout(async () => {
-        const check = await this.customerService.checkUnique('email', email.value).toPromise();
-        if (check) {
-          email.setErrors({ duplicate: true });
-        }
-        this.emailStage = 'done';
-      }, 1000);
+    const email = this.state.form.get('email');
+    if ((!this.payload.customer || (this.payload.customer && this.payload.customer.email !== this.state.form.get('email').value)) && email.valid) {
+      this.state.emailStage = 'querying';
+      this.subscriptions.push(
+        this.service.checkUnique('email', email.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              email.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.emailStage = 'done';
+            }, 1000);
+          })
+        ).subscribe()
+      );
     }
   }
   useShowSpinner = () => {
@@ -215,5 +265,8 @@ export class CustomerSavePage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('customer-save');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

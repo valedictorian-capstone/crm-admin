@@ -1,11 +1,11 @@
 <div nz-menu class="deal-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="stage === 'finding'"></div>
-    <a nz-menu-item class="item" [class.selected]="deal.id === selected?.id" *ngFor="let deal of filterDeals" (click)="useSelect.emit(deal); this.selected = deal">
+    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="state.status === 'finding'"></div>
+    <a nz-menu-item class="item" [class.selected]="deal.id === selected?.id" *ngFor="let deal of state.filterArray" (click)="useSelect.emit(deal); this.selected = deal">
         <nb-icon icon="donate" pack="font-awesome" style="margin-right: 0.7rem;"></nb-icon>
         <pre>{{deal.title}}</pre>
     </a>
-    <a nz-menu-item class="item" *ngIf="filterDeals.length === 0 && stage !== 'finding'" (click)="useAdd.emit(value); useChangeValue('')">
+    <a nz-menu-item class="item" *ngIf="state.filterArray.length === 0 && state.status !== 'finding'" (click)="useAdd.emit(state.search); useSearch('')">
         <nb-icon icon="plus" style="margin-right: 1rem;"></nb-icon>
-        <pre>{{value === '' ? 'Add new deal' : 'Add ' + value + ' as new deal'}}</pre>
+        <pre>{{state.search === '' ? 'Add new deal' : 'Add ' + state.search + ' as new deal'}}</pre>
     </a>
 </div>

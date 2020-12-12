@@ -77,7 +77,7 @@ This represents your confidence in winning a deal by the expected close date. Pr
                                 </nb-card-header>
                                 <nb-card-body>
                                     <b *ngIf="data.stage.deals.length === 0">There are no deals in this stage right now.</b>
-                                    <app-reuse-pipeline-move-to [inside]="true" *ngIf="data.stage.deals.length > 0" [deal]="data.stage.deals[0]" (useClose)="ref.close()" (useMove)="useMoveAndRemove(data.index, ref, data.stage.deals, $event, data.stage)"></app-reuse-pipeline-move-to>
+                                    <app-reuse-pipeline-move-to [payload]="{inside: true, deal: data.stage.deals[0]}" *ngIf="data.stage.deals.length > 0" (useClose)="ref.close()" (useMove)="useMoveAndRemove(data.index, ref, data.stage.deals, $event, data.stage)"></app-reuse-pipeline-move-to>
                                 </nb-card-body>
                                 <nb-card-footer *ngIf="data.stage.deals.length === 0">
                                     <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(data.index, data.stage, ref)"><nb-icon icon="trash-2"></nb-icon> Delete stage</button>

@@ -7,13 +7,11 @@ const stages = createSelector(stageFeatureSelector, stageAdapter.getSelectors().
 const entities = createSelector(stageFeatureSelector, stageAdapter.getSelectors().selectEntities);
 const ids = createSelector(stageFeatureSelector, stageAdapter.getSelectors().selectIds);
 const total = createSelector(stageFeatureSelector, stageAdapter.getSelectors().selectTotal);
-const error = createSelector(stageFeatureSelector, (state) => state.error);
-const status = createSelector(stageFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(stageFeatureSelector, (state) => state.firstLoad);
 export const stageSelector = {
   stages,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

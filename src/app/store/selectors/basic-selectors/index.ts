@@ -3,6 +3,7 @@ export * from './customer.selector';
 export * from './device.selector';
 export * from './event.selector';
 export * from './group.selector';
+export * from './comment.selector';
 export * from './role.selector';
 export * from './product.selector';
 export * from './category.selector';

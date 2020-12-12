@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ActivityService } from '@services';
 import { ActivityAction } from '@actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ActivityVM } from '@view-models';
 
 @Injectable()
 export class ActivityEffect {
@@ -10,49 +12,64 @@ export class ActivityEffect {
     protected readonly actions$: Actions,
     protected readonly service: ActivityService
   ) { }
-  public readonly find$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(ActivityAction.useFindAllAction),
-      switchMap(action =>
-        this.service.findAll().pipe(
-          delay(1000),
-          map(activitys => ActivityAction.useFindAllSuccessAction({ activitys, status: action.status })),
-          catchError(async (error) => ActivityAction.useErrorAction({ error, status: action.status })),
-        )
+  public readonly socket$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(ActivityAction.SocketAction),
+    tap(() => console.log('socket')),
+    switchMap(action =>
+      this.service.triggerSocket().pipe(
+        tap((data) => console.log('test', data)),
+
+        map(trigger => {
+          console.log('effect-socket', trigger);
+          const canGetAll = action.requester.roles.filter((role) => role.canGetAllActivity).length > 0;
+          if (trigger.type === 'create') {
+            if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
+              return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
+            }
+          } else if (trigger.type === 'update') {
+            if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
+              return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
+            } else {
+              return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
+            }
+          } else if (trigger.type === 'remove') {
+            return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
+          }
+        }),
+        catchError((error: Error) => {
+          return of(undefined);
+        }),
       )
     )
-  );
-  public readonly create$ = createEffect(() =>
+  )
+);
+  public readonly find$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(ActivityAction.useCreateAction),
+      ofType(ActivityAction.FindAllAction),
       switchMap(action =>
-        this.service.insert(action.activity).pipe(
-          delay(1000),
-          map(activity => ActivityAction.useCreateSuccessAction({ activity, status: action.status })),
-          catchError(async (error) => ActivityAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly update$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(ActivityAction.useUpdateAction),
-      switchMap(action =>
-        this.service.update(action.activity).pipe(
-          delay(1000),
-          map(activity => ActivityAction.useUpdateSuccessAction({ activity, status: action.status })),
-          catchError(async (error) => ActivityAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly remove$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(ActivityAction.useRemoveAction),
-      switchMap(action =>
-        this.service.remove(action.id).pipe(
-          delay(1000),
-          map(id => ActivityAction.useRemoveSuccessAction({ id, status: action.status })),
-          catchError(async (error) => ActivityAction.useErrorAction({ error, status: action.status })),
-        ))
+        this.service.findAll().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(res => ActivityAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
     )
   );
 }

@@ -16,6 +16,7 @@ export const reducers: ActionReducerMap<State> = {
   customer: fromBasicReducers.customerReducer,
   device: fromBasicReducers.deviceReducer,
   event: fromBasicReducers.eventReducer,
+  comment: fromBasicReducers.commentReducer,
   group: fromBasicReducers.groupReducer,
   notification: fromBasicReducers.notificationReducer,
   product: fromBasicReducers.productReducer,
@@ -28,6 +29,7 @@ export const reducers: ActionReducerMap<State> = {
   note: fromDealReducers.noteReducer,
   pipeline: fromDealReducers.pipelineReducer,
   stage: fromDealReducers.stageReducer,
+  auth: fromExtraReducers.authReducer,
 
 };
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [storeFreeze] : [];

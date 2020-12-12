@@ -5,8 +5,7 @@ import { EventVM } from '@view-models';
 export const eventAdapter: EntityAdapter<EventVM> = createEntityAdapter<EventVM>();
 
 export const eventInitialState: EventState = eventAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
+  firstLoad: false
 });

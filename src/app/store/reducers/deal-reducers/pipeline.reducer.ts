@@ -1,48 +1,32 @@
-import { PipelineAction } from '@actions';
-import { pipelineAdapter, pipelineInitialState } from '@adapters';
 import { createReducer, on } from '@ngrx/store';
+import { pipelineAdapter, pipelineInitialState } from '@adapters';
+import { PipelineAction } from '@actions';
 import { PipelineState } from '@states';
-export const pipelineFeatureKey = 'process';
+export const pipelineFeatureKey = 'pipeline';
 export const pipelineReducer = createReducer(
   pipelineInitialState,
-  on(PipelineAction.useFindAllAction,
-    (state, action) => pipelineAdapter.setAll<PipelineState>([], {
+  on(PipelineAction.FindAllSuccessAction,
+    (state, action) => pipelineAdapter.setAll<PipelineState>((state.ids as string[]).map((id) => state.entities[id]), {
       ...state,
-      status: action.status
+      firstLoad: true
     })
   ),
-  on(PipelineAction.useFindAllSuccessAction,
-    (state, action) => pipelineAdapter.setAll<PipelineState>(action.pipelines, {
+  on(PipelineAction.FindAllSuccessAction,
+    (state, action) => pipelineAdapter.setAll<PipelineState>(action.res, {
       ...state,
-      status: action.status
     })
   ),
-  on(PipelineAction.useSaveAction,
-    (state, action) => pipelineAdapter.setOne<PipelineState>(undefined, {
+  on(PipelineAction.SaveSuccessAction,
+    (state, action) => pipelineAdapter.upsertOne<PipelineState>(action.res, {
       ...state,
-      status: action.status
-    }),
-  ),
-  on(PipelineAction.useSaveSuccessAction,
-    (state, action) => pipelineAdapter.addOne<PipelineState>(action.pipeline, state)
-  ),
-  on(PipelineAction.useRemoveAction,
-    (state, action) => pipelineAdapter.setOne<PipelineState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(PipelineAction.useRemoveSuccessAction,
-    (state, action) => pipelineAdapter.removeOne<PipelineState>(action.id, state)
-  ),
-  on(PipelineAction.useResetAction,
-    (state, action) => pipelineAdapter.setAll<PipelineState>(action.pipelines, pipelineInitialState)
-  ),
-  on(PipelineAction.useErrorAction,
-    (state, action) => pipelineAdapter.setOne<PipelineState>(undefined, {
-      ...state,
-      status: action.status,
-      error: action.error
     })
+  ),
+  on(PipelineAction.RemoveSuccessAction,
+    (state, action) => pipelineAdapter.removeOne<PipelineState>(action.id, {
+      ...state,
+    })
+  ),
+  on(PipelineAction.ResetAction,
+    () => pipelineAdapter.setAll<PipelineState>([], pipelineInitialState)
   ),
 );

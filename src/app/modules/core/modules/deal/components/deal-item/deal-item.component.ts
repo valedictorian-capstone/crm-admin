@@ -1,29 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { DealService } from '@services';
 import { DealVM, StageVM } from '@view-models';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-deal-item',
   templateUrl: './deal-item.component.html',
   styleUrls: ['./deal-item.component.scss']
 })
-export class DealItemComponent implements OnInit {
-  @Output() useDragging: EventEmitter<boolean> = new EventEmitter<boolean>();
+export class DealItemComponent implements OnDestroy {
   @Output() useRemove: EventEmitter<any> = new EventEmitter<any>();
   @Output() useMove: EventEmitter<{ deal: DealVM & { changing?: boolean }, moveToStage: StageVM }> =
     new EventEmitter<{ deal: DealVM & { changing?: boolean }, moveToStage: StageVM }>();
   @Input() deal: DealVM & { changing?: boolean };
-  @Input() dragging = false;
   @Input() canUpdate = false;
+  subscriptions: Subscription[] = [];
   constructor(
+    protected readonly service: DealService,
     protected readonly router: Router,
-    protected readonly dealService: DealService,
     protected readonly dialogService: NbDialogService,
   ) { }
-
-  ngOnInit() {
-  }
 
   useMoveTo = (stage: StageVM) => {
     this.useMove.emit({
@@ -40,33 +38,54 @@ export class DealItemComponent implements OnInit {
     this.dialogService.open(template, { closeOnBackdropClick: true });
   }
   useWon = () => {
-    this.dealService.update({
-      ...this.deal,
-      status: 'won',
-      activitys: undefined,
-      notes: undefined,
-      logs: undefined,
-      dealDetails: undefined,
-      attachments: undefined,
-    } as any).subscribe((data) => this.deal = data);
+    this.subscriptions.push(
+      this.service.update({
+        ...this.deal,
+        status: 'won',
+        activitys: undefined,
+        notes: undefined,
+        logs: undefined,
+        dealDetails: undefined,
+        attachments: undefined,
+      } as any)
+        .pipe(
+          tap((data) => this.deal = data)
+        )
+        .subscribe()
+    );
   }
   useClose = () => {
-    this.dealService.update({
-      ...this.deal,
-      status: 'lost',
-      activitys: undefined,
-      notes: undefined,
-      logs: undefined,
-      dealDetails: undefined,
-      attachments: undefined,
-    } as any).subscribe((data) => this.deal = data);
+    this.subscriptions.push(
+      this.service.update({
+        ...this.deal,
+        status: 'lost',
+        activitys: undefined,
+        notes: undefined,
+        logs: undefined,
+        dealDetails: undefined,
+        attachments: undefined,
+      } as any)
+        .pipe(
+          tap((data) => this.deal = data)
+        )
+        .subscribe()
+    );
   }
   useDelete = () => {
-    this.dealService.remove(this.deal.id).subscribe(() => this.useRemove.emit());
+    this.subscriptions.push(
+      this.service.remove(this.deal.id)
+        .pipe(
+          tap(() => this.useRemove.emit())
+        )
+        .subscribe()
+    );
   }
   useDetail = () => {
     if (this.canUpdate) {
       this.router.navigate(['core/deal/' + this.deal.id]);
     }
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

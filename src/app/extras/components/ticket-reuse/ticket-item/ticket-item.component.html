@@ -3,22 +3,93 @@
         {{ticket.description}}
     </div>
     <div class="time">
-        {{ticket.createdAt | time}}
-        <b class="float-left" style="text-transform: capitalize; position: absolute; right: 0.75rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
+        {{ticket.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}
     </div>
     <div class="customer">
-        <button *ngIf="ticket.status === 'waiting'" style="position: absolute; right: 0.75rem" nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
-          <nb-icon icon="more-horizontal-outline"></nb-icon>
+        <div style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; float: left; margin-right: 1rem; border: 1px solid #e5e5e5; cursor: pointer" (click)="useView()">
+            <img style="height: 3rem; width: 3rem; border-radius: 50%;" *ngIf="ticket.customer.avatar" [src]="ticket.customer.avatar" />
+            <b *ngIf="!ticket.customer.avatar">{{ ticket.customer.fullname | key }}</b>
+        </div>
+        {{ticket.customer.fullname}}
+        <b class="float-left" style="text-transform: capitalize; position: absolute; right: 0.5rem; top: 0.5rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
+        <div style="position: absolute; right: 0.5rem; bottom: 0.5rem">
+            <button (click)="useAssign()" *ngIf="!ticket.assignee && state.canUpdate" class="mr-2" nbButton size="tiny" shape="round" outline status="info">
+          Assign Me
         </button>
-        <nz-dropdown-menu *ngIf="ticket.status === 'waiting'" #menu="nzDropdownMenu">
-            <ul nz-menu>
-                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useResolve()">
-                    <b>Mask as resolve</b>
-                </li>
-                <li nz-menu-item class="p-2 pl-4" style="width: 180px;" (click)="useRemove()">
-                    <b>Delete</b>
-                </li>
-            </ul>
-        </nz-dropdown-menu>
+            <button *ngIf="ticket.assignee && state.canUpdate" nz-dropdown [nzDropdownMenu]="assignee" [nzTrigger]="'click'" class="mr-2" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" nbButton shape="round" status="info" outline size='tiny'>
+          <nb-icon icon="person-outline"></nb-icon>
+        </button>
+            <nz-dropdown-menu #assignee="nzDropdownMenu">
+                <app-reuse-employee-item [employee]="ticket.assignee"></app-reuse-employee-item>
+            </nz-dropdown-menu>
+            <button (click)="useDialog(editRef)" *ngIf="ticket.assignee && state.canUpdate" class="mr-2" nbButton size="tiny" shape="round" outline status="info">
+          <nb-icon icon="edit-2-outline"></nb-icon>
+        </button>
+            <button *ngIf="state.canRemove" (click)="useDialog(removeRef)" nbButton size="tiny" shape="round" outline status="danger">
+          <nb-icon icon="trash-2-outline"></nb-icon>
+        </button>
+        </div>
     </div>
 </div>
+<ng-template #editRef let-context let-ref="dialogRef">
+    <nb-card style="position: relative; margin: 0;">
+        <ngx-spinner [name]="'ticket-edit'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+        <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+            Edit Ticket
+            <button (click)="ref.close()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+        </nb-card-header>
+        <nb-card-body [formGroup]="state.form">
+            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Note about conversation</span>
+            <angular-editor [formControl]="state.form.get('note')" [config]="state.config"></angular-editor>
+            <span *ngIf="ticket.type === 'deal'" style="display: block; margin: 0.5rem 0 0.5rem 0; font-weight: 600;">Ability to become deal ({{state.form.get('ability').value}}%)</span>
+            <nz-slider *ngIf="ticket.type === 'deal'" [formControl]="state.form.get('ability')"></nz-slider>
+        </nb-card-body>
+        <nb-card-footer>
+            <nb-checkbox status="success" (checkedChange)="state.form.get('status').setValue($event ? 'resolve' : 'waiting')" [value]="state.form.get('status').value === 'resolve'">Mask as resolve</nb-checkbox>
+            <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+            <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+        </nb-card-footer>
+    </nb-card>
+    <ng-template #submitRef let-data let-comfirmRef="dialogRef">
+        <nb-card>
+            <nb-card-header>Saved changes </nb-card-header>
+            <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+            <nb-card-footer class="p-2">
+                <button style="float: right" status="primary" nbButton size="small" (click)="comfirmRef.close(); useUpdate(ref)">
+Save and hide
+</button>
+                <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="comfirmRef.close()">
+Continue editing
+</button>
+            </nb-card-footer>
+        </nb-card>
+    </ng-template>
+    <ng-template #cancelRef let-data let-comfirmRef="dialogRef">
+        <nb-card>
+            <nb-card-header>You have unsaved changes </nb-card-header>
+            <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+            <nb-card-footer class="p-2">
+                <button style="float: right" status="default" nbButton size="small" (click)="comfirmRef.close(); ref.close();">
+Hide modal
+</button>
+                <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="comfirmRef.close()">
+Continue editing
+</button>
+            </nb-card-footer>
+        </nb-card>
+    </ng-template>
+
+</ng-template>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove ticket
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to Remove this ticket?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Remove</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

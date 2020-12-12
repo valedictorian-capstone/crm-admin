@@ -7,15 +7,10 @@ const accounts = createSelector(accountFeatureSelector, accountAdapter.getSelect
 const entities = createSelector(accountFeatureSelector, accountAdapter.getSelectors().selectEntities);
 const ids = createSelector(accountFeatureSelector, accountAdapter.getSelectors().selectIds);
 const total = createSelector(accountFeatureSelector, accountAdapter.getSelectors().selectTotal);
-const error = createSelector(accountFeatureSelector, (state) => state.error);
-const status = createSelector(accountFeatureSelector, (state) => state.status);
-const unique = createSelector(accountFeatureSelector, (state) => state.unique);
+const firstLoad = createSelector(accountFeatureSelector, (state) => state.firstLoad);
 export const accountSelector = {
   accounts,
   entities,
   ids,
-  total,
-  error,
-  status,
-  unique
+  firstLoad,
 };

@@ -1,74 +1,68 @@
-import { createAction, props } from '@ngrx/store';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { NotificationService } from '@services';
+import { NotificationAction } from '@actions';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { NotificationVM } from '@view-models';
-const NotificationActionType = {
-  FIND: {
-    FETCH: '[Notification] Fetch Actions',
-    SUCCESS: '[Notification] Fetch Actions Success',
-    ERROR: '[Notification] Fetch Actions Error',
-  },
-  SEEM: {
-    FETCH: '[Notification] Seen Actions',
-    SUCCESS: '[Notification] Seen Actions Success',
-    ERROR: '[Notification] Seen Actions Error',
-  },
-  SEEMALL: {
-    FETCH: '[Notification] Seen All Actions',
-    SUCCESS: '[Notification] Seen All Actions Success',
-    ERROR: '[Notification] Seen All Actions Error',
-  },
-  RESET: {
-    FETCH: '[Notification] Reset Actions',
-  },
-};
-const useFindAllAction = createAction(
-  NotificationActionType.FIND.FETCH,
-  props<{ status: string }>()
-);
-const useFindAllSuccessAction = createAction(
-  NotificationActionType.FIND.SUCCESS,
-  props<{ notifications: NotificationVM[], status: string }>()
-);
-const useFindAllErrorAction = createAction(
-  NotificationActionType.FIND.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useSeenAction = createAction(
-  NotificationActionType.SEEM.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useSeenSuccessAction = createAction(
-  NotificationActionType.SEEM.SUCCESS,
-  props<{ status: string }>()
-);
-const useSeenErrorAction = createAction(
-  NotificationActionType.SEEM.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useSeenAllAction = createAction(
-  NotificationActionType.SEEMALL.FETCH,
-  props<{ id: string, status: string }>()
-);
-const useSeenAllSuccessAction = createAction(
-  NotificationActionType.SEEMALL.SUCCESS,
-  props<{ status: string }>()
-);
-const useSeenAllErrorAction = createAction(
-  NotificationActionType.SEEMALL.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  NotificationActionType.RESET.FETCH,
-  props<{ notifications: NotificationVM[] }>()
-);
-export const NotificationAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useFindAllErrorAction,
-  useSeenAction,
-  useSeenSuccessAction,
-  useSeenErrorAction,
-  useSeenAllAction,
-  useSeenAllSuccessAction,
-  useSeenAllErrorAction,
-  useResetAction
-};
+
+@Injectable()
+export class NotificationEffect {
+  constructor(
+    protected readonly actions$: Actions,
+    protected readonly service: NotificationService
+  ) { }
+  public readonly socket$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(NotificationAction.SocketAction),
+      tap(() => console.log('socket')),
+      switchMap(action =>
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return NotificationAction.SaveSuccessAction({ res: trigger.data as NotificationVM });
+            } else if (trigger.type === 'update') {
+              return NotificationAction.SaveSuccessAction({ res: trigger.data as NotificationVM });
+            } else if (trigger.type === 'list') {
+              return NotificationAction.SeenAllSuccessAction({ res: trigger.data as NotificationVM[] });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
+        )
+      )
+    )
+  );
+  public readonly find$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(NotificationAction.FindAllAction),
+      switchMap(action =>
+        this.service.findAll().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(res => NotificationAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
+    )
+  );
+}

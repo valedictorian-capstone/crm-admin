@@ -13,13 +13,22 @@ export class CommentService {
     protected readonly httpClient: HttpClient,
     protected readonly socket: Socket,
   ) { }
-  public readonly triggerSocket = (id: string): Observable<{
+  public readonly triggerSocketProduct = (id: string): Observable<{
     type: 'update' | 'create' | 'remove' | 'view' | 'list',
     data: CommentVM | CommentVM[]
   }> => {
     return this.socket.fromEvent('comment-product-' + id);
   }
-  public readonly findAll = (id: string): Observable<CommentVM[]> => {
+  public readonly triggerSocket = (): Observable<{
+    type: 'update' | 'create' | 'remove' | 'view' | 'list',
+    data: CommentVM | CommentVM[]
+  }> => {
+    return this.socket.fromEvent('comments');
+  }
+  public readonly findAll = (): Observable<CommentVM[]> => {
+    return this.httpClient.get<CommentVM[]>(`${environment.apiEndpont}${environment.api.basic.comment.main}`);
+  }
+  public readonly findByProductId = (id: string): Observable<CommentVM[]> => {
     return this.httpClient.get<CommentVM[]>(`${environment.apiEndpont}${environment.api.basic.comment.getById}product/${id}`);
   }
   public readonly findById = (id: string): Observable<CommentVM> => {

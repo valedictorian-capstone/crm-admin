@@ -1,6 +1,6 @@
 <a class="crm-user-circle" nz-dropdown [nzDropdownMenu]="options" [nzPlacement]="'bottomRight'">
-    <span *ngIf="!you?.avatar">{{ you?.fullname | fullnameShort }}</span>
-    <img *ngIf="you?.avatar" [src]="you.avatar">
+    <span *ngIf="!state.you?.avatar">{{ state.you?.fullname | fullnameShort }}</span>
+    <img *ngIf="state.you?.avatar" [src]="state.you.avatar">
 </a>
 <nz-dropdown-menu #options="nzDropdownMenu">
     <div nz-menu class="items">
@@ -20,7 +20,7 @@
               Change Password
           </span>
         </a>
-        <a *ngIf="canSetting" nz-menu-item class="item" (click)="useSetting()">
+        <a *ngIf="state.canSetting" nz-menu-item class="item" (click)="useSetting()">
             <span class="icon">
           <nb-icon icon="settings-2-outline"></nb-icon>
         </span>

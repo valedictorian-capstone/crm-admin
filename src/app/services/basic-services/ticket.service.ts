@@ -28,6 +28,10 @@ export class TicketService {
     return this.httpClient.get<TicketVM>(`${environment.apiEndpont}${environment.api.basic.ticket.getById}${id}`);
   }
 
+  public readonly findByCustomerId = (id: string): Observable<TicketVM[]> => {
+    return this.httpClient.get<TicketVM[]>(`${environment.apiEndpont}${environment.api.basic.ticket.getById}customer/${id}`);
+  }
+
   public readonly insert = (data: TicketCM): Observable<TicketVM> => {
     return this.httpClient.post<TicketVM>(`${environment.apiEndpont}${environment.api.basic.ticket.main}`, data);
   }

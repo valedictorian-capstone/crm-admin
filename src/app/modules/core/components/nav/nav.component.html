@@ -2,22 +2,22 @@
     <a class="crm-logo" [nbTooltip]="'M-CRM'" [nbTooltipPlacement]="'end'">
         <img src="assets/192x192.png" />
     </a>
-    <a class="crm-menu-item" [class.selected]="active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Dashboard'" [nbTooltipPlacement]="'end'">
+    <a class="crm-menu-item" [class.selected]="state.active === 'dashboard'" (click)="useUpdate('dashboard')" [nbTooltip]="'Dashboard'" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="'home'" [pack]="'eva'"></nb-icon>
         <b>Dashboard</b>
     </a>
-    <a *ngFor="let item of categories" (click)="useUpdate(item.value)" [class.selected]="active === item.value" class="crm-menu-item" [nbTooltip]="item.label" [nbTooltipPlacement]="'end'">
+    <a *ngFor="let item of state.array" (click)="useUpdate(item.value)" [class.selected]="state.active === item.value" class="crm-menu-item" [nbTooltip]="item.label" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="item.icon" [pack]="item.pack"></nb-icon>
         <b>{{item.label}}</b>
     </a>
-    <a *ngIf="more.length > 0" class="crm-menu-item" [class.selected]="active !== 'dashboard' && active !== 'lead' && active !== 'process' && active !== 'profile' && active !== 'activity' && active !== 'deal'" (click)="useUpdate()" [nbTooltip]="'More'" [nbTooltipPlacement]="'end'"
-        (clickOutside)="showMore = false" (click)="showMore = !showMore">
+    <a *ngIf="state.more.length > 0" class="crm-menu-item" [class.selected]="state.active !== 'dashboard' && state.active !== 'lead' && state.active !== 'process' && state.active !== 'profile' && state.active !== 'activity' && state.active !== 'deal'" (click)="useUpdate()"
+        [nbTooltip]="'More'" [nbTooltipPlacement]="'end'" (clickOutside)="state.showMore = false" (click)="state.showMore = !state.showMore">
         <nb-icon [icon]="'more-horizontal'" [pack]="'eva'"></nb-icon>
         <b>More</b>
     </a>
 </nav>
-<div *ngIf="more.length > 0" class="more-categories" [class.show]="showMore">
-    <a *ngFor="let item of more" (click)="useUpdate(item.value)" [class.selected]="active === item.value" class="crm-more-item" [nbTooltip]="item.label" [nbTooltipPlacement]="'end'">
+<div *ngIf="state.more.length > 0" class="more-categories" [class.show]="state.showMore">
+    <a *ngFor="let item of state.more" (click)="useUpdate(item.value)" [class.selected]="state.active === item.value" class="crm-more-item" [nbTooltip]="item.label" [nbTooltipPlacement]="'end'">
         <nb-icon [icon]="item.icon" [pack]="item.pack"></nb-icon>
         <b>{{item.label}}</b>
     </a>

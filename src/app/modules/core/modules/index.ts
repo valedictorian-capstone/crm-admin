@@ -7,7 +7,6 @@ export * from './lead/lead.module';
 export * from './role/role.module';
 export * from './event/event.module';
 export * from './product/product.module';
-export * from './profile/profile.module';
 export * from './call/call.module';
 export * from './pipeline/pipeline.module';
 export * from './error/error.module';

@@ -48,7 +48,7 @@
     </tbody>
 </table>
 <nb-accordion *ngIf="data">
-    <nb-accordion-item *ngFor="let form of customers['controls']; let i = index" class="mb-2">
+    <nb-accordion-item *ngFor="let form of state.formArray['controls']; let i = index" class="mb-2">
         <nb-accordion-item-header>{{form.value.fullname}}</nb-accordion-item-header>
         <nb-accordion-item-body>
             <div class="avatar">
@@ -103,11 +103,12 @@
             <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty)">Birthday <span class="text-danger">*</span></span>
             <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                 <nb-icon nbPrefix icon="birthday-cake" pack="font-awesome"></nb-icon>
-                <input style="height: 3rem;" readonly fullWidth [status]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="toDateFormat(form.get('birthDay').value)" mask="Hh:m0 d0/M0/0000" (focus)="form.get('showBirthday').setValue(true)"
-                    [nzVisible]="form.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+                <input style="height: 3rem;" readonly fullWidth [status]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="form.get('birthDay').value | date: 'dd/MM/yyyy'" mask="Hh:m0 d0/M0/0000"
+                    (focus)="form.get('showBirthday').setValue(true)" [nzVisible]="form.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput
+                />
             </nb-form-field>
             <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
-                <app-reuse-customer-birthday [date]="form.get('birthDay').value" (useChange)="form.get('birthDay').setValue($event); form.get('showBirthday').setValue(false)"></app-reuse-customer-birthday>
+                <app-reuse-select-date [date]="form.get('birthDay').value" (useChange)="form.get('birthDay').setValue($event); form.get('showBirthday').setValue(false)"></app-reuse-select-date>
             </nz-dropdown-menu>
             <nb-accordion style="width: 100%; margin-bottom: 1rem; float: left;" multi>
                 <nb-accordion-item expanded>
@@ -117,17 +118,17 @@
                     <nb-accordion-item-body>
                         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Frequency</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
+                            <input fullWidth mask="separator.2" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill frequency</span>
                         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Average Spending</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')" nbInput />
+                            <input fullWidth mask="separator.2" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average spending</span>
                         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Average Deal</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput />
+                            <input fullWidth mask="separator.2" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average deal</span>
                     </nb-accordion-item-body>
@@ -207,9 +208,9 @@
             <nb-form-field style="width: 100%; margin-bottom: 1rem;">
                 <textarea #area placeHolder="Description" fullWidth [formControl]="form.get('description')" (focus)="area.rows = 5" [rows]="2" (blur)="area.rows = 2" nbInput></textarea>
             </nb-form-field>
-            <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = customers.length === 0 ? undefined : data">Remove</button>
+            <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = state.formArray.length === 0 ? undefined : data">Remove</button>
         </nb-accordion-item-body>
     </nb-accordion-item>
 </nb-accordion>
-<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="customers.invalid">Save</button>
+<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="state.formArray.invalid">Save</button>
 <button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>

@@ -1,60 +1,32 @@
-import { DealDetailAction } from '@actions';
-import { dealDetailAdapter, dealDetailInitialState } from '@adapters';
 import { createReducer, on } from '@ngrx/store';
+import { dealDetailAdapter, dealDetailInitialState } from '@adapters';
+import { DealDetailAction } from '@actions';
 import { DealDetailState } from '@states';
 export const dealDetailFeatureKey = 'dealDetail';
 export const dealDetailReducer = createReducer(
   dealDetailInitialState,
-  on(DealDetailAction.useFindAllAction,
-    (state, action) => dealDetailAdapter.setAll<DealDetailState>([], {
+  on(DealDetailAction.FindAllSuccessAction,
+    (state, action) => dealDetailAdapter.setAll<DealDetailState>((state.ids as string[]).map((id) => state.entities[id]), {
       ...state,
-      status: action.status
+      firstLoad: true
     })
   ),
-  on(DealDetailAction.useFindAllSuccessAction,
-    (state, action) => dealDetailAdapter.setAll<DealDetailState>(action.dealDetails, {
+  on(DealDetailAction.FindAllSuccessAction,
+    (state, action) => dealDetailAdapter.setAll<DealDetailState>(action.res, {
       ...state,
-      status: action.status
     })
   ),
-  on(DealDetailAction.useUpdateAction,
-    (state, action) => dealDetailAdapter.setOne<DealDetailState>(undefined, {
+  on(DealDetailAction.SaveSuccessAction,
+    (state, action) => dealDetailAdapter.upsertOne<DealDetailState>(action.res, {
       ...state,
-      status: action.status
-    }),
-  ),
-  on(DealDetailAction.useUpdateSuccessAction,
-    (state, action) => dealDetailAdapter.updateOne<DealDetailState>({
-      id: action.dealDetail.id,
-      changes: action.dealDetail
-    }, state)
-  ),
-  on(DealDetailAction.useCreateAction,
-    (state, action) => dealDetailAdapter.setOne<DealDetailState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(DealDetailAction.useCreateSuccessAction,
-    (state, action) => dealDetailAdapter.addOne<DealDetailState>(action.dealDetail, state)
-  ),
-  on(DealDetailAction.useRemoveAction,
-    (state, action) => dealDetailAdapter.setOne<DealDetailState>(undefined, {
-      ...state,
-      status: action.status
-    }),
-  ),
-  on(DealDetailAction.useRemoveSuccessAction,
-    (state, action) => dealDetailAdapter.removeOne<DealDetailState>(action.id, state)
-  ),
-  on(DealDetailAction.useResetAction,
-    (state, action) => dealDetailAdapter.setAll<DealDetailState>(action.dealDetails, dealDetailInitialState)
-  ),
-  on(DealDetailAction.useErrorAction,
-    (state, action) => dealDetailAdapter.setOne<DealDetailState>(undefined, {
-      ...state,
-      status: action.status,
-      error: action.error
     })
+  ),
+  on(DealDetailAction.RemoveSuccessAction,
+    (state, action) => dealDetailAdapter.removeOne<DealDetailState>(action.id, {
+      ...state,
+    })
+  ),
+  on(DealDetailAction.ResetAction,
+    () => dealDetailAdapter.setAll<DealDetailState>([], dealDetailInitialState)
   ),
 );

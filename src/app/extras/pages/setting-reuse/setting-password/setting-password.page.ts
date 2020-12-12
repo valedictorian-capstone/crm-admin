@@ -1,32 +1,33 @@
-import { Component, EventEmitter, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { AuthService } from '@services';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
+import { finalize, tap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reuse-setting-password',
   templateUrl: './setting-password.page.html',
   styleUrls: ['./setting-password.page.scss']
 })
-export class SettingPasswordPage implements OnInit {
+export class SettingPasswordPage implements OnDestroy {
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
+  subscriptions: Subscription[] = [];
   constructor(
-    protected readonly authService: AuthService,
+    protected readonly service: AuthService,
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
     protected readonly spinner: NgxSpinnerService,
   ) {
     this.useInitForm();
   }
-  ngOnInit() {
-  }
   useInitForm = () => {
     this.form = new FormGroup({
+      old: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
-      retype: new FormControl('', [Validators.required]),
+      retype: new FormControl(''),
     },
       {
         validators: (form: FormGroup) => {
@@ -47,20 +48,23 @@ export class SettingPasswordPage implements OnInit {
     ref.close();
     if (this.form.valid) {
       this.useShowSpinner();
-      setTimeout(() => {
-        this.authService.updatePassword(this.form.value)
+      this.subscriptions.push(
+        this.service.updatePassword(this.form.value)
           .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Change password successful!', { duration: 3000 });
+              this.useClose.emit();
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Change password fail! ' + err.error.message, { duration: 3000 });
+              return of(undefined);
+            }),
             finalize(() => {
               this.useHideSpinner();
             })
           )
-          .subscribe((data) => {
-            this.toastrService.success('', 'Change password successful!', { duration: 3000 });
-            this.useClose.emit();
-          }, (err) => {
-            this.toastrService.danger('', 'Change password fail! Something wrong at runtime', { duration: 3000 });
-          });
-      }, 2000);
+          .subscribe()
+      );
     } else {
       this.form.markAsUntouched();
       this.form.markAsTouched();
@@ -73,5 +77,8 @@ export class SettingPasswordPage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('setting-password');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

@@ -8,11 +8,11 @@
     </nb-card-header>
     <nb-card-body>
         <div class="mb-2" *ngIf="!importType">
-            <button nbButton class="mr-1" [status]="type === 'customer' ? 'primary' : 'basic'" (click)="type = 'customer'; data = undefined" size="small">Customer</button>
-            <button nbButton class="mr-1" [status]="type === 'product' ? 'primary' : 'basic'" (click)="type = 'product'; data = undefined" size="small">Product</button>
-            <button nbButton class="mr-1" [status]="type === 'employee' ? 'primary' : 'basic'" (click)="type = 'employee'; data = undefined" size="small">Account</button>
+            <button nbButton class="mr-1" [status]="state.type === 'customer' ? 'primary' : 'basic'" (click)="state.type = 'customer'; data = undefined" size="small">Customer</button>
+            <button nbButton class="mr-1" [status]="state.type === 'product' ? 'primary' : 'basic'" (click)="state.type = 'product'; data = undefined" size="small">Product</button>
+            <button nbButton class="mr-1" [status]="state.type === 'employee' ? 'primary' : 'basic'" (click)="state.type = 'employee'; data = undefined" size="small">Account</button>
         </div>
-        <nz-upload *ngIf="!data" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
+        <nz-upload *ngIf="!state.data" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
             <p class="ant-upload-drag-icon">
                 <i nz-icon nzType="inbox"></i>
             </p>
@@ -22,9 +22,9 @@
             </p>
         </nz-upload>
         <div class="mt-2">
-            <app-customer-import [data]="data" *ngIf="type === 'customer'" (useChange)="data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
-            <app-product-import [data]="data" *ngIf="type === 'product'" (useChange)="data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-product-import>
-            <app-employee-import [data]="data" *ngIf="type === 'employee'" (useChange)="data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import>
+            <app-customer-import [data]="state.data" *ngIf="state.type === 'customer'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
+            <app-product-import [data]="state.data" *ngIf="state.type === 'product'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-product-import>
+            <app-employee-import [data]="state.data" *ngIf="state.type === 'employee'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import>
         </div>
     </nb-card-body>
 </nb-card>

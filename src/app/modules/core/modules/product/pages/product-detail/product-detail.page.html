@@ -1,125 +1,135 @@
-<div class="product-detail">
-    <div class="product-detail-main">
-        <div class="product-detail-information">
-            <div class="image">
-                <img *ngIf="product?.image" [src]="product?.image" />
-                <b *ngIf="!product?.image">No Image</b>
-            </div>
-            <div class="detail">
-                <span class="item">
-                <h5 class="w-100 text-center">{{product?.name}}{{product?.name}}</h5>
-              </span>
-            </div>
-            <button style="position: absolute; bottom: 0.5rem; right: 3rem;" nbButton status="primary" (click)="useEdit()" class="mr-1 mt-1" outline shape="round" size="small">
-              <nb-icon icon="edit-2-outline"></nb-icon>
-            </button>
-            <button style="position: absolute; bottom: 0.5rem; right: 0.5rem;" nbButton status="danger" (click)="useDialog(removeRef)" class="mr-1 mt-1" outline shape="round" size="small">
-              <nb-icon icon="trash-2-outline"></nb-icon>
-            </button>
-        </div>
-        <div class="product-detail-content">
-            <div nz-row class="product-detail-content-rating">
-                <div class="total justify-content-center align-items-center mb-3" style="display: flex !important;" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="6" [nzXl]="4" [nzXXl]="4">
-                    <nz-progress [nzPercent]="totalRating * 100 / 5" [nzFormat]="formatRating" nzType="circle"></nz-progress>
-                </div>
-                <div class="ratings" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="18" [nzXl]="20" [nzXXl]="20">
-                    <div class="rating">
-                        <div class="rating-left">
-                            5
-                            <nb-icon status="warning" icon="star"></nb-icon>
-                        </div>
-                        <div class="rating-middle">
-                            <nb-progress-bar size="giant" [displayValue]="true" [value]="fiveStart.percent" status="success"></nb-progress-bar>
-                        </div>
-                        <div class="rating-right">
-                            {{fiveStart.quantity}}
-                            <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <div class="rating-left">
-                            4
-                            <nb-icon status="warning" icon="star"></nb-icon>
-                        </div>
-                        <div class="rating-middle">
-                            <nb-progress-bar size="giant" [displayValue]="true" [value]="fourStart.percent" status="success"></nb-progress-bar>
-                        </div>
-                        <div class="rating-right">
-                            {{fourStart.quantity}}
-                            <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <div class="rating-left">
-                            3
-                            <nb-icon status="warning" icon="star"></nb-icon>
-                        </div>
-                        <div class="rating-middle">
-                            <nb-progress-bar size="giant" [displayValue]="true" [value]="threeStart.percent" status="success"></nb-progress-bar>
-                        </div>
-                        <div class="rating-right">
-                            {{threeStart.quantity}}
-                            <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <div class="rating-left">
-                            2
-                            <nb-icon status="warning" icon="star"></nb-icon>
-                        </div>
-                        <div class="rating-middle">
-                            <nb-progress-bar size="giant" [displayValue]="true" [value]="twoStart.percent" status="success"></nb-progress-bar>
-                        </div>
-                        <div class="rating-right">
-                            {{twoStart.quantity}}
-                            <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <div class="rating-left">
-                            1
-                            <nb-icon status="warning" icon="star"></nb-icon>
-                        </div>
-                        <div class="rating-middle">
-                            <nb-progress-bar size="giant" [displayValue]="true" [value]="oneStart.percent" status="success"></nb-progress-bar>
-                        </div>
-                        <div class="rating-right">
-                            {{oneStart.quantity}}
-                            <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
-                        </div>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Disable product </nb-card-header>
+        <nb-card-body>Are you sure you wish to disabled this state.product?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="danger" nbButton size="small" (click)="useRemove(ref)">
+        Disabled
+      </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+        Cancel
+      </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+
+<nb-card class="h-100 w-100 position-relative">
+    <ngx-spinner [name]="'product-detail'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 2.25rem;">
+        <span class="display-flex align-items-center float-left h-100" style="max-width: 60%;">
+    <nb-icon icon="shopping-cart-outline" class="mr-2"></nb-icon>
+      <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Product / {{state.product?.name}}</b>
+    </span>
+        <button class="float-right" nbButton status="primary" (click)="useEdit()" outline size="small">
+      <nb-icon icon="edit-2-outline"></nb-icon>
+    </button>
+        <button class="float-right mr-2" nbButton status="danger" (click)="useDialog(removeRef)" outline size="small">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+    </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div nz-row class="w-100 h-100">
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="px-3">
+                <div class="information">
+                    <div class="image">
+                        <img *ngIf="state.product?.image" [src]="state.product?.image" />
+                        <b *ngIf="!state.product?.image">No Image</b>
                     </div>
                 </div>
-            </div>
-            <div class="product-detail-content-comments">
-                <div *ngFor="let comment of comments" class="comment">
-                    <img *ngIf="comment.customer.avatar" [src]="comment.customer.avatar" />
-                    <div *ngIf="!comment.customer.avatar" class="non-avatar">
-                        {{comment.customer.fullname | key}}
+                <div nz-row class="content-rating float-left">
+                    <div class="total justify-content-center align-items-center mb-3" style="display: flex !important" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="6" [nzXl]="4" [nzXXl]="4">
+                        <nz-progress [nzPercent]="state.totalRating * 100 / 5" [nzFormat]="formatRating" nzType="circle"></nz-progress>
                     </div>
-                    <div class="content">
-                        <div class="fullname">
-                            {{comment.customer.fullname}} - <span>{{comment.createdAt | time}}</span>
-                        </div>
-                        <div class="text">
-                            {{comment.message}}
+                    <div class="ratings" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="18" [nzXl]="20" [nzXXl]="20">
+                        <div class="rating">
+                            <div class="rating-left">
+                                5
+                                <nb-icon status="warning" icon="star"></nb-icon>
+                            </div>
+                            <div class="rating-middle">
+                                <nb-progress-bar size="giant" [displayValue]="true" [value]="state.fiveStart.percent" status="success"></nb-progress-bar>
+                            </div>
+                            <div class="rating-right">
+                                {{state.fiveStart.quantity}}
+                                <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
+                            </div>
                         </div>
                         <div class="rating">
-                            <bar-rating [readOnly]="true" [(rate)]="comment.rating" [max]="5" [theme]="'stars'"></bar-rating>
+                            <div class="rating-left">
+                                4
+                                <nb-icon status="warning" icon="star"></nb-icon>
+                            </div>
+                            <div class="rating-middle">
+                                <nb-progress-bar size="giant" [displayValue]="true" [value]="state.fourStart.percent" status="success"></nb-progress-bar>
+                            </div>
+                            <div class="rating-right">
+                                {{state.fourStart.quantity}}
+                                <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <div class="rating-left">
+                                3
+                                <nb-icon status="warning" icon="star"></nb-icon>
+                            </div>
+                            <div class="rating-middle">
+                                <nb-progress-bar size="giant" [displayValue]="true" [value]="state.threeStart.percent" status="success"></nb-progress-bar>
+                            </div>
+                            <div class="rating-right">
+                                {{state.threeStart.quantity}}
+                                <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <div class="rating-left">
+                                2
+                                <nb-icon status="warning" icon="star"></nb-icon>
+                            </div>
+                            <div class="rating-middle">
+                                <nb-progress-bar size="giant" [displayValue]="true" [value]="state.twoStart.percent" status="success"></nb-progress-bar>
+                            </div>
+                            <div class="rating-right">
+                                {{state.twoStart.quantity}}
+                                <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <div class="rating-left">
+                                1
+                                <nb-icon status="warning" icon="star"></nb-icon>
+                            </div>
+                            <div class="rating-middle">
+                                <nb-progress-bar size="giant" [displayValue]="true" [value]="state.oneStart.percent" status="success"></nb-progress-bar>
+                            </div>
+                            <div class="rating-right">
+                                {{state.oneStart.quantity}}
+                                <nb-icon status="primary" icon="message-square-outline" class="ml-1"></nb-icon>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flag h-20" style="float: left;"></div>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="px-3">
+                <div class="comments">
+                    <div *ngFor="let comment of state.comments" class="comment">
+                        <img *ngIf="comment.customer.avatar" [src]="comment.customer.avatar" />
+                        <div *ngIf="!comment.customer.avatar" class="non-avatar">
+                            {{comment.customer.fullname | key}}
+                        </div>
+                        <div class="content">
+                            <div class="fullname">
+                                {{comment.customer.fullname}} -
+                                <span>{{comment.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+                            </div>
+                            <div class="text">{{comment.message}}</div>
+                            <div class="rating">
+                                <bar-rating [readOnly]="true" [(rate)]="comment.rating" [max]="5" [theme]="'stars'"></bar-rating>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flag h-20" style="float: left"></div>
+                </div>
+            </div>
         </div>
-    </div>
-    <ng-template #removeRef let-data let-ref="dialogRef">
-        <nb-card>
-            <nb-card-header>Disable product
-            </nb-card-header>
-            <nb-card-body>Are you sure you wish to disabled this product?</nb-card-body>
-            <nb-card-footer class="p-2">
-                <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Disabled</button>
-                <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
-            </nb-card-footer>
-        </nb-card>
-    </ng-template>
+    </nb-card-body>
+</nb-card>

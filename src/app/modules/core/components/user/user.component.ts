@@ -1,28 +1,48 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, DeviceService, GlobalService } from '@services';
+import { Store } from '@ngrx/store';
+import { DeviceService, GlobalService } from '@services';
+import { State } from '@store/states';
 import { AccountVM } from '@view-models';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { authSelector } from '@store/selectors';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent implements OnInit {
-  @Input() you: AccountVM;
-  @Input() canSetting = false;
+export class UserComponent implements OnDestroy {
+  subscriptions: Subscription[] = [];
+  state: { you: AccountVM, canSetting: boolean } = {
+    you: undefined,
+    canSetting: false
+  }
   constructor(
-    protected readonly router: Router,
-    protected readonly activatedRoute: ActivatedRoute,
-    protected readonly globalService: GlobalService,
-    protected readonly authService: AuthService,
-    protected readonly deviceService: DeviceDetectorService,
     protected readonly service: DeviceService,
-  ) {
+    protected readonly router: Router,
+    protected readonly globalService: GlobalService,
+    protected readonly deviceService: DeviceDetectorService,
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
+    ) {
+    this.useLoadMine();
   }
 
-  ngOnInit() {
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            if (Math.min(...this.state.you.roles.map((e) => e.level)) <= 0) {
+              this.state.canSetting = true;
+            }
+          })
+        )
+        .subscribe()
+    );
   }
   useOut = async () => {
     const fcmToken = localStorage.getItem('fcmToken');
@@ -45,5 +65,8 @@ export class UserComponent implements OnInit {
   }
   useSetting = () => {
     this.router.navigate(['core/setting']);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

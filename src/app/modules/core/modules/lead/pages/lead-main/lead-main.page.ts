@@ -1,77 +1,123 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService, CustomerService, GlobalService } from '@services';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { CustomerService, GlobalService } from '@services';
+import { CustomerAction } from '@store/actions';
+import { authSelector, customerSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { AccountVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
-
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+interface ILeadMainPageState {
+  array: CustomerVM[];
+  filterArray: CustomerVM[];
+  search: {
+    value: string;
+  };
+  you: AccountVM;
+  canAdd: boolean;
+  canImport: boolean;
+  canUpdate: boolean;
+  canRemove: boolean;
+}
 @Component({
   selector: 'app-lead-main',
   templateUrl: './lead-main.page.html',
   styleUrls: ['./lead-main.page.scss'],
 })
-export class LeadMainPage implements OnInit {
-  customers: CustomerVM[] = [];
-  filterCustomers: CustomerVM[] = [];
-  search = '';
-  stage = 'done';
-  you: AccountVM;
-  canAdd = false;
-  canImport = false;
-  canUpdate = false;
-  canRemove = false;
+export class LeadMainPage implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
+  state: ILeadMainPageState = {
+    array: [],
+    filterArray: [],
+    search: {
+      value: '',
+    },
+    you: undefined,
+    canAdd: false,
+    canImport: false,
+    canUpdate: false,
+    canRemove: false,
+  };
   constructor(
     protected readonly customerService: CustomerService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
-    protected readonly authService: AuthService,
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
   ) {
+    this.useLoadMine();
   }
 
   ngOnInit() {
-    this.useLoadMine();
-    this.useReload();
-    this.useSocket();
-  }
-  useLoadMine = () => {
-    this.authService.auth(undefined).subscribe((data) => {
-      this.canAdd = data.roles.filter((role) => role.canCreateCustomer).length > 0;
-      this.canImport = data.roles.filter((role) => role.canImportCustomer).length > 0;
-      this.canUpdate = data.roles.filter((role) => role.canUpdateCustomer).length > 0;
-      this.canRemove = data.roles.filter((role) => role.canRemoveCustomer).length > 0;
-    });
+    // this.useSocket();
+    this.useDispatch();
+    this.useData();
   }
   useSocket = () => {
     this.customerService.triggerSocket().subscribe((trigger) => {
-      if ((trigger.data as CustomerVM).groups.filter((group) => group.id === '3').length > 0) {
-        if (trigger.type === 'create') {
-          this.customers.push((trigger.data as CustomerVM));
-        } else if (trigger.type === 'update') {
-          this.customers[this.customers.findIndex((e) => e.id === (trigger.data as CustomerVM).id)] = (trigger.data as CustomerVM);
-        } else if (trigger.type === 'remove') {
-          this.customers.splice(this.customers.findIndex((e) => e.id === (trigger.data as CustomerVM).id), 1);
-        }
-        this.useFilter();
+      if (trigger.type === 'create') {
+        this.state.array.push(trigger.data as CustomerVM);
+      } else if (trigger.type === 'update') {
+        this.state.array[this.state.array.findIndex((e) => e.id === (trigger.data as CustomerVM).id)] = (trigger.data as CustomerVM);
+      } else if (trigger.type === 'remove') {
+        this.state.array.splice(this.state.array.findIndex((e) => e.id === (trigger.data as CustomerVM).id), 1);
       }
+      this.useFilter();
     });
+  }
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          })
+        )
+        .subscribe()
+    );
+  }
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(customerSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(customerSelector.customers)
+        .pipe(
+          tap((data) => {
+            this.state.array = data.filter((item) => item.groups.filter((group) => group.id === '3').length > 0);
+            this.useFilter();
+          })
+      ).subscribe()
+    );
   }
   useReload = () => {
     this.useShowSpinner();
-    this.customerService.findAllLead()
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => {
-        this.customers = data;
-        this.useFilter();
-      });
+    this.store.dispatch(CustomerAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
   }
   useFilter = () => {
-    this.filterCustomers = this.customers.filter((e) =>
-      e.fullname.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.phone.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.email.toLowerCase().includes(this.search.toLowerCase())
+    this.state.filterArray = this.state.array.filter((e) =>
+      (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+        e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+        e.email.toLowerCase().includes(this.state.search.value.toLowerCase()))
     );
   }
   usePlus = () => {
@@ -80,6 +126,13 @@ export class LeadMainPage implements OnInit {
   useImport = () => {
     this.globalService.triggerView$.next({ type: 'import', payload: { importType: 'customer' } });
   }
+  useSearch = (search: {
+    value: string;
+  }) => {
+    console.log(search);
+    this.state.search = { ...this.state.search, ...search };
+    this.useFilter();
+  }
   useShowSpinner = () => {
     this.spinner.show('lead-main');
   }
@@ -87,5 +140,8 @@ export class LeadMainPage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('lead-main');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

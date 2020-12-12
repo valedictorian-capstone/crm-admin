@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { CustomerService } from '@services';
 import { CustomerAction } from '@actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { CustomerVM } from '@view-models';
 
 @Injectable()
 export class CustomerEffect {
@@ -10,60 +12,54 @@ export class CustomerEffect {
     protected readonly actions$: Actions,
     protected readonly service: CustomerService
   ) { }
-  public readonly find$ = createEffect(() =>
+  public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(CustomerAction.useFindAllAction),
+      ofType(CustomerAction.SocketAction),
+      tap(() => console.log('socket')),
       switchMap(action =>
-        this.service.findAll().pipe(
-          delay(1000),
-          map(customers => CustomerAction.useFindAllSuccessAction({ customers, status: action.status })),
-          catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return CustomerAction.SaveSuccessAction({ res: trigger.data as CustomerVM });
+            } else if (trigger.type === 'update') {
+              return CustomerAction.SaveSuccessAction({ res: trigger.data as CustomerVM });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
         )
       )
     )
   );
-  public readonly create$ = createEffect(() =>
+  public readonly find$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(CustomerAction.useCreateAction),
+      ofType(CustomerAction.FindAllAction),
       switchMap(action =>
-        this.service.insert(action.customer).pipe(
-          delay(1000),
-          map(customer => CustomerAction.useCreateSuccessAction({ customer, status: action.status })),
-          catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly update$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CustomerAction.useUpdateAction),
-      switchMap(action =>
-        this.service.update(action.customer).pipe(
-          delay(1000),
-          map(customer => CustomerAction.useUpdateSuccessAction({ customer, status: action.status })),
-          catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  // public readonly remove$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(CustomerAction.useRemoveAction),
-  //     switchMap(action =>
-  //       this.service.remove(action.id).pipe(
-  //         delay(1000),
-  //         map(id => CustomerAction.useRemoveSuccessAction({ id, status: action.status })),
-  //         catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
-  //       ))
-  //   )
-  // );
-  public readonly unique$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CustomerAction.useUniqueAction),
-      switchMap(action =>
-        this.service.checkUnique(action.data.label, action.data.value).pipe(
-          delay(1000),
-          map(result => CustomerAction.useUniqueSuccessAction({ result, status: action.status })),
-          catchError(async (error) => CustomerAction.useErrorAction({ error, status: action.status })),
-        ))
+        this.service.findAll().pipe(
+
+          map(res => CustomerAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          }),
+        )
+      )
     )
   );
 }

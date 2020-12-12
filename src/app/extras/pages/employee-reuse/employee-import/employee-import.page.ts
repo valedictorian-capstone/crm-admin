@@ -1,41 +1,92 @@
-import { Component, OnInit, Input, ElementRef, EventEmitter, Output, OnChanges } from '@angular/core';
-import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
-import { AccountService, RoleService } from '@services';
-import { AccountVM, RoleVM } from '@view-models';
-import * as XLSX from 'xlsx';
-import { finalize } from 'rxjs/operators';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
+import { AccountService } from '@services';
+import { State } from '@states';
+import { RoleAction } from '@store/actions';
+import { authSelector, roleSelector } from '@store/selectors';
+import { AccountVM, RoleVM } from '@view-models';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 
+interface IEmployeeImportPageState {
+  formArray: FormArray;
+  roles: RoleVM[];
+  you: AccountVM;
+  level: number;
+}
 @Component({
   selector: 'app-employee-import',
   templateUrl: './employee-import.page.html',
   styleUrls: ['./employee-import.page.scss']
 })
-export class EmployeeImportPage implements OnInit, OnChanges {
+export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
   @Input() data: AccountVM[];
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  employees: FormArray = new FormArray([]);
-  roles: RoleVM[] = [];
+  subscriptions: Subscription[] = [];
+  state: IEmployeeImportPageState = {
+    formArray: new FormArray([]),
+    roles: [],
+    you: undefined,
+    level: 9999
+  }
   constructor(
-    protected readonly employeeService: AccountService,
+    protected readonly service: AccountService,
     protected readonly toastrService: NbToastrService,
-    protected readonly roleService: RoleService,
-  ) { }
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+    this.useDispatch();
+    this.useData();
+   }
 
   ngOnInit() {
-    this.roleService.findAll().subscribe((data) => {
-      this.roles = data;
-    });
+  }
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(roleSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.store.dispatch(RoleAction.FindAllAction({}));
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(roleSelector.roles)
+        .pipe(
+          tap((data) => {
+            this.state.roles = data.filter((e) => e.level > this.state.level);;
+          })
+        ).subscribe()
+    );
+  }
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+          })
+        )
+        .subscribe()
+    );
   }
   ngOnChanges() {
     if (this.data) {
-      this.employees.clear();
+      this.state.formArray.clear();
       for (const item of this.data) {
         const group = new FormGroup({
           password: new FormControl(Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
-          .map((x) => x[Math.floor(Math.random() * x.length)]).join('')),
+            .map((x) => x[Math.floor(Math.random() * x.length)]).join('')),
           phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
           phoneStage: new FormControl('done'),
           emailStage: new FormControl('done'),
@@ -61,23 +112,30 @@ export class EmployeeImportPage implements OnInit, OnChanges {
           }
         }
         (group as any).autoCompleteData = elements;
-        this.employees.push(group);
+        this.state.formArray.push(group);
       }
     }
   }
   useImport = () => {
-    if (this.employees.valid) {
+    if (this.state.formArray.valid) {
       this.useLoading.emit();
-      this.employeeService.import(this.employees.controls.map((e) => e.value)).pipe(
-        finalize(() => {
-          this.useUnLoading.emit();
-        })
-      ).subscribe((data) => {
-        this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
-        this.useChange.emit();
-      }, (err) => {
-        this.toastrService.danger('', 'Import accounts fail! Something wrong at runtime', { duration: 3000 });
-      });
+      this.subscriptions.push(
+        this.service.import(this.state.formArray.controls.map((e) => e.value))
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
+              this.useChange.emit();
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Import accounts fail! ' + err.message, { duration: 3000 });
+              return of(undefined);
+            }),
+            finalize(() => {
+              this.useUnLoading.emit();
+            })
+          )
+          .subscribe()
+      );
     }
   }
   useDownload = (table: ElementRef<any>) => {
@@ -91,13 +149,21 @@ export class EmployeeImportPage implements OnInit, OnChanges {
     const phone = form.get('phone');
     if (phone.valid) {
       form.get('phoneStage').setValue('querying');
-      setTimeout(async () => {
-        const check = await this.employeeService.checkUnique('phone', phone.value).toPromise();
-        if (phone.valid && check) {
-          phone.setErrors({ duplicate: true });
-        }
-        form.get('phoneStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('phone', phone.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                phone.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('phoneStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
 
   }
@@ -105,26 +171,42 @@ export class EmployeeImportPage implements OnInit, OnChanges {
     const email = form.get('email');
     if (email.valid) {
       form.get('emailStage').setValue('querying');
-      setTimeout(async () => {
-        const check = await this.employeeService.checkUnique('email', email.value).toPromise();
-        if (email.valid && check) {
-          email.setErrors({ duplicate: true });
-        }
-        form.get('emailStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('email', email.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                email.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('emailStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
   }
   useCheckCode = (form: FormGroup) => {
     const code = form.get('code');
     if (code.valid) {
       form.get('codeStage').setValue('querying');
-      setTimeout(async () => {
-        const check = await this.employeeService.checkUnique('code', code.value).toPromise();
-        if (code.valid && check) {
-          code.setErrors({ duplicate: true });
-        }
-        form.get('codeStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('code', code.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                code.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('codeStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
@@ -155,10 +237,13 @@ export class EmployeeImportPage implements OnInit, OnChanges {
     }
   }
   useRemoveItem = (index: number) => {
-    this.employees.removeAt(index);
-    if (this.employees.length === 0) {
+    this.state.formArray.removeAt(index);
+    if (this.state.formArray.length === 0) {
       this.data = undefined;
       this.useChange.emit();
     }
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

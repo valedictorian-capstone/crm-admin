@@ -1,9 +1,13 @@
-import { AngularFireMessaging } from '@angular/fire/messaging';
 import { Injectable } from '@angular/core';
-import { CanLoad, Route, Router, UrlSegment, UrlTree } from '@angular/router';
+import { AngularFireMessaging } from '@angular/fire/messaging';
+import { ActivatedRoute, CanLoad, Route, Router, UrlSegment } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AuthService } from '@services';
+import { authSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { Observable } from 'rxjs';
-import { AuthService } from './services/extra-services';
+import { map, catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,24 +16,44 @@ export class AppGuard implements CanLoad {
   constructor(
     protected readonly authService: AuthService,
     protected readonly router: Router,
+    protected readonly activatedRoute: ActivatedRoute,
     protected readonly deviceService: DeviceDetectorService,
     protected readonly angularFireMessaging: AngularFireMessaging,
+    protected readonly store: Store<State>
   ) { }
-  async canLoad(route: Route, segments: UrlSegment[]){
-    if (Notification.permission === 'denied' || !('Notification' in window)) {
-    } else {
-      if (!localStorage.getItem('fcmToken')) {
-        const fcmToken = await this.angularFireMessaging.getToken.toPromise();
-        localStorage.setItem('fcmToken', fcmToken);
-      }
-    }
-    return this.authService.auth({id: localStorage.getItem('fcmToken'), ...this.deviceService.getDeviceInfo()} as any).toPromise()
-      .then((res) => {
-        return true;
-      }).catch((err) => {
-        this.router.navigate(['auth']);
-        return false;
-      });
+  canLoad(route: Route, segments: UrlSegment[]) {
+    console.log(document.location.href.toString().substring(
+      document.location.href.indexOf('core'),
+      document.location.href.length
+    ));
+    return this.store.select(authSelector.profile)
+      .pipe(
+        tap(console.log),
+        map((res) => {
+          if (res) {
+            return true;
+          }
+          this.router.navigate(['auth'], {
+            queryParams: {
+              returnUrl: document.location.href.toString().substring(
+                document.location.href.indexOf('core'),
+                document.location.href.length
+              )
+            }
+          });
+          return false;
+        }),
+        catchError(() => {
+          this.router.navigate(['auth'], {
+            queryParams: {
+              returnUrl: document.location.href.toString().substring(
+                document.location.href.indexOf('core'),
+                document.location.href.length
+              )
+            }
+          });
+          return of(false);
+        })
+      );
   }
-
 }

@@ -1,5 +1,6 @@
 export * from './account.state';
 export * from './customer.state';
+export * from './comment.state';
 export * from './device.state';
 export * from './event.state';
 export * from './group.state';

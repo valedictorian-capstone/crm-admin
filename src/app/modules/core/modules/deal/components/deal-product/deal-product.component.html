@@ -12,11 +12,11 @@
                         <input #productInput fullWidth nz-dropdown nbInput size="small" [status]="detail.get('product').get('name').invalid &&
                                 (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'" [formControl]="detail.get('product').get('name')" [nzDropdownMenu]="productRef" [nzPlacement]="'bottomCenter'"
                             [nzBackdrop]="false" [nzTrigger]="'click'" [status]="detail.get('product').get('name').invalid &&
-                                (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'" (input)="product.useChangeValue($event.target.value)" />
+                                (detail.get('product').get('name').touched || detail.get('product').get('name').dirty) ? 'danger' : 'basic'" (input)="product.useSearch($event.target.value)" />
                         <nb-icon icon="arrow-down" nbSuffix></nb-icon>
                     </nb-form-field>
                     <nz-dropdown-menu #productRef="nzDropdownMenu">
-                        <app-reuse-product-select #product [selected]="detail.get('product')" (useSelect)="useChangeDealDetail($event, detail.get('product'), false)" (useAdd)="useChangeDealDetail({name: $event}, detail.get('product'), true)" [template]="productInput"></app-reuse-product-select>
+                        <app-reuse-product-select #product [selected]="detail.get('product')" (useSelect)="useChangeDealDetail($event, detail.get('product'), false)" (useAdd)="useChangeDealDetail({name: $event}, detail.get('product'), true)"></app-reuse-product-select>
                     </nz-dropdown-menu>
                     <div style="width: 100%; margin-bottom: 0.5rem;">
                         <div style="width: 30%; float: left">

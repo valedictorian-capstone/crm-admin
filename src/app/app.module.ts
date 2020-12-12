@@ -15,6 +15,7 @@ import {
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { metaReducers, reducers } from '@reducers';
+import { effects } from '@effects';
 import { InterceptorService } from '@services';
 import * as Hammer from 'hammerjs';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -52,7 +53,7 @@ const config: SocketIoConfig = { url: environment.socketServer, options: {} };
       metaReducers
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !environment.production }),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot({
       serializer: AppSerializer,
       routerState: RouterState.Minimal,

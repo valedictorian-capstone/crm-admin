@@ -1,42 +1,78 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DealService } from '@services';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { DealAction } from '@store/actions';
+import { dealSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { DealVM } from '@view-models';
-
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+interface IDealSelectComponentState {
+  search: string;
+  array: DealVM[];
+  filterArray: DealVM[];
+  status: 'finding' | 'done';
+}
 @Component({
   selector: 'app-reuse-deal-select',
   templateUrl: './deal-select.component.html',
   styleUrls: ['./deal-select.component.scss']
 })
-export class DealSelectComponent implements OnInit {
+export class DealSelectComponent implements OnInit, OnDestroy {
   @Output() useSelect: EventEmitter<DealVM> = new EventEmitter<DealVM>();
   @Output() useAdd: EventEmitter<string> = new EventEmitter<string>();
   @Input() selected: DealVM;
   @Input() forSearch = false;
-  @Input() template: HTMLElement;
-  value = '';
-  deals: DealVM[] = [];
-  filterDeals: DealVM[] = [];
-  stage = 'finding';
+  subscriptions: Subscription[] = [];
+  state: IDealSelectComponentState = {
+    search: '',
+    array: [],
+    filterArray: [],
+    status: 'done',
+  }
   constructor(
-    protected readonly dealService: DealService,
+    protected readonly store: Store<State>
   ) { }
 
   ngOnInit() {
-    this.dealService.findAll().subscribe((data) => {
-      this.deals = data.filter((deal) => this.forSearch ? true : deal.status === 'processing');
-      setTimeout(() => {
-        this.stage = 'done';
-        this.filterDeals = data.filter((deal) => this.forSearch ? true : deal.status === 'processing');
-      }, 500);
-    });
+    this.useDispatch();
+    this.useData();
   }
-
-  useChangeValue = (value: string) => {
-    this.stage = 'finding';
-    setTimeout(() => {
-      this.value = value;
-      this.filterDeals = this.deals.filter((deal) => deal.title.toLowerCase().includes(value.toLowerCase()));
-      this.stage = 'done';
-    }, 500);
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select(dealSelector.firstLoad)
+        .pipe(
+          tap((firstLoad) => {
+            if (!firstLoad) {
+              this.useReload();
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useData = () => {
+    this.subscriptions.push(
+      this.store.select(dealSelector.deals)
+        .pipe(
+          tap((data) => {
+            this.state.array = data;
+            this.useSearch('');
+          })
+        ).subscribe()
+    );
+  }
+  useReload = () => {
+    this.state.status = 'finding';
+    this.store.dispatch(DealAction.FindAllAction({
+      finalize: () => {
+        this.state.status = 'done';
+      }
+    }));
+  }
+  useSearch = (search: string) => {
+    this.state.search = search;
+    this.state.filterArray = this.state.array.filter((deal) => deal.title.toLowerCase().includes(search.toLowerCase()));
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

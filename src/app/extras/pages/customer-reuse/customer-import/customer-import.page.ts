@@ -1,36 +1,36 @@
-import { DatePipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { CustomerVM } from '@view-models';
-import { finalize } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
+import { finalize, tap, catchError } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
-
+interface ICustomerImportPageState {
+  formArray: FormArray;
+}
 @Component({
   selector: 'app-customer-import',
   templateUrl: './customer-import.page.html',
   styleUrls: ['./customer-import.page.scss'],
-  providers: [DatePipe],
 })
-export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
+export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
   @Input() data: CustomerVM[];
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
-  customers: FormArray = new FormArray([]);
+  subscriptions: Subscription[] = [];
+  state: ICustomerImportPageState = {
+    formArray: new FormArray([])
+  };
   constructor(
-    protected readonly customerService: CustomerService,
-    protected readonly datePipe: DatePipe,
+    protected readonly service: CustomerService,
     protected readonly toastrService: NbToastrService,
     protected readonly cdr: ChangeDetectorRef
   ) { }
-
-  ngOnInit() {
-  }
   ngOnChanges() {
     if (this.data) {
-      this.customers.clear();
+      this.state.formArray.clear();
       for (const item of this.data) {
         const group = new FormGroup({
           phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
@@ -113,9 +113,9 @@ export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
             }
           }
         }
-        this.customers.push(group);
+        this.state.formArray.push(group);
       }
-      this.customers.markAsTouched();
+      this.state.formArray.markAsTouched();
     }
   }
   ngAfterViewInit() {
@@ -149,36 +149,49 @@ export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
     XLSX.writeFile(wb, 'customer-example-' + new Date().getTime() + '.xlsx');
   }
   useImport = () => {
-    if (this.customers.valid) {
+    if (this.state.formArray.valid) {
       this.useLoading.emit();
-      this.customerService.import(this.customers.controls.map((e) => ({
-        ...e.value,
-        frequency: parseInt(e.value.frequency, 0),
-        totalSpending: parseInt(e.value.totalSpending, 0),
-        totalDeal: parseInt(e.value.totalDeal, 0),
-      }))).pipe(
-        finalize(() => {
-          this.useUnLoading.emit();
-        })
-      ).subscribe((data) => {
-        this.toastrService.success('', 'Import customers successful!', { duration: 3000 });
-        this.useChange.emit();
-      }, (err) => {
-        this.toastrService.danger('', 'Import customers fail! Something wrong at runtime', { duration: 3000 });
-      });
+      this.subscriptions.push(
+        this.service.import(this.state.formArray.controls.map((e) => ({
+          ...e.value,
+          frequency: parseInt(e.value.frequency, 0),
+          totalSpending: parseInt(e.value.totalSpending, 0),
+          totalDeal: parseInt(e.value.totalDeal, 0),
+        }))).pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Import formArray successful!', { duration: 3000 });
+            this.useChange.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Import formArray fail! ' + err.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useUnLoading.emit();
+          })
+        ).subscribe()
+      );
     }
   }
   useCheckPhone = (form: FormGroup) => {
     const phone = form.get('phone');
     if (phone.valid) {
       form.get('phoneStage').setValue('querying');
-      setTimeout(async () => {
-        const check = await this.customerService.checkUnique('phone', phone.value).toPromise();
-        if (phone.valid && check) {
-          phone.setErrors({ duplicate: true });
-        }
-        form.get('phoneStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('phone', phone.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                phone.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('phoneStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
 
   }
@@ -186,17 +199,22 @@ export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
     const email = form.get('email');
     if (email.valid) {
       form.get('emailStage').setValue('querying');
-      setTimeout(async () => {
-        const check = await this.customerService.checkUnique('email', email.value).toPromise();
-        if (email.valid && check) {
-          email.setErrors({ duplicate: true });
-        }
-        form.get('emailStage').setValue('done');
-      }, 1000);
+      this.subscriptions.push(
+        this.service.checkUnique('email', email.value)
+          .pipe(
+            tap((check) => {
+              if (check) {
+                email.setErrors({ duplicate: true });
+              }
+            }),
+            finalize(() => {
+              setTimeout(async () => {
+                form.get('emailStage').setValue('done');
+              }, 1000);
+            })
+          ).subscribe()
+      );
     }
-  }
-  toDateFormat = (date: Date | string) => {
-    return date && !isNaN(Date.parse(date as string)) ? this.datePipe.transform(new Date(date), 'dd/MM/yyyy') : '';
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
     form.get('errorImage').setValue(false);
@@ -226,10 +244,13 @@ export class CustomerImportPage implements OnInit, OnChanges, AfterViewInit {
     }
   }
   useRemoveItem = (index: number) => {
-    this.customers.removeAt(index);
-    if (this.customers.length === 0) {
+    this.state.formArray.removeAt(index);
+    if (this.state.formArray.length === 0) {
       this.data = undefined;
       this.useChange.emit();
     }
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

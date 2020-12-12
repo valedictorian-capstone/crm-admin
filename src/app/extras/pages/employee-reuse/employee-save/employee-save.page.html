@@ -1,68 +1,68 @@
 <nb-card style="position: relative;">
     <ngx-spinner [name]="'employee-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5; text-transform: capitalize;">
-        {{employee ? (isProfile ? 'View' : 'Edit'): 'New'}} Account
+        {{payload.employee ? (payload.isProfile ? 'View' : 'Edit'): 'New'}} Account
         <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
 <nb-icon icon="close"></nb-icon>
 </button>
     </nb-card-header>
-    <nb-card-body [formGroup]="form">
+    <nb-card-body [formGroup]="state.form">
         <div class="avatar">
-            <div class="avatar-picker" [class.danger]="errorImage">
+            <div class="avatar-picker" [class.danger]="state.errorImage">
                 <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
-                <button *ngIf="!form.get('avatar').value && !isProfile" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
-                <img *ngIf="form.get('avatar').value" [src]="form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
-                <button *ngIf="form.get('avatar').value && !isProfile" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
-                <b *ngIf="isProfile && !form.get('avatar').value">{{form.get('fullname').value | key}}</b>
+                <button *ngIf="!state.form.get('avatar').value && !payload.isProfile" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                <img *ngIf="state.form.get('avatar').value" [src]="state.form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
+                <button *ngIf="state.form.get('avatar').value && !payload.isProfile" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="state.errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                <b *ngIf="payload.isProfile && !state.form.get('avatar').value">{{state.form.get('fullname').value | key}}</b>
             </div>
-            <b *ngIf="errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{message}}</b>
+            <b *ngIf="state.errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{state.message}}</b>
         </div>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('code').invalid && (form.get('code').touched || form.get('code').dirty)">Code <span class="text-danger">*</span></span>
-        <nb-form-field class="not-search" [nbSpinner]="codeStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
-            <nb-icon [ngStyle]="{'opacity': codeStage === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
-            <input [readOnly]="isProfile" style="height: 3rem;" [status]="form.get('code').invalid && (form.get('code').touched || form.get('code').dirty) ? 'danger' : 'basic'" (blur)="useCheckCode()" fullWidth nz-dropdown [placeholder]="'Code'" shape="rectangle"
-                [formControl]="form.get('code')" nbInput size="large" />
-            <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('code').value)"></nb-icon>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('code').invalid && (state.form.get('code').touched || state.form.get('code').dirty)">Code <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="state.codeStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon [ngStyle]="{'opacity': state.codeStage === 'done' ? '1' : '0'}" nbPrefix icon="code-outline"></nb-icon>
+            <input [readOnly]="payload.isProfile" style="height: 3rem;" [status]="state.form.get('code').invalid && (state.form.get('code').touched || state.form.get('code').dirty) ? 'danger' : 'basic'" (blur)="useCheckCode()" fullWidth nz-dropdown [placeholder]="'Code'"
+                shape="rectangle" [formControl]="state.form.get('code')" nbInput size="large" />
+            <nb-icon *ngIf="payload.isProfile" icon="copy-outline" nbSuffix (click)="useCopy(state.form.get('code').value)"></nb-icon>
         </nb-form-field>
-        <span *ngIf="form.get('code').errors?.required && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill code</span>
-        <span *ngIf="form.get('code').errors?.duplicate && (form.get('code').touched || form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another code. Because this code is exsited</span>
-        <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
+        <span *ngIf="state.form.get('code').errors?.required && (state.form.get('code').touched || state.form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill code</span>
+        <span *ngIf="state.form.get('code').errors?.duplicate && (state.form.get('code').touched || state.form.get('code').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another code. Because this code is exsited</span>
+        <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="state.form.get('fullname').invalid && (state.form.get('fullname').touched || state.form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem;">
-            <input [readOnly]="isProfile" style="height: 3rem;" [status]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')"
-                nbInput size="large" />
-            <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('fullname').value)"></nb-icon>
+            <input [readOnly]="payload.isProfile" style="height: 3rem;" [status]="state.form.get('fullname').invalid && (state.form.get('fullname').touched || state.form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'"
+                shape="rectangle" [formControl]="state.form.get('fullname')" nbInput size="large" />
+            <nb-icon *ngIf="payload.isProfile" icon="copy-outline" nbSuffix (click)="useCopy(state.form.get('fullname').value)"></nb-icon>
         </nb-form-field>
-        <span *ngIf="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
-        <nb-form-field class="not-search" [nbSpinner]="phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
-            <nb-icon [ngStyle]="{'opacity': phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
-            <input [readOnly]="isProfile" style="height: 3rem;" [status]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty) ? 'danger' : 'basic'" (blur)="useCheckPhone()" fullWidth nz-dropdown [placeholder]="'Phone'" shape="rectangle"
-                [formControl]="form.get('phone')" nbInput size="large" />
-            <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('phone').value)"></nb-icon>
+        <span *ngIf="state.form.get('fullname').invalid && (state.form.get('fullname').touched || state.form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('phone').invalid && (state.form.get('phone').touched || state.form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="state.phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon [ngStyle]="{'opacity': state.phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+            <input [readOnly]="payload.isProfile" style="height: 3rem;" [status]="state.form.get('phone').invalid && (state.form.get('phone').touched || state.form.get('phone').dirty) ? 'danger' : 'basic'" (blur)="useCheckPhone()" fullWidth nz-dropdown [placeholder]="'Phone'"
+                shape="rectangle" [formControl]="state.form.get('phone')" nbInput size="large" />
+            <nb-icon *ngIf="payload.isProfile" icon="copy-outline" nbSuffix (click)="useCopy(state.form.get('phone').value)"></nb-icon>
         </nb-form-field>
-        <span *ngIf="(form.get('phone').errors?.required || form.get('phone').errors?.pattern) && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
-        <span *ngIf="form.get('phone').errors?.duplicate && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
-        <nb-form-field class="not-search" [nbSpinner]="emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
-            <nb-icon [ngStyle]="{'opacity': emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
-            <input [readOnly]="isProfile" style="height: 3rem;" [status]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty) ? 'danger' : 'basic'" (blur)="useCheckEmail()" fullWidth nz-dropdown [placeholder]="'Email'" shape="rectangle"
-                [formControl]="form.get('email')" nbInput size="large" />
-            <nb-icon *ngIf="isProfile" icon="copy-outline" nbSuffix (click)="useCopy(form.get('email').value)"></nb-icon>
+        <span *ngIf="(state.form.get('phone').errors?.required || state.form.get('phone').errors?.pattern) && (state.form.get('phone').touched || state.form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
+        <span *ngIf="state.form.get('phone').errors?.duplicate && (state.form.get('phone').touched || state.form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('email').invalid && (state.form.get('email').touched || state.form.get('email').dirty)">Email <span class="text-danger">*</span></span>
+        <nb-form-field class="not-search" [nbSpinner]="state.emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon [ngStyle]="{'opacity': state.emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+            <input [readOnly]="payload.isProfile" style="height: 3rem;" [status]="state.form.get('email').invalid && (state.form.get('email').touched || state.form.get('email').dirty) ? 'danger' : 'basic'" (blur)="useCheckEmail()" fullWidth nz-dropdown [placeholder]="'Email'"
+                shape="rectangle" [formControl]="state.form.get('email')" nbInput size="large" />
+            <nb-icon *ngIf="payload.isProfile" icon="copy-outline" nbSuffix (click)="useCopy(state.form.get('email').value)"></nb-icon>
         </nb-form-field>
-        <span *ngIf="(form.get('email').errors?.required || form.get('email').errors?.pattern) && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
-        <span *ngIf="form.get('email').errors?.duplicate && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
-        <span *ngIf="!isProfile" style="display: block; margin-bottom: 0.5rem; font-weight: 600">Role</span
+        <span *ngIf="(state.form.get('email').errors?.required || state.form.get('email').errors?.pattern) && (state.form.get('email').touched || state.form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
+        <span *ngIf="state.form.get('email').errors?.duplicate && (state.form.get('email').touched || state.form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
+        <span *ngIf="!payload.isProfile" style="display: block; margin-bottom: 0.5rem; font-weight: 600">Role</span
         >
-        <nb-form-field *ngIf="!isProfile" style="max-width: 100%; margin-bottom: 1rem">
+        <nb-form-field *ngIf="!payload.isProfile" style="max-width: 100%; margin-bottom: 1rem">
           <nb-icon icon="pin-outline" nbPrefix></nb-icon>
-          <nb-select fullWidth multiple placeholder="Role" [formControl]="form.get('roles')">
-            <nb-option [value]="role.id" *ngFor="let role of roles">{{role.name}}</nb-option>
+          <nb-select fullWidth multiple placeholder="Role" [formControl]="state.form.get('roles')">
+            <nb-option [value]="role.id" *ngFor="let role of state.roles">{{role.name}}</nb-option>
           </nb-select>
         </nb-form-field>
   </nb-card-body>
-  <nb-card-footer *ngIf="!isProfile">
+  <nb-card-footer *ngIf="!payload.isProfile">
       <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
-      <button style="float: right; margin-right: 0.5rem;" [disabled]="form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+      <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
   </nb-card-footer>
 </nb-card>
 <ng-template #submitRef let-data let-ref="dialogRef">

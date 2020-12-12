@@ -1,5 +1,4 @@
-<!-- <div cdkDrag class="deal" [cdkDragStartDelay]="10" [class.dragging]="dragging" [cdkDragDisabled]="deal?.changing || deal?.status !== 'processing'" [class.changing]="deal?.changing" (cdkDragStarted)="useDragging.emit(true)" (cdkDragEnded)="useDragging.emit(false)"> -->
-<div class="deal" [class.canDrag]="deal?.status === 'processing'" [class.dragging]="dragging" [class.changing]="deal?.changing">
+<div class="deal" [class.changing]="deal?.changing">
     <div class="deal-info" (click)="useDetail()">
         <div class="deal-header"></div>
         <div class="deal-body">
@@ -39,5 +38,5 @@
     <app-deal-item-activity [deal]="deal"></app-deal-item-activity>
 </ng-template>
 <ng-template #movetoRef let-data let-ref="dialogRef">
-    <app-reuse-pipeline-move-to [deal]="deal" (useMove)="useMoveTo($event); ref.close()" (useClose)="ref.close()"></app-reuse-pipeline-move-to>
+    <app-reuse-pipeline-move-to [payload]="{deal: deal}" (useMove)="useMoveTo($event); ref.close()" (useClose)="ref.close()"></app-reuse-pipeline-move-to>
 </ng-template>

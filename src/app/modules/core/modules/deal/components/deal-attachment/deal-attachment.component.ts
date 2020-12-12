@@ -1,20 +1,22 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, OnDestroy } from '@angular/core';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { AttachmentService } from '@services';
 import { AttachmentVM } from '@view-models';
 import { FormControl } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-deal-attachment',
   templateUrl: './deal-attachment.component.html',
   styleUrls: ['./deal-attachment.component.scss']
 })
-export class DealAttachmentComponent implements OnInit {
+export class DealAttachmentComponent implements OnInit, OnDestroy {
   @Input() data: AttachmentVM;
   icon = 'image-outline';
   description = new FormControl('');
+  subscriptions: Subscription[] = [];
   constructor(
     protected readonly attachmentService: AttachmentService,
     protected readonly dialogService: NbDialogService,
@@ -28,15 +30,22 @@ export class DealAttachmentComponent implements OnInit {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.attachmentService.remove(this.data.id).subscribe();
+    this.subscriptions.push(
+      this.attachmentService.remove(this.data.id).subscribe()
+    );
   }
   useDialog(template: TemplateRef<any>) {
     this.dialogService.open(template, { closeOnBackdropClick: true, context: this.data });
   }
   useSave = (ref: NbDialogRef<any>) => {
     this.spinner.show('attachment-save');
-    this.attachmentService.update({ id: this.data.id, description: this.description.value } as any)
+    this.subscriptions.push(
+      this.attachmentService.update({ id: this.data.id, description: this.description.value } as any)
       .pipe(
+        tap((data) => {
+          this.data.description = this.description.value;
+
+        }),
         finalize(() => {
           setTimeout(() => {
             this.spinner.hide('attachment-save');
@@ -44,8 +53,10 @@ export class DealAttachmentComponent implements OnInit {
           }, 1000);
         })
       )
-      .subscribe(() => {
-        (this.data as any).description = this.description.value;
-      });
+      .subscribe()
+    );
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

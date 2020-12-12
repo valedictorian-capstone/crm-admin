@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
-  TicketItemComponent,
+  TicketSearchComponent,
 } from './components';
 import { TicketMainPage } from './pages';
 // import { } from './directives';
 // import { } from './pipes';
 import { TicketRoutes } from './ticket.routing';
 const COMPONENTS = [
-  TicketItemComponent
+  TicketSearchComponent
 ];
 
 const PAGES = [

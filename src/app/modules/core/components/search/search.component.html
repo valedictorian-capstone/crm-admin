@@ -7,5 +7,5 @@
   <nb-icon icon="search"></nb-icon>
 </button>
 <nz-dropdown-menu #result="nzDropdownMenu">
-    <app-search-result (clickOutside)="this.stage = ''" #searchRef (isSearch)="this.stage = $event ? 'searching' : ''" [template]="template" [value]="search.value"></app-search-result>
+    <app-search-result (clickOutside)="this.stage = ''" #searchRef (isSearch)="this.stage = $event ? 'searching' : ''" [value]="search.value"></app-search-result>
 </nz-dropdown-menu>

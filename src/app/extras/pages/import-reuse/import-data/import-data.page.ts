@@ -1,30 +1,57 @@
-import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Input, OnDestroy } from '@angular/core';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import * as XLSX from 'xlsx';
 import { NbToastrService } from '@nebular/theme';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AccountVM } from '@view-models';
-
+import { AccountVM, CustomerVM, ProductVM } from '@view-models';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
+import { authSelector } from '@store/selectors';
+interface IImportDataPageState {
+  type: string;
+  data: (CustomerVM | ProductVM | AccountVM)[];
+  you: AccountVM;
+}
 @Component({
   selector: 'app-reuse-import-data',
   templateUrl: './import-data.page.html',
   styleUrls: ['./import-data.page.scss']
 })
-export class ImportDataPage implements OnInit {
-  @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
+export class ImportDataPage implements OnInit, OnDestroy {
   @Input() importType: string;
-  @Input() you: AccountVM;
-  type = 'customer';
-  data: any[];
+  @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
+  subscriptions: Subscription[] = [];
+  state: IImportDataPageState = {
+    type: 'customer',
+    data: undefined,
+    you: undefined,
+  };
   constructor(
     protected readonly toastrService: NbToastrService,
     public readonly spinner: NgxSpinnerService,
-  ) { }
-
+    protected readonly activatedRoute: ActivatedRoute,
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+   }
   ngOnInit() {
     if (this.importType) {
-      this.type = this.importType;
+      this.state.type = this.importType;
     }
+  }
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+          })
+        )
+        .subscribe()
+    );
   }
   useChange = (file: NzUploadFile) => {
     if (file.name.match(/(.xls|.xlsx)/)) {
@@ -35,7 +62,7 @@ export class ImportDataPage implements OnInit {
 
         const wsname: string = wb.SheetNames[0];
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-        this.data = XLSX.utils.sheet_to_json(ws);
+        this.state.data = XLSX.utils.sheet_to_json(ws);
       };
       reader.readAsBinaryString(file as any);
     } else {
@@ -50,5 +77,8 @@ export class ImportDataPage implements OnInit {
     setTimeout(() => {
       this.spinner.hide('import-data');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

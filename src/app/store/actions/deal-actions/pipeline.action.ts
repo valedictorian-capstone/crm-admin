@@ -1,62 +1,36 @@
 import { createAction, props } from '@ngrx/store';
-import { PipelineCM, PipelineUM, PipelineVM } from '@view-models';
-const PipelineActionType = {
-  FIND: {
-    FETCH: '[Pipeline] Fetch Action',
-    SUCCESS: '[Pipeline] Fetch Action Success',
-  },
-  SAVE: {
-    FETCH: '[Pipeline] Save Action',
-    SUCCESS: '[Pipeline] Save Action Success',
-  },
-  REMOVE: {
-    FETCH: '[Pipeline] Remove Action',
-    SUCCESS: '[Pipeline] Remove Action Success',
-  },
-  RESET: {
-    FETCH: '[Pipeline] Reset Action',
-  },
-  ERROR: '[Pipeline] Action Error',
-};
-const useFindAllAction = createAction(
-  PipelineActionType.FIND.FETCH,
-  props<{ status: string }>()
+import { PipelineUM, PipelineVM } from '@view-models';
+const FindAllAction = createAction(
+  '[Pipeline] Fetch Action',
+  props<{
+    success?: (res: PipelineVM[]) => void,
+    error?: (err: Error) => void,
+    finalize?: () => void,
+  }>()
 );
-const useFindAllSuccessAction = createAction(
-  PipelineActionType.FIND.SUCCESS,
-  props<{ pipelines: PipelineVM[], status: string }>()
+const FindAllSuccessAction = createAction(
+  '[Pipeline] Fetch Action Success',
+  props<{ res: PipelineVM[] }>()
 );
-const useSaveAction = createAction(
-  PipelineActionType.SAVE.FETCH,
-  props<{ pipeline: PipelineCM | PipelineUM, status: string }>()
+const SaveSuccessAction = createAction(
+  '[Pipeline] Save Success Action',
+  props<{ res: PipelineVM }>()
 );
-const useSaveSuccessAction = createAction(
-  PipelineActionType.SAVE.SUCCESS,
-  props<{ pipeline: PipelineVM, status: string }>()
+const RemoveSuccessAction = createAction(
+  '[Pipeline] Remove Success Action',
+  props<{ id: string }>()
 );
-const useRemoveAction = createAction(
-  PipelineActionType.REMOVE.FETCH,
-  props<{ id: string, status: string }>()
+const SocketAction = createAction(
+  '[Pipeline] Socket Action',
 );
-const useRemoveSuccessAction = createAction(
-  PipelineActionType.REMOVE.SUCCESS,
-  props<{ id: string, status: string }>()
-);
-const useErrorAction = createAction(
-  PipelineActionType.ERROR,
-  props<{ error: string, status: string }>()
-);
-const useResetAction = createAction(
-  PipelineActionType.RESET.FETCH,
-  props<{ pipelines: PipelineVM[] }>()
+const ResetAction = createAction(
+  '[Pipeline] Reset Action',
 );
 export const PipelineAction = {
-  useFindAllAction,
-  useFindAllSuccessAction,
-  useSaveAction,
-  useSaveSuccessAction,
-  useRemoveAction,
-  useRemoveSuccessAction,
-  useErrorAction,
-  useResetAction
+  FindAllAction,
+  FindAllSuccessAction,
+  SaveSuccessAction,
+  RemoveSuccessAction,
+  SocketAction,
+  ResetAction
 };

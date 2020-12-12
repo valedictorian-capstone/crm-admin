@@ -4,8 +4,7 @@ import { StageVM } from '@view-models';
 export const stageAdapter: EntityAdapter<StageVM> = createEntityAdapter<StageVM>();
 
 export const stageInitialState: StageState = stageAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
+  firstLoad: false
 });

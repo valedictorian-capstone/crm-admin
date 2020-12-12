@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
   ContactItemComponent,
+  ContactSearchComponent
+
 } from './components';
 import { ContactMainPage } from './pages';
 // import { } from './directives';
@@ -9,6 +11,7 @@ import { ContactMainPage } from './pages';
 import { ContactRoutes } from './contact.routing';
 const COMPONENTS = [
   ContactItemComponent,
+  ContactSearchComponent
 ];
 
 const PAGES = [

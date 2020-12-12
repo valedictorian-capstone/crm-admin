@@ -5,8 +5,7 @@ import { RoleVM } from '@view-models';
 export const roleAdapter: EntityAdapter<RoleVM> = createEntityAdapter<RoleVM>();
 
 export const roleInitialState: RoleState = roleAdapter.getInitialState({
-  error: undefined,
-  status: '',
   ids: [],
   entities: undefined,
+  firstLoad: false
 });

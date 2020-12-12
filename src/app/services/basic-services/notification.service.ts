@@ -23,10 +23,10 @@ export class NotificationService {
   public readonly findAll = (): Observable<NotificationVM[]> => {
     return this.httpClient.get<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.main}`);
   }
-  public readonly seen = (id: string): Observable<NotificationVM[]> => {
-    return this.httpClient.put<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.seen}/${id}`, {});
+  public readonly seen = (id: string): Observable<NotificationVM> => {
+    return this.httpClient.put<NotificationVM>(`${environment.apiEndpont}${environment.api.basic.notification.seen}/${id}`, {});
   }
-  public readonly seenAll = (ids: NotificationVM[]): Observable<NotificationVM[]> => {
-    return this.httpClient.put<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.seen}`, ids);
+  public readonly seenAll = (notifications: NotificationVM[]): Observable<NotificationVM[]> => {
+    return this.httpClient.put<NotificationVM[]>(`${environment.apiEndpont}${environment.api.basic.notification.seen}`, notifications);
   }
 }

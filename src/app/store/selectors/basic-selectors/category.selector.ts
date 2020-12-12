@@ -7,13 +7,11 @@ const categorys = createSelector(categoryFeatureSelector, categoryAdapter.getSel
 const entities = createSelector(categoryFeatureSelector, categoryAdapter.getSelectors().selectEntities);
 const ids = createSelector(categoryFeatureSelector, categoryAdapter.getSelectors().selectIds);
 const total = createSelector(categoryFeatureSelector, categoryAdapter.getSelectors().selectTotal);
-const error = createSelector(categoryFeatureSelector, (state) => state.error);
-const status = createSelector(categoryFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(categoryFeatureSelector, (state) => state.firstLoad);
 export const categorySelector = {
   categorys,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

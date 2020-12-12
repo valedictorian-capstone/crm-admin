@@ -7,15 +7,11 @@ const customers = createSelector(customerFeatureSelector, customerAdapter.getSel
 const entities = createSelector(customerFeatureSelector, customerAdapter.getSelectors().selectEntities);
 const ids = createSelector(customerFeatureSelector, customerAdapter.getSelectors().selectIds);
 const total = createSelector(customerFeatureSelector, customerAdapter.getSelectors().selectTotal);
-const error = createSelector(customerFeatureSelector, (state) => state.error);
-const status = createSelector(customerFeatureSelector, (state) => state.status);
-const unique = createSelector(customerFeatureSelector, (state) => state.unique);
+const firstLoad = createSelector(customerFeatureSelector, (state) => state.firstLoad);
 export const customerSelector = {
   customers,
   entities,
   ids,
   total,
-  error,
-  status,
-  unique
+  firstLoad
 };

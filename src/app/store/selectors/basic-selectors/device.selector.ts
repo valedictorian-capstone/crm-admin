@@ -7,13 +7,11 @@ const devices = createSelector(deviceFeatureSelector, deviceAdapter.getSelectors
 const entities = createSelector(deviceFeatureSelector, deviceAdapter.getSelectors().selectEntities);
 const ids = createSelector(deviceFeatureSelector, deviceAdapter.getSelectors().selectIds);
 const total = createSelector(deviceFeatureSelector, deviceAdapter.getSelectors().selectTotal);
-const error = createSelector(deviceFeatureSelector, (state) => state.error);
-const status = createSelector(deviceFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(deviceFeatureSelector, (state) => state.firstLoad);
 export const deviceSelector = {
   devices,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad
 };

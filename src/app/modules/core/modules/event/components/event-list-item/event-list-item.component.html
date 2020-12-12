@@ -1,0 +1,33 @@
+<div class="event">
+    <div class="icon">
+        <nb-icon icon="clock-outline"></nb-icon>
+    </div>
+    <div class="content">
+        {{event.name}}
+    </div>
+    <div class="position-absolute" style="right: 1rem; top: 0.5rem;">
+        <button *ngIf="canUpdate" (click)="useEdit()" nz-dropdown nbButton shape="round" status="primary" outline size='tiny'>
+    <nb-icon icon="edit-2-outline"></nb-icon>
+  </button>
+        <button *ngIf="canRemove" (click)="useDialog(removeRef)" nz-dropdown nbButton shape="round" class="ml-2" status="danger" outline size='tiny'>
+    <nb-icon icon="trash-2-outline"></nb-icon>
+  </button>
+    </div>
+    <div class="time">
+        <span class="text" [class.text-success]="event.state === 'processing'" [class.text-danger]="event.state === 'expired'">{{event.dateStart  | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+    </div>
+    <nz-tag style="position: absolute; right: 1rem; bottom: 0.5rem;" [nzColor]="event.state === 'processing' ? 'cyan' : (event.state === 'expired' ? 'volcano' : 'geekblue')">
+        {{event.state === 'processing' ? 'Processing' : (event.state === 'expired' ? 'Expired' : 'Not Started')}}
+    </nz-tag>
+</div>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove event
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to Remove this event?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Remove</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

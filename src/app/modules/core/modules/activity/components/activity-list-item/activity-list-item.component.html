@@ -1,0 +1,39 @@
+<div class="activity">
+    <div class="icon">
+        <nb-icon [icon]="useIcon(event.type).icon" [pack]="useIcon(event.type).pack"></nb-icon>
+    </div>
+    <div class="content">
+        {{event.name}}
+    </div>
+    <div class="position-absolute" style="right: 1rem; top: 0.5rem;">
+        <button *ngIf="canAssign" nz-dropdown [nzDropdownMenu]="assignee" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" nbButton shape="round" status="info" outline size='tiny'>
+        <nb-icon icon="person-outline"></nb-icon>
+      </button>
+        <button *ngIf="canUpdate" (click)="useEdit()" nz-dropdown nbButton shape="round" status="primary" class="ml-2" outline size='tiny'>
+        <nb-icon icon="edit-2-outline"></nb-icon>
+      </button>
+        <button *ngIf="canUpdate" (click)="useDialog(removeRef)" nz-dropdown nbButton class="ml-2" shape="round" status="danger" outline size='tiny'>
+        <nb-icon icon="trash-2-outline"></nb-icon>
+      </button>
+    </div>
+    <nz-dropdown-menu #assignee="nzDropdownMenu">
+        <app-reuse-employee-item [employee]="event.assignee"></app-reuse-employee-item>
+    </nz-dropdown-menu>
+    <div class="time" [class.processing]="event.status === 'processing'" [class.done]="event.status === 'done'">
+        <span class="text" [class.text-success]="event.state === 'processing' && event.status === 'processing'" [class.text-danger]="event.state === 'expired' && event.status === 'processing'">{{event.dateStart | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+    </div>
+    <nz-tag style="position: absolute; right: 1rem; bottom: 0.5rem;" [nzColor]="event.state === 'processing' ? 'cyan' : (event.state === 'expired' ? 'volcano' : 'geekblue')">
+        {{event.state === 'processing' ? 'Processing' : (event.state === 'expired' ? 'Expired' : 'Not Started')}}
+    </nz-tag>
+</div>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove activity
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to Remove this activity?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Remove</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

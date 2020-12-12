@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { DealDetailService } from '@services';
 import { DealDetailAction } from '@actions';
-import { catchError, delay, map, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { DealDetailVM } from '@view-models';
 
 @Injectable()
 export class DealDetailEffect {
@@ -10,49 +12,57 @@ export class DealDetailEffect {
     protected readonly actions$: Actions,
     protected readonly service: DealDetailService
   ) { }
-  public readonly find$ = createEffect(() =>
+  public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(DealDetailAction.useFindAllAction),
+      ofType(DealDetailAction.SocketAction),
+      tap(() => console.log('socket')),
       switchMap(action =>
-        this.service.findAll().pipe(
-          delay(1000),
-          map(dealDetails => DealDetailAction.useFindAllSuccessAction({ dealDetails, status: action.status })),
-          catchError(async (error) => DealDetailAction.useErrorAction({ error, status: action.status })),
+        this.service.triggerSocket().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(trigger => {
+            console.log('effect-socket', trigger);
+            if (trigger.type === 'create') {
+              return DealDetailAction.SaveSuccessAction({ res: trigger.data as DealDetailVM });
+            } else if (trigger.type === 'update') {
+              return DealDetailAction.SaveSuccessAction({ res: trigger.data as DealDetailVM });
+            } else if (trigger.type === 'remove') {
+              return DealDetailAction.RemoveSuccessAction({ id: (trigger.data as DealDetailVM).id });
+            }
+          }),
+          catchError((error: Error) => {
+            return of(undefined);
+          }),
         )
       )
     )
   );
-  public readonly create$ = createEffect(() =>
+  public readonly find$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(DealDetailAction.useCreateAction),
+      ofType(DealDetailAction.FindAllAction),
       switchMap(action =>
-        this.service.insert(action.dealDetail).pipe(
-          delay(1000),
-          map(dealDetail => DealDetailAction.useCreateSuccessAction({ dealDetail, status: action.status })),
-          catchError(async (error) => DealDetailAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly update$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(DealDetailAction.useUpdateAction),
-      switchMap(action =>
-        this.service.update(action.dealDetail).pipe(
-          delay(1000),
-          map(dealDetail => DealDetailAction.useUpdateSuccessAction({ dealDetail, status: action.status })),
-          catchError(async (error) => DealDetailAction.useErrorAction({ error, status: action.status })),
-        ))
-    )
-  );
-  public readonly remove$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(DealDetailAction.useRemoveAction),
-      switchMap(action =>
-        this.service.remove(action.id).pipe(
-          delay(1000),
-          map(id => DealDetailAction.useRemoveSuccessAction({ id, status: action.status })),
-          catchError(async (error) => DealDetailAction.useErrorAction({ error, status: action.status })),
-        ))
+        this.service.findAll().pipe(
+          tap((data) => console.log('test', data)),
+
+          map(res => DealDetailAction.FindAllSuccessAction({ res })),
+          tap((data) => {
+            if (action.success) {
+              action.success(data.res)
+            }
+          }),
+          catchError((error: Error) => {
+            if (action.error) {
+              action.error(error);
+            }
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (action.finalize) {
+              action.finalize();
+            }
+          })
+        )
+      )
     )
   );
 }

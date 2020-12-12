@@ -7,13 +7,11 @@ const groups = createSelector(groupFeatureSelector, groupAdapter.getSelectors().
 const entities = createSelector(groupFeatureSelector, groupAdapter.getSelectors().selectEntities);
 const ids = createSelector(groupFeatureSelector, groupAdapter.getSelectors().selectIds);
 const total = createSelector(groupFeatureSelector, groupAdapter.getSelectors().selectTotal);
-const error = createSelector(groupFeatureSelector, (state) => state.error);
-const status = createSelector(groupFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(groupFeatureSelector, (state) => state.firstLoad);
 export const groupSelector = {
   groups,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

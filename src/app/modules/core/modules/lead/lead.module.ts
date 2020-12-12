@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
   LeadItemComponent,
+  LeadSearchComponent
 } from './components';
 import { LeadMainPage } from './pages';
 // import { } from './directives';
@@ -9,6 +10,7 @@ import { LeadMainPage } from './pages';
 import { LeadRoutes } from './lead.routing';
 const COMPONENTS = [
   LeadItemComponent,
+  LeadSearchComponent
 ];
 
 const PAGES = [

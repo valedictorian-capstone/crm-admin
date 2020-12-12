@@ -7,13 +7,11 @@ const activitys = createSelector(activityFeatureSelector, activityAdapter.getSel
 const entities = createSelector(activityFeatureSelector, activityAdapter.getSelectors().selectEntities);
 const ids = createSelector(activityFeatureSelector, activityAdapter.getSelectors().selectIds);
 const total = createSelector(activityFeatureSelector, activityAdapter.getSelectors().selectTotal);
-const error = createSelector(activityFeatureSelector, (state) => state.error);
-const status = createSelector(activityFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(activityFeatureSelector, (state) => state.firstLoad);
 export const activitySelector = {
   activitys,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

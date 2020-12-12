@@ -7,13 +7,11 @@ const pipelines = createSelector(pipelineFeatureSelector, pipelineAdapter.getSel
 const entities = createSelector(pipelineFeatureSelector, pipelineAdapter.getSelectors().selectEntities);
 const ids = createSelector(pipelineFeatureSelector, pipelineAdapter.getSelectors().selectIds);
 const total = createSelector(pipelineFeatureSelector, pipelineAdapter.getSelectors().selectTotal);
-const error = createSelector(pipelineFeatureSelector, (state) => state.error);
-const status = createSelector(pipelineFeatureSelector, (state) => state.status);
+const firstLoad = createSelector(pipelineFeatureSelector, (state) => state.firstLoad);
 export const pipelineSelector = {
   pipelines,
   entities,
   ids,
   total,
-  error,
-  status,
+  firstLoad,
 };

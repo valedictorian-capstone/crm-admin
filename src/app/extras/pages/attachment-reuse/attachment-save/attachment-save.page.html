@@ -11,11 +11,11 @@
         <nb-form-field [style.display]="fixDeal ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
             <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
             <input #dealInput fullWidth (blur)="form.get('deal').markAsTouched()" [status]="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'"
-                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useChangeValue($event.target.value)" />
+                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useSearch($event.target.value)" />
             <nb-icon icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #dealRef="nzDropdownMenu">
-            <app-reuse-deal-select [selected]="form.get('deal').value" #dealSelect (useSelect)="form.get('deal').setValue($event)" [template]="dealInput"></app-reuse-deal-select>
+            <app-reuse-deal-select [selected]="form.get('deal').value" #dealSelect (useSelect)="form.get('deal').setValue($event)"></app-reuse-deal-select>
         </nz-dropdown-menu>
         <span [style.display]="fixDeal ? 'none' : 'block'" *ngIf="form.get('deal').invalid && (form.get('deal').touched || form.get('deal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select deal</span>
         <nz-upload nzType="drag" [(nzFileList)]="files" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">

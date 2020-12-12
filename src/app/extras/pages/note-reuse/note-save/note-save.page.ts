@@ -1,56 +1,67 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { NoteService } from '@services';
 import { DealVM, NoteVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { finalize } from 'rxjs/operators';
+import { finalize, tap, catchError } from 'rxjs/operators';
+import { of, Subscription } from 'rxjs';
+
+interface INoteSavePageState {
+  form: FormGroup;
+  config: AngularEditorConfig;
+}
 @Component({
   selector: 'app-reuse-note-save',
   templateUrl: './note-save.page.html',
   styleUrls: ['./note-save.page.scss']
 })
-export class NoteSavePage implements OnInit, OnChanges {
-  @Input() note: NoteVM;
-  @Input() deal: DealVM;
-  @Input() inside: boolean;
-  @Input() fixDeal = false;
+export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
+  @Input() payload: { note: NoteVM, deal: DealVM, inside: boolean, fixDeal: boolean } = {
+    note: undefined,
+    deal: undefined,
+    inside: false,
+    fixDeal: false,
+  };
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<NoteVM> = new EventEmitter<NoteVM>();
-  form: FormGroup;
-  config: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: '15rem',
-    minHeight: '5rem',
-    placeholder: 'Enter text here...',
-    translate: 'no',
-    defaultParagraphSeparator: 'p',
-    defaultFontName: 'Arial',
-    toolbarHiddenButtons: [
-      ['bold']
-    ],
-    customClasses: [
-      {
-        name: 'quote',
-        class: 'quote',
-      },
-      {
-        name: 'redText',
-        class: 'redText'
-      },
-      {
-        name: 'titleText',
-        class: 'titleText',
-        tag: 'h1',
-      },
-    ]
-  };
+  subscriptions: Subscription[] = [];
+  state: INoteSavePageState = {
+    form: undefined,
+    config: {
+      editable: true,
+      spellcheck: true,
+      height: '15rem',
+      minHeight: '5rem',
+      placeholder: 'Enter text here...',
+      translate: 'no',
+      defaultParagraphSeparator: 'p',
+      defaultFontName: 'Arial',
+      toolbarHiddenButtons: [
+        ['bold']
+      ],
+      customClasses: [
+        {
+          name: 'quote',
+          class: 'quote',
+        },
+        {
+          name: 'redText',
+          class: 'redText'
+        },
+        {
+          name: 'titleText',
+          class: 'titleText',
+          tag: 'h1',
+        },
+      ]
+    }
+  }
   constructor(
+    protected readonly service: NoteService,
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
-    protected readonly noteService: NoteService,
     protected readonly spinner: NgxSpinnerService,
   ) {
     this.useShowSpinner();
@@ -58,7 +69,7 @@ export class NoteSavePage implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.note) {
+    if (this.payload.note) {
       this.useSetData();
     } else {
       this.useInput();
@@ -69,21 +80,27 @@ export class NoteSavePage implements OnInit, OnChanges {
     this.useInput();
   }
   useInitForm = () => {
-    this.form = new FormGroup({
+    this.state.form = new FormGroup({
       description: new FormControl(''),
-      deal: new FormControl(this.deal, [Validators.required]),
+      deal: new FormControl(this.payload.deal, [Validators.required]),
     });
   }
   useSetData = () => {
-    this.noteService.findById(this.note.id).subscribe((data) => {
-      this.note = data;
-      this.form.addControl('id', new FormControl(this.note.id));
-      this.form.patchValue(this.note);
-    });
+    this.subscriptions.push(
+      this.service.findById(this.payload.note.id)
+        .pipe(
+          tap((data) => {
+            this.payload.note = data;
+            this.state.form.addControl('id', new FormControl(this.payload.note.id));
+            this.state.form.patchValue(this.payload.note);
+          })
+        )
+        .subscribe()
+    );
   }
   useInput = () => {
-    if (this.fixDeal && this.deal) {
-      this.form.get('deal').setValue(this.deal);
+    if (this.payload.fixDeal && this.payload.deal) {
+      this.state.form.get('deal').setValue(this.payload.deal);
     }
   }
   useDialog = (template: TemplateRef<any>) => {
@@ -93,26 +110,29 @@ export class NoteSavePage implements OnInit, OnChanges {
     if (ref) {
       ref.close();
     }
-    if (this.form.valid) {
+    if (this.state.form.valid) {
       this.useShowSpinner();
-      setTimeout(() => {
-        (this.note ? this.noteService.update(this.form.value) : this.noteService.insert(this.form.value))
-          .pipe(
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe((data) => {
+      this.subscriptions.push(
+        (this.payload.note ? this.service.update(this.state.form.value) : this.service.insert(this.state.form.value))
+        .pipe(
+          tap((data) => {
             this.toastrService.success('', 'Save note successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
-          }, (err) => {
-            this.toastrService.danger('', 'Save note fail! Something wrong at runtime', { duration: 3000 });
-          });
-      }, 2000);
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save note fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe()
+      );
     } else {
-      this.form.markAsUntouched();
-      this.form.markAsTouched();
+      this.state.form.markAsUntouched();
+      this.state.form.markAsTouched();
     }
   }
   useShowSpinner = () => {
@@ -122,5 +142,8 @@ export class NoteSavePage implements OnInit, OnChanges {
     setTimeout(() => {
       this.spinner.hide('note-save');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }
