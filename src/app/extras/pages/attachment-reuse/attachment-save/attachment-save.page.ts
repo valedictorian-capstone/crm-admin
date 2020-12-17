@@ -3,13 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { Store } from '@ngrx/store';
 import { AttachmentService } from '@services';
-import { AttachmentAction } from '@store/actions';
 import { State } from '@store/states';
 import { AttachmentVM, DealVM } from '@view-models';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, of } from 'rxjs';
-import { finalize, tap, catchError } from 'rxjs/operators';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reuse-attachment-save',
@@ -32,13 +31,11 @@ export class AttachmentSavePage implements OnInit, OnChanges, OnDestroy {
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
     this.useInitForm();
   }
 
   ngOnInit() {
     this.useInput();
-    this.useHideSpinner();
   }
   ngOnChanges() {
     if (this.fixDeal && this.deal) {
@@ -64,24 +61,23 @@ export class AttachmentSavePage implements OnInit, OnChanges, OnDestroy {
         formData.append('files', file as any);
       }
       formData.append('deal', this.form.value.deal.id);
-      this.subscriptions.push(
-        this.attachmentService.insert(formData)
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Save attachment successful!', { duration: 3000 });
-              this.useDone.emit(data);
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save attachment fail! ' + err.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = this.attachmentService.insert(formData)
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Save attachment successful!', { duration: 3000 });
+            this.useDone.emit(data);
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save attachment fail! ' + err.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe();
+      this.subscriptions.push(subscription);
     } else {
       this.form.markAsUntouched();
       this.form.markAsTouched();

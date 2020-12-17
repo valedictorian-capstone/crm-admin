@@ -6,14 +6,9 @@ export const groupFeatureKey = 'group';
 export const groupReducer = createReducer(
   groupInitialState,
   on(GroupAction.FindAllSuccessAction,
-    (state, action) => groupAdapter.setAll<GroupState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(GroupAction.FindAllSuccessAction,
     (state, action) => groupAdapter.setAll<GroupState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(GroupAction.ResetAction,

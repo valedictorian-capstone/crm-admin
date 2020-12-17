@@ -1,39 +1,33 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, TokenService } from '@services';
-import { Subscription, of } from 'rxjs';
-import { finalize, pluck, tap, catchError } from 'rxjs/operators';
-import swal from 'sweetalert2';
 import {
-  AuthAction,
-  DeviceAction,
-  DealAction,
-  ActivityAction,
-  AttachmentAction,
-  DealDetailAction,
-  PipelineAction,
-  StageAction,
-  AccountAction,
+  AccountAction, ActivityAction,
+  AttachmentAction, AuthAction,
   CategoryAction,
   CommentAction,
-  CustomerAction,
+  CustomerAction, DealAction,
+  DealDetailAction, DeviceAction,
   EventAction,
   GroupAction,
   NoteAction,
-  NotificationAction,
+  NotificationAction, PipelineAction,
   ProductAction,
-  RoleAction,
-  TicketAction,
+  RoleAction, StageAction,
+  TicketAction
 } from '@actions';
+import { Component, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { AuthService, TokenService } from '@services';
 import { State } from '@store/states';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, pluck, tap } from 'rxjs/operators';
+import swal from 'sweetalert2';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
   form: FormGroup;
   load = false;
@@ -47,21 +41,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     protected readonly store: Store<State>
   ) {
     this.useReset();
-    this.subscriptions.push(
-      this.activatedRoute.queryParams.pipe(
-        pluck('returnUrl'),
-        tap((url) => {
-          this.url = url;
-        })
-      ).subscribe()
-    );
+    const subscription = this.activatedRoute.queryParams.pipe(
+      pluck('returnUrl'),
+      tap((url) => {
+        this.url = url;
+      })
+    ).subscribe();
+    this.subscriptions.push(subscription);
     this.form = this.fb.group({
       emailOrPhone: ['', Validators.required],
       password: ['', Validators.required],
     });
-  }
-
-  ngOnInit() {
   }
   useReset = () => {
     this.store.dispatch(AuthAction.ResetAction());
@@ -91,7 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   useSubmit = async () => {
     if (this.form.valid) {
       this.load = true;
-      this.authService.login(this.form.value)
+      const subscription = this.authService.login(this.form.value)
         .pipe(
           tap((data) => {
             this.tokenService.setToken(data);
@@ -108,6 +98,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe();
+      this.subscriptions.push(subscription);
     } else {
       this.form.get('emailOrPhone').markAsTouched();
       this.form.get('password').markAsTouched();

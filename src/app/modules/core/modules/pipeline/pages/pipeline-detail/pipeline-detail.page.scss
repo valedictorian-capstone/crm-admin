@@ -136,14 +136,15 @@
             }
         }
     }
+}
+
+nb-card-body {
+    padding-top: 0;
+    padding-bottom: 0;
     .crm-pipeline-body {
         width: 100%;
         position: relative;
-        height: calc(100% - 64px);
         .stages {
-            max-height: 100%;
-            max-width: 100%;
-            overflow: auto;
             display: flex;
             &::-webkit-scrollbar {
                 width: 0;

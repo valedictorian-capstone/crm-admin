@@ -95,71 +95,66 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     protected readonly socket: Socket,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
-    this.subscriptions.push(
-      this.activatedRoute.params.pipe(
-        pluck('id'),
-        tap((id) => {
-          this.state.id = id;
-        })
-      ).subscribe()
-    )
+    const subscription = this.activatedRoute.params.pipe(
+      pluck('id'),
+      tap((id) => {
+        this.state.id = id;
+      })
+    ).subscribe();
+    this.subscriptions.push(subscription);
     this.useLoadMine();
   }
 
   ngOnInit() {
-    this.useDispatch();
-    this.useData();
+    this.useDispatchProduct();
+    this.useDispatchComment();
   }
-  useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            } else {
-              this.useHideSpinner();
-            }
-          })
-        ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(commentSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(CommentAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.products)
-        .pipe(
-          tap((data) => {
+  useDispatchProduct = () => {
+    const subscription = this.store.select((state) => state.product)
+      .pipe(
+        tap((product) => {
+          const firstLoad = product.firstLoad;
+          const data = (product.ids as string[]).map((id) => product.entities[id]);
+          if (!firstLoad) {
+            this.useReloadProduct();
+          } else {
             this.state.product = data.find((product) => product.id === this.state.id);
             if (!this.state.product) {
               this.router.navigate(['core/product']);
             }
-          })
+          }
+        })
       ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(commentSelector.comments)
-        .pipe(
-          tap((data) => {
+    this.subscriptions.push(subscription);
+
+  }
+  useDispatchComment = () => {
+    const subscription = this.store.select((state) => state.comment)
+      .pipe(
+        tap((comment) => {
+          const firstLoad = comment.firstLoad;
+          const data = (comment.ids as string[]).map((id) => comment.entities[id]);
+          if (!firstLoad) {
+            this.useReloadComment();
+          } else {
             this.state.comments = data.filter((comment) => comment.product.id === this.state.id).sort((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1);
             this.useSetStar();
-          })
-      ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
-  useReload = () => {
+  useReloadProduct = () => {
     this.useShowSpinner();
     this.store.dispatch(ProductAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
+  }
+  useReloadComment = () => {
+    this.useShowSpinner();
+    this.store.dispatch(CommentAction.FindAllAction({
       finalize: () => {
         this.useHideSpinner();
       }
@@ -207,17 +202,16 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     }
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateProduct).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveProduct).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateProduct).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveProduct).length > 0;
+        })
+      )
+      .subscribe()
+    this.subscriptions.push(subscription);
   }
   formatRating = () => '0';
   useEdit = () => {
@@ -228,19 +222,18 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.subscriptions.push(
-      this.service.remove(this.state.product.id)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Remove product successful', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.success('', 'Remove product fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-        )
-        .subscribe()
-    );
+    const subscription = this.service.remove(this.state.product.id)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Remove product successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.success('', 'Remove product fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDetail = () => {
     this.router.navigate(['core/product/' + this.state.product.id]);

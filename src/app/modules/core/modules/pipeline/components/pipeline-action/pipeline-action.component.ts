@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PipelineVM } from '@view-models';
 
 @Component({
@@ -6,15 +6,12 @@ import { PipelineVM } from '@view-models';
   templateUrl: './pipeline-action.component.html',
   styleUrls: ['./pipeline-action.component.scss']
 })
-export class PipelineActionComponent implements OnInit {
+export class PipelineActionComponent {
   @Input() pipelines: PipelineVM[] = [];
   @Input() selectedPipeline: PipelineVM;
   @Output() useAdd: EventEmitter<any> = new EventEmitter<any>();
   @Output() useEdit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useDelete: EventEmitter<any> = new EventEmitter<any>();
   @Output() useSelect: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
-  constructor() { }
-
-  ngOnInit() {
-  }
 
 }

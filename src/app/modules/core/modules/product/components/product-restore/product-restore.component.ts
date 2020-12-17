@@ -21,11 +21,9 @@ export class ProductRestoreComponent implements OnDestroy {
     protected readonly spinner: NgxSpinnerService,
     protected readonly toastrService: NbToastrService,
   ) { }
-
   useRestore = (id: string) => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.productService.restore(id)
+    const subscription = this.productService.restore(id)
       .pipe(
         tap((data) => {
           this.useDone.emit(data);
@@ -42,11 +40,10 @@ export class ProductRestoreComponent implements OnDestroy {
         finalize(() => {
           this.useHideSpinner();
         })
-      ).subscribe()
-    );
+      ).subscribe();
+    this.subscriptions.push(subscription);
 
   }
-
   useShowSpinner = () => {
     this.spinner.show('product-restore');
   }

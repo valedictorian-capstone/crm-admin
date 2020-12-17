@@ -42,8 +42,6 @@ export class PipelineEffect {
       ofType(PipelineAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => PipelineAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

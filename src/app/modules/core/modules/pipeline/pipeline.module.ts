@@ -4,10 +4,9 @@ import {
   PipelineActionComponent,
   PipelineActivityComponent,
   PipelineDealComponent,
-  PipelineMovetoComponent,
-  PipelineRunComponent,
   PipelineStageComponent,
   PipelineRestoreComponent,
+  PipelineSearchComponent
 } from './components';
 import {
   PipelineAddPage,
@@ -19,13 +18,12 @@ import { PipelineRoutes } from './pipeline.routing';
 // import { } from './directives';
 // import { MoneyPipe, TotalMoneyPipe } from './pipes';
 const COMPONENTS = [
-  PipelineRunComponent,
   PipelineStageComponent,
   PipelineActivityComponent,
   PipelineActionComponent,
   PipelineDealComponent,
-  PipelineMovetoComponent,
-  PipelineRestoreComponent
+  PipelineRestoreComponent,
+  PipelineSearchComponent
 ];
 
 const PAGES = [

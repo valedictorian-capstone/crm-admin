@@ -57,56 +57,45 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
     protected readonly clipboard: Clipboard,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
     this.useLoadMine();
-    this.useDispatch();
-    this.useData();
     this.useInitForm();
 
   }
 
   ngOnInit() {
+    this.useDispatch();
     if (!this.payload.employee) {
       this.state.form.addControl('password', new FormControl(Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
         .map((x) => x[Math.floor(Math.random() * x.length)]).join('')));
     } else {
       this.useSetData();
     }
-    this.useHideSpinner();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(roleSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(RoleAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(roleSelector.roles)
-        .pipe(
-          tap((data) => {
-            this.state.roles = data.filter((e) => e.level > this.state.level);;
-          })
-        ).subscribe()
-    );
+    const subscription = this.store.select((state) => state.role)
+      .pipe(
+        tap((role) => {
+          const firstLoad = role.firstLoad;
+          const data = (role.ids as string[]).map((id) => role.entities[id]);
+          if (!firstLoad) {
+            this.store.dispatch(RoleAction.FindAllAction({}));
+          } else {
+            this.state.roles = data.filter((e) => e.level > this.state.level);
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useSetData = () => {
     this.state.form.addControl('id', new FormControl(this.payload.employee.id));
@@ -129,30 +118,29 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
     ref.close();
     if (this.state.form.valid && !this.payload.isProfile) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        (this.payload.employee ? this.service.update({
-          ...this.state.form.value,
-          roles: this.state.form.value.roles.map((e) => ({ id: e }))
-        }) : this.service.insert({
-          ...this.state.form.value,
-          roles: this.state.form.value.roles.map((e) => ({ id: e }))
-        }))
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Save account successful!', { duration: 3000 });
-              this.useDone.emit(data);
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save account fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = (this.payload.employee ? this.service.update({
+        ...this.state.form.value,
+        roles: this.state.form.value.roles.map((e) => ({ id: e }))
+      }) : this.service.insert({
+        ...this.state.form.value,
+        roles: this.state.form.value.roles.map((e) => ({ id: e }))
+      }))
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Save account successful!', { duration: 3000 });
+            this.useDone.emit(data);
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save account fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe()
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();
@@ -196,63 +184,60 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
     const phone = this.state.form.get('phone');
     if ((!this.payload.employee || (this.payload.employee && this.payload.employee.phone !== this.state.form.get('phone').value)) && phone.valid) {
       this.state.phoneStage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('phone', phone.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                phone.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.phoneStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('phone', phone.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              phone.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.phoneStage = 'done';
+            }, 1000);
+          })
+        ).subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useCheckEmail = () => {
     const email = this.state.form.get('email');
     if ((!this.payload.employee || (this.payload.employee && this.payload.employee.email !== this.state.form.get('email').value)) && email.valid) {
       this.state.emailStage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('email', email.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                email.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.emailStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('email', email.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              email.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.emailStage = 'done';
+            }, 1000);
+          })
+        ).subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useCheckCode = () => {
     const code = this.state.form.get('code');
     if ((!this.payload.employee || (this.payload.employee && this.payload.employee.code !== this.state.form.get('code').value)) && code.valid) {
       this.state.codeStage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('code', code.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                code.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.codeStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('code', code.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              code.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.codeStage = 'done';
+            }, 1000);
+          })
+        ).subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useShowSpinner = () => {

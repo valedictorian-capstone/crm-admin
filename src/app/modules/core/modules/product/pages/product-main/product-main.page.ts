@@ -58,49 +58,40 @@ export class ProductMainPage implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDialog(template: TemplateRef<any>) {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.products)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.product)
+      .pipe(
+        tap((product) => {
+          const firstLoad = product.firstLoad;
+          const data = (product.ids as string[]).map((id) => product.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data.filter((product) => !product.isDelete);
             this.state.restores = data.filter((product) => product.isDelete);
             this.useFilter();
-          })
-      ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();

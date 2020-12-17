@@ -6,14 +6,9 @@ export const eventFeatureKey = 'event';
 export const eventReducer = createReducer(
   eventInitialState,
   on(EventAction.FindAllSuccessAction,
-    (state, action) => eventAdapter.setAll<EventState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(EventAction.FindAllSuccessAction,
     (state, action) => eventAdapter.setAll<EventState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(EventAction.SaveSuccessAction,

@@ -6,14 +6,9 @@ export const pipelineFeatureKey = 'pipeline';
 export const pipelineReducer = createReducer(
   pipelineInitialState,
   on(PipelineAction.FindAllSuccessAction,
-    (state, action) => pipelineAdapter.setAll<PipelineState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(PipelineAction.FindAllSuccessAction,
     (state, action) => pipelineAdapter.setAll<PipelineState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(PipelineAction.SaveSuccessAction,

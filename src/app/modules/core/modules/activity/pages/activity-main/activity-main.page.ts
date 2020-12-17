@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { ActivityService, GlobalService } from '@services';
+import { ActivityAction } from '@store/actions';
+import { activitySelector, authSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { AccountVM, ActivityVM, DealVM } from '@view-models';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize, tap } from 'rxjs/operators';
-import { activitySelector, authSelector } from '@store/selectors';
-import { Store } from '@ngrx/store';
-import { State } from '@store/states';
-import { ActivityAction } from '@store/actions';
 import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 interface IActivityMainPageState {
   events: (CalendarEvent & ActivityVM & { state: string })[],
   array: ActivityVM[],
@@ -48,7 +48,7 @@ export class ActivityMainPage implements OnInit, OnDestroy {
     search: {
       view: CalendarView.Day,
       viewDate: new Date(),
-      type: 'day',
+      type: 'month',
       states: [],
       deal: undefined,
       range: undefined,
@@ -66,68 +66,41 @@ export class ActivityMainPage implements OnInit, OnDestroy {
     protected readonly activatedRoute: ActivatedRoute,
     protected readonly spinner: NgxSpinnerService,
     protected readonly globalService: GlobalService,
-    protected readonly store: Store<State>
+    protected readonly store: Store<State>,
   ) {
     this.useLoadMine();
   }
   ngOnInit() {
-    // this.state.useSocket();
     this.useDispatch();
-    this.useData();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canUpdateDeal = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-            this.state.canGetAll = this.state.you.roles.filter((role) => role.canGetAllActivity).length > 0;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
-          })
-        )
-        .subscribe()
-    );
-  }
-  useSocket = () => {
-    this.activityService.triggerSocket().subscribe((trigger) => {
-      if (trigger.type === 'create') {
-        if ((trigger.data as ActivityVM).assignee.id === this.state.you.id || this.state.canGetAll) {
-          this.state.array.push(trigger.data as ActivityVM);
-        }
-      } else if (trigger.type === 'update') {
-        if ((trigger.data as ActivityVM).assignee.id === this.state.you.id || this.state.canGetAll) {
-          this.state.array[this.state.array.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = (trigger.data as ActivityVM);
-        } else {
-          this.state.array = this.state.array.filter((activity) => activity.id !== (trigger.data as ActivityVM).id);
-        }
-      } else if (trigger.type === 'remove') {
-        this.state.array = this.state.array.filter((activity) => activity.id !== (trigger.data as ActivityVM).id);
-      }
-      this.useFilter();
-    });
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canUpdateDeal = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+          this.state.canGetAll = this.state.you.roles.filter((role) => role.canGetAllActivity).length > 0;
+          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(activitySelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(activitySelector.activitys)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.activity)
+      .pipe(
+        tap((activity) => {
+          const firstLoad = activity.firstLoad;
+          const data = (activity.ids as string[]).map((id) => activity.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useFilter();
-          })
-        ).subscribe());
+          }
+        })
+    ).subscribe()
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();

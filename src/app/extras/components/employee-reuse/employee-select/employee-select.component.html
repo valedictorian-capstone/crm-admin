@@ -1,5 +1,5 @@
 <div nz-menu class="employee-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="state.status === 'finding'"></div>
+    <div [style.height]="state.status === 'finding' ? '96px' : '0'" class="w-100" [nbSpinner]="true" nbSpinnerSize="giant"></div>
     <a nz-menu-item class="item" [class.selected]="account.id === selected?.id" *ngFor="let account of state.filterArray" (click)="useSelect.emit(account); this.selected = account">
         <nb-icon icon="person-outline" style="margin-right: 0.7rem;"></nb-icon>
         <pre>{{account.fullname}} <b class="text-primary">{{account.id === state.you.id ? '(You)' : ''}}</b></pre>

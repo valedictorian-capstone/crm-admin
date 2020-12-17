@@ -6,14 +6,9 @@ export const categoryFeatureKey = 'category';
 export const categoryReducer = createReducer(
   categoryInitialState,
   on(CategoryAction.FindAllSuccessAction,
-    (state, action) => categoryAdapter.setAll<CategoryState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(CategoryAction.FindAllSuccessAction,
     (state, action) => categoryAdapter.setAll<CategoryState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(CategoryAction.SaveSuccessAction,

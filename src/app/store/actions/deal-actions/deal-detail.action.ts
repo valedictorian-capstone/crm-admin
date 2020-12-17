@@ -23,6 +23,10 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[DealDetail] Socket Action',
 );
+const ListAction = createAction(
+  '[DealDetail] List Action',
+  props<{ res: DealDetailVM[] }>()
+);
 const ResetAction = createAction(
   '[DealDetail] Reset Action',
 );
@@ -32,5 +36,6 @@ export const DealDetailAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

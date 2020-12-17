@@ -6,14 +6,9 @@ export const activityFeatureKey = 'activity';
 export const activityReducer = createReducer(
   activityInitialState,
   on(ActivityAction.FindAllSuccessAction,
-    (state, action) => activityAdapter.setAll<ActivityState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(ActivityAction.FindAllSuccessAction,
     (state, action) => activityAdapter.setAll<ActivityState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(ActivityAction.SaveSuccessAction,
@@ -23,6 +18,11 @@ export const activityReducer = createReducer(
   ),
   on(ActivityAction.RemoveSuccessAction,
     (state, action) => activityAdapter.removeOne<ActivityState>(action.id, {
+      ...state,
+    })
+  ),
+  on(ActivityAction.ListAction,
+    (state, action) => activityAdapter.upsertMany<ActivityState>(action.res, {
       ...state,
     })
   ),

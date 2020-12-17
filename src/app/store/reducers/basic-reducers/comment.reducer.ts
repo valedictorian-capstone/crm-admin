@@ -6,14 +6,9 @@ export const commentFeatureKey = 'comment';
 export const commentReducer = createReducer(
   commentInitialState,
   on(CommentAction.FindAllSuccessAction,
-    (state, action) => commentAdapter.setAll<CommentState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(CommentAction.FindAllSuccessAction,
     (state, action) => commentAdapter.setAll<CommentState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(CommentAction.SaveSuccessAction,

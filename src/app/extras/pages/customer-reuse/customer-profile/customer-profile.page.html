@@ -17,38 +17,7 @@
               <nb-icon icon="edit-2-outline"></nb-icon>
             </button>
         </div>
-        <nb-tabset fullWidth>
-            <nb-tab tabTitle="Information" tabIcon="info-outline" responsive>
-                <app-reuse-customer-save [payload]="{customer: payload.customer, isProfile: true}"></app-reuse-customer-save>
-            </nb-tab>
-            <nb-tab tabTitle="Deal" [tabIcon]="{icon: 'donate', pack: 'font-awesome'}" responsive>
-                <ngx-spinner [name]="'account-item' + payload.customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-                <app-reuse-deal-item *ngFor="let deal of state.deals" [deal]="deal"></app-reuse-deal-item>
-                <div *ngIf="state.deals.length === 0" class="empty">
-                    <span>
-                <b>Don't have any deals</b>
-              </span>
-                </div>
-            </nb-tab>
-            <nb-tab tabTitle="Ticket" tabIcon="pricetags-outline" responsive>
-                <ngx-spinner [name]="'account-item' + payload.customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-                <app-reuse-ticket-item *ngFor="let ticket of state.tickets" [ticket]="ticket"></app-reuse-ticket-item>
-                <div *ngIf="state.tickets.length === 0" class="empty">
-                    <span>
-                <b>Don't have any tickets</b>
-              </span>
-                </div>
-            </nb-tab>
-            <nb-tab tabTitle="Feedback" tabIcon="headphones-outline" responsive>
-                <ngx-spinner [name]="'account-item' + payload.customer.id" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-                <app-reuse-feedback-item *ngFor="let feedback of state.tickets"></app-reuse-feedback-item>
-                <!-- <div *ngIf="payload.customer.feedbacs.length === 0" class="empty">
-                <span>
-              <b>Don't have any feedbacs</b>
-            </span>
-            </div> -->
-            </nb-tab>
-        </nb-tabset>
+        <app-reuse-customer-save [payload]="{customer: payload.customer, isProfile: true}"></app-reuse-customer-save>
     </nb-card-body>
     <nb-card-footer class="text-center">
         <button (click)="useOpen(payload.customer.facebook)" style="height: 40px; width: 40px;" size="tiny" outline shape="round" nbButton status="primary" class="mr-1">

@@ -73,6 +73,7 @@
       [nzPlacement]="'bottomCenter'"
       [nzBackdrop]="false"
       [nzTrigger]="'click'"
+      placeholder="Select process"
       readonly
       (focus)="pipelineSelect.useSearch(payload.pipeline ? payload.pipeline.name : '')"
       nbInput
@@ -85,7 +86,7 @@
     <app-reuse-pipeline-select
       [selected]="payload.pipeline"
       #pipelineSelect
-      (useSelect)="useSelectPipeline($event.id)"
+      (useSelect)="useSelectPipeline($event)"
     ></app-reuse-pipeline-select>
   </nz-dropdown-menu>
   <span

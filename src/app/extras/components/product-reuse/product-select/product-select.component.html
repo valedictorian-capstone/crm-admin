@@ -1,5 +1,5 @@
 <div nz-menu class="product-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="state.status === 'finding'"></div>
+    <div [style.height]="state.status === 'finding' ? '96px' : '0'" class="w-100" [nbSpinner]="true" nbSpinnerSize="giant"></div>
     <a nz-menu-item [class.selected]="product.id === selected?.id" class="item" *ngFor="let product of state.filterArray" (click)="useSelect.emit(product); this.selected = product">
         <nb-icon icon="shopping-bag-outline" style="margin-right: 0.5rem;"></nb-icon>
         <pre>{{product.name | maxLength: 50}}</pre>

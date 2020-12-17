@@ -36,30 +36,22 @@ export class ProductSelectComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.products)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.product)
+      .pipe(
+        tap((product) => {
+          const firstLoad = product.firstLoad;
+          const data = (product.ids as string[]).map((id) => product.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useSearch('');
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.state.status = 'finding';

@@ -34,15 +34,15 @@ export class CustomerItemComponent implements OnDestroy {
     this.useLoadMine();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-      .pipe(
-        tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-        })
-      )
-      .subscribe());
+    const subscription = this.store.select(authSelector.profile)
+    .pipe(
+      tap((profile) => {
+        this.state.you = profile;
+        this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+      })
+    )
+      .subscribe()
+    this.subscriptions.push(subscription);
   }
   useEdit = () => {
     this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });

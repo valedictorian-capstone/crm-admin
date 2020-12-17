@@ -27,6 +27,10 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[Attachment] Socket Action',
 );
+const ListAction = createAction(
+  '[Attachment] List Action',
+  props<{ res: AttachmentVM[] }>()
+);
 const ResetAction = createAction(
   '[Attachment] Reset Action',
 );
@@ -37,5 +41,6 @@ export const AttachmentAction = {
   UpdateSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

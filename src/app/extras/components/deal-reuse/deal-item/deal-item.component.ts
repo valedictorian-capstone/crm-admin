@@ -22,15 +22,14 @@ export class DealItemComponent implements OnInit, OnDestroy {
     this.useReload();
   }
   useReload = () => {
-    this.subscriptions.push(
-      this.service.findById(this.deal.id)
+    const subscription = this.service.findById(this.deal.id)
       .pipe(
         tap((data) => {
           this.deal = data;
         })
       )
-      .subscribe()
-    );
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDetail = () => {
     this.router.navigate(['core/deal/' + this.deal.id]);

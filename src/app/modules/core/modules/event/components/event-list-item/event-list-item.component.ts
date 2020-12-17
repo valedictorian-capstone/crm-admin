@@ -26,8 +26,7 @@ export class EventListItemComponent implements OnDestroy {
     this.globalService.triggerView$.next({ type: 'event', payload: { event: this.event } });
   }
   useRemove = (ref: NbDialogRef<any>) => {
-    this.subscriptions.push(
-      this.eventService.remove(this.event.id)
+    const subscription = this.eventService.remove(this.event.id)
       .pipe(
         tap((data) => {
           this.toastrService.success('', 'Remove event successful', { duration: 3000 });
@@ -37,8 +36,8 @@ export class EventListItemComponent implements OnDestroy {
           return of(undefined);
         }),
         finalize(() => ref.close())
-      ).subscribe()
-    );
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: true });

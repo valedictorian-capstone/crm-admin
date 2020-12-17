@@ -73,17 +73,16 @@ export class TicketItemComponent implements OnInit, OnDestroy {
     this.useInitForm();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -98,58 +97,54 @@ export class TicketItemComponent implements OnInit, OnDestroy {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service.remove(this.ticket.id)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Remove ticket successful!', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Remove ticket fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useHideSpinner(ref);
-          })
-        ).subscribe()
-    );
+    const subscription = this.service.remove(this.ticket.id)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Remove ticket successful!', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Remove ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner(ref);
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useUpdate = (ref: NbDialogRef<any>) => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service.update(this.state.form.value)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Update ticket successful!', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Update ticket fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useHideSpinner(ref);
-          })
-        ).subscribe()
-    );
-
+    const subscription = this.service.update(this.state.form.value)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Update ticket successful!', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Update ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner(ref);
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useAssign = () => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service.update({ id: this.ticket.id, assignee: { id: this.state.you.id } } as any)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Assign ticket successful!', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Assign ticket fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        ).subscribe()
-    );
+    const subscription = this.service.update({ id: this.ticket.id, assignee: { id: this.state.you.id } } as any)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Assign ticket successful!', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Assign ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useShowSpinner = () => {
     this.spinner.show('ticket-edit');

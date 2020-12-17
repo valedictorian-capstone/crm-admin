@@ -72,23 +72,22 @@ export class MailSenderPage implements OnInit, OnDestroy {
   }
   useSend = () => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service.sendMail({
-        info: { email: this.state.form.value.email } as any,
-        content: this.state.form.value.content,
-        subject: this.state.form.value.subject,
-      }).pipe(
-        tap((data) => {
-          this.useClose.emit();
-          this.toastrService.success('', 'Send mail successful!', { duration: 3000 });
-        }),
-        catchError((err) => {
-          this.toastrService.danger('', 'Send mail fail! ' + err.error.message, { duration: 3000 });
-          return of(undefined);
-        }),
-        finalize(() => { this.useHideSpinner(); })
-      ).subscribe()
-    );
+    const subscription = this.service.sendMail({
+      info: { email: this.state.form.value.email } as any,
+      content: this.state.form.value.content,
+      subject: this.state.form.value.subject,
+    }).pipe(
+      tap((data) => {
+        this.useClose.emit();
+        this.toastrService.success('', 'Send mail successful!', { duration: 3000 });
+      }),
+      catchError((err) => {
+        this.toastrService.danger('', 'Send mail fail! ' + err.error.message, { duration: 3000 });
+        return of(undefined);
+      }),
+      finalize(() => { this.useHideSpinner(); })
+    ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useShowSpinner = () => {
     this.spinner.show('mail-sender');

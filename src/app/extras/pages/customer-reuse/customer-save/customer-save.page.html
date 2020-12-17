@@ -52,7 +52,7 @@
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Gender</span>
         <nb-form-field style="max-width: 100%; margin-bottom: 1rem;">
             <nb-icon nbPrefix icon="transgender" pack="font-awesome"></nb-icon>
-            <nb-select style="width: 100%; height: 3rem;" fullWidth placeholder="Gender" [formControl]="state.form.get('gender')">
+            <nb-select style="width: 100%; height: 3rem;" [disabled]="payload.isProfile" fullWidth placeholder="Gender" [formControl]="state.form.get('gender')">
                 <nb-option value="-1">-None-</nb-option>
                 <nb-option value="0">Male</nb-option>
                 <nb-option value="1">Female</nb-option>
@@ -62,8 +62,10 @@
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('birthDay').invalid && (state.form.get('birthDay').touched || state.form.get('birthDay').dirty)">Birthday <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
             <nb-icon nbPrefix icon="birthday-cake" pack="font-awesome"></nb-icon>
-            <input style="height: 3rem;" readonly fullWidth [status]="state.form.get('birthDay').invalid && (state.form.get('birthDay').touched || state.form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="state.form.get('birthDay').value | date: 'dd/MM/yyyy'"
+            <input *ngIf="!payload.isProfile" style="height: 3rem;" readonly fullWidth [status]="state.form.get('birthDay').invalid && (state.form.get('birthDay').touched || state.form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="state.form.get('birthDay').value | date: 'dd/MM/yyyy'"
                 (focus)="state.showBirthday = true" [nzVisible]="state.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input *ngIf="payload.isProfile" style="height: 3rem;" readonly fullWidth [status]="state.form.get('birthDay').invalid && (state.form.get('birthDay').touched || state.form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="state.form.get('birthDay').value | date: 'dd/MM/yyyy'"
+                nbInput />
         </nb-form-field>
         <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
             <app-reuse-select-date [date]="state.form.get('birthDay').value" [max]="state.max" [min]="state.min" (useChange)="state.form.get('birthDay').setValue($event); state.showBirthday = false"></app-reuse-select-date>
@@ -76,21 +78,21 @@
                 <nb-accordion-item-body>
                     <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty)">Frequency <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.2" thousandSeparator="," [status]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('frequency')"
+                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('frequency')"
                             nbInput />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="payload.isProfile" (click)="useCopy(state.form.get('frequency').value)"></nb-icon>
                     </nb-form-field>
                     <span *ngIf="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill frequency</span>
                     <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('totalSpending').invalid && (state.form.get('totalSpending').touched || state.form.get('totalSpending').dirty)">Average Spending <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.2" thousandSeparator="," [status]="state.form.get('totalSpending').invalid && (state.form.get('totalSpending').touched || state.form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('totalSpending')"
+                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="state.form.get('totalSpending').invalid && (state.form.get('totalSpending').touched || state.form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('totalSpending')"
                             nbInput />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="payload.isProfile" (click)="useCopy(state.form.get('totalSpending').value)"></nb-icon>
                     </nb-form-field>
                     <span *ngIf="state.form.get('totalSpending').invalid && (state.form.get('totalSpending').touched || state.form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average spending</span>
                     <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('totalDeal').invalid && (state.form.get('totalDeal').touched || state.form.get('totalDeal').dirty)">Average Deal <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.2" thousandSeparator="," [status]="state.form.get('totalDeal').invalid && (state.form.get('totalDeal').touched || state.form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('totalDeal')"
+                        <input [readOnly]="payload.isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="state.form.get('totalDeal').invalid && (state.form.get('totalDeal').touched || state.form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('totalDeal')"
                             nbInput />
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="payload.isProfile" (click)="useCopy(state.form.get('totalDeal').value)"></nb-icon>
                     </nb-form-field>

@@ -41,11 +41,10 @@ export class PipelineMovetoPage implements OnInit, OnChanges, OnDestroy {
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
+
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.payload.previousValue) {
@@ -53,33 +52,42 @@ export class PipelineMovetoPage implements OnInit, OnChanges, OnDestroy {
     }
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(pipelineSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(PipelineAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(pipelineSelector.pipelines)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.pipeline)
+      .pipe(
+        tap((pipeline) => {
+          const firstLoad = pipeline.firstLoad;
+          const data = (pipeline.ids as string[]).map((id) => pipeline.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.realPipelines = data;
             this.useSetData();
-            this.useHideSpinner();
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
-  useSelectPipeline = async (selected: string, stage?: StageVM) => {
-    if (selected !== this.state.pipeline?.id) {
-      this.state.pipeline = await this.service.findById(selected).toPromise();
-      this.state.selectedStage = stage ? stage : this.state.pipeline.stages[0];
+  useReload = () => {
+    this.useShowSpinner();
+    this.store.dispatch(PipelineAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
+  }
+  useSelectPipeline = async (selected: PipelineVM) => {
+    if (this.payload.deal) {
+      if (this.payload.deal.stage.pipeline.id !== selected.id) {
+        this.state.pipeline = selected;
+        this.state.selectedStage = this.state.pipeline.stages.find((stage) => stage.position === 0);
+      } else {
+        this.state.selectedStage = this.payload.deal.stage;
+      }
+    } else {
+      if (selected.id !== this.state.pipeline?.id) {
+        this.state.pipeline = selected;
+        this.state.selectedStage = this.state.pipeline.stages.find((stage) => stage.position === 0);
+      }
     }
   }
   useShowSpinner = () => {
@@ -91,18 +99,9 @@ export class PipelineMovetoPage implements OnInit, OnChanges, OnDestroy {
     }, 1000);
   }
   useSetData = () => {
-    this.state.pipeline = undefined;
-    this.state.selectedStage = this.payload.deal.stage;
-    if (!this.state.pipeline) {
-      this.state.pipelines = this.state.realPipelines.filter((pipeline) => !pipeline.isDelete);
-      const selectedPipeline = localStorage.getItem('selectedPipeline');
-      this.useSelectPipeline(selectedPipeline, this.state.selectedStage);
-    } else {
-      this.state.pipelines = this.state.realPipelines.filter((pipeline) => pipeline.id === this.state.pipeline.id
-        || (pipeline.id !== this.state.pipeline.id && !pipeline.isDelete));
-      if (!this.state.selectedStage) {
-        this.state.selectedStage = this.state.pipeline.stages[0];
-      }
+    if (this.payload.deal) {
+      this.state.selectedStage = this.payload.deal.stage;
+      this.state.pipeline = this.payload.deal.stage.pipeline;
     }
   }
   useCancel = () => {

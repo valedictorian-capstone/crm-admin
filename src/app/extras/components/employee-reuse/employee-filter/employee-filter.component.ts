@@ -34,30 +34,22 @@ export class EmployeeFilterComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(accountSelector.firstLoad)
+    const subscription = this.store.select((state) => state.account)
       .pipe(
-        tap((firstLoad) => {
+        tap((account) => {
+          const firstLoad = account.firstLoad;
+          const data = (account.ids as string[]).map((id) => account.entities[id]);
           if (!firstLoad) {
             this.useReload();
+          } else {
+            this.state.array = data;
+            this.useFilter();
           }
         })
-      ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-    this.store.select(accountSelector.accounts)
-      .pipe(
-        tap((data) => {
-          this.state.array = data;
-          this.useFilter();
-        })
-      ).subscribe()
-    );
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();
@@ -86,7 +78,6 @@ export class EmployeeFilterComponent implements OnInit, OnDestroy {
     } else {
       this.selectedEmployees = this.selectedEmployees.filter((emp) => emp.id !== employee.id);
     }
-    console.log(this.selectedEmployees);
     this.useSearch.emit(this.selectedEmployees);
   }
   useChecked = (employee: AccountVM) => {

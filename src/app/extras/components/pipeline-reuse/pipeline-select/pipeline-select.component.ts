@@ -34,30 +34,22 @@ export class PipelineSelectComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(pipelineSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(pipelineSelector.pipelines)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.pipeline)
+      .pipe(
+        tap((pipeline) => {
+          const firstLoad = pipeline.firstLoad;
+          const data = (pipeline.ids as string[]).map((id) => pipeline.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useSearch('');
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.state.status = 'finding';

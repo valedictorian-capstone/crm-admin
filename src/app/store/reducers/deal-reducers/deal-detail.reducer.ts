@@ -6,14 +6,9 @@ export const dealDetailFeatureKey = 'dealDetail';
 export const dealDetailReducer = createReducer(
   dealDetailInitialState,
   on(DealDetailAction.FindAllSuccessAction,
-    (state, action) => dealDetailAdapter.setAll<DealDetailState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(DealDetailAction.FindAllSuccessAction,
     (state, action) => dealDetailAdapter.setAll<DealDetailState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(DealDetailAction.SaveSuccessAction,
@@ -23,6 +18,11 @@ export const dealDetailReducer = createReducer(
   ),
   on(DealDetailAction.RemoveSuccessAction,
     (state, action) => dealDetailAdapter.removeOne<DealDetailState>(action.id, {
+      ...state,
+    })
+  ),
+  on(DealDetailAction.ListAction,
+    (state, action) => dealDetailAdapter.upsertMany<DealDetailState>(action.res, {
       ...state,
     })
   ),

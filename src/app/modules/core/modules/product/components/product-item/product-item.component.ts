@@ -32,8 +32,7 @@ export class ProductItemComponent implements OnDestroy {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
-    this.subscriptions.push(
-      this.productService.remove(this.product.id)
+    const subscription = this.productService.remove(this.product.id)
       .pipe(
         tap((data) => {
           this.toastrService.success('', 'Disabled product successful', { duration: 3000 });
@@ -43,8 +42,8 @@ export class ProductItemComponent implements OnDestroy {
           return of(undefined);
         })
       )
-      .subscribe()
-    );
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDetail = () => {
     this.router.navigate(['core/product/' + this.product.id]);

@@ -42,30 +42,22 @@ export class EmployeeSelectComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(accountSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(accountSelector.accounts)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.account)
+      .pipe(
+        tap((account) => {
+          const firstLoad = account.firstLoad;
+          const data = (account.ids as string[]).map((id) => account.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useSearch('');
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.state.status = 'finding';
@@ -76,15 +68,14 @@ export class EmployeeSelectComponent implements OnInit, OnDestroy {
     }));
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useSearch = (value: string) => {
     this.state.search = value;

@@ -14,7 +14,7 @@
   </button>
     </div>
     <div class="time">
-        <span class="text" [class.text-success]="event.state === 'processing'" [class.text-danger]="event.state === 'expired'">{{event.dateStart  | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+        <span class="text" [class.text-success]="event.state === 'processing'" [class.text-danger]="event.state === 'expired'">{{event.dateStart  | time}}</span>
     </div>
     <nz-tag style="position: absolute; right: 1rem; bottom: 0.5rem;" [nzColor]="event.state === 'processing' ? 'cyan' : (event.state === 'expired' ? 'volcano' : 'geekblue')">
         {{event.state === 'processing' ? 'Processing' : (event.state === 'expired' ? 'Expired' : 'Not Started')}}

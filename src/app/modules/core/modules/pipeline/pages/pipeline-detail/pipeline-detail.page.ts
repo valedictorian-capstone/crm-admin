@@ -2,14 +2,33 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbDialogRef, NbToastrService } from '@nebular/theme';
 import { GlobalService, PipelineService } from '@services';
-import { AccountVM, PipelineVM } from '@view-models';
+import { AccountVM, CustomerVM, PipelineVM } from '@view-models';
 import { DropResult } from 'ngx-smooth-dnd';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { delay, finalize, tap } from 'rxjs/operators';
+import { delay, finalize, tap, catchError } from 'rxjs/operators';
 import { State } from '@store/states';
 import { Store } from '@ngrx/store';
 import { authSelector } from '@store/selectors';
-
+import { PipelineAction } from '@store/actions';
+import { Subscription, of } from 'rxjs';
+interface IPipelineDetailPageState {
+  you: AccountVM;
+  dragging: boolean;
+  restores: PipelineVM[];
+  pipelines: PipelineVM[];
+  selectedPipeline: PipelineVM;
+  search: {
+    status: string,
+    range: { start: Date, end: Date },
+    name: string,
+    customer: CustomerVM,
+    assignees: [],
+  };
+  canAdd: boolean;
+  canAssign: boolean;
+  canUpdate: boolean;
+  canRemove: boolean;
+}
 @Component({
   selector: 'app-pipeline-detail',
   templateUrl: './pipeline-detail.page.html',
@@ -17,15 +36,25 @@ import { authSelector } from '@store/selectors';
 })
 export class PipelineDetailPage implements OnInit {
   @ViewChild('newDealRef') newDealRef: TemplateRef<any>;
-  dragging = false;
-  selectedPipeline: PipelineVM;
-  pipelines: PipelineVM[] = [];
-  restores: PipelineVM[] = [];
-  status = '';
-  you: AccountVM;
-  canAdd = false;
-  canUpdate = false;
-  canRemove = false;
+  subscriptions: Subscription[] = [];
+  state: IPipelineDetailPageState = {
+    you: undefined,
+    pipelines: [],
+    restores: [],
+    selectedPipeline: undefined,
+    search: {
+      assignees: [],
+      customer: undefined,
+      status: '',
+      name: '',
+      range: undefined
+    },
+    dragging: false,
+    canAdd: false,
+    canUpdate: false,
+    canAssign: false,
+    canRemove: false,
+  }
   constructor(
     protected readonly router: Router,
     protected readonly pipelineService: PipelineService,
@@ -39,63 +68,89 @@ export class PipelineDetailPage implements OnInit {
     this.useLoadMine();
   }
   ngOnInit() {
-    this.useReload();
+    this.useDispatch();
   }
   useLoadMine = () => {
-    this.store.select(authSelector.profile)
-      .pipe(
-        tap((profile) => {
-          this.you = profile;
-          this.canAdd = this.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-          this.canUpdate = this.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-          this.canRemove = this.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
-        })
-      )
-      .subscribe()
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+          })
+        )
+        .subscribe()
+    )
   }
   useRemove = (ref: NbDialogRef<any>) => {
     this.useShowSpinner();
-    this.pipelineService.remove(localStorage.getItem('selectedPipeline'))
+    this.subscriptions.push(
+      this.pipelineService.remove(localStorage.getItem('selectedPipeline'))
+        .pipe(
+          tap(() => {
+            this.toastrService.success('', 'Remove process successful', { duration: 3000 });
+            localStorage.removeItem('selectedPipeline');
+            this.router.navigate(['core/process']);
+          }),
+          catchError((err) => {
+            this.toastrService.success('', 'Remove process fail! ' + err.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+            ref.close();
+          })
+        ).subscribe()
+    );
+  }
+  useDispatch = () => {
+    const subscription = this.store.select((state) => state.pipeline)
       .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-          ref.close();
+        tap((pipeline) => {
+          const firstLoad = pipeline.firstLoad;
+          const data = (pipeline.ids as string[]).map((id) => pipeline.entities[id]).filter((pipeline) => !pipeline.isDelete);
+          if (!firstLoad) {
+            this.router.navigate(['core/process']);
+          } else {
+            if (data.length === 0) {
+              this.router.navigate(['core/process/add']);
+            } else {
+              this.state.pipelines = data.filter((pipeline) => !pipeline.isDelete);
+              this.state.restores = data.filter((pipeline) => pipeline.isDelete);
+              if (this.state.pipelines.length === 0) {
+                this.router.navigate(['core/process/add']);
+              } else {
+                if (localStorage.getItem('selectedPipeline') == null) {
+                  localStorage.setItem('selectedPipeline', this.state.pipelines[0].id);
+                }
+                const selected = localStorage.getItem('selectedPipeline');
+                this.useSelectPipeline(
+                  this.state.pipelines.find((p) => p.id === selected)
+                    ? this.state.pipelines.find((p) => p.id === selected)
+                    : this.state.pipelines[0]
+                  , true);
+              }
+            }
+          }
         })
-      ).subscribe(() => {
-        this.toastrService.success('', 'Remove process successful', { duration: 3000 });
-        localStorage.removeItem('selectedPipeline');
-        this.router.navigate(['core/process']);
-      }, () => {
-        this.toastrService.success('', 'Remove process fail', { duration: 3000 });
-      });
+      ).subscribe()
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();
-    this.pipelineService.findAll()
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        }),
-      )
-      .subscribe(async (data) => {
-        this.pipelines = data.filter((pipeline) => !pipeline.isDelete);
-        this.restores = data.filter((pipeline) => pipeline.isDelete);
-        if (this.pipelines.length === 0) {
-          this.router.navigate(['core/process/add']);
-        } else {
-          if (localStorage.getItem('selectedPipeline') == null) {
-            localStorage.setItem('selectedPipeline', this.pipelines[0].id);
-          }
-          const selected = localStorage.getItem('selectedPipeline');
-          await this.useSelectPipeline(!this.pipelines.find((p) => p.id === selected)
-            ? this.pipelines[0].id : selected, true);
-        }
-      });
+    this.store.dispatch(PipelineAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
   }
-  useSelectPipeline = async (selected: string, reload?: boolean) => {
-    if (selected !== this.selectedPipeline?.id || reload) {
-      localStorage.setItem('selectedPipeline', selected);
-      this.selectedPipeline = await this.pipelineService.findById(selected).toPromise();
+  useSelectPipeline = async (selected: PipelineVM, reload?: boolean) => {
+    if (selected.id !== this.state.selectedPipeline?.id || reload) {
+      localStorage.setItem('selectedPipeline', selected.id);
+      this.state.selectedPipeline = selected;
     }
   }
   useDialog(template: TemplateRef<any>) {
@@ -107,20 +162,29 @@ export class PipelineDetailPage implements OnInit {
   useEdit = () => {
     this.router.navigate(['core/process/edit']);
   }
-  useCreateDeal = () => {
-    this.globalService.triggerView$.next({ type: 'deal', payload: { pipeline: this.selectedPipeline } });
+  usePlus = () => {
+    this.globalService.triggerView$.next({ type: 'deal', payload: { pipeline: this.state.selectedPipeline } });
   }
   useShowSpinner = () => {
-    this.spinner.show('pipeline-deatail');
+    this.spinner.show('pipeline-detail');
   }
   useHideSpinner = () => {
-    this.spinner.hide('pipeline-deatail');
+    this.spinner.hide('pipeline-detail');
   }
-  useViewDeal = () => {
+  useViewList = () => {
     this.router.navigate(['core/deal']);
   }
+  useSearch = (search: {
+    status: string,
+    range: { start: Date, end: Date },
+    name: string,
+    customer: CustomerVM,
+    assignees: [],
+  }) => {
+    this.state.search = { ...this.state.search, ...search };
+  }
   useRestore = (p: PipelineVM) => {
-    this.pipelines.push(p);
-    this.restores = this.restores.filter((pipeline) => pipeline.id !== p.id);
+    this.state.pipelines.push(p);
+    this.state.restores = this.state.restores.filter((pipeline) => pipeline.id !== p.id);
   }
 }

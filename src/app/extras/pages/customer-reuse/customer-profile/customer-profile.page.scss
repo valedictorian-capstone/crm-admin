@@ -2,7 +2,7 @@ nb-card {
     width: 789px;
     margin-top: 29px;
     nb-card-body {
-        height: 40vh;
+        max-height: 65vh;
         overflow-y: auto;
         padding: 0;
         overflow-x: hidden;
@@ -24,22 +24,6 @@ nb-card {
                 justify-content: center;
                 align-items: center;
                 border: 1px solid #e5e5e5;
-            }
-        }
-        nb-tabset {
-            height: 100%;
-            nb-tab {
-                min-height: calc(100% - 52px);
-                height: fit-content;
-                padding: 1rem;
-                position: relative;
-                .empty {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
             }
         }
     }

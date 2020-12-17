@@ -5,15 +5,10 @@ import { TicketState } from '@states';
 export const ticketFeatureKey = 'ticket';
 export const ticketReducer = createReducer(
   ticketInitialState,
-    on(TicketAction.FindAllAction,
-    (state, action) => ticketAdapter.setAll<TicketState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(TicketAction.FindAllSuccessAction,
+    on(TicketAction.FindAllSuccessAction,
     (state, action) => ticketAdapter.setAll<TicketState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(TicketAction.SaveSuccessAction,

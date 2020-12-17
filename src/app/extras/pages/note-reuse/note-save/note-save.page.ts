@@ -7,6 +7,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { finalize, tap, catchError } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
+import { NoteAction } from '@store/actions';
+import { Store } from '@ngrx/store';
+import { State } from '@store/states';
 
 interface INoteSavePageState {
   form: FormGroup;
@@ -63,8 +66,8 @@ export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
     protected readonly toastrService: NbToastrService,
     protected readonly dialogService: NbDialogService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly store: Store<State>,
   ) {
-    this.useShowSpinner();
     this.useInitForm();
   }
 
@@ -74,7 +77,6 @@ export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
     } else {
       this.useInput();
     }
-    this.useHideSpinner();
   }
   ngOnChanges() {
     this.useInput();
@@ -86,17 +88,21 @@ export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
     });
   }
   useSetData = () => {
-    this.subscriptions.push(
-      this.service.findById(this.payload.note.id)
-        .pipe(
-          tap((data) => {
-            this.payload.note = data;
-            this.state.form.addControl('id', new FormControl(this.payload.note.id));
-            this.state.form.patchValue(this.payload.note);
-          })
-        )
-        .subscribe()
-    );
+    this.useShowSpinner();
+    const subscription = this.service.findById(this.payload.note.id)
+      .pipe(
+        tap((data) => {
+          this.store.dispatch(NoteAction.SaveSuccessAction({ res: data }));
+          this.payload.note = data;
+          this.state.form.addControl('id', new FormControl(this.payload.note.id));
+          this.state.form.patchValue(this.payload.note);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useInput = () => {
     if (this.payload.fixDeal && this.payload.deal) {
@@ -112,8 +118,7 @@ export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
     }
     if (this.state.form.valid) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        (this.payload.note ? this.service.update(this.state.form.value) : this.service.insert(this.state.form.value))
+      const subscription = (this.payload.note ? this.service.update(this.state.form.value) : this.service.insert(this.state.form.value))
         .pipe(
           tap((data) => {
             this.toastrService.success('', 'Save note successful!', { duration: 3000 });
@@ -128,8 +133,8 @@ export class NoteSavePage implements OnInit, OnChanges, OnDestroy {
             this.useHideSpinner();
           })
         )
-        .subscribe()
-      );
+        .subscribe();
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();

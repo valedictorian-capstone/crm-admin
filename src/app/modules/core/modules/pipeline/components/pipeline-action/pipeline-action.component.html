@@ -1,19 +1,14 @@
-<div nz-menu class="crm-pipeline-actions">
-    <div class="crm-pipeline-list">
-        <a nz-menu-item class="crm-pipeline-action" *ngFor="let pipeline of pipelines" (click)="useSelect.emit(pipeline); selectedPipeline = pipeline">
-            <b>{{pipeline.name}}</b>
-            <nb-icon class="selected" status="primary" *ngIf="pipeline.id === selectedPipeline?.id" icon="checkmark"></nb-icon>
-            <button nbButton size="tiny"><nb-icon icon="edit" (click)="useEdit.emit()"></nb-icon></button>
-        </a>
-    </div>
-    <div class="crm-pipeline-main">
-        <a nz-menu-item class="crm-pipeline-action" (click)="useAdd.emit()">
-            <nb-icon icon="plus" style="margin-right: 0.5rem;"></nb-icon>
-            <b>New process</b>
-        </a>
-        <a nz-menu-item class="crm-pipeline-action" (click)="useEdit.emit()">
-            <nb-icon icon="edit" style="margin-right: 0.5rem;"></nb-icon>
-            <b>Edit process</b>
-        </a>
-    </div>
-</div>
+<nb-card>
+    <nb-card-header style="padding: 0.5rem 1.5rem;">
+        <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Search</b>
+    </nb-card-header>
+    <nb-card-body>
+        <nb-form-field class="float-left mb-2 w-100" *ngFor="let pipeline of pipelines">
+            <nb-icon *ngIf="pipeline.id === selectedPipeline?.id" (click)="useEdit.emit()" nbPrefix status="info" icon="edit-2-outline"></nb-icon>
+            <input [status]="pipeline.id === selectedPipeline?.id ? 'primary' : 'basic'" class="border-radius-0" [value]="pipeline.name" (click)="useSelect.emit(pipeline); selectedPipeline = pipeline" readonly [style.height]="'40px'" fullWidth placeholder="Search by name"
+                nbInput />
+            <nb-icon *ngIf="pipeline.id === selectedPipeline?.id" (click)="useDelete.emit()" nbSuffix status="danger" icon="trash-2-outline"></nb-icon>
+        </nb-form-field>
+        <button nbButton status="success" outline fullWidth (click)="useAdd.emit()">New Process</button>
+    </nb-card-body>
+</nb-card>

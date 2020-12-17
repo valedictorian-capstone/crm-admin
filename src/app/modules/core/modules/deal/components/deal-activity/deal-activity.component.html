@@ -1,11 +1,10 @@
 <div class="activity">
+    <ngx-spinner [name]="'deal-activity-' + this.data.id" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <div class="content">
         <nb-checkbox (checkedChange)="useToggleDone()" [checked]="data?.status === 'done'" [status]="'success'"><a>{{data?.type}}</a></nb-checkbox>
     </div>
     <div class="time" [class.processing]="data?.status === 'processing'" [class.done]="data?.status === 'done'">
-        <span class="text" [class.text-success]="data.state === 'processing' && data.status === 'processing'" [class.text-danger]="data.state === 'expired' && data.status === 'processing'">{{data.dateStart | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
-        <span class="separator">·</span>
-        <span class="text">Đặng Khánh Vinh</span>
+        <span class="text" [class.text-success]="data.state === 'processing' && data.status === 'processing'" [class.text-danger]="data.state === 'expired' && data.status === 'processing'">{{data.dateStart | time}}</span>
     </div>
     <button outline nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">
       <nb-icon icon="more-horizontal-outline"></nb-icon>

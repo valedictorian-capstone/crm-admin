@@ -6,14 +6,9 @@ export const roleFeatureKey = 'role';
 export const roleReducer = createReducer(
   roleInitialState,
   on(RoleAction.FindAllSuccessAction,
-    (state, action) => roleAdapter.setAll<RoleState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(RoleAction.FindAllSuccessAction,
     (state, action) => roleAdapter.setAll<RoleState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(RoleAction.SaveSuccessAction,

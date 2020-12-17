@@ -2,12 +2,12 @@ import { Component, Input, OnDestroy, TemplateRef } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { Store } from '@ngrx/store';
 import { ActivityService, GlobalService } from '@services';
-import { ActivityAction } from '@store/actions';
 import { State } from '@store/states';
 import { ActivityVM } from '@view-models';
 import { CalendarEvent } from 'angular-calendar';
-import { finalize, tap, catchError } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-activity-list-item',
@@ -24,7 +24,8 @@ export class ActivityListItemComponent implements OnDestroy {
     protected readonly activityService: ActivityService,
     protected readonly dialogService: NbDialogService,
     protected readonly toastrService: NbToastrService,
-    protected readonly store: Store<State>
+    protected readonly spinner: NgxSpinnerService,
+    protected readonly store: Store<State>,
   ) { }
 
   useIcon = (type: string) => {
@@ -65,22 +66,33 @@ export class ActivityListItemComponent implements OnDestroy {
     this.globalService.triggerView$.next({ type: 'activity', payload: { activity: this.event } });
   }
   useRemove = (ref: NbDialogRef<any>) => {
-    this.subscriptions.push(
-      this.activityService.remove(this.event.id)
+    ref.close();
+    this.useShowSpinner();
+    const subscription = this.activityService.remove(this.event.id)
       .pipe(
         tap((data) => {
           this.toastrService.success('', 'Remove activity successful', { duration: 3000 });
         }),
         catchError((err) => {
-          this.toastrService.danger('', 'Remove activity fail', { duration: 3000 });
+          this.toastrService.danger('', 'Remove activity fail! ' + err.message, { duration: 3000 });
           return of(undefined);
         }),
-        finalize(() => ref.close())
-      ).subscribe()
-    );
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: true });
+  }
+  useShowSpinner = () => {
+    this.spinner.show('activity-main');
+  }
+  useHideSpinner = () => {
+    setTimeout(() => {
+      this.spinner.hide('activity-main');
+    }, 1000);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

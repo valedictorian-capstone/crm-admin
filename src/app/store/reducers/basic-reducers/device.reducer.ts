@@ -6,14 +6,9 @@ export const deviceFeatureKey = 'device';
 export const deviceReducer = createReducer(
   deviceInitialState,
   on(DeviceAction.FindAllSuccessAction,
-    (state, action) => deviceAdapter.setAll<DeviceState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(DeviceAction.FindAllSuccessAction,
     (state, action) => deviceAdapter.setAll<DeviceState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(DeviceAction.SaveSuccessAction,

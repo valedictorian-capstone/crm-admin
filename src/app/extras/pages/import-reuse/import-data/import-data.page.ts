@@ -43,15 +43,14 @@ export class ImportDataPage implements OnInit, OnDestroy {
     }
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useChange = (file: NzUploadFile) => {
     if (file.name.match(/(.xls|.xlsx)/)) {

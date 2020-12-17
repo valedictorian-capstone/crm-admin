@@ -6,14 +6,9 @@ export const stageFeatureKey = 'stage';
 export const stageReducer = createReducer(
   stageInitialState,
   on(StageAction.FindAllSuccessAction,
-    (state, action) => stageAdapter.setAll<StageState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(StageAction.FindAllSuccessAction,
     (state, action) => stageAdapter.setAll<StageState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(StageAction.SaveSuccessAction,

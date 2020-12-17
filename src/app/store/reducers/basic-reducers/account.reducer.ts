@@ -6,15 +6,14 @@ export const accountFeatureKey = 'account';
 export const accountReducer = createReducer(
   accountInitialState,
   on(AccountAction.FindAllSuccessAction,
-    (state, action) => accountAdapter.setAll<AccountState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(AccountAction.FindAllSuccessAction,
-    (state, action) => accountAdapter.setAll<AccountState>(action.res, {
-      ...state,
-    })
+    (state, action) => {
+      console.log(state);
+      console.log(action);
+      return accountAdapter.setAll<AccountState>(action.res, {
+        ...state,
+        firstLoad: true
+      });
+    }
   ),
   on(AccountAction.SaveSuccessAction,
     (state, action) => accountAdapter.upsertOne<AccountState>(action.res, {
