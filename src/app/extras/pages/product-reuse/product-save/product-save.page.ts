@@ -67,14 +67,12 @@ export class ProductSavePage implements OnInit, OnDestroy {
     protected readonly dialogService: NbDialogService,
     protected readonly spinner: NgxSpinnerService,
   ) {
-    this.useShowSpinner();
     this.useInitForm();
   }
   ngOnInit() {
     if (this.product) {
       this.useSetData();
     }
-    this.useHideSpinner();
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -91,17 +89,20 @@ export class ProductSavePage implements OnInit, OnDestroy {
     });
   }
   useSetData = () => {
-    this.subscriptions.push(
-      this.service.findById(this.product.id)
-        .pipe(
-          tap((data) => {
-            this.product = data;
-            this.state.form.addControl('id', new FormControl(this.product.id));
-            this.state.form.patchValue(this.product);
-          })
-        )
-        .subscribe()
-    );
+    this.useShowSpinner();
+    const subscription = this.service.findById(this.product.id)
+      .pipe(
+        tap((data) => {
+          this.product = data;
+          this.state.form.addControl('id', new FormControl(this.product.id));
+          this.state.form.patchValue(this.product);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useSelectImage = (event: any, input: HTMLElement) => {
     this.state.errorImage = false;
@@ -146,50 +147,48 @@ export class ProductSavePage implements OnInit, OnDestroy {
     const code = this.state.form.get('code');
     if (code.valid) {
       this.state.stage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('code', code.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                code.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.stage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('code', code.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              code.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.stage = 'done';
+            }, 1000);
+          })
+        ).subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useSubmit = (ref: NbDialogRef<any>) => {
     ref.close();
     if (this.state.form.valid) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        (this.product ? this.service.update({
-          ...this.state.form.value,
-          price: parseInt(this.state.form.value.price, 0)
-        }) : this.service.insert({
-          ...this.state.form.value,
-          price: parseInt(this.state.form.value.price, 0)
-        }))
-          .pipe(
-            tap((data) => {
-              this.useDone.emit(data);
-              this.toastrService.success('', 'Save product successful!', { duration: 3000 });
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save product fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          ).subscribe()
-      );
+      const subscription = (this.product ? this.service.update({
+        ...this.state.form.value,
+        price: parseInt(this.state.form.value.price, 0)
+      }) : this.service.insert({
+        ...this.state.form.value,
+        price: parseInt(this.state.form.value.price, 0)
+      }))
+        .pipe(
+          tap((data) => {
+            this.useDone.emit(data);
+            this.toastrService.success('', 'Save product successful!', { duration: 3000 });
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save product fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();

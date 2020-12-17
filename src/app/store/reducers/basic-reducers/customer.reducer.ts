@@ -5,15 +5,10 @@ import { CustomerState } from '@states';
 export const customerFeatureKey = 'customer';
 export const customerReducer = createReducer(
   customerInitialState,
-  on(CustomerAction.FindAllAction,
-    (state, action) => customerAdapter.setAll<CustomerState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
   on(CustomerAction.FindAllSuccessAction,
     (state, action) => customerAdapter.setAll<CustomerState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(CustomerAction.ImportSuccessAction,

@@ -48,7 +48,6 @@ export class SettingProfilePage implements OnInit, OnDestroy {
     protected readonly activatedRoute: ActivatedRoute,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
     this.useLoadMine();
     this.useInitForm();
   }
@@ -56,19 +55,17 @@ export class SettingProfilePage implements OnInit, OnDestroy {
     this.useLoad();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useLoad = () => {
     this.state.form.patchValue(this.state.you);
-    this.useHideSpinner();
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -82,26 +79,25 @@ export class SettingProfilePage implements OnInit, OnDestroy {
     ref.close();
     if (this.state.form.valid) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        this.service.updateProfile(this.state.form.value)
-          .pipe(
-            tap((data) => {
-              localStorage.setItem('avatar', data.avatar);
-              localStorage.setItem('fullname', data.fullname);
-              this.service.triggerValue$.next(data);
-              this.toastrService.success('', 'Update profile successful!', { duration: 3000 });
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Update profile fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = this.service.updateProfile(this.state.form.value)
+        .pipe(
+          tap((data) => {
+            localStorage.setItem('avatar', data.avatar);
+            localStorage.setItem('fullname', data.fullname);
+            this.service.triggerValue$.next(data);
+            this.toastrService.success('', 'Update profile successful!', { duration: 3000 });
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Update profile fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe();
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();
@@ -141,63 +137,60 @@ export class SettingProfilePage implements OnInit, OnDestroy {
     const phone = this.state.form.get('phone');
     if (this.state.you.phone !== this.state.form.get('phone').value && phone.valid) {
       this.state.phoneStage = 'querying';
-      this.subscriptions.push(
-        this.employeeService.checkUnique('phone', phone.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                phone.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.phoneStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.employeeService.checkUnique('phone', phone.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              phone.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.phoneStage = 'done';
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useCheckEmail = () => {
     const email = this.state.form.get('email');
     if (this.state.you.email !== this.state.form.get('email').value && email.valid) {
       this.state.emailStage = 'querying';
-      this.subscriptions.push(
-        this.employeeService.checkUnique('email', email.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                email.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.emailStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.employeeService.checkUnique('email', email.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              email.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.emailStage = 'done';
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useCheckCode = () => {
     const code = this.state.form.get('code');
     if (this.state.you.phone !== this.state.form.get('code').value && code.valid) {
       this.state.codeStage = 'querying';
-      this.subscriptions.push(
-        this.employeeService.checkUnique('code', code.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                code.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                this.state.codeStage = 'done';
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.employeeService.checkUnique('code', code.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              code.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              this.state.codeStage = 'done';
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useShowSpinner = () => {

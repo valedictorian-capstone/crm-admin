@@ -6,14 +6,9 @@ export const productFeatureKey = 'product';
 export const productReducer = createReducer(
   productInitialState,
   on(ProductAction.FindAllSuccessAction,
-    (state, action) => productAdapter.setAll<ProductState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(ProductAction.FindAllSuccessAction,
     (state, action) => productAdapter.setAll<ProductState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(ProductAction.SaveSuccessAction,

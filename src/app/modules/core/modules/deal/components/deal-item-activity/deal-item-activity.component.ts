@@ -1,13 +1,12 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DealService, ActivityService, GlobalService } from '@services';
+import { ActivityService, DealService, GlobalService } from '@services';
 import { ActivityAction } from '@store/actions';
-import { activitySelector } from '@store/selectors';
 import { State } from '@store/states';
-import { DealVM, ActivityVM } from '@view-models';
+import { ActivityVM, DealVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-deal-item-activity',
@@ -25,71 +24,32 @@ export class DealItemActivityComponent implements OnInit, OnDestroy {
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
   }
 
   ngOnInit() {
-    // this.activityService.triggerSocket().subscribe((trigger) => {
-    //   if (trigger.type === 'create') {
-    //     this.activitys.push({
-    //       ...(trigger.data as ActivityVM),
-    //       state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
-    //         ? 'notStart'
-    //         : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
-    //     });
-    //   } else if (trigger.type === 'update') {
-    //     this.activitys[this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = {
-    //       ...(trigger.data as ActivityVM),
-    //       state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
-    //         ? 'notStart'
-    //         : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
-    //     };
-    //   } else if (trigger.type === 'remove') {
-    //     this.activitys.splice(this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id), 1);
-    //   }
-    // });
-    // this.dealService.findById(this.deal.id)
-    //   .pipe(
-    //     finalize(() => {
-    //       this.useHideSpinner();
-    //     })
-    //   )
-    //   .subscribe((data) => this.activitys =
-    //     data.activitys.map((e) => ({
-    //       ...e,
-    //       state: new Date() < new Date(e.dateStart)
-    //         ? 'notStart'
-    //         : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
-    //     })));
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(activitySelector.firstLoad)
+      this.store.select((state) => state.activity)
         .pipe(
-          tap((firstLoad) => {
+          tap((activity) => {
+            const firstLoad = activity.firstLoad;
+            const data = (activity.ids as string[]).map((id) => activity.entities[id]);
             if (!firstLoad) {
               this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(activitySelector.activitys)
-        .pipe(
-          tap((data) => {
-            this.activitys =
+            } else {
+              this.activitys =
               data.filter((activity) => activity.deal.id === this.deal.id).map((e) => ({
                 ...e,
                 state: new Date() < new Date(e.dateStart)
                   ? 'notStart'
                   : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
               }));
+            }
           })
-        ).subscribe());
+        ).subscribe()
+    );
   }
   useReload = () => {
     this.useShowSpinner();

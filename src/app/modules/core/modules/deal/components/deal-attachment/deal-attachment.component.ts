@@ -30,8 +30,13 @@ export class DealAttachmentComponent implements OnInit, OnDestroy {
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
+    this.useShowSpinner();
     this.subscriptions.push(
-      this.attachmentService.remove(this.data.id).subscribe()
+      this.attachmentService.remove(this.data.id)
+        .pipe(
+          finalize(() => this.useHideSpinner())
+        )
+        .subscribe()
     );
   }
   useDialog(template: TemplateRef<any>) {
@@ -55,6 +60,12 @@ export class DealAttachmentComponent implements OnInit, OnDestroy {
       )
       .subscribe()
     );
+  }
+  useShowSpinner = () => {
+    this.spinner.show('deal-attachment-' + this.data.id);
+  }
+  useHideSpinner = () => {
+    this.spinner.hide('deal-attachment-' + this.data.id);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

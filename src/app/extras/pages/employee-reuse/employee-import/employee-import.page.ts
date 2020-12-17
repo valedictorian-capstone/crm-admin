@@ -40,45 +40,35 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
-    this.useDispatch();
-    this.useData();
-   }
-
+  }
   ngOnInit() {
+    this.useDispatch();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(roleSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(RoleAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(roleSelector.roles)
-        .pipe(
-          tap((data) => {
-            this.state.roles = data.filter((e) => e.level > this.state.level);;
-          })
-        ).subscribe()
-    );
+    const subscription = this.store.select((state) => state.role)
+      .pipe(
+        tap((role) => {
+          const firstLoad = role.firstLoad;
+          const data = (role.ids as string[]).map((id) => role.entities[id]);
+          if (!firstLoad) {
+            this.store.dispatch(RoleAction.FindAllAction({}));
+          } else {
+            this.state.roles = data.filter((e) => e.level > this.state.level);
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   ngOnChanges() {
     if (this.data) {
@@ -119,23 +109,22 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
   useImport = () => {
     if (this.state.formArray.valid) {
       this.useLoading.emit();
-      this.subscriptions.push(
-        this.service.import(this.state.formArray.controls.map((e) => e.value))
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
-              this.useChange.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Import accounts fail! ' + err.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useUnLoading.emit();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = this.service.import(this.state.formArray.controls.map((e) => e.value))
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
+            this.useChange.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Import accounts fail! ' + err.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useUnLoading.emit();
+          })
+        )
+        .subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useDownload = (table: ElementRef<any>) => {
@@ -149,21 +138,20 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
     const phone = form.get('phone');
     if (phone.valid) {
       form.get('phoneStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('phone', phone.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                phone.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('phoneStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('phone', phone.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              phone.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              form.get('phoneStage').setValue('done');
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
 
   }
@@ -171,42 +159,40 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
     const email = form.get('email');
     if (email.valid) {
       form.get('emailStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('email', email.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                email.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('emailStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('email', email.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              email.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              form.get('emailStage').setValue('done');
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useCheckCode = (form: FormGroup) => {
     const code = form.get('code');
     if (code.valid) {
       form.get('codeStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('code', code.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                code.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('codeStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('code', code.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              code.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              form.get('codeStage').setValue('done');
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {

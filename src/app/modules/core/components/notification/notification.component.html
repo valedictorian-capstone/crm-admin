@@ -22,7 +22,7 @@
             <div class="body">
                 <b>{{notification.body}}</b>
                 <div class="time">
-                    <b>{{notification.createdAt  | date: 'EEEE, MMMM d, y, h:mm a'}}</b>
+                    <b>{{notification.createdAt  | time}}</b>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <div class="body">
             <b>{{noti.body}}</b>
             <div class="time">
-                <b>{{noti.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</b>
+                <b>{{noti.createdAt | time}}</b>
             </div>
         </div>
     </div>

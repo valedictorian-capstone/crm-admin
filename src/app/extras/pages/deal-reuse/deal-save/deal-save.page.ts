@@ -1,17 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PipelineSelectComponent, ProductSelectComponent } from '@extras/components';
 import { CustomerSavePage } from '@extras/pages';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
 import { DealService, PipelineService, ProductService, StageService } from '@services';
+import { DealAction } from '@store/actions';
+import { authSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { AccountVM, DealDetailVM, DealVM, PipelineVM, ProductVM, StageVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, of } from 'rxjs';
-import { finalize, switchMap, tap, catchError } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { State } from '@store/states';
-import { authSelector } from '@store/selectors';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 interface IDealSavePageState {
   you: AccountVM;
   pipelines: PipelineVM[];
@@ -40,12 +41,12 @@ export class DealSavePage implements OnInit, OnDestroy {
   };
   subscriptions: Subscription[] = [];
   state: IDealSavePageState = {
-      you: undefined,
-      form: undefined,
-      canAssign: false,
-      adding: false,
-      pipelines: [],
-    };
+    you: undefined,
+    form: undefined,
+    canAssign: false,
+    adding: false,
+    pipelines: [],
+  };
   constructor(
     protected readonly service: DealService,
     protected readonly pipelineService: PipelineService,
@@ -58,7 +59,6 @@ export class DealSavePage implements OnInit, OnDestroy {
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
-    this.useShowSpinner();
     this.useInitForm();
   }
 
@@ -66,21 +66,27 @@ export class DealSavePage implements OnInit, OnDestroy {
     if (this.payload.deal) {
       this.useSetData();
     } else {
-      this.useInit();
+      this.state.form.get('assignee').setValue(this.state.you);
+      if (this.payload.stage) {
+        this.state.form.get('stage').setValue(this.payload.stage);
+      } else {
+        if (this.payload.pipeline) {
+          this.state.form.get('stage').setValue(this.payload.pipeline.stages[0]);
+        }
+      }
     }
 
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -104,77 +110,34 @@ export class DealSavePage implements OnInit, OnDestroy {
     });
   }
   useSetData = () => {
-    this.subscriptions.push(
-      this.service.findById(this.payload.deal.id)
-        .pipe(
-          tap((data) => {
-            this.payload.deal = data;
-            this.state.form.addControl('id', new FormControl(this.payload.deal.id));
-            this.state.form.patchValue(this.payload.deal);
-            if (this.payload.deal.dealDetails.length > 0) {
-              this.state.form.get('dealDetails').patchValue(this.payload.deal.dealDetails.map((dealDetail) => ({
-                quantity: dealDetail.quantity,
-                product: {
-                  id: dealDetail.product.id,
-                  name: dealDetail.product.name,
-                  price: dealDetail.product.price,
-                  isNew: false
-                }
-              })));
-            }
-          }),
-          switchMap((data) => this.stageService.findById(data.stage.id)),
-          tap((data) => {
-            this.payload.stage = data;
-          }),
-          switchMap((data) => this.pipelineService.findById(data.pipeline.id)),
-          tap((data) => {
-            this.payload.pipeline = data;
-          }),
-          switchMap(() => this.pipelineService.findAll()),
-          tap((data) => {
-            if (this.payload.pipeline) {
-              this.state.pipelines = data.filter((pipeline) => pipeline.id === this.payload.pipeline.id
-                || (pipeline.id !== this.payload.pipeline.id && !pipeline.isDelete));
-            } else {
-              this.state.pipelines = data.filter((pipeline) => !pipeline.isDelete);
-            }
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
-  }
-  useInit = () => {
-    this.subscriptions.push(
-      this.pipelineService.findAll()
-        .pipe(
-          tap((data) => {
-            this.state.pipelines = data.filter((pipeline) => !pipeline.isDelete);
-            if (!this.payload.pipeline) {
-              const selectedPipeline = localStorage.getItem('selectedPipeline');
-              if (!selectedPipeline && this.state.pipelines[0]) {
-                localStorage.setItem('selectedPipeline', this.state.pipelines[0].id);
+    this.useShowSpinner();
+    const subscription = this.service.findById(this.payload.deal.id)
+      .pipe(
+        tap((data) => {
+          this.store.dispatch(DealAction.SaveSuccessAction({ res: data }));
+          this.payload.deal = data;
+          this.state.form.addControl('id', new FormControl(this.payload.deal.id));
+          this.state.form.patchValue(this.payload.deal);
+          if (this.payload.deal.dealDetails.length > 0) {
+            this.state.form.get('dealDetails').patchValue(this.payload.deal.dealDetails.map((dealDetail) => ({
+              quantity: dealDetail.quantity,
+              product: {
+                id: dealDetail.product.id,
+                name: dealDetail.product.name,
+                price: dealDetail.product.price,
+                isNew: false
               }
-              this.useSelectPipeline(selectedPipeline);
-            } else {
-              if (!this.payload.stage) {
-                this.payload.stage = this.payload.pipeline.stages[0];
-              }
-              this.state.form.get('stage').setValue(this.payload.stage);
-            }
-            if (this.state.you) {
-              this.state.form.get('assignee').setValue(this.state.you);
-            }
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
+            })));
+          }
+          this.payload.stage = data.stage;
+          this.payload.pipeline = data.stage.pipeline;
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe()
+    this.subscriptions.push(subscription);
   }
   useSelectProduuct = (dealDetails: DealDetailVM[]) => {
     (this.state.form.get('dealDetails') as FormArray).controls = dealDetails.map((e) => new FormGroup({
@@ -185,11 +148,22 @@ export class DealSavePage implements OnInit, OnDestroy {
   usePipelineSearch = (value: string) => {
     this.pipelineSelect.useSearch(value);
   }
-  useSelectPipeline = async (selected: string) => {
-    if (selected !== this.payload.pipeline?.id) {
-      this.payload.pipeline = await this.pipelineService.findById(selected).toPromise();
-      this.payload.stage = this.payload.pipeline.stages[0];
-      this.state.form.get('stage').setValue(this.payload.stage);
+  useSelectPipeline = async (selected: PipelineVM) => {
+    if (this.payload.deal) {
+      if (this.payload.deal.stage.pipeline.id !== selected.id) {
+        this.payload.pipeline = selected;
+        this.payload.stage = this.payload.pipeline.stages.find((stage) => stage.position === 0);
+        this.state.form.get('stage').setValue(this.payload.stage);
+      } else {
+        this.payload.stage = this.payload.deal.stage;
+        this.state.form.get('stage').setValue(this.payload.stage);
+      }
+    } else {
+      if (selected.id !== this.payload.pipeline?.id) {
+        this.payload.pipeline = selected;
+        this.payload.stage = this.payload.pipeline.stages.find((stage) => stage.position === 0);
+        this.state.form.get('stage').setValue(this.payload.stage);
+      }
     }
   }
   useSubmit = async (ref: NbDialogRef<any>) => {
@@ -212,29 +186,28 @@ export class DealSavePage implements OnInit, OnDestroy {
           }).toPromise();
         }
       }
-      this.subscriptions.push(
-        (this.payload.deal ? this.service.update({
-          ...this.state.form.value,
-          dealDetails: this.payload.inside ? undefined : dealDetails
-        }) : this.service.insert({
-          ...this.state.form.value,
-          dealDetails: this.payload.inside ? undefined : dealDetails
-        }))
-          .pipe(
-            tap((data) => {
-              this.useDone.emit(data);
-              this.toastrService.success('', 'Save deal successful!', { duration: 3000 });
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save deal fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          ).subscribe()
-      );
+      const subscription = (this.payload.deal ? this.service.update({
+        ...this.state.form.value,
+        dealDetails: this.payload.inside ? undefined : dealDetails
+      }) : this.service.insert({
+        ...this.state.form.value,
+        dealDetails: this.payload.inside ? undefined : dealDetails
+      }))
+        .pipe(
+          tap((data) => {
+            this.useDone.emit(data);
+            this.toastrService.success('', 'Save deal successful!', { duration: 3000 });
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save deal fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();

@@ -7,7 +7,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DealSearchComponent {
   @Output() useSearch: EventEmitter<any> = new EventEmitter<any>();
-  @Input() stage = 'calendar' ;
   @Input() search = {
     status: '',
     range: undefined,

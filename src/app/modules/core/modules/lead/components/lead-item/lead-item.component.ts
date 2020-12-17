@@ -46,34 +46,34 @@ export class LeadItemComponent implements OnDestroy {
   }
   useToggleState = () => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      (!this.customer.isDelete
-        ? this.customerService.disabled(this.customer.id)
-        : this.customerService.restore(this.customer.id))
-        .pipe(
-          tap((data) => {
-            this.customer.isDelete = !this.customer.isDelete;
-            this.toastrService.success('', !this.customer.isDelete
-              ? 'Disabled customer successful' : 'Active customer successful', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', (!this.customer.isDelete
-              ? 'Disabled customer fail! ' : 'Active customer fail! ') + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
+    const subscription = (!this.customer.isDelete
+      ? this.customerService.disabled(this.customer.id)
+      : this.customerService.restore(this.customer.id))
+      .pipe(
+        tap((data) => {
+          this.customer.isDelete = !this.customer.isDelete;
+          this.toastrService.success('', !this.customer.isDelete
+            ? 'Disabled customer successful' : 'Active customer successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          console.log(err);
+          this.toastrService.danger('', (!this.customer.isDelete
+            ? 'Disabled customer fail! ' : 'Active customer fail! ') + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe()
+    this.subscriptions.push(subscription);
   }
   useShowSpinner = () => {
-    this.spinner.show('lead-item-' + this.customer.id);
+    this.spinner.show('lead-main');
   }
   useHideSpinner = () => {
     setTimeout(() => {
-      this.spinner.hide('lead-item-' + this.customer.id);
+      this.spinner.hide('lead-main');
     }, 1000);
   }
   ngOnDestroy() {

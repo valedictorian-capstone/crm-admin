@@ -55,7 +55,6 @@ export class ContactMainPage implements OnInit, OnDestroy {
   ngOnInit() {
     // this.useSocket();
     this.useDispatch();
-    this.useData();
   }
   useSocket = () => {
     this.customerService.triggerSocket().subscribe((trigger) => {
@@ -70,42 +69,34 @@ export class ContactMainPage implements OnInit, OnDestroy {
     });
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+          this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(customerSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(customerSelector.customers)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.customer)
+      .pipe(
+        tap((customer) => {
+          const firstLoad = customer.firstLoad;
+          const data = (customer.ids as string[]).map((id) => customer.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useFilter();
-          })
-      ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();

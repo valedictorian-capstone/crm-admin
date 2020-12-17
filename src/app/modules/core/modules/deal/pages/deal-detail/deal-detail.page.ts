@@ -14,12 +14,12 @@ import {
 } from '@services';
 import { AccountVM, ActivityVM, AttachmentVM, DealDetailVM, DealVM, NoteVM, PipelineVM, StageVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize, pluck, switchMap, tap, catchError, map } from 'rxjs/operators';
+import { finalize, pluck, switchMap, tap, catchError, map, delay } from 'rxjs/operators';
 import { State } from '@store/states';
 import { Store } from '@ngrx/store';
 import { activitySelector, attachmentSelector, authSelector, dealDetailSelector, dealSelector, noteSelector, pipelineSelector, stageSelector } from '@store/selectors';
 import { Subscription, of } from 'rxjs';
-import { ActivityAction, AttachmentAction, DealAction, DealDetailAction, NoteAction, StageAction } from '@store/actions';
+import { ActivityAction, AttachmentAction, DealAction, DealDetailAction, NoteAction, PipelineAction, StageAction } from '@store/actions';
 interface IDealDetailPageState {
   id: string;
   you: AccountVM;
@@ -70,9 +70,9 @@ export class DealDetailPage implements OnInit, OnDestroy {
     canAdd: false,
     canUpdate: false,
     canRemove: false,
-  }
+  };
   constructor(
-    protected readonly dealService: DealService,
+    protected readonly service: DealService,
     protected readonly dealDetailService: DealDetailService,
     protected readonly stageService: StageService,
     protected readonly pipelineService: PipelineService,
@@ -98,65 +98,11 @@ export class DealDetailPage implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
-  }
-  useSocket = () => {
-    this.noteService.triggerSocket().subscribe((trigger) => {
-      if ((trigger.data as NoteVM).deal.id === this.state.deal.id) {
-        if (trigger.type === 'create') {
-          this.state.deal.notes.push((trigger.data as NoteVM));
-        } else if (trigger.type === 'update') {
-          this.state.deal.notes[this.state.deal.notes.findIndex((e) => e.id === (trigger.data as NoteVM).id)] = (trigger.data as NoteVM);
-        } else if (trigger.type === 'remove') {
-          this.state.deal.notes.splice(this.state.deal.notes.findIndex((e) => e.id === (trigger.data as NoteVM).id), 1);
-        }
-        this.useFilter();
-      }
-    });
-    this.dealDetailService.triggerSocket().subscribe((trigger) => {
-      if ((trigger.data as DealDetailVM).deal.id === this.state.deal.id) {
-        if (trigger.type === 'create') {
-          this.state.deal.dealDetails.push((trigger.data as DealDetailVM));
-        } else if (trigger.type === 'update') {
-          this.state.deal.dealDetails[this.state.deal.dealDetails.findIndex((e) => e.id === (trigger.data as DealDetailVM).id)]
-            = (trigger.data as DealDetailVM);
-        } else if (trigger.type === 'remove') {
-          this.state.deal.dealDetails.splice(this.state.deal.dealDetails.findIndex((e) => e.id === (trigger.data as DealDetailVM).id), 1);
-        }
-        this.useFilter();
-      }
-    });
-    this.activityService.triggerSocket().subscribe((trigger) => {
-      if ((trigger.data as ActivityVM).deal.id === this.state.deal.id) {
-        if (trigger.type === 'create') {
-          this.state.deal.activitys.push((trigger.data as ActivityVM));
-        } else if (trigger.type === 'update') {
-          this.state.deal.activitys[this.state.deal.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)]
-            = (trigger.data as ActivityVM);
-        } else if (trigger.type === 'remove') {
-          this.state.deal.activitys.splice(this.state.deal.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id), 1);
-        }
-        this.useFilter();
-      }
-    });
-    this.attachmentService.triggerSocket().subscribe((trigger) => {
-      if ((trigger.data as AttachmentVM[])[0]?.deal.id === this.state.deal.id) {
-        if (trigger.type === 'list') {
-          (trigger.data as AttachmentVM[]).forEach((e) => this.state.deal.attachments.push(e));
-        } else if (trigger.type === 'update') {
-          this.state.deal.attachments[this.state.deal.attachments.findIndex((e) => e.id === (trigger.data as AttachmentVM).id)]
-            = (trigger.data as AttachmentVM);
-        } else if (trigger.type === 'remove') {
-          this.state.deal.attachments.splice(this.state.deal.attachments.findIndex((e) => e.id === (trigger.data as AttachmentVM).id), 1);
-        }
-        this.useFilter();
-      }
-    });
   }
   useSaveFeedback = () => {
     this.useShowSpinner();
     this.subscriptions.push(
-      this.dealService
+      this.service
         .update({
           id: this.state.deal.id,
           feedbackMessage: this.state.deal.feedbackMessage,
@@ -194,132 +140,66 @@ export class DealDetailPage implements OnInit, OnDestroy {
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(dealSelector.firstLoad)
+      this.store.select((state) => state)
         .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
+          tap((state) => {
+            if (this.state.deal) {
+              console.log('note');
+              const data = (state.note.ids as string[]).map((id) => state.note.entities[id]);
+              this.state.notes = data.filter((note) => note.deal.id === this.state.id);
+            }
+          }),
+          tap((state) => {
+            if (this.state.deal) {
+              console.log('attachments');
+              const data = (state.attachment.ids as string[]).map((id) => state.attachment.entities[id]);
+              this.state.attachments = data.filter((attachment) => attachment.deal.id === this.state.id);
+            }
+          }),
+          tap((state) => {
+            if (this.state.deal) {
+              console.log('activitys');
+              const data = (state.activity.ids as string[]).map((id) => state.activity.entities[id]);
+              this.state.activitys = data.filter((activity) => activity.deal.id === this.state.id);
+            }
+          }),
+          tap((state) => {
+            if (this.state.deal) {
+              console.log('dealDetails');
+              const data = (state.dealDetail.ids as string[]).map((id) => state.dealDetail.entities[id]);
+              this.state.dealDetails = data.filter((dealDetail) => dealDetail.deal.id === this.state.id);
+            }
+          }),
+          tap((deal) => {
+            if (!this.state.deal) {
               this.useReload();
             }
-          })
-        ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(activitySelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(ActivityAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(attachmentSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(AttachmentAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(dealDetailSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(DealDetailAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(noteSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.store.dispatch(NoteAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(dealSelector.deals)
-        .pipe(
-          tap((data) => {
-            this.state.deal = data.find((deal) => deal.id === this.state.id);
-            if (this.state.deal) {
-              this.useFilter();
-            } else {
-              this.router.navigate(['core/deal']);
-              throw new Error('');
-            }
           }),
-          map((data) => data.find((deal) => deal.id === this.state.id)),
-          switchMap((data) => this.stageService.findById(data.stage.id)),
-          tap((data) => {
-            this.state.stage = data;
-          }),
-          switchMap((data) => this.pipelineService.findById(data.pipeline.id)
-            .pipe(finalize(() => {
-              this.useHideSpinner();
-            }))
-          ),
-          tap((data) => {
-            this.state.pipeline = data;
-          })
+          tap(() => this.useFilter())
         ).subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(noteSelector.notes)
-        .pipe(
-          tap((data) => {
-            this.state.notes = data.filter((note) => note.deal.id === this.state.id);
-            this.useFilter();
-          })
-        )
-      .subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(activitySelector.activitys)
-        .pipe(
-          tap((data) => {
-            this.state.activitys = data.filter((activity) => activity.deal.id === this.state.id);
-            this.useFilter();
-          })
-        )
-      .subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(attachmentSelector.attachments)
-        .pipe(
-          tap((data) => {
-            this.state.attachments = data.filter((attachment) => attachment.deal.id === this.state.id);
-            this.useFilter();
-          })
-        )
-      .subscribe()
-    );
-    this.subscriptions.push(
-      this.store.select(dealDetailSelector.dealDetails)
-        .pipe(
-          tap((data) => {
-            this.state.dealDetails = data.filter((dealDetail) => dealDetail.deal.id === this.state.id);
-            this.useFilter();
-          })
-        )
-      .subscribe()
     );
   }
   useReload = () => {
     this.useShowSpinner();
-    this.store.dispatch(DealAction.FindAllAction({
-      finalize: () => {
-        this.useHideSpinner();
-      }
-    }));
+    this.subscriptions.push(
+      this.service.findById(this.state.id)
+        .pipe(
+          tap((deal) => {
+            this.state.deal = deal;
+            this.state.stage = this.state.deal.stage;
+            this.state.pipeline = this.state.stage.pipeline;
+            this.state.activitys = this.state.deal.activitys.map((e) => ({ ...e, deal: this.state.deal }));
+            this.store.dispatch(ActivityAction.ListAction({ res: this.state.activitys }));
+            this.state.notes = this.state.deal.notes.map((e) => ({ ...e, deal: this.state.deal }));;
+            this.store.dispatch(NoteAction.ListAction({ res: this.state.notes }));
+            this.state.attachments = this.state.deal.attachments.map((e) => ({ ...e, deal: this.state.deal }));;
+            this.store.dispatch(AttachmentAction.ListAction({ res: this.state.attachments }));
+            this.state.dealDetails = this.state.deal.dealDetails.map((e) => ({ ...e, deal: this.state.deal }));;
+            this.store.dispatch(DealDetailAction.ListAction({ res: this.state.dealDetails }));
+          }),
+          finalize(() => this.useHideSpinner())
+        ).subscribe()
+    );
   }
   useFilter = () => {
     this.state.pins = this.state.notes.filter((e) => e.pin)
@@ -367,18 +247,14 @@ export class DealDetailPage implements OnInit, OnDestroy {
       this.state.stage = stage;
       this.state.stageMove = 'done';
       this.subscriptions.push(
-        this.dealService.update({
+        this.service.update({
           ...this.state.deal,
           stage: { id: stage.id } as any, activitys: undefined,
           notes: undefined,
           logs: undefined,
           dealDetails: undefined,
           attachments: undefined,
-        } as any)
-          .pipe(
-            tap(() => this.useReload())
-          )
-          .subscribe()
+        } as any).subscribe()
       );
     }
   }
@@ -387,7 +263,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
   }
   useWon = () => {
     this.subscriptions.push(
-      this.dealService.update({
+      this.service.update({
         ...this.state.deal,
         status: 'won',
         activitys: undefined,
@@ -404,7 +280,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
   }
   useClose = () => {
     this.subscriptions.push(
-      this.dealService.update({
+      this.service.update({
         ...this.state.deal,
         status: 'lost',
         activitys: undefined,
@@ -421,7 +297,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
   }
   useReopen = () => {
     this.subscriptions.push(
-      this.dealService.update({ ...this.state.deal, status: 'processing' })
+      this.service.update({ ...this.state.deal, status: 'processing' })
         .pipe(
           tap((data) => this.state.deal = data)
         )
@@ -431,7 +307,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
   useDelete = (ref: NbDialogRef<any>) => {
     ref.close();
     this.subscriptions.push(
-      this.dealService.remove(this.state.deal.id).subscribe()
+      this.service.remove(this.state.deal.id).subscribe()
     );
   }
   useEdit = () => {
@@ -453,9 +329,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
     this.spinner.show('deal-detail');
   }
   useHideSpinner = () => {
-    setTimeout(() => {
-      this.spinner.hide('deal-detail');
-    }, 2000);
+    this.spinner.hide('deal-detail');
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

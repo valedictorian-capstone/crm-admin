@@ -1,59 +1,63 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { ActivityService, DealService, GlobalService } from '@services';
+import { ActivityAction } from '@store/actions';
+import { State } from '@store/states';
 import { ActivityVM, DealVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pipeline-activity',
   templateUrl: './pipeline-activity.component.html',
   styleUrls: ['./pipeline-activity.component.scss']
 })
-export class PipelineActivityComponent implements OnInit {
+export class PipelineActivityComponent implements OnInit, OnDestroy {
   @Input() deal: DealVM;
+  subscriptions: Subscription[] = [];
   activitys: (ActivityVM & { state: string })[] = [];
   constructor(
     protected readonly dealService: DealService,
     protected readonly activityService: ActivityService,
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
+    protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
-   }
+  }
 
   ngOnInit() {
-    this.activityService.triggerSocket().subscribe((trigger) => {
-      if (trigger.type === 'create') {
-        this.activitys.push({
-          ...(trigger.data as ActivityVM),
-          state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
-          ? 'notStart'
-          : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
-        });
-      } else if (trigger.type === 'update') {
-        this.activitys[this.activitys.findIndex((e) => e.id === (trigger.data as ActivityVM).id)] = {
-          ...(trigger.data as ActivityVM),
-          state: new Date() < new Date((trigger.data as ActivityVM).dateStart)
-          ? 'notStart'
-          : (new Date() >= new Date((trigger.data as ActivityVM).dateStart) && new Date() < new Date((trigger.data as ActivityVM).dateEnd) ? 'processing' : 'expired')
-        };
-      } else if (trigger.type === 'remove') {
-        this.activitys = this.activitys.filter((activity) => activity.id !== (trigger.data as ActivityVM).id);
+    this.useDispatch();
+  }
+  useDispatch = () => {
+    this.subscriptions.push(
+      this.store.select((state) => state.activity)
+        .pipe(
+          tap((activity) => {
+            const firstLoad = activity.firstLoad;
+            const data = (activity.ids as string[]).map((id) => activity.entities[id]);
+            if (!firstLoad) {
+              this.useReload();
+            } else {
+              this.activitys =
+                data.filter((activity) => activity.deal.id === this.deal.id).map((e) => ({
+                  ...e,
+                  state: new Date() < new Date(e.dateStart)
+                    ? 'notStart'
+                    : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
+                }));
+            }
+          })
+        ).subscribe()
+    );
+  }
+  useReload = () => {
+    this.useShowSpinner();
+    this.store.dispatch(ActivityAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
       }
-    });
-    this.dealService.findById(this.deal.id)
-      .pipe(
-        finalize(() => {
-          this.useHideSpinner();
-        })
-      )
-      .subscribe((data) => this.activitys =
-        data.activitys.map((e) => ({
-          ...e,
-          state: new Date() < new Date(e.dateStart)
-            ? 'notStart'
-            : (new Date() >= new Date(e.dateStart) && new Date() < new Date(e.dateEnd) ? 'processing' : 'expired')
-        })));
+    }));
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'activity', payload: { deal: this.deal, fixDeal: true } });
@@ -68,5 +72,8 @@ export class PipelineActivityComponent implements OnInit {
     setTimeout(() => {
       this.spinner.hide('pipeline-activity');
     }, 1000);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

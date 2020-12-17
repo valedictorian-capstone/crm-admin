@@ -1,19 +1,21 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit, TemplateRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnDestroy, TemplateRef, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { PipelineService } from '@services';
 import { PipelineVM } from '@view-models';
 import { DropResult } from 'ngx-smooth-dnd';
+import { Subscription, of } from 'rxjs';
 import swal from 'sweetalert2';
+import { tap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pipeline-add',
   templateUrl: './pipeline-add.page.html',
   styleUrls: ['./pipeline-add.page.scss']
 })
-export class PipelineAddPage implements OnInit {
+export class PipelineAddPage implements OnDestroy {
   @Output() useReload: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
   name = new FormControl('New Process', [Validators.required]);
   stages = new FormArray([
@@ -44,31 +46,37 @@ export class PipelineAddPage implements OnInit {
   ]);
   active = -1;
   dragging = false;
+  subscriptions: Subscription[] = [];
   constructor(
     protected readonly router: Router,
     protected readonly dialogService: NbDialogService,
     protected readonly pipelineService: PipelineService,
     protected readonly toastrService: NbToastrService,
   ) { }
-  ngOnInit() {
-  }
   useCreate = (ref: NbDialogRef<any>) => {
     if (this.name.valid && this.stages.valid) {
       if (this.stages.controls.length === 0) {
         swal.fire('Save process', 'Please add some stage to save process!', 'warning');
       } else {
-        this.pipelineService.save({
-          name: this.name.value,
-          stages: this.stages.controls.map((e) => e.value).map((e, i) => ({ ...e, position: i })),
-        }).subscribe((data) => {
-          this.useReload.emit(data);
-          ref.close();
-          this.toastrService.success('', 'Save process successful', { duration: 3000 });
-          localStorage.setItem('selectedPipeline', data.id);
-          this.router.navigate(['core/process']);
-        }, (err) => {
-          this.toastrService.danger('', 'Save process fail', { duration: 3000 });
-        });
+        this.subscriptions.push(
+          this.pipelineService.save({
+            name: this.name.value,
+            stages: this.stages.controls.map((e) => e.value).map((e, i) => ({ ...e, position: i })),
+          })
+            .pipe(
+              tap((data) => {
+                ref.close();
+                this.toastrService.success('', 'Save process successful', { duration: 3000 });
+                localStorage.setItem('selectedPipeline', data.id);
+                this.router.navigate(['core/process']);
+              }),
+              catchError((err) => {
+                this.toastrService.danger('', 'Save process fail! ' + err.message, { duration: 3000 });
+                return of(undefined);
+              })
+            )
+            .subscribe()
+        );
       }
     } else {
       this.name.markAsTouched();
@@ -103,5 +111,8 @@ export class PipelineAddPage implements OnInit {
   useRemove = (index: number, ref: NbDialogRef<any>) => {
     this.stages.removeAt(index);
     ref.close();
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

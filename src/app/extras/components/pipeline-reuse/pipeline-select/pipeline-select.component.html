@@ -1,5 +1,5 @@
 <div nz-menu class="pipeline-select">
-    <div style="height: 48px; width: 100%;" [nbSpinner]="true" *ngIf="state.status === 'finding'"></div>
+    <div [style.height]="state.status === 'finding' ? '96px' : '0'" class="w-100" [nbSpinner]="true" nbSpinnerSize="giant"></div>
     <a nz-menu-item [class.selected]="pipeline.id === selected?.id" class="item" *ngFor="let pipeline of state.array" (click)="useSelect.emit(pipeline); this.selected = pipeline">
         <nb-icon icon="browser-outline" style="margin-right: 0.5rem;"></nb-icon>
         <pre>{{pipeline.name}}</pre>

@@ -94,24 +94,23 @@ export class ProductImportPage implements OnChanges, OnDestroy {
   useImport = () => {
     if (this.state.formArray.valid) {
       this.useLoading.emit();
-      this.subscriptions.push(
-        this.service.import(this.state.formArray.controls.map((e) => ({
-          ...e.value,
-          price: parseInt(e.value.price, 0)
-        }))).pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Import products successful!', { duration: 3000 });
-            this.useChange.emit();
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Import products fail! ' + err.error.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useUnLoading.emit();
-          })
-        ).subscribe()
-      );
+      const subscription = this.service.import(this.state.formArray.controls.map((e) => ({
+        ...e.value,
+        price: parseInt(e.value.price, 0)
+      }))).pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Import products successful!', { duration: 3000 });
+          this.useChange.emit();
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Import products fail! ' + err.error.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useUnLoading.emit();
+        })
+      ).subscribe();
+      this.subscriptions.push(subscription);
     }
   }
   useDownload = (table: ElementRef<any>) => {
@@ -125,21 +124,20 @@ export class ProductImportPage implements OnChanges, OnDestroy {
     const code = form.get('code');
     if (code.valid) {
       form.get('codeStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('code', code.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                code.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('codeStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
+      const subscription = this.service.checkUnique('code', code.value)
+        .pipe(
+          tap((check) => {
+            if (check) {
+              code.setErrors({ duplicate: true });
+            }
+          }),
+          finalize(() => {
+            setTimeout(async () => {
+              form.get('codeStage').setValue('done');
+            }, 1000);
+          })
+        ).subscribe()
+      this.subscriptions.push(subscription);
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {

@@ -6,14 +6,9 @@ export const noteFeatureKey = 'note';
 export const noteReducer = createReducer(
   noteInitialState,
   on(NoteAction.FindAllSuccessAction,
-    (state, action) => noteAdapter.setAll<NoteState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(NoteAction.FindAllSuccessAction,
     (state, action) => noteAdapter.setAll<NoteState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(NoteAction.SaveSuccessAction,
@@ -23,6 +18,11 @@ export const noteReducer = createReducer(
   ),
   on(NoteAction.RemoveSuccessAction,
     (state, action) => noteAdapter.removeOne<NoteState>(action.id, {
+      ...state,
+    })
+  ),
+  on(NoteAction.ListAction,
+    (state, action) => noteAdapter.upsertMany<NoteState>(action.res, {
       ...state,
     })
   ),

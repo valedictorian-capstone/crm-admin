@@ -46,7 +46,7 @@ export class EventMainPage implements OnInit, OnDestroy {
     search: {
       view: CalendarView.Day,
       viewDate: new Date(),
-      type: 'day',
+      type: 'month',
       states: [],
       range: undefined,
       name: '',
@@ -68,23 +68,20 @@ export class EventMainPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.useSocket();
     this.useDispatch();
-    this.useData();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateEvent).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateEvent).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveEvent).length > 0;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateEvent).length > 0;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateEvent).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveEvent).length > 0;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useSocket = () => {
     this.eventService.triggerSocket().subscribe((trigger) => {
@@ -99,26 +96,20 @@ export class EventMainPage implements OnInit, OnDestroy {
     });
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(eventSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(eventSelector.events)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.event)
+      .pipe(
+        tap((event) => {
+          const firstLoad = event.firstLoad;
+          const data = (event.ids as string[]).map((id) => event.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useFilter();
-          })
-        ).subscribe());
+          }
+        })
+    ).subscribe()
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();

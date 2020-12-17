@@ -34,30 +34,22 @@ export class CategorySelectComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(categorySelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(categorySelector.categorys)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.category)
+      .pipe(
+        tap((category) => {
+          const firstLoad = category.firstLoad;
+          const data = (category.ids as string[]).map((id) => category.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useSearch('');
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.state.status = 'finding';
@@ -72,16 +64,15 @@ export class CategorySelectComponent implements OnInit, OnDestroy {
     this.state.filterArray = this.state.array.filter((category) => category.name.toLowerCase().includes(search.toLowerCase()));
   }
   usePlus = () => {
-    this.subscriptions.push(
-      this.service.insert({ name: this.state.search })
-        .pipe(
-          tap((data) => {
-            this.state.array.push(data);
-            this.useSelect.emit(data);
-            this.useSearch('');
-          })
-        ).subscribe()
-    );
+    const subscription = this.service.insert({ name: this.state.search })
+      .pipe(
+        tap((data) => {
+          this.state.array.push(data);
+          this.useSelect.emit(data);
+          this.useSearch('');
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

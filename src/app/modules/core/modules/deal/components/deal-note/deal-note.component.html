@@ -1,8 +1,7 @@
 <div class="note">
+    <ngx-spinner [name]="'deal-note-' + this.data.id" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <div class="time">
-        <span class="text">{{data?.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
-        <span class="separator">·</span>
-        <span class="text">Đặng Khánh Vinh</span>
+        <span class="text">{{data?.createdAt | time}}</span>
     </div>
     <p [innerHTML]="data?.description"></p>
     <button outline nbButton size="tiny" nz-dropdown [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" [nzTrigger]="'click'" [nzBackdrop]="false">

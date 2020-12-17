@@ -1,4 +1,3 @@
-<!-- <div cdkDrag class="deal" [cdkDragStartDelay]="10" [class.dragging]="dragging" [cdkDragDisabled]="deal?.changing || deal?.status !== 'processing'" [class.changing]="deal?.changing" (cdkDragStarted)="useDragging.emit(true)" (cdkDragEnded)="useDragging.emit(false)"> -->
 <div class="deal" [class.canDrag]="deal?.status === 'processing'" [class.dragging]="dragging" [class.changing]="deal?.changing">
     <div class="deal-info" (click)="useDetail()">
         <div class="deal-header"></div>
@@ -7,7 +6,7 @@
             <span>{{deal.title}}</span>
             <br>
             <nb-icon pack="eva" icon="calendar" style="margin-right: 0.3rem;"></nb-icon>
-            <span>{{deal.createdAt  | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+            <span>{{deal.createdAt  | time}}</span>
         </div>
         <div class="deal-value">
             <nb-icon pack="eva" icon="person" style="margin-right: 0.3rem;"></nb-icon>

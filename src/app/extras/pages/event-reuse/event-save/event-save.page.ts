@@ -4,7 +4,7 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { Store } from '@ngrx/store';
 import { EventService } from '@services';
-import { GroupAction } from '@store/actions';
+import { EventAction, GroupAction } from '@store/actions';
 import { groupSelector } from '@store/selectors';
 import { State } from '@store/states';
 import { EventVM, GroupVM, TriggerVM } from '@view-models';
@@ -38,44 +38,44 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
   @Output() useDone: EventEmitter<EventVM> = new EventEmitter<EventVM>();
   subscriptions: Subscription[] = [];
   state: IEventSavePageState = {
-      form: undefined,
-      today: new Date(),
-      groups: [],
-      showDateStartPicker: false,
-      showDateEndPicker: false,
-      canDelete: false,
-      min: new Date(),
-      minEnd: new Date(new Date().setDate(new Date().getDate() + 1)),
-      max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
-      config: {
-        editable: true,
-        spellcheck: true,
-        height: '10rem',
-        minHeight: '5rem',
-        placeholder: 'Enter text here...',
-        translate: 'no',
-        defaultParagraphSeparator: 'p',
-        defaultFontName: 'Arial',
-        toolbarHiddenButtons: [
-          ['bold']
-        ],
-        customClasses: [
-          {
-            name: 'quote',
-            class: 'quote',
-          },
-          {
-            name: 'redText',
-            class: 'redText'
-          },
-          {
-            name: 'titleText',
-            class: 'titleText',
-            tag: 'h1',
-          },
-        ]
-      }
+    form: undefined,
+    today: new Date(),
+    groups: [],
+    showDateStartPicker: false,
+    showDateEndPicker: false,
+    canDelete: false,
+    min: new Date(),
+    minEnd: new Date(new Date().setDate(new Date().getDate() + 1)),
+    max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
+    config: {
+      editable: true,
+      spellcheck: true,
+      height: '10rem',
+      minHeight: '5rem',
+      placeholder: 'Enter text here...',
+      translate: 'no',
+      defaultParagraphSeparator: 'p',
+      defaultFontName: 'Arial',
+      toolbarHiddenButtons: [
+        ['bold']
+      ],
+      customClasses: [
+        {
+          name: 'quote',
+          class: 'quote',
+        },
+        {
+          name: 'redText',
+          class: 'redText'
+        },
+        {
+          name: 'titleText',
+          class: 'titleText',
+          tag: 'h1',
+        },
+      ]
     }
+  }
   constructor(
     protected readonly service: EventService,
     protected readonly toastrService: NbToastrService,
@@ -83,67 +83,67 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
   ) {
-    this.useShowSpinner();
     this.useInitForm();
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
-    this.useHideSpinner();
-    // this.useReload();
   }
   ngOnChanges() {
     this.useInput();
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(groupSelector.firstLoad)
+      this.store.select((state) => state.group)
         .pipe(
-          tap((firstLoad) => {
+          tap((group) => {
+            const firstLoad = group.firstLoad;
+            const data = (group.ids as string[]).map((id) => group.entities[id]);
             if (!firstLoad) {
-              this.store.dispatch(GroupAction.FindAllAction({}));
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(groupSelector.groups)
-        .pipe(
-          tap((data) => {
-            this.state.groups = data;;
-            if (this.payload.event) {
-              this.useSetData();
+              this.useShowSpinner();
+              this.store.dispatch(GroupAction.FindAllAction({
+                finalize: () => {
+                  this.useHideSpinner();
+                }
+              }));
             } else {
-              this.useInput();
+              this.state.groups = data;;
+              if (this.payload.event) {
+                this.useSetData();
+              } else {
+                this.useInput();
+              }
             }
           })
         ).subscribe()
     );
   }
   useSetData = () => {
-    this.subscriptions.push(
-      this.service.findById(this.payload.event.id)
-        .pipe(
-          tap((data) => {
-            this.payload.event = data;
-            this.state.form.addControl('id', new FormControl(this.payload.event.id));
-            this.state.form.patchValue({
-              ...this.payload.event,
-              dateEnd: new Date(this.payload.event.dateEnd),
-              dateStart: new Date(this.payload.event.dateStart),
-              groups: this.payload.event.groups.map((e) => e.id),
-            });
-            this.payload.event.triggers.sort((a, b) => new Date(a.time) < new Date(b.time) ? -1 : 1).forEach((trigger) => this.useAddTrigger(trigger));
-            this.useCheckTime();
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
+    this.useShowSpinner();
+    const subscription = this.service.findById(this.payload.event.id)
+      .pipe(
+        tap((data) => {
+          this.store.dispatch(EventAction.SaveSuccessAction({ res: data }));
+          this.payload.event = data;
+          this.state.form.addControl('id', new FormControl(this.payload.event.id));
+          this.state.form.patchValue({
+            ...this.payload.event,
+            dateEnd: new Date(this.payload.event.dateEnd),
+            dateStart: new Date(this.payload.event.dateStart),
+            groups: this.payload.event.groups.map((e) => e.id),
+          });
+          const triggers = this.payload.event.triggers;
+          for (let i = 0; i < triggers.length; i++) {
+            const trigger = triggers[i];
+            this.useAddTrigger(trigger)
+          }
+          this.useCheckTime();
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useInput = () => {
     if (this.payload.time) {
@@ -160,28 +160,27 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
     }
     if (this.state.form.valid) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        this.service.save({
-          ...this.state.form.value,
-          triggers: (this.state.form.value.triggers as TriggerVM[]).map((e) => ({ ...e, id: e.id != null ? e.id : undefined })),
-          groups: (this.state.form.value.groups as GroupVM[]).map((e) => ({ id: e }))
-        })
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Save event successful!', { duration: 3000 });
-              this.useDone.emit(data);
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save event fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = this.service.save({
+        ...this.state.form.value,
+        triggers: (this.state.form.value.triggers as TriggerVM[]).map((e) => ({ ...e, id: e.id != null ? e.id : undefined })),
+        groups: (this.state.form.value.groups as GroupVM[]).map((e) => ({ id: e }))
+      })
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Save event successful!', { duration: 3000 });
+            this.useDone.emit(data);
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save event fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe();
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();
@@ -190,23 +189,22 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service.remove(this.payload.event.id)
-        .pipe(
-          tap(() => {
-            this.toastrService.success('', 'Remove event successful!', { duration: 3000 });
-            this.useClose.emit();
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Remove event fail! ' + err.error.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.service.remove(this.payload.event.id)
+      .pipe(
+        tap(() => {
+          this.toastrService.success('', 'Remove event successful!', { duration: 3000 });
+          this.useClose.emit();
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Remove event fail! ' + err.error.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -228,7 +226,6 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
         time.markAsTouched();
       }
     })
-    console.log(this.state.form.get('triggers'));
   }
   useShowSpinner = () => {
     this.spinner.show('event-save');

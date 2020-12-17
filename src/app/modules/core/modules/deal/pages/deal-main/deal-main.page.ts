@@ -15,7 +15,7 @@ interface IDealMainPageState {
   filterArray: DealVM[];
   search: {
     status: string,
-    range: {start: Date, end: Date},
+    range: { start: Date, end: Date },
     name: string,
     customer: CustomerVM,
     assignees: AccountVM[],
@@ -60,29 +60,23 @@ export class DealMainPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(dealSelector.firstLoad)
+      this.store.select((state) => state.deal)
         .pipe(
-          tap((firstLoad) => {
+          tap((deal) => {
+            const firstLoad = deal.firstLoad;
+            const data = (deal.ids as string[]).map((id) => deal.entities[id]);
             if (!firstLoad) {
               this.useReload();
+            } else {
+              this.state.array = data;
+              this.useFilter();
             }
           })
         ).subscribe()
     );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(dealSelector.deals)
-        .pipe(
-          tap((data) => {
-            this.state.array = data;
-            this.useFilter();
-          })
-        ).subscribe());
   }
   useReload = () => {
     this.useShowSpinner();
@@ -95,16 +89,16 @@ export class DealMainPage implements OnInit, OnDestroy {
   useLoadMine = () => {
     this.subscriptions.push(
       this.store.select(authSelector.profile)
-      .pipe(
-        tap((profile) => {
-          this.state.you = profile;
-          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
-          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
-        })
-      )
-      .subscribe()
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+          })
+        )
+        .subscribe()
     )
   }
   usePlus = () => {
@@ -123,7 +117,7 @@ export class DealMainPage implements OnInit, OnDestroy {
   }
   useSearch = (search: {
     status: string,
-    range: {start: Date, end: Date},
+    range: { start: Date, end: Date },
     name: string,
     customer: CustomerVM,
     assignees: [],

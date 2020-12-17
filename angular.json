@@ -33,7 +33,8 @@
                             "firebase/app",
                             "@firebase/app",
                             "@firebase/database",
-                            "hammerjs"
+                            "hammerjs",
+                            "socket.io-client"
                         ],
                         "outputPath": "dist/crm-admin",
                         "index": "src/index.html",

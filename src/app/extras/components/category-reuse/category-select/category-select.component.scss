@@ -1,7 +1,9 @@
 .category-select {
     max-height: 280px;
+    min-height: 96px;
     overflow-x: hidden;
     overflow-y: auto;
+    position: relative;
     background: white;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     padding: 6px 0 6px 0;

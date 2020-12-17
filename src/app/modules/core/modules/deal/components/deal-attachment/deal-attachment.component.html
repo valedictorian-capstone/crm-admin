@@ -1,4 +1,5 @@
 <div class="attachment">
+    <ngx-spinner [name]="'deal-attachment-' + this.data.id" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <div class="extension">
         <nb-icon [icon]="icon"></nb-icon>
     </div>
@@ -6,9 +7,7 @@
         <a [href]="data?.url" target="_blank">{{data?.name}}</a>
     </div>
     <div class="time">
-        <span class="text">{{data?.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
-        <span class="separator">·</span>
-        <span class="text">Đặng Khánh Vinh</span>
+        <span class="text">{{data?.createdAt | time}}</span>
         <span class="separator">·</span>
         <span class="text">{{data?.size | size}}</span>
     </div>
@@ -62,7 +61,7 @@ Cancel
                         <a>{{data?.name}}</a>
                     </div>
                     <div class="content-bottom">
-                        <span class="text">{{data?.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}</span>
+                        <span class="text">{{data?.createdAt | time}}</span>
                         <span class="separator">·</span>
                         <span class="text">Đặng Khánh Vinh</span>
                         <span class="separator">·</span>

@@ -48,23 +48,22 @@ export class SettingPasswordPage implements OnDestroy {
     ref.close();
     if (this.form.valid) {
       this.useShowSpinner();
-      this.subscriptions.push(
-        this.service.updatePassword(this.form.value)
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Change password successful!', { duration: 3000 });
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Change password fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              this.useHideSpinner();
-            })
-          )
-          .subscribe()
-      );
+      const subscription = this.service.updatePassword(this.form.value)
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Change password successful!', { duration: 3000 });
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Change password fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            this.useHideSpinner();
+          })
+        )
+        .subscribe()
+      this.subscriptions.push(subscription);
     } else {
       this.form.markAsUntouched();
       this.form.markAsTouched();

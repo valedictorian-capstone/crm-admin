@@ -3,25 +3,26 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { Store } from '@ngrx/store';
 import { CustomerService } from '@services';
+import { CustomerAction } from '@store/actions';
+import { authSelector } from '@store/selectors';
+import { State } from '@store/states';
 import { AccountVM, CustomerVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { of, Subscription } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { State } from '@store/states';
-import { authSelector } from '@store/selectors';
 
 interface ICustomerSavePageState {
   you: AccountVM;
-    form: FormGroup;
-    showBirthday: boolean;
-    errorImage: boolean;
-    message: string;
-    phoneStage: 'querying' | 'done';
-    emailStage: 'querying' | 'done';
-    min: Date;
-    max: Date;
+  form: FormGroup;
+  showBirthday: boolean;
+  errorImage: boolean;
+  message: string;
+  phoneStage: 'querying' | 'done';
+  emailStage: 'querying' | 'done';
+  min: Date;
+  max: Date;
 }
 @Component({
   selector: 'app-reuse-customer-save',
@@ -39,16 +40,16 @@ export class CustomerSavePage implements OnInit, OnDestroy {
   @Output() useDone: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   subscriptions: Subscription[] = [];
   state: ICustomerSavePageState = {
-      you: undefined,
-      form: undefined,
-      showBirthday: false,
-      errorImage: false,
-      message: '',
-      phoneStage: 'done',
-      emailStage: 'done',
-      max: new Date(),
-      min: new Date(new Date().setFullYear(new Date().getFullYear() - 80)),
-    };
+    you: undefined,
+    form: undefined,
+    showBirthday: false,
+    errorImage: false,
+    message: '',
+    phoneStage: 'done',
+    emailStage: 'done',
+    max: new Date(),
+    min: new Date(new Date().setFullYear(new Date().getFullYear() - 80)),
+  };
   constructor(
     protected readonly service: CustomerService,
     protected readonly toastrService: NbToastrService,
@@ -59,39 +60,33 @@ export class CustomerSavePage implements OnInit, OnDestroy {
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
-    if (!this.payload.inside && !this.payload.isProfile) {
-      this.useShowSpinner();
-    }
     this.useInitForm();
   }
   ngOnInit() {
     if (this.payload.inside) {
       this.state.form.get('fullname').setValue(this.payload.fullname);
-      this.useHideSpinner();
     } else {
       if (this.payload.customer) {
         this.useSetData();
-      } else {
-        this.useHideSpinner();
       }
     }
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
+    const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
           this.state.you = profile;
         })
       )
-      .subscribe()
-    );
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useSetData = () => {
-    this.subscriptions.push(
-      this.service.findById(this.payload.customer.id)
+    this.useShowSpinner();
+    const subscription = this.service.findById(this.payload.customer.id)
       .pipe(
         tap((data) => {
+          this.store.dispatch(CustomerAction.SaveSuccessAction({ res: data }));
           this.payload.customer = data;
           this.state.form.addControl('id', new FormControl(this.payload.customer.id));
           this.state.form.patchValue({
@@ -100,11 +95,19 @@ export class CustomerSavePage implements OnInit, OnDestroy {
           });
         }),
         finalize(() => {
-            this.useHideSpinner();
+          this.useHideSpinner();
         })
       )
-      .subscribe()
-    );
+      .subscribe();
+    this.subscriptions.push(subscription);
+  }
+  useReload = () => {
+    this.useShowSpinner();
+    this.store.dispatch(CustomerAction.FindAllAction({
+      finalize: () => {
+        this.useHideSpinner();
+      }
+    }));
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
@@ -146,36 +149,35 @@ export class CustomerSavePage implements OnInit, OnDestroy {
       if (!this.payload.inside) {
         this.useShowSpinner();
       }
-      this.subscriptions.push(
-        (this.payload.customer ? this.service.update({
-          ...this.state.form.value,
-          frequency: parseFloat(this.state.form.value.frequency),
-          totalSpending: parseFloat(this.state.form.value.totalSpending),
-          totalDeal: parseFloat(this.state.form.value.totalDeal),
-        }) : this.service.insert({
-          ...this.state.form.value,
-          frequency: parseFloat(this.state.form.value.frequency),
-          totalSpending: parseFloat(this.state.form.value.totalSpending),
-          totalDeal: parseFloat(this.state.form.value.totalDeal),
-        }))
-          .pipe(
-            tap((data) => {
-              this.toastrService.success('', 'Save customer successful!', { duration: 3000 });
-              this.useDone.emit(data);
-              this.useClose.emit();
-            }),
-            catchError((err) => {
-              this.toastrService.danger('', 'Save customer fail! ' + err.error.message, { duration: 3000 });
-              return of(undefined);
-            }),
-            finalize(() => {
-              if (!this.payload.inside) {
-                this.useHideSpinner();
-              }
-            })
-          )
-          .subscribe()
-      );
+      const subscription = (this.payload.customer ? this.service.update({
+        ...this.state.form.value,
+        frequency: parseInt(this.state.form.value.frequency),
+        totalSpending: parseInt(this.state.form.value.totalSpending),
+        totalDeal: parseInt(this.state.form.value.totalDeal),
+      }) : this.service.insert({
+        ...this.state.form.value,
+        frequency: parseInt(this.state.form.value.frequency),
+        totalSpending: parseInt(this.state.form.value.totalSpending),
+        totalDeal: parseInt(this.state.form.value.totalDeal),
+      }))
+        .pipe(
+          tap((data) => {
+            this.toastrService.success('', 'Save customer successful!', { duration: 3000 });
+            this.useDone.emit(data);
+            this.useClose.emit();
+          }),
+          catchError((err) => {
+            this.toastrService.danger('', 'Save customer fail! ' + err.error.message, { duration: 3000 });
+            return of(undefined);
+          }),
+          finalize(() => {
+            if (!this.payload.inside) {
+              this.useHideSpinner();
+            }
+          })
+        )
+        .subscribe()
+      this.subscriptions.push(subscription);
     } else {
       this.state.form.markAsUntouched();
       this.state.form.markAsTouched();
@@ -219,8 +221,7 @@ export class CustomerSavePage implements OnInit, OnDestroy {
     const phone = this.state.form.get('phone');
     if ((!this.payload.customer || (this.payload.customer && this.payload.customer.phone !== phone.value)) && phone.valid) {
       this.state.phoneStage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('phone', phone.value)
+      const subscription = this.service.checkUnique('phone', phone.value)
         .pipe(
           tap((check) => {
             if (check) {
@@ -233,7 +234,7 @@ export class CustomerSavePage implements OnInit, OnDestroy {
             }, 1000);
           })
         ).subscribe()
-      );
+      this.subscriptions.push(subscription);
     }
 
   }
@@ -241,8 +242,7 @@ export class CustomerSavePage implements OnInit, OnDestroy {
     const email = this.state.form.get('email');
     if ((!this.payload.customer || (this.payload.customer && this.payload.customer.email !== this.state.form.get('email').value)) && email.valid) {
       this.state.emailStage = 'querying';
-      this.subscriptions.push(
-        this.service.checkUnique('email', email.value)
+      const subscription = this.service.checkUnique('email', email.value)
         .pipe(
           tap((check) => {
             if (check) {
@@ -255,7 +255,7 @@ export class CustomerSavePage implements OnInit, OnDestroy {
             }, 1000);
           })
         ).subscribe()
-      );
+      this.subscriptions.push(subscription);
     }
   }
   useShowSpinner = () => {

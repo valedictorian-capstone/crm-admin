@@ -34,27 +34,20 @@ export class CustomerSelectComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(customerSelector.firstLoad)
+      this.store.select((state) => state.customer)
         .pipe(
-          tap((firstLoad) => {
+          tap((customer) => {
+            const firstLoad = customer.firstLoad;
+            const data = (customer.ids as string[]).map((id) => customer.entities[id]);
             if (!firstLoad) {
               this.useReload();
+            } else {
+              this.state.array = data;
+              this.useSearch('');
             }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(customerSelector.customers)
-        .pipe(
-          tap((data) => {
-            this.state.array = data;
-            this.useSearch('');
           })
         ).subscribe()
     );

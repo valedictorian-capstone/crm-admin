@@ -1,12 +1,13 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
-import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { effects } from '@effects';
 import { EntityDataModule } from '@ngrx/data';
 import { EffectsModule } from '@ngrx/effects';
 import {
@@ -15,23 +16,17 @@ import {
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { metaReducers, reducers } from '@reducers';
-import { effects } from '@effects';
 import { InterceptorService } from '@services';
-import * as Hammer from 'hammerjs';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { HammerConfig } from './app.hammer';
 import { appConfig } from './app.metadata';
 import { AppRoutes } from './app.routing';
 import { AppSerializer } from './app.serializer';
 import { ExtrasModule } from './extras/extras.module';
-import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-export class HammerConfig extends HammerGestureConfig {
-  // tslint:disable-next-line: no-angle-bracket-type-assertion
-  overrides = <any> {
-    swipe: { direction: Hammer.DIRECTION_ALL }
-  };
-}
+
 const config: SocketIoConfig = { url: environment.socketServer, options: {} };
 @NgModule({
   declarations: [
@@ -72,7 +67,8 @@ const config: SocketIoConfig = { url: environment.socketServer, options: {} };
       provide: HAMMER_GESTURE_CONFIG,
       useClass: HammerConfig,
     },
-    { provide: NZ_I18N, useValue: en_US }
+    { provide: NZ_I18N, useValue: en_US },
+    // {provide: LOCALE_ID, useValue: vi}
   ],
   bootstrap: [AppComponent]
 })

@@ -23,6 +23,10 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[Note] Socket Action',
 );
+const ListAction = createAction(
+  '[Note] List Action',
+  props<{ res: NoteVM[] }>()
+);
 const ResetAction = createAction(
   '[Note] Reset Action',
 );
@@ -32,5 +36,6 @@ export const NoteAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

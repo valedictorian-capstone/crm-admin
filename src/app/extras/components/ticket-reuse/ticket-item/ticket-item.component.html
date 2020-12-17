@@ -3,7 +3,7 @@
         {{ticket.description}}
     </div>
     <div class="time">
-        {{ticket.createdAt | date: 'EEEE, MMMM d, y, h:mm a'}}
+        {{ticket.createdAt | time}}
     </div>
     <div class="customer">
         <div style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; float: left; margin-right: 1rem; border: 1px solid #e5e5e5; cursor: pointer" (click)="useView()">
@@ -20,7 +20,7 @@
           <nb-icon icon="person-outline"></nb-icon>
         </button>
             <nz-dropdown-menu #assignee="nzDropdownMenu">
-                <app-reuse-employee-item [employee]="ticket.assignee"></app-reuse-employee-item>
+                <app-reuse-employee-item *ngIf="ticket.assignee" [employee]="ticket.assignee"></app-reuse-employee-item>
             </nz-dropdown-menu>
             <button (click)="useDialog(editRef)" *ngIf="ticket.assignee && state.canUpdate" class="mr-2" nbButton size="tiny" shape="round" outline status="info">
           <nb-icon icon="edit-2-outline"></nb-icon>

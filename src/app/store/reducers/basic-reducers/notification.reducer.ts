@@ -6,14 +6,9 @@ export const notificationFeatureKey = 'notification';
 export const notificationReducer = createReducer(
   notificationInitialState,
   on(NotificationAction.FindAllSuccessAction,
-    (state, action) => notificationAdapter.setAll<NotificationState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(NotificationAction.FindAllSuccessAction,
     (state, action) => notificationAdapter.setAll<NotificationState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(NotificationAction.SaveSuccessAction,

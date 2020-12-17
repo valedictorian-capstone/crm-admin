@@ -24,6 +24,10 @@ const SocketAction = createAction(
   '[Activity] Socket Action',
   props<{ requester: AccountVM }>()
 );
+const ListAction = createAction(
+  '[Activity] List Action',
+  props<{ res: ActivityVM[] }>()
+);
 const ResetAction = createAction(
   '[Activity] Reset Action',
 );
@@ -33,5 +37,6 @@ export const ActivityAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
-  ResetAction
+  ResetAction,
+  ListAction
 };

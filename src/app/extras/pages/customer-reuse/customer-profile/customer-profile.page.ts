@@ -54,35 +54,34 @@ export class CustomerProfilePage implements OnInit, OnDestroy {
     this.useReload();
   }
   useLoadMine = () => {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            this.state.you = profile;
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.store.select(authSelector.profile)
+      .pipe(
+        tap((profile) => {
+          this.state.you = profile;
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();
-    this.subscriptions.push(
-      this.service
-        .findById(this.payload.customer.id)
-        .pipe(
-          tap((data) => this.payload.customer = data),
-          switchMap(() => this.ticketService.findByCustomerId(this.payload.customer.id)),
-          tap((data) => this.state.tickets = data),
-          switchMap(() => this.dealService.findByCustomerId(this.payload.customer.id)),
-          tap((data) => this.state.deals = data),
-          finalize(() => {
-            this.useHideSpinner();
-          })
-        )
-        .subscribe()
-    );
+    const subscription = this.service
+      .findById(this.payload.customer.id)
+      .pipe(
+        tap((data) => this.payload.customer = data),
+        switchMap(() => this.ticketService.findByCustomerId(this.payload.customer.id)),
+        tap((data) => this.state.tickets = data),
+        switchMap(() => this.dealService.findByCustomerId(this.payload.customer.id)),
+        tap((data) => this.state.deals = data),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useEdit = () => {
+    this.useClose.emit();
     this.globalService.triggerView$.next({ type: 'customer', payload: this.payload });
   }
   usePhone = (phone: string) => {

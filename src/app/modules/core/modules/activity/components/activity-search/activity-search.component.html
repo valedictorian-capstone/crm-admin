@@ -8,7 +8,7 @@
             <nb-icon nbSuffix icon="search-outline"></nb-icon>
         </nb-form-field>
         <nb-form-field class="float-left mb-2 w-100">
-            <nb-icon nbSuffix icon="donate" pack="font-awesome"></nb-icon>
+            <nb-icon *ngIf="search.deal" nbSuffix icon="donate" pack="font-awesome"></nb-icon>
             <input nz-dropdown [nzDropdownMenu]="dealSelect" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" class="border-radius-0" [value]="search.deal?.title" [style.height]="'40px'" fullWidth placeholder="Select deal" nbInput (input)="select.useSearch($event.target.value)"
             />
             <nb-icon *ngIf="search.deal" nbSuffix status="danger" (click)="search.deal = undefined; useSearch.emit(search)" icon="close-circle-outline"></nb-icon>
@@ -17,7 +17,7 @@
             <app-reuse-deal-select #select [selected]="search.deal" (useSelect)="search.deal = $event; useSearch.emit(search)"></app-reuse-deal-select>
         </nz-dropdown-menu>
         <nb-form-field class="float-left mb-2 w-100">
-            <nb-icon nbSuffix icon="clock-outline"></nb-icon>
+            <nb-icon *ngIf="search.range" nbSuffix icon="clock-outline"></nb-icon>
             <input readonly class="border-radius-0" [(ngModel)]="search.range" (ngModelChange)="useSearch.emit(search)" [style.height]="'40px'" fullWidth placeholder="Start Time - End Time" nbInput [nbDatepicker]="formpicker" />
             <nb-icon *ngIf="search.range" nbSuffix status="danger" (click)="search.range = undefined; useSearch.emit(search)" icon="close-circle-outline"></nb-icon>
             <nb-rangepicker #formpicker format="yyyy-MM-dd"></nb-rangepicker>

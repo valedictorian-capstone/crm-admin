@@ -32,9 +32,9 @@ export class NavComponent implements OnDestroy {
   useLoadMine = () => {
     this.subscriptions.push(
       this.store.select(authSelector.profile)
-      .pipe(
-        tap((profile) => {
-          this.state.you = profile;
+        .pipe(
+          tap((profile) => {
+            this.state.you = profile;
             this.state.more = [];
             this.state.array = [];
             const array = environment.categories.filter((item) => this.useCheckRole(item.can));
@@ -48,9 +48,10 @@ export class NavComponent implements OnDestroy {
             } else {
               this.state.array = array;
             }
-        })
-      )
-      .subscribe()
+            this.useUpdate();
+          })
+        )
+        .subscribe()
     );
   }
   useUpdate = (link?: string) => {
@@ -59,6 +60,7 @@ export class NavComponent implements OnDestroy {
       this.router.navigate(['core/' + link]);
     } else {
       this.state.active = document.location.hash.replace('#/core/', '').split('/')[0];
+      console.log(this.state.active);
       this.state.active = this.state.active === 'deal' ? 'process' : this.state.active;
     }
   }

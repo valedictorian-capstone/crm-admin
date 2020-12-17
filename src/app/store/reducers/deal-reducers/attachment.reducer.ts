@@ -6,14 +6,9 @@ export const attachmentFeatureKey = 'attachment';
 export const attachmentReducer = createReducer(
   attachmentInitialState,
   on(AttachmentAction.FindAllSuccessAction,
-    (state, action) => attachmentAdapter.setAll<AttachmentState>((state.ids as string[]).map((id) => state.entities[id]), {
-      ...state,
-      firstLoad: true
-    })
-  ),
-  on(AttachmentAction.FindAllSuccessAction,
     (state, action) => attachmentAdapter.setAll<AttachmentState>(action.res, {
       ...state,
+      firstLoad: true
     })
   ),
   on(AttachmentAction.CreateSuccessAction,
@@ -28,6 +23,11 @@ export const attachmentReducer = createReducer(
   ),
   on(AttachmentAction.RemoveSuccessAction,
     (state, action) => attachmentAdapter.removeOne<AttachmentState>(action.id, {
+      ...state,
+    })
+  ),
+  on(AttachmentAction.ListAction,
+    (state, action) => attachmentAdapter.upsertMany<AttachmentState>(action.res, {
       ...state,
     })
   ),

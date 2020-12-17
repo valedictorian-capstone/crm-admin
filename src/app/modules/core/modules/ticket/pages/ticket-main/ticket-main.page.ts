@@ -1,11 +1,12 @@
 import { TicketAction } from '@actions';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GlobalService } from '@services';
 import { authSelector, ticketSelector } from '@store/selectors';
 import { State } from '@store/states';
 import { AccountVM, CustomerVM, TicketVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 interface ITicketMainPageState {
   you: AccountVM;
@@ -29,7 +30,8 @@ interface ITicketMainPageState {
   templateUrl: './ticket-main.page.html',
   styleUrls: ['./ticket-main.page.scss']
 })
-export class TicketMainPage implements OnInit {
+export class TicketMainPage implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   state: ITicketMainPageState = {
     you: undefined,
     array: [],
@@ -56,29 +58,25 @@ export class TicketMainPage implements OnInit {
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.store.select(ticketSelector.firstLoad)
+    const subscription = this.store.select((state) => state.ticket)
       .pipe(
-        tap((firstLoad) => {
+        tap((ticket) => {
+          const firstLoad = ticket.firstLoad;
+          const data = (ticket.ids as string[]).map((id) => ticket.entities[id]);
           if (!firstLoad) {
             this.useReload();
+          } else {
+            this.state.array = data;
+            this.useFilter();
           }
         })
       ).subscribe();
-  }
-  useData = () => {
-    this.store.select(ticketSelector.tickets)
-      .pipe(
-        tap((data) => {
-          this.state.array = data;
-          this.useFilter();
-        })
-      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useLoadMine = () => {
-    this.store.select(authSelector.profile)
+    const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
           this.state.you = profile;
@@ -87,7 +85,8 @@ export class TicketMainPage implements OnInit {
           this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignCustomer).length > 0;
         })
       )
-      .subscribe()
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.useShowSpinner();
@@ -132,5 +131,8 @@ export class TicketMainPage implements OnInit {
   }) => {
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

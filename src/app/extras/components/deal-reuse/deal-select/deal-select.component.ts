@@ -35,30 +35,22 @@ export class DealSelectComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
-    this.subscriptions.push(
-      this.store.select(dealSelector.firstLoad)
-        .pipe(
-          tap((firstLoad) => {
-            if (!firstLoad) {
-              this.useReload();
-            }
-          })
-        ).subscribe()
-    );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(dealSelector.deals)
-        .pipe(
-          tap((data) => {
+    const subscription = this.store.select((state) => state.deal)
+      .pipe(
+        tap((deal) => {
+          const firstLoad = deal.firstLoad;
+          const data = (deal.ids as string[]).map((id) => deal.entities[id]);
+          if (!firstLoad) {
+            this.useReload();
+          } else {
             this.state.array = data;
             this.useSearch('');
-          })
-        ).subscribe()
-    );
+          }
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
   }
   useReload = () => {
     this.state.status = 'finding';

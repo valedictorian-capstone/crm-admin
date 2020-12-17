@@ -34,28 +34,22 @@ export class DealProductComponent implements OnInit, OnChanges, OnDestroy {
   }
   ngOnInit() {
     this.useDispatch();
-    this.useData();
   }
   useDispatch = () => {
     this.subscriptions.push(
-      this.store.select(productSelector.firstLoad)
+      this.store.select((state) => state.product)
         .pipe(
-          tap((firstLoad) => {
+          tap((product) => {
+            const firstLoad = product.firstLoad;
+            const data = (product.ids as string[]).map((id) => product.entities[id]);
             if (!firstLoad) {
               this.useReload();
+            } else {
+              this.products = data;
             }
           })
         ).subscribe()
     );
-  }
-  useData = () => {
-    this.subscriptions.push(
-      this.store.select(productSelector.products)
-        .pipe(
-          tap((data) => {
-            this.products = data
-          })
-        ).subscribe());
   }
   useReload = () => {
     this.store.dispatch(ProductAction.FindAllAction({}));
