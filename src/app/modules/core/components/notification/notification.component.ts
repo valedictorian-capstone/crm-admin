@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { NotificationService, GlobalService } from '@services';
 import { State } from '@store/states';
@@ -26,6 +26,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
   constructor(
     protected readonly service: NotificationService,
+    protected readonly router: Router,
     protected readonly spinner: NgxSpinnerService,
     protected readonly globalService: GlobalService,
     protected readonly notificationService: NzNotificationService,
@@ -54,7 +55,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.service
         .findAll()
         .pipe(
-          tap((data) => this.state.array = data),
+          tap((data) => this.state.array = data.sort((a,b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1)),
           finalize(() => {
             this.useSetBadge();
             this.useHideSpinner();
@@ -90,6 +91,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
                 notification;
             });
           }
+          this.state.array = this.state.array.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1);
           this.useSetBadge();
         })
       )
@@ -117,9 +119,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.useSetBadge();
   }
   useSelect = (notification: NotificationVM) => {
-    this.state.array[this.state.array.findIndex((e) => e.id === notification.id)].isSeen = true;
+    this.state.array[this.state.array.findIndex((e) => e.id === notification.id)] = {...this.state.array[this.state.array.findIndex((e) => e.id === notification.id)], isSeen: true};
     this.subscriptions.push(this.service.seen(notification.id).subscribe());
-    this.globalService.triggerView$.next({ type: notification.name, payload: { [notification.name]: notification.data } });
+    this.router.navigate(['core/' + notification.name]);
     this.state.show = false;
     this.useSetBadge();
   }

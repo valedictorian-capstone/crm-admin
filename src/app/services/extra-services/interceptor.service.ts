@@ -31,7 +31,7 @@ export class InterceptorService {
           if (err) {
             if (err.status === 401) {
               this.tokenService.clearToken();
-              this.router.navigate(['auth']);
+              this.router.navigate(['auth/login']);
             }
           }
         }
