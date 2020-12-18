@@ -43,8 +43,12 @@ export class AddMenuComponent implements OnDestroy {
   useSelect = (type: string) => {
     this.globalService.triggerView$.next({ type, payload: {} });
   }
-  useCheckRole = (name: string) => {
-    return this.state.you.roles.filter((role) => role[name]).length > 0;
+  useCheckRole = (name: string | string[]) => {
+    if (typeof name === 'string') {
+      return this.state.you.roles.filter((role) => role[name]).length > 0;
+    } else {
+      return this.state.you.roles.filter((role) => name.filter((e) => role[e]).length > 0).length > 0;
+    }
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

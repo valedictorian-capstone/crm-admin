@@ -14,6 +14,9 @@ interface IImportDataPageState {
   type: string;
   data: (CustomerVM | ProductVM | AccountVM)[];
   you: AccountVM;
+  canImportCustomer: boolean;
+  canImportEmployee: boolean;
+  canImportProduct: boolean;
 }
 @Component({
   selector: 'app-reuse-import-data',
@@ -28,6 +31,9 @@ export class ImportDataPage implements OnInit, OnDestroy {
     type: 'customer',
     data: undefined,
     you: undefined,
+    canImportProduct: false,
+    canImportEmployee: false,
+    canImportCustomer: false,
   };
   constructor(
     protected readonly toastrService: NbToastrService,
@@ -47,6 +53,9 @@ export class ImportDataPage implements OnInit, OnDestroy {
       .pipe(
         tap((profile) => {
           this.state.you = profile;
+          this.state.canImportCustomer = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+          this.state.canImportEmployee = this.state.you.roles.filter((role) => role.canImportEmployee).length > 0;
+          this.state.canImportProduct = this.state.you.roles.filter((role) => role.canImportProduct).length > 0;
         })
       )
       .subscribe();

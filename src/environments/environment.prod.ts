@@ -196,42 +196,6 @@ export const environment = {
     },
 
   ],
-  more_categories: [
-    {
-      label: 'Customer',
-      value: 'customer',
-      icon: 'phone',
-      pack: 'eva',
-      can: 'canAccessCustomer',
-    },
-    {
-      label: 'Ticket',
-      value: 'ticket',
-      icon: 'pricetags',
-      pack: 'eva',
-      can: 'canAccessTicket',
-    },
-    // {
-    //   label: 'Feedback',
-    //   value: 'feedback',
-    //   icon: 'headphones',
-    //   pack: 'eva',
-    // },
-    {
-      label: 'Product',
-      value: 'product',
-      icon: 'shopping-cart',
-      pack: 'eva',
-      can: 'canAccessProduct',
-    },
-    {
-      label: 'Event',
-      value: 'event',
-      icon: 'gift',
-      pack: 'eva',
-      can: 'canAccessEvent',
-    },
-  ],
   filterTabs: [
     {
       label: 'Lead',
@@ -257,42 +221,6 @@ export const environment = {
       icon: 'calendar-alt',
       pack: 'font-awesome',
     },
-    {
-      label: 'Event',
-      value: 'event',
-      icon: 'gift',
-      pack: 'eva',
-    },
-    // {
-    //   label: 'Employee',
-    //   value: 'employee',
-    //   icon: 'mic',
-    //   pack: 'eva',
-    // },
-    // {
-    //   label: 'Pipeline',
-    //   value: 'pipeline',
-    //   icon: 'browser',
-    //   pack: 'eva',
-    // },
-    // {
-    //   label: 'Role',
-    //   value: 'role',
-    //   icon: 'pin',
-    //   pack: 'eva',
-    // },
-    // {
-    //   label: 'Product',
-    //   value: 'product',
-    //   icon: 'shopping-cart',
-    //   pack: 'eva',
-    // },
-    // {
-    //   label: 'Event',
-    //   value: 'event',
-    //   icon: 'calendar',
-    //   pack: 'eva',
-    // },
     {
       label: 'Attachment',
       value: 'attachment',
@@ -355,6 +283,7 @@ export const environment = {
       value: 'import',
       icon: 'cloud-upload-outline',
       pack: 'eva',
+      can: ['canImportProduct', 'canImportCustomer', 'canImportEmployee'],
     },
   ],
   firebase: {
