@@ -27,7 +27,8 @@
               <nb-icon icon="plus-outline"></nb-icon>
               </button>
         <nz-dropdown-menu #pipelineAction="nzDropdownMenu">
-            <app-pipeline-action [pipelines]="state.pipelines" (useSelect)="useSelectPipeline($event)" [selectedPipeline]="state.selectedPipeline" (useAdd)="useAdd()" (useEdit)="useEdit()" (useDelete)="useDialog(removeRef)"></app-pipeline-action>
+            <app-pipeline-action [pipelines]="state.pipelines" [canAdd]="state.canAddProcess" [canUpdate]="state.canUpdateProcess" [canRemove]="state.canRemoveProcess" (useSelect)="useSelectPipeline($event)" [selectedPipeline]="state.selectedPipeline" (useAdd)="useAdd()"
+                (useEdit)="useEdit()" (useDelete)="useDialog(removeRef)"></app-pipeline-action>
         </nz-dropdown-menu>
         <nz-dropdown-menu #pipelineSearch="nzDropdownMenu">
             <app-pipeline-search class="display-block" style="margin-left: 1.75rem;" (useSearch)="useSearch($event)" [search]="state.search"></app-pipeline-search>
@@ -36,7 +37,7 @@
             <app-reuse-employee-filter [selectedEmployees]="state.search.assignees" class="display-block" style="margin-left: 1.75rem;" (useSearch)="useSearch({assignees: $event})"></app-reuse-employee-filter>
         </nz-dropdown-menu>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-body class="p-0">
         <div class="crm-pipeline-body">
             <div class="stages" cdkDropListGroup>
                 <app-pipeline-stage [search]="state.search" (useDragging)="dragging = $event" [dragging]="state.dragging" *ngFor="let stage of (state.selectedPipeline ? state.selectedPipeline.stages : []); let i = index" [stage]="stage" [index]="i" [selectedPipeline]="state.selectedPipeline"></app-pipeline-stage>

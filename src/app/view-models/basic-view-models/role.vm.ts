@@ -7,6 +7,8 @@ export interface RoleVM {
   level: number;
   canAccessDeal: boolean;
   canGetAllDeal: boolean;
+  canGetFeedbackDeal: boolean;
+  canGetAssignDeal: boolean;
   canAssignDeal: boolean;
   canCreateDeal: boolean;
   canUpdateDeal: boolean;
@@ -53,6 +55,8 @@ export interface RoleCM {
   level: number;
   canAccessDeal: boolean;
   canGetAllDeal: boolean;
+  canGetFeedbackDeal: boolean;
+  canGetAssignDeal: boolean;
   canAssignDeal: boolean;
   canCreateDeal: boolean;
   canUpdateDeal: boolean;
@@ -97,6 +101,8 @@ export interface RoleUM {
   canUpdateEmployee: boolean;
   canRemoveEmployee: boolean;
   canExportEmployee: boolean;
+  canGetFeedbackDeal: boolean;
+  canGetAssignDeal: boolean;
   canAssignCustomer: boolean;
   canAssignActivity: boolean;
   canAccessDeal: boolean;

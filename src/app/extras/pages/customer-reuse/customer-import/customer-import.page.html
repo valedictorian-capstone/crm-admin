@@ -97,7 +97,7 @@
                     <nb-option value="-1">-None-</nb-option>
                     <nb-option value="0">Male</nb-option>
                     <nb-option value="1">Female</nb-option>
-                    <nb-option value="2">Orther</nb-option>
+                    <nb-option value="2">Other</nb-option>
                 </nb-select>
             </nb-form-field>
             <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty)">Birthday <span class="text-danger">*</span></span>
@@ -121,16 +121,16 @@
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill frequency</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Average Spending</span>
+                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Total Spending (million VND)</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')" nbInput />
                         </nb-form-field>
-                        <span *ngIf="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average spending</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Average Deal</span>
+                        <span *ngIf="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total spending</span>
+                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Total Deal</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput />
                         </nb-form-field>
-                        <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill average deal</span>
+                        <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total deal</span>
                     </nb-accordion-item-body>
                 </nb-accordion-item>
                 <nb-accordion-item expanded *ngIf="form.get('type')?.value === 'company'">

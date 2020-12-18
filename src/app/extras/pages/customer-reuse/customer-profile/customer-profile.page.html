@@ -13,7 +13,7 @@
                 <b *ngIf="!payload.customer.avatar">{{payload.customer.fullname | key}}</b>
             </div>
             <b style="position: absolute; bottom: 0.5rem;">{{payload.customer.fullname}}</b>
-            <button nbButton size="small" shape="round" (click)="useEdit()" status="primary" style="position: absolute; bottom: 2.5rem; right: calc(50% - 3rem)">
+            <button *ngIf="state.canUpdate" nbButton size="small" shape="round" (click)="useEdit()" status="primary" style="position: absolute; bottom: 2.5rem; right: calc(50% - 3rem)">
               <nb-icon icon="edit-2-outline"></nb-icon>
             </button>
         </div>

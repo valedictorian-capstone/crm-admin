@@ -84,7 +84,7 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
                   case 'female':
                     group.get(key).setValue('1');
                     break;
-                  case 'orther':
+                  case 'other':
                     group.get(key).setValue('2');
                     break;
                   default:

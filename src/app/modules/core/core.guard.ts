@@ -23,11 +23,7 @@ export class CoreGuard implements CanLoad {
     protected readonly store: Store<State>
   ) { }
   canLoad(route: Route, segments: UrlSegment[]) {
-    this.store.select((state) => state.router.state.url).subscribe((data) => console.log('core-store', data));
-    console.log('core-location: ', document.location.href);
-    console.log('core-router: ', this.router.url);
-    console.log('core-route: ', route);
-    console.log('core-activated: ', this.activatedRoute.url);
+    console.log(route);
     return this.store.select(authSelector.profile)
       .pipe(
         tap(console.log),

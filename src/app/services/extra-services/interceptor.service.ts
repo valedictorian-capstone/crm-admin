@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { TokenService } from './token.service';
 import { LoadingService } from './loading.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class InterceptorService {
 
   constructor(
     protected readonly loadingService: LoadingService,
-    protected readonly tokenService: TokenService
+    protected readonly tokenService: TokenService,
+    protected readonly router: Router
   ) { }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loadingService.next(true);
@@ -26,9 +28,10 @@ export class InterceptorService {
     return next.handle(request).pipe(
       tap(
         (err: any) => {
-          if (err instanceof HttpErrorResponse) {
+          if (err) {
             if (err.status === 401) {
-
+              this.tokenService.clearToken();
+              this.router.navigate(['auth']);
             }
           }
         }

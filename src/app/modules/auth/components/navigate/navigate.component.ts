@@ -43,11 +43,9 @@ export class NavigateComponent implements OnInit, OnDestroy {
     this.useCheckNotification();
   }
   useCheckNotification = async () => {
-    console.log(typeof Notification);
     if (typeof Notification !== 'undefined') {
       try {
         await Notification.requestPermission().then(async (permission) => {
-          console.log('noti-oke');
           if (permission !== 'granted') {
             this.useRouting(undefined);
           } else {
@@ -57,7 +55,6 @@ export class NavigateComponent implements OnInit, OnDestroy {
           }
         });
       } catch (error) {
-        console.log('noti-error', error);
         this.useRouting(undefined);
       }
     } else {
@@ -70,12 +67,14 @@ export class NavigateComponent implements OnInit, OnDestroy {
     const subscription = this.authService.auth(device)
       .pipe(
         tap((res) => {
+          console.log(res);
           this.store.dispatch(AuthAction.FetchSuccessAction(res));
           // this.store.dispatch(DeviceAction.FindAllAction({}));
           this.store.dispatch(NotificationAction.FindAllAction({}));
           this.router.navigate([this.url ? this.url : 'core']);
         }),
         catchError((err) => {
+          console.log(err);
           this.tokenService.clearToken();
           this.router.navigate(['auth/login'], {
             queryParams: this.url ? { returnUrl: this.url } : undefined

@@ -34,6 +34,7 @@ import {
   CustomerProfilePage,
   SettingPasswordPage,
   SettingProfilePage,
+  SettingRolePage,
   EventSavePage,
 } from './pages';
 import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
@@ -88,7 +89,8 @@ export const REUSE_PAGES = [
   CustomerProfilePage,
   SettingPasswordPage,
   SettingProfilePage,
-  EventSavePage
+  EventSavePage,
+  SettingRolePage
 ];
 export const PIPES = [
   LengthPipe,

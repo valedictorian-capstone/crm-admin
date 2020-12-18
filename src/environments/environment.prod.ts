@@ -150,7 +150,7 @@ export const environment = {
       value: 'activity',
       icon: 'calendar-alt',
       pack: 'font-awesome',
-      can: 'canAccessDeal'
+      can: 'canUpdateDeal'
     },
     {
       label: 'Lead',
@@ -190,7 +190,7 @@ export const environment = {
     {
       label: 'Event',
       value: 'event',
-      icon: 'gift-outline',
+      icon: 'gift',
       pack: 'eva',
       can: 'canAccessEvent'
     },
@@ -227,7 +227,7 @@ export const environment = {
     {
       label: 'Event',
       value: 'event',
-      icon: 'gift-outline',
+      icon: 'gift',
       pack: 'eva',
       can: 'canAccessEvent',
     },
@@ -260,7 +260,7 @@ export const environment = {
     {
       label: 'Event',
       value: 'event',
-      icon: 'gift-outline',
+      icon: 'gift',
       pack: 'eva',
     },
     // {
@@ -311,7 +311,7 @@ export const environment = {
     {
       label: 'Event',
       value: 'event',
-      icon: 'gift-outline',
+      icon: 'gift',
       pack: 'eva',
       can: 'canCreateEvent',
     },

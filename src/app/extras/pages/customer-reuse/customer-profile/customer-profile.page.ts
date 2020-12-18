@@ -16,6 +16,7 @@ interface ICustomerProfilePageState {
   tickets: TicketVM[];
   deals: DealVM[];
   visible: boolean;
+  canUpdate: boolean;
 }
 @Component({
   selector: 'app-reuse-customer-profile',
@@ -34,7 +35,8 @@ export class CustomerProfilePage implements OnInit, OnDestroy {
     you: undefined,
     tickets: [],
     deals: [],
-    visible: false
+    visible: false,
+    canUpdate: false,
   };
   constructor(
     protected readonly service: CustomerService,
@@ -58,6 +60,7 @@ export class CustomerProfilePage implements OnInit, OnDestroy {
       .pipe(
         tap((profile) => {
           this.state.you = profile;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
         })
       )
       .subscribe();

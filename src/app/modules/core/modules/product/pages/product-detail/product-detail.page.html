@@ -16,9 +16,13 @@
 <nb-card class="h-100 w-100 position-relative">
     <ngx-spinner [name]="'product-detail'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="padding: 1rem 2.25rem;">
-        <span class="display-flex align-items-center float-left h-100" style="max-width: 60%;">
-    <nb-icon icon="shopping-cart-outline" class="mr-2"></nb-icon>
-      <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Product / {{state.product?.name}}</b>
+        <span class="display-flex align-items-center float-left h-100" style="max-width: 75%;">
+          <button class="mr-2" (click)="useBack()" nbButton status="info" size="small" outline>
+            <nb-icon icon="shopping-cart-outline" class="mr-2"></nb-icon>
+            Product
+          </button>
+          <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">
+            / {{state.product?.name}}</b>
     </span>
         <button class="float-right" nbButton status="primary" (click)="useEdit()" outline size="small">
       <nb-icon icon="edit-2-outline"></nb-icon>
@@ -28,8 +32,8 @@
     </button>
     </nb-card-header>
     <nb-card-body>
-        <div nz-row class="w-100 h-100">
-            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="px-3">
+        <div nz-row class="w-100" style="height: fit-content;">
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="px-3">
                 <div class="information">
                     <div class="image">
                         <img *ngIf="state.product?.image" [src]="state.product?.image" />
@@ -37,10 +41,10 @@
                     </div>
                 </div>
                 <div nz-row class="content-rating float-left">
-                    <div class="total justify-content-center align-items-center mb-3" style="display: flex !important" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="6" [nzXl]="4" [nzXXl]="4">
+                    <div class="total justify-content-center align-items-center mb-3" style="display: flex !important" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="6" [nzXl]="6" [nzXXl]="6">
                         <nz-progress [nzPercent]="state.totalRating * 100 / 5" [nzFormat]="formatRating" nzType="circle"></nz-progress>
                     </div>
-                    <div class="ratings" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="18" [nzXl]="20" [nzXXl]="20">
+                    <div class="ratings" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="18" [nzXl]="18" [nzXXl]="18">
                         <div class="rating">
                             <div class="rating-left">
                                 5
@@ -109,7 +113,7 @@
                     </div>
                 </div>
             </div>
-            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="px-3">
+            <div style="border: 1px solid silver;" nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="12" [nzXXl]="12" class="px-3 mt-3 p-3">
                 <div class="comments">
                     <div *ngFor="let comment of state.comments" class="comment">
                         <img *ngIf="comment.customer.avatar" [src]="comment.customer.avatar" />
@@ -128,6 +132,9 @@
                         </div>
                     </div>
                     <div class="flag h-20" style="float: left"></div>
+                </div>
+                <div class="empty" *ngIf="state.comments.length === 0">
+                    <b>Don't have any comments</b>
                 </div>
             </div>
         </div>

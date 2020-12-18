@@ -235,8 +235,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       .subscribe();
     this.subscriptions.push(subscription);
   }
-  useDetail = () => {
-    this.router.navigate(['core/product/' + this.state.product.id]);
+  useBack = () => {
+    this.router.navigate(['core/product']);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

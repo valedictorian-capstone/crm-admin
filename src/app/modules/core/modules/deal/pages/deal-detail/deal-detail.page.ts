@@ -39,6 +39,8 @@ interface IDealDetailPageState {
   stageMove: 'done' | 'processing';
   pins: NoteVM[];
   canAdd: boolean;
+  canGetAssign: boolean;
+  canGetFeedback: boolean;
   canUpdate: boolean;
   canRemove: boolean;
 }
@@ -68,6 +70,8 @@ export class DealDetailPage implements OnInit, OnDestroy {
     stageMove: 'done',
     pins: [],
     canAdd: false,
+    canGetAssign: false,
+    canGetFeedback: false,
     canUpdate: false,
     canRemove: false,
   };
@@ -130,6 +134,8 @@ export class DealDetailPage implements OnInit, OnDestroy {
         .pipe(
           tap((profile) => {
             this.state.you = profile;
+            this.state.canGetAssign = this.state.you.roles.filter((role) => role.canGetAssignDeal).length > 0;
+            this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
             this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
             this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
             this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
@@ -243,7 +249,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
     return this.state.dones.filter((e) => e.subType === subType).length > 0 ? this.state.dones.filter((e) => e.subType === subType).length : 0;
   }
   useMoveTo = (stage: StageVM) => {
-    if (this.state.deal.status === 'processing') {
+    if (this.state.deal.status === 'processing' && this.state.canUpdate) {
       this.state.stage = stage;
       this.state.stageMove = 'done';
       this.subscriptions.push(
@@ -311,7 +317,9 @@ export class DealDetailPage implements OnInit, OnDestroy {
     );
   }
   useEdit = () => {
-    this.globalService.triggerView$.next({ type: 'deal', payload: { deal: this.state.deal, inside: true } });
+    if (this.state.canUpdate) {
+      this.globalService.triggerView$.next({ type: 'deal', payload: { deal: this.state.deal, inside: true } });
+    }
   }
   usePlus = (type: string) => {
     this.globalService.triggerView$.next({ type, payload: { deal: this.state.deal, fixDeal: true } });

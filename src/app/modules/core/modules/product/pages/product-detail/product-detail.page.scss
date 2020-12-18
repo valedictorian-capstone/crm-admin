@@ -9,10 +9,14 @@ nb-card {
             .image {
                 float: left;
                 width: 100%;
-                min-height: 8rem;
+                min-height: 15rem;
+                border: 1px solid silver;
                 display: flex;
                 justify-content: center;
+                border-radius: 10px;
                 align-items: center;
+                font: 600 13px/16px monospace, sans-serif;
+                color: #747678;
                 img {
                     width: 100%;
                     border-radius: 10px;
@@ -68,7 +72,6 @@ nb-card {
             }
         }
         .comments {
-            margin-top: 1rem;
             width: 100%;
             .comment {
                 width: 100%;
@@ -131,6 +134,15 @@ nb-card {
                     }
                 }
             }
+        }
+        .empty {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font: 600 13px/16px monospace, sans-serif;
+            color: #747678;
         }
     }
 }
