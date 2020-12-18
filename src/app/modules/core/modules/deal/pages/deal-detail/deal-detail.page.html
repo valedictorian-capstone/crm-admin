@@ -7,7 +7,7 @@
                     <b><nb-icon icon="edit-2-outline"></nb-icon> {{state.deal?.title}}</b>
                     <nb-icon icon="pricetags-outline"></nb-icon>
                 </div>
-                <div class="deal-header-right">
+                <div *ngIf="state.canUpdate" class="deal-header-right">
                     <button *ngIf="state.deal?.status === 'processing'" outline (click)="useWon()" nbButton size="small" class="desktop" status="success">WON</button>
                     <button *ngIf="state.deal?.status === 'processing'" outline (click)="useWon()" nbButton size="tiny" class="small-mobile" status="success">
                       <nb-icon icon="star-outline"></nb-icon>
@@ -60,7 +60,7 @@
   </span>
             </div>
         </div>
-        <div class="crm-deal-detail-feedback" *ngIf="state.deal?.status !== 'processing'">
+        <div class="crm-deal-detail-feedback" *ngIf="state.deal?.status !== 'processing' && state.canGetFeedback">
             <nb-card style="width: 100%; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                 <nb-card-header>
                     <nb-icon class="mr-2" icon="headphones-outline"></nb-icon>
@@ -84,10 +84,10 @@
                 </nb-card-footer>
             </nb-card>
         </div>
-        <div class="crm-deal-detail-products">
+        <div *ngIf="state.canUpdate" class="crm-deal-detail-products">
             <app-deal-product [deal]="state.deal"></app-deal-product>
         </div>
-        <div class="crm-deal-detail-content">
+        <div *ngIf="state.canUpdate" class="crm-deal-detail-content">
             <div class="crm-deal-detail-content-pin" *ngIf="state.pins.length > 0">
                 <app-deal-note *ngFor="let pin of state.pins" [data]="pin"></app-deal-note>
             </div>

@@ -45,26 +45,30 @@ export class LayoutPage implements OnInit {
   ) {
     this.useLoadMine();
     globalService.triggerView$
-    .pipe(
+      .pipe(
       )
       .subscribe((context) => this.useDialog(context));
-    }
+  }
 
-    ngOnInit() {
-      this.useSocket();
-      this.useLoadAll();
+  ngOnInit() {
+    this.useSocket();
+    this.useLoadAll();
   }
   useLoadMine = () => {
     this.store.select(authSelector.profile)
-    .pipe(
-      tap((profile) => {
-        this.you = profile;
-        if (Math.min(...this.you.roles.map((e) => e.level)) <= 0) {
-          this.canSetting = true;
-        }
-      })
-    )
-    .subscribe()
+      .pipe(
+        tap((profile) => {
+          if (profile) {
+            this.you = profile;
+            if (Math.min(...this.you.roles.map((e) => e.level)) <= 0) {
+              this.canSetting = true;
+            }
+          } else {
+            this.canSetting = false;
+          }
+        })
+      )
+      .subscribe()
   }
   useSocket = () => {
     this.authService.triggerValue$.subscribe((data) => {

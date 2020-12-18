@@ -24,10 +24,13 @@ interface IPipelineDetailPageState {
     customer: CustomerVM,
     assignees: [],
   };
-  canAdd: boolean;
   canAssign: boolean;
+  canAdd: boolean;
   canUpdate: boolean;
   canRemove: boolean;
+  canAddProcess: boolean;
+  canUpdateProcess: boolean;
+  canRemoveProcess: boolean;
 }
 @Component({
   selector: 'app-pipeline-detail',
@@ -50,10 +53,13 @@ export class PipelineDetailPage implements OnInit {
       range: undefined
     },
     dragging: false,
+    canAssign: false,
     canAdd: false,
     canUpdate: false,
-    canAssign: false,
     canRemove: false,
+    canAddProcess: false,
+    canUpdateProcess: false,
+    canRemoveProcess: false,
   }
   constructor(
     protected readonly router: Router,
@@ -76,10 +82,13 @@ export class PipelineDetailPage implements OnInit {
         .pipe(
           tap((profile) => {
             this.state.you = profile;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
             this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
             this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
             this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+            this.state.canAddProcess = this.state.you.roles.filter((role) => role.canCreateProcess).length > 0;
+            this.state.canUpdateProcess = this.state.you.roles.filter((role) => role.canUpdateProcess).length > 0;
+            this.state.canRemoveProcess = this.state.you.roles.filter((role) => role.canRemoveProcess).length > 0;
           })
         )
         .subscribe()

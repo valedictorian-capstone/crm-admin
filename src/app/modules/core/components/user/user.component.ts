@@ -26,7 +26,7 @@ export class UserComponent implements OnDestroy {
     protected readonly deviceService: DeviceDetectorService,
     protected readonly activatedRoute: ActivatedRoute,
     protected readonly store: Store<State>
-    ) {
+  ) {
     this.useLoadMine();
   }
 
@@ -35,9 +35,13 @@ export class UserComponent implements OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            if (Math.min(...this.state.you.roles.map((e) => e.level)) <= 0) {
-              this.state.canSetting = true;
+            if (profile) {
+              this.state.you = profile;
+              if (Math.min(...this.state.you.roles.map((e) => e.level)) <= 0) {
+                this.state.canSetting = true;
+              }
+            } else {
+              this.state.canSetting = false;
             }
           })
         )
@@ -45,11 +49,6 @@ export class UserComponent implements OnDestroy {
     );
   }
   useOut = async () => {
-    const fcmToken = localStorage.getItem('fcmToken');
-    console.log(fcmToken);
-    if (fcmToken) {
-      await this.service.remove(fcmToken).toPromise();
-    }
     const selectedPipeline = localStorage.getItem('selectedPipeline');
     localStorage.clear();
     if (selectedPipeline) {

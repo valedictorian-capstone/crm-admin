@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { ExtrasModule } from '@extras/extras.module';
 import {
   RoleAccountComponent,
-  RolePermissionComponent,
+  RoleSearchComponent,
+  RoleInformationComponent
 } from './components';
 import { RoleMainPage } from './pages';
 // import { } from './directives';
@@ -10,7 +11,8 @@ import { RoleMainPage } from './pages';
 import { RoleRoutes } from './role.routing';
 const COMPONENTS = [
   RoleAccountComponent,
-  RolePermissionComponent,
+  RoleSearchComponent,
+  RoleInformationComponent
 ];
 
 const PAGES = [

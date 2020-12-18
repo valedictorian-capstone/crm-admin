@@ -34,6 +34,9 @@ export class LeadItemComponent implements OnDestroy {
   useView = () => {
     this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.customer } });
   }
+  useDeal = () => {
+    this.globalService.triggerView$.next({ type: 'deal', payload: { customer: this.customer } });
+  }
   usePhone = (phone: string) => {
     window.open('tel:' + phone, '_self');
   }

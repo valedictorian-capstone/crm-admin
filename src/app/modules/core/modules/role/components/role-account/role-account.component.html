@@ -1,35 +1,40 @@
-<nb-card style="width: 95%; margin: auto; margin-bottom: 1rem; position: relative;">
-    <nb-card-header [style.paddingBottom]="employee.roles.length > 0 ? '2.5rem' : null" style="display: flex; align-items: center; min-height: 6rem; position: relative;">
+<nb-card style="width: 95%; margin: auto; border-radius: 10px;">
+    <nb-card-header style="display: flex; align-items: center; min-height: 6rem; position: relative; padding: 2rem 1.5rem 1rem 1.5rem;">
+        <ngx-spinner [name]="'contact-item-' + account.id" bdColor="#e6e6e6" [style.opacity]="0.8" [zIndex]="999" size="tiny" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
         <div style="width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; float: left; margin-right: 1rem; border: 1px solid #e5e5e5; cursor: pointer" (click)="useView()">
-            <img style="height: 3rem; width: 3rem; border-radius: 50%;" *ngIf="employee.avatar" [src]="employee.avatar" />
-            <b *ngIf="!employee.avatar">{{ employee.fullname | key }}</b>
+            <img style="height: 3rem; width: 3rem; border-radius: 50%;" *ngIf="account.avatar" [src]="account.avatar" />
+            <b *ngIf="!account.avatar">{{ account.fullname | key }}</b>
         </div>
-        <div style="width: calc(100% - 4rem);">
+        <div style="width: calc(100% - 6.5rem);">
             <div style="display: block; text-overflow: ellipsis; width: 100%; white-space: nowrap; overflow: hidden;">
                 <span style="cursor: pointer" (click)="useView()">
-          <nb-icon icon="person-outline" class="mr-2"></nb-icon>
-          <b [innerHTML]="employee.fullname | mask: search"></b>
-        </span>
+        <nb-icon icon="person-outline" class="mr-2"></nb-icon>
+        <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;" [innerHTML]="account.fullname"></b>
+      </span>
             </div>
-            <div *ngIf="you?.id !== employee.id">
-                <button nbButton status="success" (click)="usePhone(employee.phone)" class="mr-1 mt-1" outline shape="round" size="small">
-            <nb-icon icon="phone-outline"></nb-icon>
-          </button>
-                <button nbButton status="danger" (click)="useMail(employee.email)" class="mr-1 mt-1" outline shape="round" size="small">
-            <nb-icon icon="email-outline"></nb-icon>
-          </button>
-                <button *ngIf="canUpdate" nbButton status="primary" (click)="useEdit()" class="mr-1 mt-1" outline shape="round" size="small">
-            <nb-icon icon="edit-2-outline"></nb-icon>
-          </button>
-                <button nbButton status="info" (click)="useView()" class="mr-1 mt-1" outline shape="round" size="small">
-            <nb-icon icon="eye-outline"></nb-icon>
-          </button>
+            <button shape="round" nbButton status="success" (click)="usePhone(account.phone)" class="mr-1 mt-1" outline size="small">
+        <nb-icon icon="phone-outline"></nb-icon>
+      </button>
+            <button shape="round" nbButton status="danger" (click)="useMail(account.email)" class="mr-1 mt-1" outline size="small">
+        <nb-icon icon="email-outline"></nb-icon>
+      </button>
+            <button *ngIf="selectedRole" shape="round" nbButton [status]="useCheckRole() ? 'danger' : 'success'" (click)="useToggleRole()" class="position-absolute" [style.top]="'0.5rem'" [style.left]="'0.5rem'" outline size="tiny">
+        {{useCheckRole() ? 'Unset Role' : 'Set Role'}}
+      </button>
+            <button nbButton status="primary" (click)="useEdit()" class="position-absolute" outline [style.top]="'0.5rem'" [style.right]="'2.5rem'" size="tiny">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+      </button>
+            <button nbButton status="info" (click)="useView()" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+        <nb-icon icon="eye-outline"></nb-icon>
+      </button>
+            <button (click)="useToggleState()" nbButton [status]="!account.isDelete ? 'success' : 'danger'" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'4.5rem'" outline size="tiny">
+        {{!account.isDelete ? 'Active' : 'Disabled'}}
+      </button>
+            <div class="position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'">
+                <button *ngFor="let role of account.roles" nbButton status="info" class="ml-1" outline size="tiny">
+          {{role.name}}
+        </button>
             </div>
-            <b class="text-primary" *ngIf="you?.id === employee.id">(You)</b>
-        </div>
-        <nb-checkbox *ngIf="you?.id !== employee.id && canUpdate" status="success" [value]="employee.selected" style="position: absolute; top: 0.5rem; right: 0.5rem; cursor: pointer;" (checkedChange)="useToggle.emit($event)"></nb-checkbox>
-        <div style="position: absolute; bottom: 0.5rem; right: 0.5rem; cursor: pointer;">
-            <nz-tag *ngFor="let role of employee.roles; let i = index" [nzColor]="'geekblue'" class="mr-1">{{role.name}}</nz-tag>
         </div>
     </nb-card-header>
 </nb-card>

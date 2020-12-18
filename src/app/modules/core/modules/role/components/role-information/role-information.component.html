@@ -1,0 +1,20 @@
+<nb-card>
+    <nb-card-header style="padding: 0.5rem 1.5rem;">
+        <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Information</b>
+    </nb-card-header>
+    <nb-card-body>
+        <nb-form-field class="float-left mb-2 w-100" *ngFor="let role of roles">
+            <nb-icon *ngIf="role.id === selectedRole?.id" (click)="useEdit(role)" nbPrefix status="info" icon="edit-2-outline"></nb-icon>
+            <input [status]="role.id === selectedRole?.id ? 'primary' : 'basic'" class="border-radius-0" [value]="role.name" (click)="useSelect.emit(role); selectedRole = role" readonly [style.height]="'40px'" fullWidth placeholder="Search by name" nbInput />
+            <nb-icon *ngIf="role.id === selectedRole?.id" (click)="useRemove()" nbSuffix status="danger" icon="trash-2-outline"></nb-icon>
+        </nb-form-field>
+        <button nbButton class="mb-2" status="danger" outline fullWidth (click)="useSelect.emit(undefined); selectedRole = undefined">
+          <nb-icon icon="trash-2-outline" class="mr-2"></nb-icon>
+          Clear
+        </button>
+        <button nbButton status="success" outline fullWidth (click)="usePlus()">
+          <nb-icon icon="plus-outline" class="mr-2"></nb-icon>
+          New Role
+        </button>
+    </nb-card-body>
+</nb-card>

@@ -26,6 +26,7 @@
             <app-reuse-mail-sender *ngIf="context.type === 'mail'" [email]="context.payload.email" (useClose)="ref.close()"></app-reuse-mail-sender>
             <app-reuse-setting-profile *ngIf="context.type === 'setting-profile'" (useClose)="ref.close()"></app-reuse-setting-profile>
             <app-reuse-setting-password *ngIf="context.type === 'setting-password'" (useClose)="ref.close()"></app-reuse-setting-password>
+            <app-reuse-setting-role *ngIf="context.type === 'setting-role'" [role]="context.payload.role" (useClose)="ref.close()"></app-reuse-setting-role>
         </ng-template>
     </nb-layout-column>
 </nb-layout>

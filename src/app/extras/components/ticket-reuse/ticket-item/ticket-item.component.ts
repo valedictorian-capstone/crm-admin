@@ -96,7 +96,8 @@ export class TicketItemComponent implements OnInit, OnDestroy {
     this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.ticket.customer, isProfile: true } });
   }
   useRemove = (ref: NbDialogRef<any>) => {
-    this.useShowSpinner();
+    ref.close();
+    this.useShowSpinner('item-' + this.ticket.id);
     const subscription = this.service.remove(this.ticket.id)
       .pipe(
         tap((data) => {
@@ -107,13 +108,13 @@ export class TicketItemComponent implements OnInit, OnDestroy {
           return of(undefined);
         }),
         finalize(() => {
-          this.useHideSpinner(ref);
+          this.useHideSpinner('item-' + this.ticket.id);
         })
       ).subscribe();
     this.subscriptions.push(subscription);
   }
   useUpdate = (ref: NbDialogRef<any>) => {
-    this.useShowSpinner();
+    this.useShowSpinner('edit');
     const subscription = this.service.update(this.state.form.value)
       .pipe(
         tap((data) => {
@@ -124,13 +125,13 @@ export class TicketItemComponent implements OnInit, OnDestroy {
           return of(undefined);
         }),
         finalize(() => {
-          this.useHideSpinner(ref);
+          this.useHideSpinner('edit', ref);
         })
       ).subscribe();
     this.subscriptions.push(subscription);
   }
   useAssign = () => {
-    this.useShowSpinner();
+    this.useShowSpinner('item-' + this.ticket.id);
     const subscription = this.service.update({ id: this.ticket.id, assignee: { id: this.state.you.id } } as any)
       .pipe(
         tap((data) => {
@@ -141,19 +142,19 @@ export class TicketItemComponent implements OnInit, OnDestroy {
           return of(undefined);
         }),
         finalize(() => {
-          this.useHideSpinner();
+          this.useHideSpinner('item-' + this.ticket.id);
         })
       ).subscribe();
     this.subscriptions.push(subscription);
   }
-  useShowSpinner = () => {
-    this.spinner.show('ticket-edit');
+  useShowSpinner = (type: string) => {
+    this.spinner.show('ticket-' + type);
   }
-  useHideSpinner = (ref?: NbDialogRef<any>) => {
+  useHideSpinner = (type:string, ref?: NbDialogRef<any>) => {
     if (ref) {
       ref.close();
     }
-    this.spinner.hide('ticket-edit');
+    this.spinner.hide('ticket-' + type);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });

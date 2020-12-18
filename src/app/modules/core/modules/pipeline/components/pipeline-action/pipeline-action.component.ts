@@ -9,6 +9,9 @@ import { PipelineVM } from '@view-models';
 export class PipelineActionComponent {
   @Input() pipelines: PipelineVM[] = [];
   @Input() selectedPipeline: PipelineVM;
+  @Input() canAdd: boolean;
+  @Input() canUpdate: boolean;
+  @Input() canRemove: boolean;
   @Output() useAdd: EventEmitter<any> = new EventEmitter<any>();
   @Output() useEdit: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDelete: EventEmitter<any> = new EventEmitter<any>();

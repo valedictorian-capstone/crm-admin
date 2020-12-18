@@ -28,7 +28,7 @@ export class TicketEffect {
               if ((trigger.data as TicketVM).type === 'deal' && canGetTicketDeal) {
                 return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
               }
-              if ((trigger.data as TicketVM).type === 'orther' && canGetTicketSupport) {
+              if ((trigger.data as TicketVM).type === 'other' && canGetTicketSupport) {
                 return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
               }
             } else if (trigger.type === 'update') {
