@@ -237,6 +237,9 @@ export class RoleMainPage implements OnInit, OnDestroy {
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
   }
+  useImport = () => {
+    this.globalService.triggerView$.next({ type: 'import', payload: { importType: 'employee' } });
+  }
   useShowSpinner = () => {
     this.spinner.show('role-main');
   }

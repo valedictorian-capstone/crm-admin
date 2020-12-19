@@ -121,6 +121,9 @@
         <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="roleInformation" [nzTrigger]="'click'" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" outline status="info" nbButton size="small">
             <nb-icon icon="info-outline"></nb-icon>
                 </button>
+        <button class="float-right mr-2" (click)="useImport()" status="info" outline nbButton size="small">
+                  <nb-icon icon="upload" class="display-flex justify-content-center align-items-center" pack="font-awesome"></nb-icon>
+                  </button>
         <button class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
           <nb-icon icon="plus-outline"></nb-icon>
           </button>
