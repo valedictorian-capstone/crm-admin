@@ -51,7 +51,8 @@
                                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                                 "output": "/assets/"
                             },
-                            "src/manifest.webmanifest"
+                            "src/manifest.webmanifest",
+                            "src/web.config"
                         ],
                         "styles": [
                             "node_modules/angular-calendar/css/angular-calendar.css",
