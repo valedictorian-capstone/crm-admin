@@ -23,7 +23,7 @@
         <nb-accordion-item-body>
             <div class="avatar">
                 <div class="avatar-picker" [class.danger]="form.value.errorImage">
-                    <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
+                    <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect, form)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
                     <button *ngIf="!form.get('avatar').value" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
                     <img *ngIf="form.get('avatar').value" [src]="form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
                     <button *ngIf="form.get('avatar').value" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="form.value.errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>

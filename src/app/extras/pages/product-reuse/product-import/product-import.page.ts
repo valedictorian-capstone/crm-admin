@@ -61,8 +61,9 @@ export class ProductImportPage implements OnChanges, OnDestroy {
   ) { }
 
   ngOnChanges() {
+    console.log(this.data);
+    this.state.formArray.clear();
     if (this.data) {
-      this.state.formArray.clear();
       for (const item of this.data) {
         const group = new FormGroup({
           code: new FormControl('New Code', [Validators.required]),
@@ -141,6 +142,7 @@ export class ProductImportPage implements OnChanges, OnDestroy {
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
+    console.log(form);
     form.get('errorImage').setValue(false);
     const files: File[] = event.target.files;
     if (files.length > 1) {

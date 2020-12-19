@@ -11,6 +11,7 @@ export interface State {
   category: fromNormal.CategoryState;
   customer: fromNormal.CustomerState;
   device: fromNormal.DeviceState;
+  log: fromNormal.LogState;
   event: fromNormal.EventState;
   group: fromNormal.GroupState;
   notification: fromNormal.NotificationState;

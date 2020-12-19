@@ -1,4 +1,4 @@
-import { AccountVM, StageVM, CustomerVM, DealDetailVM, AttachmentVM, NoteVM, ActivityVM } from '@view-models';
+import { AccountVM, StageVM, CustomerVM, DealDetailVM, AttachmentVM, NoteVM, ActivityVM, LogVM } from '@view-models';
 
 export interface DealVM {
   id: string;
@@ -16,6 +16,7 @@ export interface DealVM {
   notes: NoteVM[];
   attachments: AttachmentVM[];
   activitys: ActivityVM[];
+  logs: LogVM[];
   isDelete: boolean;
   createdBy: string;
   updatedBy: string;

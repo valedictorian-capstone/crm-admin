@@ -136,6 +136,9 @@ export const environment = {
         active: 'api/v1/Note/Active',
         deactive: 'api/v1/Note/Deactive',
       },
+      log: {
+        main: 'api/v1/Log',
+      },
       attachment: {
         main: 'api/v1/Attachment',
         getById: 'api/v1/Attachment/',
