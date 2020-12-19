@@ -96,6 +96,12 @@ export class ProductSavePage implements OnInit, OnDestroy {
           this.product = data;
           this.state.form.addControl('id', new FormControl(this.product.id));
           this.state.form.patchValue(this.product);
+          (this.state.form.get('parameters') as FormArray).clear();
+          const parameters = this.product.parameters;
+          for (let i = 0; i < parameters.length; i++) {
+            const parameter = parameters[i];
+            this.useAddParameter(parameter)
+          }
         }),
         finalize(() => {
           this.useHideSpinner();
@@ -137,10 +143,10 @@ export class ProductSavePage implements OnInit, OnDestroy {
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
-  useAddParameter = () => {
+  useAddParameter = (parameter?: {value: string, label: string}) => {
     (this.state.form.get('parameters') as FormArray).push(new FormGroup({
-      label: new FormControl('', [Validators.required]),
-      value: new FormControl('', [Validators.required]),
+      label: new FormControl(parameter ? parameter.label : '', [Validators.required]),
+      value: new FormControl(parameter ? parameter.value : '', [Validators.required]),
     }));
   }
   useCheckCode = () => {

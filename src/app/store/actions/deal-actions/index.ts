@@ -4,4 +4,5 @@ export * from './deal-detail.action';
 export * from './deal.action';
 export * from './note.action';
 export * from './stage.action';
+export * from './log.action';
 export * from './pipeline.action';

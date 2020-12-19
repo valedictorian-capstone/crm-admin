@@ -23,6 +23,7 @@ export const reducers: ActionReducerMap<State> = {
   role: fromBasicReducers.roleReducer,
   ticket: fromBasicReducers.ticketReducer,
   activity: fromDealReducers.activityReducer,
+  log: fromDealReducers.logReducer,
   deal: fromDealReducers.dealReducer,
   attachment: fromDealReducers.attachmentReducer,
   dealDetail: fromDealReducers.dealDetailReducer,

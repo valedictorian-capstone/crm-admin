@@ -12,14 +12,14 @@ import {
   PipelineService,
   StageService
 } from '@services';
-import { AccountVM, ActivityVM, AttachmentVM, DealDetailVM, DealVM, NoteVM, PipelineVM, StageVM } from '@view-models';
+import { AccountVM, ActivityVM, AttachmentVM, DealDetailVM, DealVM, LogVM, NoteVM, PipelineVM, StageVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize, pluck, switchMap, tap, catchError, map, delay } from 'rxjs/operators';
 import { State } from '@store/states';
 import { Store } from '@ngrx/store';
 import { activitySelector, attachmentSelector, authSelector, dealDetailSelector, dealSelector, noteSelector, pipelineSelector, stageSelector } from '@store/selectors';
 import { Subscription, of } from 'rxjs';
-import { ActivityAction, AttachmentAction, DealAction, DealDetailAction, NoteAction, PipelineAction, StageAction } from '@store/actions';
+import { ActivityAction, AttachmentAction, DealAction, DealDetailAction, LogAction, NoteAction, PipelineAction, StageAction } from '@store/actions';
 interface IDealDetailPageState {
   id: string;
   you: AccountVM;
@@ -30,9 +30,10 @@ interface IDealDetailPageState {
   activitys: ActivityVM[];
   attachments: AttachmentVM[];
   dealDetails: DealDetailVM[];
-  dones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string })[];
+  logs: LogVM[];
+  dones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string } | LogVM & { subType: string })[];
   plans: (ActivityVM & { last?: boolean, state: string })[];
-  filterDones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string })[];
+  filterDones: (ActivityVM & { subType: string } | NoteVM & { subType: string } | AttachmentVM & { subType: string } | LogVM & { subType: string })[];
   done: string;
   type: 'note' | 'attachment' | 'activity';
   close: boolean;
@@ -61,6 +62,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
     activitys: [],
     attachments: [],
     dealDetails: [],
+    logs: [],
     dones: [],
     plans: [],
     filterDones: [],
@@ -150,30 +152,32 @@ export class DealDetailPage implements OnInit, OnDestroy {
         .pipe(
           tap((state) => {
             if (this.state.deal) {
-              console.log('note');
               const data = (state.note.ids as string[]).map((id) => state.note.entities[id]);
               this.state.notes = data.filter((note) => note.deal.id === this.state.id);
             }
           }),
           tap((state) => {
             if (this.state.deal) {
-              console.log('attachments');
               const data = (state.attachment.ids as string[]).map((id) => state.attachment.entities[id]);
               this.state.attachments = data.filter((attachment) => attachment.deal.id === this.state.id);
             }
           }),
           tap((state) => {
             if (this.state.deal) {
-              console.log('activitys');
               const data = (state.activity.ids as string[]).map((id) => state.activity.entities[id]);
               this.state.activitys = data.filter((activity) => activity.deal.id === this.state.id);
             }
           }),
           tap((state) => {
             if (this.state.deal) {
-              console.log('dealDetails');
               const data = (state.dealDetail.ids as string[]).map((id) => state.dealDetail.entities[id]);
               this.state.dealDetails = data.filter((dealDetail) => dealDetail.deal.id === this.state.id);
+            }
+          }),
+          tap((state) => {
+            if (this.state.deal) {
+              const data = (state.log.ids as string[]).map((id) => state.log.entities[id]);
+              this.state.logs = data.filter((log) => log.deal.id === this.state.id);
             }
           }),
           tap((deal) => {
@@ -202,6 +206,8 @@ export class DealDetailPage implements OnInit, OnDestroy {
             this.store.dispatch(AttachmentAction.ListAction({ res: this.state.attachments }));
             this.state.dealDetails = this.state.deal.dealDetails.map((e) => ({ ...e, deal: this.state.deal }));;
             this.store.dispatch(DealDetailAction.ListAction({ res: this.state.dealDetails }));
+            this.state.logs = this.state.deal.logs.map((e) => ({ ...e, deal: this.state.deal }));;
+            this.store.dispatch(LogAction.ListAction({ res: this.state.logs }));
           }),
           finalize(() => this.useHideSpinner())
         ).subscribe()
@@ -226,9 +232,15 @@ export class DealDetailPage implements OnInit, OnDestroy {
       .map((e) => ({
         ...e, subType: 'attachment'
       }));
-    this.state.dones = this.state.dones.concat(notes, attachments, activitys.filter((e) => e.status === 'done'))
-      .sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
-    this.state.plans = this.state.activitys.filter((e) => e.status === 'processing').sort((a, b) => a.createdAt < b.createdAt ? 1 : -1)
+    const logs = this.state.logs
+      .map((e) => ({
+        ...e, subType: 'log'
+      }));
+    this.state.dones = this.state.dones.concat(notes, attachments, logs, activitys.filter((e) => e.status === 'done'))
+      .sort((a, b) => a.updatedAt < b.updatedAt ? 1 : -1);
+    console.log(logs);
+    console.log(this.state.dones);
+    this.state.plans = this.state.activitys.filter((e) => e.status === 'processing').sort((a, b) => a.updatedAt < b.updatedAt ? 1 : -1)
       .map((e) => ({
         ...e,
         dateStart: new Date(e.dateStart),

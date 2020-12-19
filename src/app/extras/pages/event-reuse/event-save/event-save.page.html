@@ -11,6 +11,15 @@
             <input style="height: 3rem;" [status]="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown placeHolder="Name" shape="rectangle" [formControl]="state.form.get('name')"
                 nbInput size="large" />
         </nb-form-field>
+        <div class="image">
+            <div class="image-picker" [class.danger]="state.errorImage">
+                <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, imageSelect)" #imageSelect type="file" style="opacity: 0; height: 0; width: 0" />
+                <button *ngIf="!state.form.get('image').value" nbButton status="default" size="small" (click)="imageSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+                <img *ngIf="state.form.get('image').value" [src]="state.form.get('image').value" style="width: 100%; height: 100%;" />
+                <button *ngIf="state.form.get('image').value" style="position: absolute;" shape="round" nbButton [status]="state.errorImage ? 'danger' : 'primary'" size="small" (click)="imageSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+            </div>
+            <b *ngIf="state.errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{state.message}}</b>
+        </div>
         <span *ngIf="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">

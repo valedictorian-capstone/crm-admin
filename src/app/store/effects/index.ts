@@ -22,6 +22,7 @@ import {
   NoteEffect,
   PipelineEffect,
   StageEffect,
+  LogEffect
 } from './deal-effects';
 import { AuthEffect } from './extra-effects';
 export const effects = [
@@ -30,6 +31,7 @@ export const effects = [
   CustomerEffect,
   ProductEffect,
   RoleEffect,
+  LogEffect,
   TicketEffect,
   CommentEffect,
   DeviceEffect,

@@ -25,6 +25,7 @@ import {
   ProductAction,
   RoleAction,
   TicketAction,
+  LogAction,
 } from '@actions';
 @Component({
   selector: 'app-layout',
@@ -88,6 +89,7 @@ export class LayoutPage implements OnInit {
     this.store.dispatch(ActivityAction.SocketAction({
       requester: this.you
     }));
+    this.store.dispatch(LogAction.SocketAction());
     this.store.dispatch(AttachmentAction.SocketAction());
     this.store.dispatch(DealAction.SocketAction());
     this.store.dispatch(CategoryAction.SocketAction());

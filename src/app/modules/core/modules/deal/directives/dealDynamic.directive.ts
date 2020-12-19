@@ -1,6 +1,6 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, ViewContainerRef, OnInit } from '@angular/core';
 import { ActivityVM, AttachmentVM, NoteVM } from '@view-models';
-import { DealActivityComponent, DealAttachmentComponent, DealNoteComponent } from '../components';
+import { DealActivityComponent, DealAttachmentComponent, DealNoteComponent, DealLogComponent } from '../components';
 
 @Directive({
   selector: '[appDealDynamic]'
@@ -10,6 +10,7 @@ export class DealDynamicDirective implements OnInit {
   @Input() data: ActivityVM & {state: string} | NoteVM | AttachmentVM;
   componentRef: ComponentRef<DealActivityComponent | DealNoteComponent | DealAttachmentComponent>;
   componentMapper = {
+    log: DealLogComponent,
     activity: DealActivityComponent,
     note: DealNoteComponent,
     attachment: DealAttachmentComponent,
@@ -21,6 +22,7 @@ export class DealDynamicDirective implements OnInit {
 
   }
   ngOnInit() {
+    console.log('directect: ' + this.type);
     const factory = this.resolver.resolveComponentFactory<DealActivityComponent | DealNoteComponent | DealAttachmentComponent>(
       this.componentMapper[this.type]
     );

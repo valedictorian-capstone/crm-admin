@@ -15,6 +15,8 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 interface IEventSavePageState {
   form: FormGroup;
   today: Date;
+  errorImage: boolean;
+  message: string;
   groups: GroupVM[];
   showDateStartPicker: boolean;
   showDateEndPicker: boolean;
@@ -44,6 +46,8 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
     showDateStartPicker: false,
     showDateEndPicker: false,
     canDelete: false,
+    errorImage: false,
+    message: '',
     min: new Date(),
     minEnd: new Date(new Date().setDate(new Date().getDate() + 1)),
     max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
@@ -131,6 +135,7 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
             dateStart: new Date(this.payload.event.dateStart),
             groups: this.payload.event.groups.map((e) => e.id),
           });
+          (this.state.form.get('triggers') as FormArray).clear();
           const triggers = this.payload.event.triggers;
           for (let i = 0; i < triggers.length; i++) {
             const trigger = triggers[i];
@@ -211,10 +216,38 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
       name: new FormControl('', [Validators.required]),
       dateStart: new FormControl(new Date(), [Validators.required]),
       dateEnd: new FormControl(new Date(new Date().getTime() + (86400000 * 30)), [Validators.required]),
+      image: new FormControl(undefined),
       description: new FormControl(''),
       groups: new FormControl([]),
       triggers: new FormArray([]),
     });
+  }
+  useSelectImage = (event: any, input: HTMLElement) => {
+    this.state.errorImage = false;
+    const files: File[] = event.target.files;
+    if (files.length > 1) {
+      this.state.errorImage = true;
+      this.state.message = 'Only one image accepted';
+      input.nodeValue = undefined;
+    } else {
+      if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
+        if (files[0].size > 1024 * 1024 * 18) {
+          this.state.errorImage = true;
+          this.state.message = 'Only image size less than 18MB accept';
+          input.nodeValue = undefined;
+        } else {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            this.state.form.get('image').setValue(reader.result);
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      } else {
+        this.state.errorImage = true;
+        this.state.message = 'Only image file accept';
+        input.nodeValue = undefined;
+      }
+    }
   }
   useCheckTime = () => {
     this.state.min = new Date(this.state.form.get('dateStart').value);

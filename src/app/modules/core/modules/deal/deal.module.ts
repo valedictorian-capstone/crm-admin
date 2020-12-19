@@ -8,6 +8,7 @@ import {
   DealProductComponent,
   DealItemActivityComponent,
   DealItemComponent,
+  DealLogComponent,
   DealSearchComponent
 } from './components';
 import {
@@ -23,7 +24,8 @@ const COMPONENTS = [
   DealProductComponent,
   DealItemActivityComponent,
   DealItemComponent,
-  DealSearchComponent
+  DealSearchComponent,
+  DealLogComponent
 ];
 
 const PAGES = [
