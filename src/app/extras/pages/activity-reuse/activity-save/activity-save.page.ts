@@ -223,7 +223,7 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required]),
       type: new FormControl('email', [Validators.required]),
       location: new FormControl(''),
       status: new FormControl('processing'),

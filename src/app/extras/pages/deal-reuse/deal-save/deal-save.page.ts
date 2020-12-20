@@ -96,6 +96,7 @@ export class DealSavePage implements OnInit, OnDestroy {
     this.state.form = new FormGroup({
       title: new FormControl('New Deal', [Validators.required]),
       description: new FormControl(''),
+      service: new FormControl(undefined, [Validators.required]),
       status: new FormControl('processing'),
       stage: new FormControl(undefined, [Validators.required]),
       customer: new FormControl(undefined, [Validators.required]),

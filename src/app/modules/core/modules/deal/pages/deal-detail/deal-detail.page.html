@@ -4,7 +4,7 @@
         <div class="crm-deal-detail-information">
             <div class="deal-header">
                 <div class="deal-header-left" (click)="useEdit()">
-                    <b><nb-icon icon="edit-2-outline"></nb-icon> {{state.deal?.title}}</b>
+                    <b><nb-icon icon="edit-2-outline"></nb-icon> {{state.deal?.title}} - {{state.deal?.service}}</b>
                     <nb-icon icon="pricetags-outline"></nb-icon>
                 </div>
                 <div *ngIf="state.canUpdate" class="deal-header-right">
