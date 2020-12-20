@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { TokenVM } from '@view-models';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
 
-  constructor() { }
+  constructor(
+    protected readonly socket: Socket,
+  ) { }
   setToken(token: TokenVM) {
     localStorage.setItem(environment.token, JSON.stringify(token.accessToken));
     localStorage.setItem('fullname', JSON.stringify(token.fullname));
@@ -24,6 +27,7 @@ export class TokenService {
   }
 
   clearToken() {
+    this.socket.removeAllListeners();
     const selectedPipeline = localStorage.getItem('selectedPipeline');
     localStorage.clear();
     if (selectedPipeline) {

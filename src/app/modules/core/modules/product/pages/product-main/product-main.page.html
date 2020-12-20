@@ -1,6 +1,6 @@
 <nb-card class="h-100 w-100 position-relative">
     <ngx-spinner [name]="'product-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <nb-card-header style="padding: 1rem 2.25rem;">
+    <nb-card-header style="padding: 1rem 1rem;">
         <span class="display-flex align-items-center float-left h-100">
   <nb-icon icon="calendar-outline" class="mr-2"></nb-icon>
     <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Product</b>
@@ -28,7 +28,7 @@
     <nb-card-body class="p-0">
         <div class="crm-product">
             <div class='crm-product-body'>
-                <div nz-row style="width: 90%; margin: auto">
+                <div nz-row class="w-100">
                     <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6" *ngFor="let product of state.filterArray">
                         <app-product-item [search]="state.search.value" [product]="product"></app-product-item>
                     </div>

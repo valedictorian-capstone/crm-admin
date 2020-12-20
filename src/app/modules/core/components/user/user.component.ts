@@ -2,12 +2,12 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { DeviceService, GlobalService } from '@services';
+import { authSelector } from '@store/selectors';
 import { State } from '@store/states';
 import { AccountVM } from '@view-models';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { authSelector } from '@store/selectors';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -40,8 +40,6 @@ export class UserComponent implements OnDestroy {
               if (Math.min(...this.state.you.roles.map((e) => e.level)) <= 0) {
                 this.state.canSetting = true;
               }
-            } else {
-              this.state.canSetting = false;
             }
           })
         )
@@ -54,7 +52,7 @@ export class UserComponent implements OnDestroy {
     if (selectedPipeline) {
       localStorage.setItem('selectedPipeline', selectedPipeline);
     }
-    this.router.navigate(['auth']);
+    this.router.navigate(['auth/login']);
   }
   useProfile = () => {
     this.globalService.triggerView$.next({ type: 'setting-profile', payload: {} });

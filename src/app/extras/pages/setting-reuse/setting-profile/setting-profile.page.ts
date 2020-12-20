@@ -30,15 +30,15 @@ export class SettingProfilePage implements OnInit, OnDestroy {
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   subscriptions: Subscription[] = [];
   state: ISettingProfilePageState = {
-      you: undefined,
-      form: undefined,
-      showBirthday: false,
-      errorImage: false,
-      message: '',
-      phoneStage: 'done',
-      emailStage: 'done',
-      codeStage: 'done',
-    };
+    you: undefined,
+    form: undefined,
+    showBirthday: false,
+    errorImage: false,
+    message: '',
+    phoneStage: 'done',
+    emailStage: 'done',
+    codeStage: 'done',
+  };
   constructor(
     protected readonly service: AuthService,
     protected readonly employeeService: AccountService,
@@ -58,7 +58,9 @@ export class SettingProfilePage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
+          if (profile) {
+            this.state.you = profile;
+          }
         })
       )
       .subscribe();

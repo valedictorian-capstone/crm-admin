@@ -15,13 +15,11 @@ export class NoteEffect {
   public readonly socket$ = createEffect(() =>
   this.actions$.pipe(
     ofType(NoteAction.SocketAction),
-    tap(() => console.log('socket')),
+
     switchMap(action =>
       this.service.triggerSocket().pipe(
-        tap((data) => console.log('test', data)),
-
         map(trigger => {
-          console.log('effect-socket', trigger);
+
           if (trigger.type === 'create') {
             return NoteAction.SaveSuccessAction({ res: trigger.data as NoteVM });
           } else if (trigger.type === 'update') {
@@ -42,8 +40,6 @@ export class NoteEffect {
       ofType(NoteAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => NoteAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DealService, GlobalService } from '@services';
 import { AccountVM, DealVM, CustomerVM } from '@view-models';
@@ -9,6 +9,7 @@ import { State } from '@store/states';
 import { authSelector, dealSelector } from '@store/selectors';
 import { Subscription } from 'rxjs';
 import { DealAction } from '@store/actions';
+import * as XLSX from 'xlsx';
 interface IDealMainPageState {
   you: AccountVM;
   array: DealVM[];
@@ -91,15 +92,24 @@ export class DealMainPage implements OnInit, OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+            if (profile) {
+              this.state.you = profile;
+              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+            }
           })
         )
         .subscribe()
     )
+  }
+  useExport = (table: ElementRef<any>) => {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
+    ws['!cols'] = [{ width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 },];
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Deal Export');
+    XLSX.writeFile(wb, 'deal-export-' + new Date().getTime() + '.xlsx');
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'deal', payload: {} });

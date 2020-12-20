@@ -40,8 +40,10 @@ export class EmployeeItemComponent implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canAccessRole).length > 0 && Math.min(...this.state.you.roles.map((e) => e.level)) < Math.min(...this.employee.roles.map((e) => e.level));
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canAccessRole).length > 0 && Math.min(...this.state.you.roles.map((e) => e.level)) < Math.min(...this.employee.roles.map((e) => e.level));
+          }
         })
       )
       .subscribe();

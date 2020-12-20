@@ -135,12 +135,14 @@ export class DealDetailPage implements OnInit, OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            this.state.canGetAssign = this.state.you.roles.filter((role) => role.canGetAssignDeal).length > 0;
-            this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+            if (profile) {
+              this.state.you = profile;
+              this.state.canGetAssign = this.state.you.roles.filter((role) => role.canGetAssignDeal).length > 0;
+              this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
+              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+            }
           })
         )
         .subscribe()
@@ -238,8 +240,6 @@ export class DealDetailPage implements OnInit, OnDestroy {
       }));
     this.state.dones = this.state.dones.concat(notes, attachments, logs, activitys.filter((e) => e.status === 'done'))
       .sort((a, b) => a.updatedAt < b.updatedAt ? 1 : -1);
-    console.log(logs);
-    console.log(this.state.dones);
     this.state.plans = this.state.activitys.filter((e) => e.status === 'processing').sort((a, b) => a.updatedAt < b.updatedAt ? 1 : -1)
       .map((e) => ({
         ...e,

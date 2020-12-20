@@ -66,11 +66,13 @@ export class ProductMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-          this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          }
         })
       )
       .subscribe();
@@ -104,7 +106,7 @@ export class ProductMainPage implements OnInit, OnDestroy {
   useFilter = () => {
     this.state.filterArray = this.state.array.filter((e) =>
       (e.name.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
-      e.code.toLowerCase().includes(this.state.search.value.toLowerCase()))
+        e.code.toLowerCase().includes(this.state.search.value.toLowerCase()))
       && (this.state.search.category ? (e.category.id === this.state.search.category.id) : true)
     );
   }
@@ -126,7 +128,6 @@ export class ProductMainPage implements OnInit, OnDestroy {
     value: '',
     category: CategoryVM,
   }) => {
-    console.log(search);
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
   }

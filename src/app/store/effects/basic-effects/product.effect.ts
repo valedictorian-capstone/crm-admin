@@ -15,13 +15,9 @@ export class ProductEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductAction.SocketAction),
-      tap(() => console.log('socket')),
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
             if (trigger.type === 'create') {
               return ProductAction.SaveSuccessAction({ res: trigger.data as ProductVM });
             } else if (trigger.type === 'update') {
@@ -42,8 +38,6 @@ export class ProductEffect {
       ofType(ProductAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => ProductAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

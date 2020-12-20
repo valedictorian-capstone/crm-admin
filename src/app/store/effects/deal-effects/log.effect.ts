@@ -15,11 +15,9 @@ export class LogEffect {
   public readonly socket$ = createEffect(() =>
   this.actions$.pipe(
     ofType(LogAction.SocketAction),
-    tap(() => console.log('socket')),
+
     switchMap(action =>
       this.service.triggerSocket().pipe(
-        tap((data) => console.log('test', data)),
-
         map(trigger => {
           if (trigger.type === 'create') {
             return LogAction.SaveSuccessAction({ res: trigger.data as LogVM });
@@ -41,8 +39,6 @@ export class LogEffect {
       ofType(LogAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => LogAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

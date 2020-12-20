@@ -205,9 +205,11 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateProduct).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveProduct).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateProduct).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveProduct).length > 0;
+          }
         })
       )
       .subscribe()

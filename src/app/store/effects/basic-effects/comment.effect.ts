@@ -15,13 +15,9 @@ export class CommentEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CommentAction.SocketAction),
-      tap(() => console.log('socket')),
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
             if (trigger.type === 'create') {
               return CommentAction.SaveSuccessAction({ res: trigger.data as CommentVM });
             } else if (trigger.type === 'update') {

@@ -79,10 +79,12 @@ export class TicketMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
-          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignCustomer).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignCustomer).length > 0;
+          }
         })
       )
       .subscribe();

@@ -74,10 +74,12 @@ export class EventMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateEvent).length > 0;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateEvent).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveEvent).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateEvent).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateEvent).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveEvent).length > 0;
+          }
         })
       )
       .subscribe();
@@ -108,7 +110,7 @@ export class EventMainPage implements OnInit, OnDestroy {
             this.useFilter();
           }
         })
-    ).subscribe()
+      ).subscribe()
     this.subscriptions.push(subscription);
   }
   useReload = () => {
@@ -120,7 +122,6 @@ export class EventMainPage implements OnInit, OnDestroy {
     }));
   }
   useFilter = () => {
-    console.log(this.state.array);
     if (this.state.stage === 'calendar') {
       this.state.events = this.state.array.map((e) => ({
         id: e.id,
@@ -153,7 +154,6 @@ export class EventMainPage implements OnInit, OnDestroy {
     range: { start: Date, end: Date },
     name: string,
   }) => {
-    console.log(search);
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
   }

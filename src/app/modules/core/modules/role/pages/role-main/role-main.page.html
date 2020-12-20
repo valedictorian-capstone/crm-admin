@@ -107,7 +107,7 @@
 
 <nb-card class="h-100 w-100 position-relative">
     <ngx-spinner [name]="'role-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <nb-card-header style="padding: 1rem 2.25rem;">
+    <nb-card-header style="padding: 1rem 1rem;">
         <span class="display-flex align-items-center float-left h-100" style="max-width: 50%;">
     <nb-icon icon="settings-2-outline" class="mr-2"></nb-icon>
       <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">{{state.selectedRole ? state.selectedRole.name : 'Settings'}}</b>
@@ -137,7 +137,7 @@
     <nb-card-body class="p-0">
         <div class="crm-account">
             <div class='crm-account-body'>
-                <div nz-row style="width: 90%; margin: auto">
+                <div nz-row class="w-100">
                     <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="8" [nzXXl]="8" *ngFor="let account of state.filterArray">
                         <app-role-account [selectedRole]="state.selectedRole" [account]="account"></app-role-account>
                     </div>

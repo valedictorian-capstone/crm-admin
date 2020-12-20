@@ -71,7 +71,6 @@ export class PipelineStageComponent implements OnInit, OnChanges, OnDestroy {
         }
         if (event.addedIndex != null) {
           const deal = { ...event.payload };
-          console.log(deal);
           deal.changing = true;
           deal.stage = { ...this.stage, deals: undefined };
           this.realDeals.push(deal);
@@ -104,7 +103,6 @@ export class PipelineStageComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
   useFilter = () => {
-    console.log(this.search);
     this.deals = this.realDeals.filter((deal) => deal.status.includes(this.search.status));
     this.deals = this.realDeals.filter((deal) =>
       (deal.status.includes(this.search.status)) &&

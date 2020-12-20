@@ -23,10 +23,8 @@ export class CoreGuard implements CanLoad {
     protected readonly store: Store<State>
   ) { }
   canLoad(route: Route, segments: UrlSegment[]) {
-    console.log(route);
     return this.store.select(authSelector.profile)
       .pipe(
-        tap(console.log),
         map((res) => {
           if (res) {
             let check = false;
@@ -38,15 +36,15 @@ export class CoreGuard implements CanLoad {
             if (check) {
               return true;
             } else {
-              this.router.navigate(['auth']);
+              this.router.navigate(['core']);
               return false;
             }
           }
-          this.router.navigate(['auth']);
+          this.router.navigate(['auth/login']);
           return false;
         }),
         catchError(() => {
-          this.router.navigate(['auth']);
+          this.router.navigate(['auth/login']);
           return of(false);
         })
       );

@@ -35,6 +35,5 @@ export class DashboardDealInMonthComponent implements OnInit {
       this.filterDeals = this.statuss.find((e) => e.status === this.search.status.status).data
         .filter((deal) => deal.title.toLowerCase().includes(this.search.title.toLowerCase()));
     }
-    console.log(this.search.status);
   }
 }

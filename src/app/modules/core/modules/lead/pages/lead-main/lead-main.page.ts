@@ -1,14 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NbToastrService } from '@nebular/theme';
 import { Store } from '@ngrx/store';
 import { CustomerService, GlobalService } from '@services';
 import { CustomerAction } from '@store/actions';
-import { authSelector, customerSelector } from '@store/selectors';
+import { authSelector } from '@store/selectors';
 import { State } from '@store/states';
-import { AccountVM, CustomerVM } from '@view-models';
+import { AccountVM, CustomerVM, GroupVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { of, Subscription } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 interface ILeadMainPageState {
   array: CustomerVM[];
   filterArray: CustomerVM[];
@@ -45,6 +47,7 @@ export class LeadMainPage implements OnInit, OnDestroy {
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly activatedRoute: ActivatedRoute,
+    protected readonly toastrService: NbToastrService,
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
@@ -57,11 +60,13 @@ export class LeadMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-          this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          }
         })
       )
       .subscribe();
@@ -80,7 +85,7 @@ export class LeadMainPage implements OnInit, OnDestroy {
             this.useFilter();
           }
         })
-    ).subscribe()
+      ).subscribe()
     this.subscriptions.push(subscription);
   }
   useReload = () => {
@@ -93,9 +98,9 @@ export class LeadMainPage implements OnInit, OnDestroy {
   }
   useFilter = () => {
     this.state.filterArray = this.state.array.filter((e) =>
-      (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
-        e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
-        e.email.toLowerCase().includes(this.state.search.value.toLowerCase()))
+    (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+      e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+      e.email.toLowerCase().includes(this.state.search.value.toLowerCase()))
     );
   }
   usePlus = () => {
@@ -107,7 +112,6 @@ export class LeadMainPage implements OnInit, OnDestroy {
   useSearch = (search: {
     value: string;
   }) => {
-    console.log(search);
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
   }
@@ -118,6 +122,34 @@ export class LeadMainPage implements OnInit, OnDestroy {
     setTimeout(() => {
       this.spinner.hide('lead-main');
     }, 1000);
+  }
+  useToggleState = (customer: CustomerVM) => {
+    this.useShowSpinner();
+    const message = `${customer.isDelete ? 'Active' : 'Disabled'} ${customer.fullname} `;
+    const subscription = (!customer.isDelete
+      ? this.customerService.disabled(customer.id)
+      : this.customerService.restore(customer.id))
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', message + 'successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', message + 'fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
+  }
+  useExport = (table: ElementRef<any>) => {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
+    ws['!cols'] = [{ width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }];
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Lead Export');
+    XLSX.writeFile(wb, 'lead-export-' + new Date().getTime() + '.xlsx');
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

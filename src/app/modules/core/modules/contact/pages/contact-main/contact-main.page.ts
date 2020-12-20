@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NbToastrService } from '@nebular/theme';
 import { Store } from '@ngrx/store';
 import { CustomerService, GlobalService } from '@services';
 import { CustomerAction } from '@store/actions';
@@ -7,8 +8,9 @@ import { authSelector, customerSelector } from '@store/selectors';
 import { State } from '@store/states';
 import { AccountVM, CustomerVM, GroupVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 interface IContactMainPageState {
   array: CustomerVM[];
   filterArray: CustomerVM[];
@@ -47,6 +49,7 @@ export class ContactMainPage implements OnInit, OnDestroy {
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly activatedRoute: ActivatedRoute,
+    protected readonly toastrService: NbToastrService,
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
@@ -72,11 +75,13 @@ export class ContactMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
-          this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+            this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
+          }
         })
       )
       .subscribe();
@@ -111,9 +116,16 @@ export class ContactMainPage implements OnInit, OnDestroy {
       (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
         e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
         e.email.toLowerCase().includes(this.state.search.value.toLowerCase()))
-        && (this.state.search.group != null
-          ? e.groups.filter((group) => group.id === this.state.search.group.id).length > 0 : true)
+      && (this.state.search.group != null
+        ? e.groups.filter((group) => group.id === this.state.search.group.id).length > 0 : true)
     );
+  }
+  useExport = (table: ElementRef<any>) => {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
+    ws['!cols'] = [{ width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }, { width: 40 }];
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Customer Export');
+    XLSX.writeFile(wb, 'customer-export-' + new Date().getTime() + '.xlsx');
   }
   usePlus = () => {
     this.globalService.triggerView$.next({ type: 'customer', payload: {} });
@@ -125,9 +137,29 @@ export class ContactMainPage implements OnInit, OnDestroy {
     value: string;
     group: GroupVM
   }) => {
-    console.log(search);
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
+  }
+  useToggleState = (customer: CustomerVM) => {
+    this.useShowSpinner();
+    const message = `${customer.isDelete ? 'Active' : 'Disabled'} ${customer.fullname} `;
+    const subscription = (!customer.isDelete
+      ? this.customerService.disabled(customer.id)
+      : this.customerService.restore(customer.id))
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', message + 'successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', message + 'fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe();
+    this.subscriptions.push(subscription);
   }
   useShowSpinner = () => {
     this.spinner.show('contact-main');

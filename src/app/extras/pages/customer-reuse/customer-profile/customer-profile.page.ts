@@ -59,8 +59,10 @@ export class CustomerProfilePage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          }
         })
       )
       .subscribe();

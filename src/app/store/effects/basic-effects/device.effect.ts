@@ -15,13 +15,9 @@ export class DeviceEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DeviceAction.SocketAction),
-      tap(() => console.log('socket')),
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
             if (trigger.type === 'create') {
               return DeviceAction.SaveSuccessAction({ res: trigger.data as DeviceVM });
             } else if (trigger.type === 'update') {
@@ -42,8 +38,6 @@ export class DeviceEffect {
       ofType(DeviceAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => DeviceAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

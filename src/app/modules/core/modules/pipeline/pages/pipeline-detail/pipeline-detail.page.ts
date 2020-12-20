@@ -81,14 +81,16 @@ export class PipelineDetailPage implements OnInit {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
-            this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
-            this.state.canAddProcess = this.state.you.roles.filter((role) => role.canCreateProcess).length > 0;
-            this.state.canUpdateProcess = this.state.you.roles.filter((role) => role.canUpdateProcess).length > 0;
-            this.state.canRemoveProcess = this.state.you.roles.filter((role) => role.canRemoveProcess).length > 0;
+            if (profile) {
+              this.state.you = profile;
+              this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canAddProcess = this.state.you.roles.filter((role) => role.canCreateProcess).length > 0;
+              this.state.canUpdateProcess = this.state.you.roles.filter((role) => role.canUpdateProcess).length > 0;
+              this.state.canRemoveProcess = this.state.you.roles.filter((role) => role.canRemoveProcess).length > 0;
+            }
           })
         )
         .subscribe()

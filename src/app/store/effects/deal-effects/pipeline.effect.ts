@@ -15,13 +15,11 @@ export class PipelineEffect {
   public readonly socket$ = createEffect(() =>
   this.actions$.pipe(
     ofType(PipelineAction.SocketAction),
-    tap(() => console.log('socket')),
+
     switchMap(action =>
       this.service.triggerSocket().pipe(
-        tap((data) => console.log('test', data)),
-
         map(trigger => {
-          console.log('effect-socket', trigger);
+
           if (trigger.type === 'create') {
             return PipelineAction.SaveSuccessAction({ res: trigger.data as PipelineVM });
           } else if (trigger.type === 'update') {

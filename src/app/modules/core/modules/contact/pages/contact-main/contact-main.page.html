@@ -1,6 +1,6 @@
 <nb-card class="h-100 w-100 position-relative">
     <ngx-spinner [name]="'contact-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <nb-card-header style="padding: 1rem 2.25rem;">
+    <nb-card-header style="padding: 1rem 1rem;">
         <span class="display-flex align-items-center float-left h-100">
     <nb-icon icon="calendar-outline" class="mr-2"></nb-icon>
       <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Customer</b>
@@ -14,6 +14,9 @@
         <button *ngIf="state.canImport" class="float-right mr-2" (click)="useImport()" status="info" outline nbButton size="small">
           <nb-icon icon="upload" class="display-flex justify-content-center align-items-center" pack="font-awesome"></nb-icon>
           </button>
+        <button class="float-right mr-2" (click)="useExport(export)" status="success" outline nbButton size="small">
+            <nb-icon icon="download-outline"></nb-icon>
+            </button>
         <button *ngIf="state.canAdd" class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
           <nb-icon icon="plus-outline"></nb-icon>
           </button>
@@ -24,12 +27,59 @@
     <nb-card-body class="p-0">
         <div class="crm-customer">
             <div class='crm-customer-body'>
-                <div nz-row style="width: 90%; margin: auto">
+                <div nz-row class="w-100">
                     <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="8" [nzXXl]="8" *ngFor="let customer of state.filterArray">
-                        <app-contact-item [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" [search]="state.search.value" [customer]="customer"></app-contact-item>
+                        <app-contact-item [canUpdate]="state.canUpdate" (useToggleState)="useToggleState(customer)" [canRemove]="state.canRemove" [search]="state.search.value" [customer]="customer"></app-contact-item>
                     </div>
                 </div>
             </div>
         </div>
     </nb-card-body>
 </nb-card>
+<table #export style="display: none;">
+    <thead>
+        <tr>
+            <th>fullname</th>
+            <th>email</th>
+            <th>phone</th>
+            <th>type</th>
+            <th>street</th>
+            <th>city</th>
+            <th>state</th>
+            <th>country</th>
+            <th>company</th>
+            <th>fax</th>
+            <th>website</th>
+            <th>source</th>
+            <th>skypeName</th>
+            <th>facebook</th>
+            <th>twitter</th>
+            <th>totalDeal</th>
+            <th>totalSpending</th>
+            <th>frequency</th>
+            <th>group</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of state.array">
+            <th>{{item.fullname}}</th>
+            <th>{{item.email}}</th>
+            <th>{{item.phone}}</th>
+            <th>{{item.type}}</th>
+            <th>{{item.street}}</th>
+            <th>{{item.city}}</th>
+            <th>{{item.state}}</th>
+            <th>{{item.country}}</th>
+            <th>{{item.company}}</th>
+            <th>{{item.fax}}</th>
+            <th>{{item.website}}</th>
+            <th>{{item.source}}</th>
+            <th>{{item.skypeName}}</th>
+            <th>{{item.facebook}}</th>
+            <th>{{item.twitter}}</th>
+            <th>{{item.totalDeal}}</th>
+            <th>{{item.totalSpending}}</th>
+            <th>{{item.frequency}}</th>
+        </tr>
+    </tbody>
+</table>

@@ -30,6 +30,7 @@ export class InterceptorService {
         (err: any) => {
           if (err) {
             if (err.status === 401) {
+              (err);
               this.tokenService.clearToken();
               this.router.navigate(['auth/login']);
             }

@@ -95,7 +95,7 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
             ? 'Disabled account successful' : 'Active account successful', { duration: 3000 });
         }),
         catchError((err) => {
-          console.log(err);
+          (err);
           this.toastrService.danger('', (!this.account.isDelete
             ? 'Disabled account fail! ' : 'Active account fail! ') + err.message, { duration: 3000 });
           return of(undefined);
