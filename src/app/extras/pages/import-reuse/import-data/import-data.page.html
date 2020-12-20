@@ -8,9 +8,9 @@
     </nb-card-header>
     <nb-card-body>
         <div class="mb-2" *ngIf="!importType">
-            <button *ngIf="state.canImportCustomer" nbButton class="mr-1" [status]="state.type === 'customer' ? 'primary' : 'basic'" (click)="state.type = 'customer'; data = undefined" size="small">Customer</button>
-            <button *ngIf="state.canImportProduct" nbButton class="mr-1" [status]="state.type === 'product' ? 'primary' : 'basic'" (click)="state.type = 'product'; data = undefined" size="small">Product</button>
-            <button *ngIf="state.canImportEmployee" nbButton class="mr-1" [status]="state.type === 'employee' ? 'primary' : 'basic'" (click)="state.type = 'employee'; data = undefined" size="small">Account</button>
+            <button *ngIf="state.canImportCustomer" nbButton class="mr-1" [status]="state.type === 'customer' ? 'primary' : 'basic'" (click)="state.type = 'customer'; state.data = undefined" size="small">Customer</button>
+            <button *ngIf="state.canImportProduct" nbButton class="mr-1" [status]="state.type === 'product' ? 'primary' : 'basic'" (click)="state.type = 'product'; state.data = undefined" size="small">Product</button>
+            <button *ngIf="state.canImportEmployee" nbButton class="mr-1" [status]="state.type === 'employee' ? 'primary' : 'basic'" (click)="state.type = 'employee'; state.data = undefined" size="small">Account</button>
         </div>
         <nz-upload *ngIf="!state.data" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
             <p class="ant-upload-drag-icon">
