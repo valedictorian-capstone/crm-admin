@@ -11,7 +11,7 @@
             <input style="height: 3rem;" [status]="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Name'" shape="rectangle" [formControl]="state.form.get('name')"
                 nbInput size="large" />
         </nb-form-field>
-        <span *ngIf="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name with true selected type</span>
+        <span *ngIf="state.form.get('name').invalid && (state.form.get('name').touched || state.form.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
         <div class="crm-activity-type">
             <a class="crm-activity-type-item" (click)="state.form.get('type').setValue('email');" [class.selected]="state.form.get('type').value === 'email'" [nbTooltip]="'Email'" [nbTooltipPlacement]="'bottom'">
                 <nb-icon icon="email-outline"></nb-icon>

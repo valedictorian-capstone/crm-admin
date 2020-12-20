@@ -60,7 +60,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
     deal: undefined,
     stage: undefined,
     pipeline: undefined,
-    formFeedback : undefined,
+    formFeedback: undefined,
     notes: [],
     activitys: [],
     attachments: [],
@@ -160,6 +160,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
       this.store.select((state) => state)
         .pipe(
           tap((state) => {
+            console.log(state.deal);
             if (this.state.deal) {
               const data = (state.note.ids as string[]).map((id) => state.note.entities[id]);
               this.state.notes = data.filter((note) => note.deal.id === this.state.id);
@@ -189,9 +190,17 @@ export class DealDetailPage implements OnInit, OnDestroy {
               this.state.logs = data.filter((log) => log.deal.id === this.state.id);
             }
           }),
-          tap((deal) => {
+          tap((state) => {
             if (!this.state.deal) {
               this.useReload();
+            } else {
+              const deal = state.deal.entities[this.state.id];
+              if (deal) {
+                this.state.deal = deal;
+                this.state.stage = this.state.deal.stage;
+                this.state.pipeline = this.state.stage.pipeline;
+                this.useInitForm();
+              }
             }
           }),
           tap(() => this.useFilter())
