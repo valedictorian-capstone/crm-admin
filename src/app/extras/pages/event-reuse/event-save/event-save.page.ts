@@ -23,6 +23,7 @@ interface IEventSavePageState {
   canDelete: boolean;
   config: AngularEditorConfig;
   min: Date;
+  minStart: Date;
   minEnd: Date;
   max: Date;
 }
@@ -49,7 +50,8 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
     errorImage: false,
     message: '',
     min: new Date(),
-    minEnd: new Date(new Date().setDate(new Date().getDate() + 1)),
+    minStart: new Date(new Date().setDate(new Date().getDate() - 1)),
+    minEnd: new Date(),
     max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
     config: {
       editable: true,
@@ -251,7 +253,7 @@ export class EventSavePage implements OnInit, OnChanges, OnDestroy {
   }
   useCheckTime = () => {
     this.state.min = new Date(this.state.form.get('dateStart').value);
-    this.state.minEnd = new Date(new Date(this.state.form.get('dateStart').value).setDate(new Date(this.state.form.get('dateStart').value).getDate() + 5));
+    this.state.minEnd = new Date(this.state.form.get('dateStart').value);
     (this.state.form.get('triggers') as FormArray).controls.forEach((trigger) => {
       const time = trigger.get('time');
       if (time.value > this.state.form.get('dateEnd').value || time.value < this.state.form.get('dateStart').value) {

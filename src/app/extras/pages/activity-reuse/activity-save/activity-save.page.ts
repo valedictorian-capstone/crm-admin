@@ -20,6 +20,7 @@ interface IActivitySavePageState {
   config: AngularEditorConfig;
   today: Date;
   min: Date;
+  minStart: Date;
   minEnd: Date;
   max: Date;
   showDateStartPicker: boolean;
@@ -75,7 +76,8 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
     },
     today: new Date(),
     min: new Date(),
-    minEnd: new Date(new Date().setDate(new Date().getDate() + 1)),
+    minStart: new Date(new Date().setDate(new Date().getDate() - 1)),
+    minEnd: new Date(),
     max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
     showDateStartPicker: false,
     showDateEndPicker: false
@@ -151,7 +153,7 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
   }
   useCheckTime = () => {
     this.state.min = new Date(this.state.form.get('dateStart').value);
-    this.state.minEnd = new Date(new Date(this.state.form.get('dateStart').value).setDate(new Date(this.state.form.get('dateStart').value).getDate() + 5));
+    this.state.minEnd = new Date(this.state.form.get('dateStart').value);
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
