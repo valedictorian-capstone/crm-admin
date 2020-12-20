@@ -4,7 +4,7 @@ import { TicketService } from '@services';
 import { TicketAction } from '@actions';
 import { catchError, delay, map, switchMap, tap, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { TicketVM } from '@view-models';
+import { AccountVM, TicketVM } from '@view-models';
 
 @Injectable()
 export class TicketEffect {
@@ -19,25 +19,15 @@ export class TicketEffect {
       switchMap(action =>
         this.service.triggerSocket().pipe(
           map(trigger => {
-
             if (trigger.type === 'create') {
-              const canGetTicketDeal = action.requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
-              const canGetTicketSupport = action.requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
-              if ((trigger.data as TicketVM).type === 'deal' && canGetTicketDeal) {
-                return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
-              }
-              if ((trigger.data as TicketVM).type === 'other' && canGetTicketSupport) {
+              if (this.check(action.requester, trigger.data as TicketVM)) {
                 return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
               }
             } else if (trigger.type === 'update') {
-              if ((trigger.data as TicketVM).assignee) {
-                if ((trigger.data as TicketVM).assignee.id === action.requester.id) {
-                  return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
-                } else {
-                  return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
-                }
-              } else {
+              if (this.check(action.requester, trigger.data as TicketVM)) {
                 return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
+              } else {
+                return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
               }
             } else if (trigger.type === 'remove') {
               return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
@@ -77,4 +67,33 @@ export class TicketEffect {
       )
     )
   );
+  private readonly check = (requester: AccountVM, ticket: TicketVM) => {
+    const canGetTicketDeal = requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
+    const canGetTicketSupport = requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
+    const canGetFeedbackTicket = requester.roles.filter((e) => e.canGetFeedbackTicket).length > 0;
+    if (canGetTicketDeal && canGetTicketSupport) {
+      return true;
+    } else if (!canGetTicketDeal && !canGetTicketSupport) {
+      if (canGetFeedbackTicket && ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)) {
+        return true;
+      }
+    } else {
+      if (canGetTicketDeal) {
+        if (canGetFeedbackTicket && ((ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) ||  (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
+          return true;
+        } else if (ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {
+          return true;
+        }
+      }
+      if (canGetTicketSupport) {
+        if (canGetFeedbackTicket && ((ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) ||  (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
+          return true;
+        } else if (ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {
+          return true;
+        }
+      }
+
+    }
+    return false;
+  }
 }

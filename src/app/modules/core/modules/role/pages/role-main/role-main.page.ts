@@ -82,7 +82,7 @@ export class RoleMainPage implements OnInit, OnDestroy {
       },
       {
         label: 'AssignCustomer',
-        value: 'canAssignCustomer'
+        value: 'canAssignTicket'
       },
       {
         label: 'GetAllCustomer',

@@ -13,6 +13,8 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 interface ITicketItemComponentState {
   you: AccountVM;
   canUpdate: boolean;
+  canGetFeedback: boolean;
+  canAssign: boolean;
   canRemove: boolean;
   form: FormGroup;
   config: AngularEditorConfig;
@@ -29,6 +31,8 @@ export class TicketItemComponent implements OnInit, OnDestroy {
     you: undefined,
     canUpdate: false,
     canRemove: false,
+    canAssign: false,
+    canGetFeedback: false,
     form: undefined,
     config: {
       editable: true,
@@ -67,9 +71,9 @@ export class TicketItemComponent implements OnInit, OnDestroy {
     protected readonly dialogService: NbDialogService,
     protected readonly store: Store<State>
   ) {
-    this.useLoadMine();
   }
   ngOnInit() {
+    this.useLoadMine();
     this.useInitForm();
   }
   useLoadMine = () => {
@@ -78,8 +82,10 @@ export class TicketItemComponent implements OnInit, OnDestroy {
         tap((profile) => {
           if (profile) {
             this.state.you = profile;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignTicket).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0 && (this.ticket.assignee ? (this.ticket.assignee.id === this.state.you.id) : true);
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0 && this.ticket.assignee?.id === this.state.you.id;
+            this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackTicket).length > 0 && (this.ticket.assignee ? this.ticket.assignee.id !== this.state.you.id : false);
           }
         })
       )
@@ -92,10 +98,15 @@ export class TicketItemComponent implements OnInit, OnDestroy {
       note: new FormControl(this.ticket.note),
       status: new FormControl(this.ticket.status),
       ability: new FormControl(this.ticket.ability),
+      feedbackMessage: new FormControl(this.ticket.feedbackMessage),
+      feedbackRating: new FormControl(this.ticket.feedbackRating),
+      feedbackStatus: new FormControl(this.ticket.feedbackStatus),
     });
   }
   useView = () => {
-    this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.ticket.customer, isProfile: true } });
+    if (this.ticket.customer) {
+      this.globalService.triggerView$.next({ type: 'customer-profile', payload: { customer: this.ticket.customer, isProfile: true } });
+    }
   }
   useRemove = (ref: NbDialogRef<any>) => {
     ref.close();
@@ -141,6 +152,23 @@ export class TicketItemComponent implements OnInit, OnDestroy {
         }),
         catchError((err) => {
           this.toastrService.danger('', 'Assign ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner('item-' + this.ticket.id);
+        })
+      ).subscribe();
+    this.subscriptions.push(subscription);
+  }
+  useAssignFeedback = () => {
+    this.useShowSpinner('item-' + this.ticket.id);
+    const subscription = this.service.update({ id: this.ticket.id, feedbackAssignee: { id: this.state.you.id } } as any)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Assign to feedback ticket successful!', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Assign to feedback ticket fail! ' + err.message, { duration: 3000 });
           return of(undefined);
         }),
         finalize(() => {

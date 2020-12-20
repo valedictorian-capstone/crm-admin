@@ -1,21 +1,27 @@
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { environment } from '@environments/environment';
-import { GlobalService, SearchService } from '@services';
-import { ActivityVM, AttachmentVM, CustomerVM, DealVM } from '@view-models';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { finalize } from 'rxjs/operators';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '@environments/environment';
+import { Store } from '@ngrx/store';
+import { GlobalService, SearchService } from '@services';
+import { authSelector } from '@store/selectors';
+import { State } from '@store/states';
+import { AccountVM, ActivityVM, AttachmentVM, CustomerVM, DealVM } from '@view-models';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss']
 })
-export class SearchResultComponent implements OnInit {
+export class SearchResultComponent implements OnDestroy {
   @Output() isSearch: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() value: string;
-  menus = environment.filterTabs;
+  subscriptions: Subscription[] = [];
+  menus = [];
   stage = 'all';
+  you: AccountVM;
   loading = false;
   data: (DealVM & { searchType: string }
     | CustomerVM & { searchType: string }
@@ -26,9 +32,24 @@ export class SearchResultComponent implements OnInit {
     protected readonly globalService: GlobalService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly router: Router,
-  ) { }
+    protected readonly store: Store<State>
+  ) {
+    this.useLoadMine();
+  }
 
-  ngOnInit() {
+  useLoadMine = () => {
+    this.subscriptions.push(
+      this.store.select(authSelector.profile)
+        .pipe(
+          tap((profile) => {
+            if (profile) {
+              this.you = profile;
+              this.menus = environment.filterTabs.filter((item) => this.useCheckRole(item.can));
+            }
+          })
+        )
+        .subscribe()
+    );
   }
 
   useSearch = (value: string) => {
@@ -50,7 +71,7 @@ export class SearchResultComponent implements OnInit {
           })
         )
         .subscribe((data) => {
-          const rs = all ? data : data.filter((e) => e.type === this.stage);
+          const rs = all ? data.filter((e) => this.menus.filter((menu) => menu.value === e.type).length > 0) : data.filter((e) => e.type === this.stage);
           for (const e of rs) {
             for (const item of e.data) {
               this.data.push({ ...item, searchType: e.type });
@@ -109,5 +130,15 @@ export class SearchResultComponent implements OnInit {
         this.router.navigate(['core/' + data.searchType + '/' + data.id]);
         break;
     }
+  }
+  useCheckRole = (name: string | string[]) => {
+    if (typeof name === 'string') {
+      return this.you.roles.filter((role) => role[name]).length > 0;
+    } else {
+      return this.you.roles.filter((role) => name.filter((e) => role[e]).length > 0).length > 0;
+    }
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }
 }

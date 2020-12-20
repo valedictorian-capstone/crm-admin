@@ -130,17 +130,6 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
             dateEnd: new Date(this.payload.activity.dateEnd),
             dateStart: new Date(this.payload.activity.dateStart)
           });
-          switch (this.payload.activity.type) {
-            case 'email':
-              this.useSetValidatorEmail();
-              break;
-            case 'call':
-              this.useSetValidatorPhone();
-              break;
-            default:
-              this.useSetValidatorNormal();
-              break;
-          }
           this.useCheckTime();
         }),
         finalize(() => {
@@ -252,34 +241,6 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
     setTimeout(() => {
       this.spinner.hide('activity-save');
     }, 1000);
-  }
-  useSetValidatorEmail = () => {
-    this.state.form.get('name').setValidators([Validators.required, Validators.email]);
-    this.state.form.get('name').markAsTouched();
-    if (this.payload.activity && this.payload.activity.type === 'email') {
-      this.state.form.get('name').setValue(this.payload.activity.name);
-    } else {
-      this.state.form.get('name').setValue('');
-    }
-  }
-  useSetValidatorPhone = () => {
-    this.state.form.get('name').setValidators([Validators.required,
-    Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]);
-    this.state.form.get('name').markAsTouched();
-    if (this.payload.activity && this.payload.activity.type === 'call') {
-      this.state.form.get('name').setValue(this.payload.activity.name);
-    } else {
-      this.state.form.get('name').setValue('');
-    }
-  }
-  useSetValidatorNormal = () => {
-    this.state.form.get('name').setValidators([Validators.required]);
-    this.state.form.get('name').markAsTouched();
-    if (this.payload.activity && this.payload.activity.type !== 'email' && this.payload.activity.type !== 'call') {
-      this.state.form.get('name').setValue(this.payload.activity.name);
-    } else {
-      this.state.form.get('name').setValue('');
-    }
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

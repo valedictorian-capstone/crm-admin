@@ -1,6 +1,6 @@
 <div class="crm-deal-detail">
     <ngx-spinner [name]="'deal-detail'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <div class="crm-deal-detail-main">
+    <div class="crm-deal-detail-main" *ngIf="state.deal">
         <div class="crm-deal-detail-information">
             <div class="deal-header">
                 <div class="deal-header-left" (click)="useEdit()">
@@ -73,11 +73,14 @@
                     </button>
                 </nb-card-header>
                 <nb-card-body>
-                    <bar-rating *ngIf="state.deal" [(ngModel)]="state.deal.feedbackRating" [max]="5" [theme]="'stars'"></bar-rating>
-                    <textarea *ngIf="state.deal" [(ngModel)]="state.deal.feedbackMessage" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" class="mt-3">Rating about quality of deal</span>
+                    <bar-rating [formControl]="state.formFeedback.get('feedbackRating')" [max]="5" [theme]="'stars'"></bar-rating>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" class="mt-3">Rating about employee's attitude</span>
+                    <bar-rating [formControl]="state.formFeedback.get('feedbackAssigneeRating')" [max]="5" [theme]="'stars'"></bar-rating>
+                    <textarea [formControl]="state.formFeedback.get('feedbackMessage')" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
                 </nb-card-body>
                 <nb-card-footer>
-                    <nb-checkbox *ngIf="state.deal" status="success" [(ngModel)]="state.deal.feedbackStatus">
+                    <nb-checkbox status="success" [formControl]="state.formFeedback.get('feedbackStatus')">
                         <b>Mask as Resolve</b>
                     </nb-checkbox>
                     <button (click)="useSaveFeedback()" nbButton status="primary" outline style="float: right" size="small">Save</button>

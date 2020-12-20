@@ -12,6 +12,7 @@ export interface DealVM {
   feedbackMessage: string;
   feedbackStatus: boolean;
   feedbackRating: number;
+  feedbackAssigneeRating: number;
   dealDetails: DealDetailVM[];
   notes: NoteVM[];
   attachments: AttachmentVM[];
@@ -42,6 +43,7 @@ export interface DealUM {
   status: string;
   assignee: AccountVM;
   feedbackAssignee: AccountVM;
+  feedbackAssigneeRating: number;
   feedbackMessage: string;
   feedbackStatus: boolean;
   feedbackRating: number;

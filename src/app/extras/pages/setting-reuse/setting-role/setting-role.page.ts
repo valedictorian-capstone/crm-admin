@@ -88,14 +88,6 @@ export class SettingRolePage implements OnInit, OnDestroy {
             value: 'canAccessCustomer'
           },
           {
-            label: 'Can Assign',
-            value: 'canAssignCustomer'
-          },
-          {
-            label: 'Can Get All',
-            value: 'canGetAllCustomer'
-          },
-          {
             label: 'Can Create',
             value: 'canCreateCustomer'
           },
@@ -141,6 +133,14 @@ export class SettingRolePage implements OnInit, OnDestroy {
           {
             label: 'Can Access',
             value: 'canAccessTicket'
+          },
+          {
+            label: 'Can Assign Ticket',
+            value: 'canAssignTicket'
+          },
+          {
+            label: 'Can Get Feedback Ticket',
+            value: 'canGetFeedbackTicket'
           },
           {
             label: 'Can Get Deal Ticket',
@@ -239,6 +239,7 @@ export class SettingRolePage implements OnInit, OnDestroy {
       canAccessDeal: new FormControl(false),
       canGetAllDeal: new FormControl(false),
       canGetFeedbackDeal: new FormControl(false),
+      canGetFeedbackTicket: new FormControl(false),
       canGetAssignDeal: new FormControl(false),
       canAssignDeal: new FormControl(false),
       canCreateDeal: new FormControl(false),
@@ -249,8 +250,7 @@ export class SettingRolePage implements OnInit, OnDestroy {
       canRemoveProcess: new FormControl(false),
       canAccessRole: new FormControl(false),
       canAccessCustomer: new FormControl(false),
-      canAssignCustomer: new FormControl(false),
-      canGetAllCustomer: new FormControl(false),
+      canAssignTicket: new FormControl(false),
       canCreateCustomer: new FormControl(false),
       canUpdateCustomer: new FormControl(false),
       canRemoveCustomer: new FormControl(false),

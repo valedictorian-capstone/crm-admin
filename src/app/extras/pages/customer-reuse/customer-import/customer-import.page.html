@@ -103,9 +103,8 @@
             <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty)">Birthday <span class="text-danger">*</span></span>
             <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                 <nb-icon nbPrefix icon="birthday-cake" pack="font-awesome"></nb-icon>
-                <input style="height: 3rem;" readonly fullWidth [status]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="form.get('birthDay').value | date: 'dd/MM/yyyy'" mask="Hh:m0 d0/M0/0000"
-                    (focus)="form.get('showBirthday').setValue(true)" [nzVisible]="form.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput
-                />
+                <input style="height: 3rem;" readonly fullWidth [status]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="form.get('birthDay').value | date: 'dd/MM/yyyy'" (focus)="form.get('showBirthday').setValue(true)"
+                    [nzVisible]="form.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
             </nb-form-field>
             <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
                 <app-reuse-select-date [date]="form.get('birthDay').value" (useChange)="form.get('birthDay').setValue($event); form.get('showBirthday').setValue(false)"></app-reuse-select-date>
@@ -121,7 +120,7 @@
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill frequency</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Total Spending (million VND)</span>
+                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Total Spending</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')" nbInput />
                         </nb-form-field>

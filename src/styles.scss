@@ -9,6 +9,10 @@
     display: none;
 }
 
+*:not(nb-icon):not(button):not(svg):not(g):not(rect):not(path) {
+    font: monospace, sans-serif !important;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;

@@ -23,6 +23,7 @@ interface ITicketMainPageState {
   stage: 'done' | 'finding';
   canRemove: boolean;
   canUpdate: boolean;
+  canGetFeedback: boolean;
   canAssign: boolean;
 }
 @Component({
@@ -47,6 +48,7 @@ export class TicketMainPage implements OnInit, OnDestroy {
     stage: 'done',
     canRemove: false,
     canUpdate: false,
+    canGetFeedback: false,
     canAssign: false
   };
   constructor(
@@ -81,9 +83,10 @@ export class TicketMainPage implements OnInit, OnDestroy {
         tap((profile) => {
           if (profile) {
             this.state.you = profile;
-            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveCustomer).length > 0;
-            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignCustomer).length > 0;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignTicket).length > 0;
+            this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackTicket).length > 0;
           }
         })
       )
@@ -100,7 +103,7 @@ export class TicketMainPage implements OnInit, OnDestroy {
   }
   useFilter = () => {
     this.state.filterArray = this.state.array.filter((ticket) =>
-      (this.state.search.statuss.length === 0 ? true : this.state.search.statuss.includes(ticket.status)) &&
+      (this.state.search.statuss.length === 0 ? true : ticket.status === 'waiting' ? this.state.search.statuss.includes(ticket.status) : (this.state.canGetFeedback && (ticket.assignee ? ticket.assignee.id !== this.state.you.id : false) ? this.state.search.statuss.includes(ticket.feedbackStatus ? 'resolve' : 'waiting') : this.state.search.statuss.includes(ticket.status))) &&
       (this.state.search.types.length === 0 ? true : this.state.search.types.includes(ticket.type)) &&
       (this.state.search.range?.start ? new Date(ticket.createdAt).getTime() >= new Date(this.state.search.range.start).getTime() : true) &&
       (this.state.search.range?.end ? new Date(ticket.createdAt).getTime() <= new Date(this.state.search.range.end).getTime() : true) &&
