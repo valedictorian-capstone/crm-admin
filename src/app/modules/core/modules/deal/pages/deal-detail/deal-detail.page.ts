@@ -20,6 +20,7 @@ import { Store } from '@ngrx/store';
 import { activitySelector, attachmentSelector, authSelector, dealDetailSelector, dealSelector, noteSelector, pipelineSelector, stageSelector } from '@store/selectors';
 import { Subscription, of } from 'rxjs';
 import { ActivityAction, AttachmentAction, DealAction, DealDetailAction, LogAction, NoteAction, PipelineAction, StageAction } from '@store/actions';
+import { FormControl, FormGroup } from '@angular/forms';
 interface IDealDetailPageState {
   id: string;
   you: AccountVM;
@@ -39,6 +40,7 @@ interface IDealDetailPageState {
   close: boolean;
   stageMove: 'done' | 'processing';
   pins: NoteVM[];
+  formFeedback: FormGroup;
   canAdd: boolean;
   canGetAssign: boolean;
   canGetFeedback: boolean;
@@ -58,6 +60,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
     deal: undefined,
     stage: undefined,
     pipeline: undefined,
+    formFeedback : undefined,
     notes: [],
     activitys: [],
     attachments: [],
@@ -105,16 +108,20 @@ export class DealDetailPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.useDispatch();
   }
+  useInitForm = () => {
+    this.state.formFeedback = new FormGroup({
+      id: new FormControl(this.state.id),
+      feedbackMessage: new FormControl(this.state.deal.feedbackMessage),
+      feedbackRating: new FormControl(this.state.deal.feedbackRating),
+      feedbackAssigneeRating: new FormControl(this.state.deal.feedbackAssigneeRating),
+      feedbackStatus: new FormControl(this.state.deal.feedbackStatus),
+    });
+  }
   useSaveFeedback = () => {
     this.useShowSpinner();
     this.subscriptions.push(
       this.service
-        .update({
-          id: this.state.deal.id,
-          feedbackMessage: this.state.deal.feedbackMessage,
-          feedbackRating: this.state.deal.feedbackRating,
-          feedbackStatus: this.state.deal.feedbackStatus,
-        } as any)
+        .update(this.state.formFeedback.value)
         .pipe(
           tap((data) => {
             this.toastrService.success('', 'Save feedback successful', { duration: 3000 });
@@ -210,6 +217,7 @@ export class DealDetailPage implements OnInit, OnDestroy {
             this.store.dispatch(DealDetailAction.ListAction({ res: this.state.dealDetails }));
             this.state.logs = this.state.deal.logs.map((e) => ({ ...e, deal: this.state.deal }));;
             this.store.dispatch(LogAction.ListAction({ res: this.state.logs }));
+            this.useInitForm();
           }),
           finalize(() => this.useHideSpinner())
         ).subscribe()

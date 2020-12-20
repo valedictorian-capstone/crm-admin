@@ -14,6 +14,8 @@ import { catchError, tap } from 'rxjs/operators';
 export class ProductItemComponent implements OnDestroy {
   @Input() product: ProductVM;
   @Input() search: string;
+  @Input() canUpdate: boolean;
+  @Input() canRemove: boolean;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

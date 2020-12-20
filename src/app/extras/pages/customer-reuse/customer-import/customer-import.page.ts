@@ -75,7 +75,7 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
             if (group.get(key)) {
               if (key === 'birthDay') {
                 group.get(key).setValue(new Date((element - (25567 + 2)) * 86400 * 1000));
-
+                console.log(group.get(key).value);
               } else if (key === 'gender') {
                 switch (element.toLowerCase()) {
                   case 'male':
@@ -115,6 +115,7 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
         }
         this.state.formArray.push(group);
       }
+      console.log(this.state.formArray);
       this.state.formArray.markAsTouched();
     }
   }

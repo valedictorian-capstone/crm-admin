@@ -8,7 +8,7 @@
         <button class="float-right" (click)="useReload()" outline nbButton size="small">
     <nb-icon icon="sync-outline"></nb-icon>
     </button>
-        <button *ngIf="state.restores.length > 0" class="float-right mr-2" nbButton status="default" status="warning" (click)="useDialog(restoreRef)" outline size="small">
+        <button *ngIf="state.restores.length > 0 && state.canRemove" class="float-right mr-2" nbButton status="default" status="warning" (click)="useDialog(restoreRef)" outline size="small">
       <nb-icon pack="font-awesome" style="font-size: 1rem;" icon="trash-restore"></nb-icon>
     </button>
         <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="productSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
@@ -30,7 +30,7 @@
             <div class='crm-product-body'>
                 <div nz-row class="w-100">
                     <div nz-col class="mb-2" [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" [nzXl]="8" [nzXXl]="6" *ngFor="let product of state.filterArray">
-                        <app-product-item [search]="state.search.value" [product]="product"></app-product-item>
+                        <app-product-item [search]="state.search.value" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" [product]="product"></app-product-item>
                     </div>
                 </div>
             </div>

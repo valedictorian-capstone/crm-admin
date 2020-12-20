@@ -24,10 +24,10 @@
           <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">
             / {{state.product?.name}}</b>
     </span>
-        <button class="float-right" nbButton status="primary" (click)="useEdit()" outline size="small">
+        <button *ngIf="state.canUpdate" class="float-right" nbButton status="primary" (click)="useEdit()" outline size="small">
       <nb-icon icon="edit-2-outline"></nb-icon>
     </button>
-        <button class="float-right mr-2" nbButton status="danger" (click)="useDialog(removeRef)" outline size="small">
+        <button *ngIf="state.canRemove" class="float-right mr-2" nbButton status="danger" (click)="useDialog(removeRef)" outline size="small">
       <nb-icon icon="trash-2-outline"></nb-icon>
     </button>
     </nb-card-header>
