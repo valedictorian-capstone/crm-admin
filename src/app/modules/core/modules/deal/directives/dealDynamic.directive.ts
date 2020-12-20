@@ -22,7 +22,6 @@ export class DealDynamicDirective implements OnInit {
 
   }
   ngOnInit() {
-    console.log('directect: ' + this.type);
     const factory = this.resolver.resolveComponentFactory<DealActivityComponent | DealNoteComponent | DealAttachmentComponent>(
       this.componentMapper[this.type]
     );

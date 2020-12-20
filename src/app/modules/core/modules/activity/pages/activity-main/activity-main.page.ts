@@ -77,10 +77,12 @@ export class ActivityMainPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdateDeal = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-          this.state.canGetAll = this.state.you.roles.filter((role) => role.canGetAllActivity).length > 0;
-          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdateDeal = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+            this.state.canGetAll = this.state.you.roles.filter((role) => role.canGetAllActivity).length > 0;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+          }
         })
       )
       .subscribe();
@@ -99,7 +101,7 @@ export class ActivityMainPage implements OnInit, OnDestroy {
             this.useFilter();
           }
         })
-    ).subscribe()
+      ).subscribe()
     this.subscriptions.push(subscription);
   }
   useReload = () => {
@@ -150,7 +152,6 @@ export class ActivityMainPage implements OnInit, OnDestroy {
     name: string,
     assignees: AccountVM[]
   }) => {
-    console.log(search);
     this.state.search = { ...this.state.search, ...search };
     this.useFilter();
   }

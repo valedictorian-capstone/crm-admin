@@ -63,8 +63,10 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+          if (profile) {
+            this.state.you = profile;
+            this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+          }
         })
       )
       .subscribe();

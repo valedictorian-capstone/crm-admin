@@ -22,10 +22,8 @@ export class AppGuard implements CanLoad {
     protected readonly store: Store<State>
   ) { }
   canLoad(route: Route, segments: UrlSegment[]) {
-    console.log(route);
     return this.store.select(authSelector.profile)
       .pipe(
-        tap(console.log),
         map((res) => {
           if (res) {
             return true;

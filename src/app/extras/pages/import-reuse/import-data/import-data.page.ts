@@ -42,7 +42,7 @@ export class ImportDataPage implements OnInit, OnDestroy {
     protected readonly store: Store<State>
   ) {
     this.useLoadMine();
-   }
+  }
   ngOnInit() {
     if (this.importType) {
       this.state.type = this.importType;
@@ -52,10 +52,12 @@ export class ImportDataPage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canImportCustomer = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
-          this.state.canImportEmployee = this.state.you.roles.filter((role) => role.canImportEmployee).length > 0;
-          this.state.canImportProduct = this.state.you.roles.filter((role) => role.canImportProduct).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canImportCustomer = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
+            this.state.canImportEmployee = this.state.you.roles.filter((role) => role.canImportEmployee).length > 0;
+            this.state.canImportProduct = this.state.you.roles.filter((role) => role.canImportProduct).length > 0;
+          }
         })
       )
       .subscribe();

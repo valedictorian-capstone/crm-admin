@@ -56,23 +56,6 @@ export class LoginComponent implements OnDestroy {
   useReset = () => {
     this.store.dispatch(AuthAction.ResetAction());
     this.store.dispatch(DeviceAction.ResetAction());
-    this.store.dispatch(DealAction.ResetAction());
-    this.store.dispatch(ActivityAction.ResetAction());
-    this.store.dispatch(AttachmentAction.ResetAction());
-    this.store.dispatch(DealDetailAction.ResetAction());
-    this.store.dispatch(PipelineAction.ResetAction());
-    this.store.dispatch(StageAction.ResetAction());
-    this.store.dispatch(AccountAction.ResetAction());
-    this.store.dispatch(CategoryAction.ResetAction());
-    this.store.dispatch(CommentAction.ResetAction());
-    this.store.dispatch(CustomerAction.ResetAction());
-    this.store.dispatch(EventAction.ResetAction());
-    this.store.dispatch(GroupAction.ResetAction());
-    this.store.dispatch(NoteAction.ResetAction());
-    this.store.dispatch(NotificationAction.ResetAction());
-    this.store.dispatch(ProductAction.ResetAction());
-    this.store.dispatch(RoleAction.ResetAction());
-    this.store.dispatch(TicketAction.ResetAction());
   }
   getStatus = (name: 'emailOrPhone' | 'password'): 'danger' | 'success' | 'default' => {
     const control = this.form.get(name);

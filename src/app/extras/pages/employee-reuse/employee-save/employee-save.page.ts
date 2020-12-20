@@ -38,17 +38,17 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
   @Output() useDone: EventEmitter<AccountVM> = new EventEmitter<AccountVM>();
   subscriptions: Subscription[] = [];
   state: IEmployeeSavePageState = {
-      you: undefined,
-      form: undefined,
-      roles: [],
-      showBirthday: false,
-      errorImage: false,
-      message: '',
-      phoneStage: 'done',
-      emailStage: 'done',
-      codeStage: 'done',
-      level: 9999
-    };
+    you: undefined,
+    form: undefined,
+    roles: [],
+    showBirthday: false,
+    errorImage: false,
+    message: '',
+    phoneStage: 'done',
+    emailStage: 'done',
+    codeStage: 'done',
+    level: 9999
+  };
   constructor(
     protected readonly service: AccountService,
     protected readonly toastrService: NbToastrService,
@@ -90,8 +90,10 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+          if (profile) {
+            this.state.you = profile;
+            this.state.level = Math.min(...this.state.you.roles.map((e) => e.level));
+          }
         })
       )
       .subscribe();

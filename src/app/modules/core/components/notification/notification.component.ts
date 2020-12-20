@@ -43,7 +43,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
+            if (profile) {
+              this.state.you = profile;
+            }
           })
         )
         .subscribe()
@@ -55,7 +57,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.service
         .findAll()
         .pipe(
-          tap((data) => this.state.array = data.sort((a,b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1)),
+          tap((data) => this.state.array = data.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1)),
           finalize(() => {
             this.useSetBadge();
             this.useHideSpinner();
@@ -66,36 +68,36 @@ export class NotificationComponent implements OnInit, OnDestroy {
   useSocket = () => {
     this.subscriptions.push(
       this.service.triggerSocket()
-      .pipe(
-        tap((trigger) => {
-          if (trigger.type === 'create' && (trigger.data as NotificationVM).account.id === this.state.you.id) {
-            if (!this.state.show) {
-              this.state.new = true;
+        .pipe(
+          tap((trigger) => {
+            if (trigger.type === 'create' && (trigger.data as NotificationVM).account.id === this.state.you.id) {
+              if (!this.state.show) {
+                this.state.new = true;
+              }
+              this.state.array.push(trigger.data as NotificationVM);
+              this.notificationService.template(this.template, {
+                nzData: trigger.data as NotificationVM, nzPlacement: 'bottomLeft'
+                , nzCloseIcon: ''
+              });
+              if (!this.state.show) {
+                setTimeout(() => {
+                  this.state.new = false;
+                }, 10000);
+              }
+            } else if (trigger.type === 'update') {
+              this.state.array[this.state.array.findIndex((e) => e.id === (trigger.data as NotificationVM).id)] =
+                (trigger.data as NotificationVM);
+            } else if (trigger.type === 'list') {
+              (trigger.data as NotificationVM[]).forEach((notification) => {
+                this.state.array[this.state.array.findIndex((e) => e.id === notification.id)] =
+                  notification;
+              });
             }
-            this.state.array.push(trigger.data as NotificationVM);
-            this.notificationService.template(this.template, {
-              nzData: trigger.data as NotificationVM, nzPlacement: 'bottomLeft'
-              , nzCloseIcon: ''
-            });
-            if (!this.state.show) {
-              setTimeout(() => {
-                this.state.new = false;
-              }, 10000);
-            }
-          } else if (trigger.type === 'update') {
-            this.state.array[this.state.array.findIndex((e) => e.id === (trigger.data as NotificationVM).id)] =
-              (trigger.data as NotificationVM);
-          } else if (trigger.type === 'list') {
-            (trigger.data as NotificationVM[]).forEach((notification) => {
-              this.state.array[this.state.array.findIndex((e) => e.id === notification.id)] =
-                notification;
-            });
-          }
-          this.state.array = this.state.array.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1);
-          this.useSetBadge();
-        })
-      )
-      .subscribe()
+            this.state.array = this.state.array.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1);
+            this.useSetBadge();
+          })
+        )
+        .subscribe()
     );
   }
   useSetBadge = () => {
@@ -119,7 +121,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.useSetBadge();
   }
   useSelect = (notification: NotificationVM) => {
-    this.state.array[this.state.array.findIndex((e) => e.id === notification.id)] = {...this.state.array[this.state.array.findIndex((e) => e.id === notification.id)], isSeen: true};
+    this.state.array[this.state.array.findIndex((e) => e.id === notification.id)] = { ...this.state.array[this.state.array.findIndex((e) => e.id === notification.id)], isSeen: true };
     this.subscriptions.push(this.service.seen(notification.id).subscribe());
     this.router.navigate(['core/' + notification.name]);
     this.state.show = false;

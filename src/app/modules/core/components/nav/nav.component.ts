@@ -34,21 +34,23 @@ export class NavComponent implements OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            this.state.more = [];
-            this.state.array = [];
-            const array = environment.categories.filter((item) => this.useCheckRole(item.can));
-            if (array.length > 4) {
-              for (let i = 0; i < 3; i++) {
-                this.state.array.push(array[i]);
+            if (profile) {
+              this.state.you = profile;
+              this.state.more = [];
+              this.state.array = [];
+              const array = environment.categories.filter((item) => this.useCheckRole(item.can));
+              if (array.length > 4) {
+                for (let i = 0; i < 3; i++) {
+                  this.state.array.push(array[i]);
+                }
+                for (let i = 3; i < array.length; i++) {
+                  this.state.more.push(array[i]);
+                }
+              } else {
+                this.state.array = array;
               }
-              for (let i = 3; i < array.length; i++) {
-                this.state.more.push(array[i]);
-              }
-            } else {
-              this.state.array = array;
+              this.useUpdate();
             }
-            this.useUpdate();
           })
         )
         .subscribe()
@@ -60,7 +62,6 @@ export class NavComponent implements OnDestroy {
       this.router.navigate(['core/' + link]);
     } else {
       this.state.active = document.location.hash.replace('#/core/', '').split('/')[0];
-      console.log(this.state.active);
       this.state.active = this.state.active === 'deal' ? 'process' : this.state.active;
     }
   }

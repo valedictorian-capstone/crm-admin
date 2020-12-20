@@ -75,7 +75,9 @@ export class CustomerSavePage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
+          if (profile) {
+            this.state.you = profile;
+          }
         })
       )
       .subscribe();

@@ -15,13 +15,11 @@ export class DealEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DealAction.SocketAction),
-      tap(() => console.log('socket')),
+
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
+
             if (trigger.type === 'create') {
               return DealAction.SaveSuccessAction({ res: trigger.data as DealVM });
             } else if (trigger.type === 'update') {
@@ -42,8 +40,6 @@ export class DealEffect {
       ofType(DealAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => DealAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

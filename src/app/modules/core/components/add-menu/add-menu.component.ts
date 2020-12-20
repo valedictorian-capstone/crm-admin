@@ -33,8 +33,10 @@ export class AddMenuComponent implements OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
-            this.state.menus = environment.createMenus.filter((item) => this.useCheckRole(item.can));
+            if (profile) {
+              this.state.you = profile;
+              this.state.menus = environment.createMenus.filter((item) => this.useCheckRole(item.can));
+            }
           })
         )
         .subscribe()

@@ -35,12 +35,14 @@ export class CustomerItemComponent implements OnDestroy {
   }
   useLoadMine = () => {
     const subscription = this.store.select(authSelector.profile)
-    .pipe(
-      tap((profile) => {
-        this.state.you = profile;
-        this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
-      })
-    )
+      .pipe(
+        tap((profile) => {
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+          }
+        })
+      )
       .subscribe()
     this.subscriptions.push(subscription);
   }

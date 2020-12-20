@@ -9,7 +9,7 @@ import { DealService, PipelineService, ProductService, StageService } from '@ser
 import { DealAction } from '@store/actions';
 import { authSelector } from '@store/selectors';
 import { State } from '@store/states';
-import { AccountVM, DealDetailVM, DealVM, PipelineVM, ProductVM, StageVM } from '@view-models';
+import { AccountVM, CustomerVM, DealDetailVM, DealVM, PipelineVM, ProductVM, StageVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { of, Subscription } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
@@ -33,9 +33,10 @@ export class DealSavePage implements OnInit, OnDestroy {
   @ViewChild('cancelRef') cancelRef: TemplateRef<any>;
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<DealVM> = new EventEmitter<DealVM>();
-  @Input() payload: { deal: DealVM, pipeline: PipelineVM, inside: boolean, stage: StageVM } = {
+  @Input() payload: { deal: DealVM, pipeline: PipelineVM, inside: boolean, stage: StageVM, customer: CustomerVM } = {
     deal: undefined,
     pipeline: undefined,
+    customer: undefined,
     stage: undefined,
     inside: false
   };
@@ -67,6 +68,7 @@ export class DealSavePage implements OnInit, OnDestroy {
       this.useSetData();
     } else {
       this.state.form.get('assignee').setValue(this.state.you);
+      this.state.form.get('customer').setValue(this.payload.customer);
       if (this.payload.stage) {
         this.state.form.get('stage').setValue(this.payload.stage);
       } else {
@@ -81,8 +83,10 @@ export class DealSavePage implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+          }
         })
       )
       .subscribe();

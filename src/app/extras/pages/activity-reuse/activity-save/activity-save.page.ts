@@ -106,8 +106,12 @@ export class ActivitySavePage implements OnInit, OnChanges, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+          if (profile) {
+            if (profile) {
+              this.state.you = profile;
+              this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignActivity).length > 0;
+            }
+          }
         })
       )
       .subscribe();

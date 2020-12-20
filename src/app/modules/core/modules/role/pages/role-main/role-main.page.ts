@@ -190,7 +190,9 @@ export class RoleMainPage implements OnInit, OnDestroy {
       this.store.select(authSelector.profile)
         .pipe(
           tap((profile) => {
-            this.state.you = profile;
+            if (profile) {
+              this.state.you = profile;
+            }
           })
         )
         .subscribe()
@@ -226,8 +228,8 @@ export class RoleMainPage implements OnInit, OnDestroy {
   }
   useFilter = () => {
     this.state.filterArray = this.state.array.filter((e) =>
-      (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
-        e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+    (e.fullname.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
+      e.phone.toLowerCase().includes(this.state.search.value.toLowerCase()) ||
       e.email.toLowerCase().includes(this.state.search.value.toLowerCase()))
     );
   }

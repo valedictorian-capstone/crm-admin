@@ -1,6 +1,6 @@
 <nb-card class="h-100 w-100 position-relative">
     <ngx-spinner [name]="'deal-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
-    <nb-card-header style="padding: 1rem 2.25rem;">
+    <nb-card-header style="padding: 1rem 1rem;">
         <span class="display-flex align-items-center float-left h-100">
       <nb-icon icon="pricetags-outline" class="mr-2"></nb-icon>
         <b style="font: 600 17px/16px monospace, sans-serif; color: #747678;">Deal</b>
@@ -17,6 +17,9 @@
         <button *ngIf="state.canAssign" class="float-right mr-2" nz-dropdown [nzDropdownMenu]="assigneeSearch" [nzTrigger]="'click'" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" outline nbButton status="info" size="small">
         <nb-icon icon="people-outline"></nb-icon>
         </button>
+        <button class="float-right mr-2" (click)="useExport(export)" status="success" outline nbButton size="small">
+          <nb-icon icon="download-outline"></nb-icon>
+          </button>
         <button *ngIf="state.canAdd" class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
           <nb-icon icon="plus-outline"></nb-icon>
           </button>
@@ -35,3 +38,37 @@
         </div>
     </nb-card-body>
 </nb-card>
+<table #export style="display: none;">
+    <thead>
+        <tr>
+            <th>title</th>
+            <th>status</th>
+            <th>pipeline</th>
+            <th>stage</th>
+            <th>customer</th>
+            <th>activitys</th>
+            <th>products</th>
+            <th>notes</th>
+            <th>attachments</th>
+            <th>assignee</th>
+            <th>feedbackRating</th>
+            <th>feedbackStatus</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of state.array">
+            <th>{{item.title}}</th>
+            <th>{{item.status}}</th>
+            <th>{{item.stage.pipeline.name}}</th>
+            <th>{{item.stage.name}}</th>
+            <th>{{item.customer.fullname}}</th>
+            <th>{{item.activitys.length}} activitys</th>
+            <th>{{item.dealDetails.length}} products</th>
+            <th>{{item.notes.length}} notes</th>
+            <th>{{item.attachments.length}} attachments</th>
+            <th>{{item.assignee.fullname}}</th>
+            <th>{{item.feedbackRating}}</th>
+            <th>{{item.feedbackStatus}}</th>
+        </tr>
+    </tbody>
+</table>

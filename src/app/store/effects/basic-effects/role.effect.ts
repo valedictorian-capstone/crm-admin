@@ -15,13 +15,9 @@ export class RoleEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RoleAction.SocketAction),
-      tap(() => console.log('socket')),
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
             if (trigger.type === 'create') {
               return RoleAction.SaveSuccessAction({ res: trigger.data as RoleVM });
             } else if (trigger.type === 'update') {
@@ -42,8 +38,6 @@ export class RoleEffect {
       ofType(RoleAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => RoleAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

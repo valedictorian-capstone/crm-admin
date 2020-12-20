@@ -7,8 +7,6 @@ export const accountReducer = createReducer(
   accountInitialState,
   on(AccountAction.FindAllSuccessAction,
     (state, action) => {
-      console.log(state);
-      console.log(action);
       return accountAdapter.setAll<AccountState>(action.res, {
         ...state,
         firstLoad: true

@@ -15,13 +15,11 @@ export class ActivityEffect {
   public readonly socket$ = createEffect(() =>
   this.actions$.pipe(
     ofType(ActivityAction.SocketAction),
-    tap(() => console.log('socket')),
+
     switchMap(action =>
       this.service.triggerSocket().pipe(
-        tap((data) => console.log('test', data)),
-
         map(trigger => {
-          console.log('effect-socket', trigger);
+
           const canGetAll = action.requester.roles.filter((role) => role.canGetAllActivity).length > 0;
           if (trigger.type === 'create') {
             if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
@@ -49,8 +47,6 @@ export class ActivityEffect {
       ofType(ActivityAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => ActivityAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

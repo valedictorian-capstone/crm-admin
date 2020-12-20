@@ -15,12 +15,9 @@ export class AccountEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountAction.SocketAction),
-      tap(() => console.log('socket')),
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
           map(trigger => {
-            console.log('effect-socket', trigger);
             if (trigger.type === 'create') {
               return AccountAction.SaveSuccessAction({ res: trigger.data as AccountVM });
             } else if (trigger.type === 'update') {

@@ -27,7 +27,7 @@
             <button shape="round" nbButton status="success" (click)="useDeal()" class="mr-1 mt-1" outline size="small">
           <nb-icon class="display-flex justify-content-center align-items-center" icon="donate" pack="font-awesome"></nb-icon>
         </button>
-            <button *ngIf="canRemove" (click)="useToggleState()" nbButton [status]="!customer.isDelete ? 'success' : 'danger'" class="position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+            <button *ngIf="canRemove" (click)="useToggleState.emit()" nbButton [status]="!customer.isDelete ? 'success' : 'danger'" class="position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
           {{!customer.isDelete ? 'Active' : 'Disabled'}}
         </button>
         </div>

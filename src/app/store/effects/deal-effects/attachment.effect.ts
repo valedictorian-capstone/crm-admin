@@ -15,13 +15,11 @@ export class AttachmentEffect {
   public readonly socket$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AttachmentAction.SocketAction),
-      tap(() => console.log('socket')),
+
       switchMap(action =>
         this.service.triggerSocket().pipe(
-          tap((data) => console.log('test', data)),
-
           map(trigger => {
-            console.log('effect-socket', trigger);
+
             if (trigger.type === 'list') {
               return AttachmentAction.CreateSuccessAction({ res: trigger.data as AttachmentVM[] });
             } else if (trigger.type === 'update') {
@@ -42,8 +40,6 @@ export class AttachmentEffect {
       ofType(AttachmentAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => AttachmentAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

@@ -15,13 +15,11 @@ export class StageEffect {
   public readonly socket$ = createEffect(() =>
   this.actions$.pipe(
     ofType(StageAction.SocketAction),
-    tap(() => console.log('socket')),
+
     switchMap(action =>
       this.service.triggerSocket().pipe(
-        tap((data) => console.log('test', data)),
-
         map(trigger => {
-          console.log('effect-socket', trigger);
+
           if (trigger.type === 'create') {
             return StageAction.SaveSuccessAction({ res: trigger.data as StageVM });
           } else if (trigger.type === 'update') {
@@ -42,8 +40,6 @@ export class StageEffect {
       ofType(StageAction.FindAllAction),
       switchMap(action =>
         this.service.findAll().pipe(
-          tap((data) => console.log('test', data)),
-
           map(res => StageAction.FindAllSuccessAction({ res })),
           tap((data) => {
             if (action.success) {

@@ -76,9 +76,11 @@ export class TicketItemComponent implements OnInit, OnDestroy {
     const subscription = this.store.select(authSelector.profile)
       .pipe(
         tap((profile) => {
-          this.state.you = profile;
-          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
-          this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+          if (profile) {
+            this.state.you = profile;
+            this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateTicket).length > 0;
+            this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+          }
         })
       )
       .subscribe();
@@ -150,7 +152,7 @@ export class TicketItemComponent implements OnInit, OnDestroy {
   useShowSpinner = (type: string) => {
     this.spinner.show('ticket-' + type);
   }
-  useHideSpinner = (type:string, ref?: NbDialogRef<any>) => {
+  useHideSpinner = (type: string, ref?: NbDialogRef<any>) => {
     if (ref) {
       ref.close();
     }
