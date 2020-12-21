@@ -125,9 +125,9 @@ export class CustomerSavePage implements OnInit, OnDestroy {
       source: new FormControl('import'),
       type: new FormControl('personal', [Validators.required]),
 
-      frequency: new FormControl(undefined, [Validators.required]),
-      totalSpending: new FormControl(undefined, [Validators.required]),
-      totalDeal: new FormControl(undefined, [Validators.required]),
+      frequency: new FormControl(0, [Validators.required]),
+      totalSpending: new FormControl(0, [Validators.required]),
+      totalDeal: new FormControl(0, [Validators.required]),
 
       company: new FormControl(''),
       fax: new FormControl(''),

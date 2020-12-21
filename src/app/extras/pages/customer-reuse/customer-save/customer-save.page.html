@@ -90,7 +90,7 @@
                         <nb-icon icon="copy-outline" nbSuffix *ngIf="payload.isProfile" (click)="useCopy(state.form.get('totalDeal').value)"></nb-icon>
                     </nb-form-field>
                     <span *ngIf="state.form.get('totalDeal').invalid && (state.form.get('totalDeal').touched || state.form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total deal</span>
-                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty)">Total deal won <span class="text-danger">*</span></span>
+                    <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty)">Total Deal Won <span class="text-danger">*</span></span>
                     <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                         <input [readOnly]="payload.isProfile" fullWidth mask="separator.0" thousandSeparator="," [status]="state.form.get('frequency').invalid && (state.form.get('frequency').touched || state.form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="state.form.get('frequency')"
                             nbInput />
