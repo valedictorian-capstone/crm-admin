@@ -1,7 +1,7 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { NbGlobalPhysicalPosition, NbToastrService, NbDialogRef, NbDialogService } from '@nebular/theme';
 import { AccountService, GlobalService } from '@services';
 import { AccountVM, RoleVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -26,6 +26,7 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
   constructor(
     protected readonly service: AccountService,
     protected readonly globalService: GlobalService,
+    protected readonly dialogService: NbDialogService,
     protected readonly toastrService: NbToastrService,
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
@@ -44,6 +45,9 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
   }
   useMail = (email: string) => {
     this.globalService.triggerView$.next({ type: 'mail', payload: { email } });
+  }
+  useDialog = (template: TemplateRef<any>) => {
+    this.dialogService.open(template, { closeOnBackdropClick: true });
   }
   useCheckRole = () => {
     return this.account.roles.find((role) => role.id === this.selectedRole?.id);
@@ -90,7 +94,6 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
     } as any)
       .pipe(
         tap((data) => {
-          this.account.isDelete = !this.account.isDelete;
           this.toastrService.success('', !this.account.isDelete
             ? 'Disabled account successful' : 'Active account successful', { duration: 3000 });
         }),
@@ -98,6 +101,26 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
           (err);
           this.toastrService.danger('', (!this.account.isDelete
             ? 'Disabled account fail! ' : 'Active account fail! ') + err.message, { duration: 3000 });
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.useHideSpinner();
+        })
+      )
+      .subscribe()
+    this.subscriptions.push(subscription);
+  }
+  useRemove = (ref: NbDialogRef<any>) => {
+    ref.close();
+    this.useShowSpinner();
+    const subscription = this.service.remove(this.account.id)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Remove account successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          (err);
+          this.toastrService.danger('', 'Remove account fail! ' + err.message, { duration: 3000 });
           return of(undefined);
         }),
         finalize(() => {
