@@ -21,13 +21,16 @@
             <button *ngIf="selectedRole" shape="round" nbButton [status]="useCheckRole() ? 'danger' : 'success'" (click)="useToggleRole()" class="position-absolute" [style.top]="'0.5rem'" [style.left]="'0.5rem'" outline size="tiny">
         {{useCheckRole() ? 'Unset Role' : 'Set Role'}}
       </button>
-            <button nbButton status="primary" (click)="useEdit()" class="position-absolute" outline [style.top]="'0.5rem'" [style.right]="'2.5rem'" size="tiny">
+            <button nbButton status="primary" (click)="useEdit()" class="position-absolute" outline [style.top]="'0.5rem'" [style.right]="'4.5rem'" size="tiny">
         <nb-icon icon="edit-2-outline"></nb-icon>
       </button>
-            <button nbButton status="info" (click)="useView()" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+            <button nbButton status="danger" (click)="useDialog(removeRef)" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'0.5rem'" outline size="tiny">
+        <nb-icon icon="trash-2-outline"></nb-icon>
+      </button>
+            <button nbButton status="info" (click)="useView()" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'2.5rem'" outline size="tiny">
         <nb-icon icon="eye-outline"></nb-icon>
       </button>
-            <button (click)="useToggleState()" nbButton [status]="!account.isDelete ? 'success' : 'danger'" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'4.5rem'" outline size="tiny">
+            <button (click)="useToggleState()" nbButton [status]="!account.isDelete ? 'success' : 'danger'" class="position-absolute" [style.top]="'0.5rem'" [style.right]="'6.5rem'" outline size="tiny">
         {{!account.isDelete ? 'Active' : 'Disabled'}}
       </button>
             <div class="position-absolute" [style.bottom]="'0.5rem'" [style.right]="'0.5rem'">
@@ -38,3 +41,14 @@
         </div>
     </nb-card-header>
 </nb-card>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove account
+        </nb-card-header>
+        <nb-card-body class="dialog">Are you sure you wish to remove this account?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="danger" nbButton size="small" (click)="useRemove(ref)">Remove</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

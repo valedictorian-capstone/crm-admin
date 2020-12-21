@@ -77,7 +77,7 @@ export class DashboardMainPage implements OnInit {
   }
   useLoadDealInMonth = () => {
     this.useShowSpinner('deal-month');
-    this.statisticService.findDealInMonth(this.deal.month.selected.getMonth(), this.customer.month.selected.getFullYear())
+    this.statisticService.findDealInMonth(this.deal.month.selected.getMonth() + 1, this.customer.month.selected.getFullYear())
       .pipe(
         tap((data) => this.deal.month.data = data),
         finalize(() => {
