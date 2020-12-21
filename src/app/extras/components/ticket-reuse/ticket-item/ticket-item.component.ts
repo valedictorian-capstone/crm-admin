@@ -87,6 +87,8 @@ export class TicketItemComponent implements OnInit, OnDestroy {
             this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveTicket).length > 0 && this.ticket.assignee?.id === this.state.you.id;
             this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackTicket).length > 0 && (this.ticket.assignee ? this.ticket.assignee.id !== this.state.you.id : false);
           }
+          console.log(this.state.you);
+          console.log(this.ticket);
         })
       )
       .subscribe();
