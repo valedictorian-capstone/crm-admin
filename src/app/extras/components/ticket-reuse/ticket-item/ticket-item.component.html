@@ -18,9 +18,9 @@
             <b *ngIf="!ticket.customer">{{ 'N/A' }}</b>
         </div>
         {{ticket.customer? ticket.customer.fullname : 'None'}}
-        <b *ngIf="ticket.status === 'resolve' && (ticket.assignee?.id !== state.you?.id) && state.canGetFeedback" class="float-left" style="text-transform: capitalize; position: absolute; right: 0.5rem; top: 0.5rem" [class.text-warning]="!ticket.feedbackStatus"
+        <b *ngIf="ticket.status === 'resolve' && (ticket.assignee ? ticket.assignee.id !== state.you?.id : false) && state.canGetFeedback" class="float-left" style="text-transform: capitalize; position: absolute; right: 0.5rem; top: 0.5rem" [class.text-warning]="!ticket.feedbackStatus"
             [class.text-success]="ticket.feedbackStatus">Feedback {{ticket.feedbackStatus ? 'Resolve' : 'Waiting'}}</b>
-        <b *ngIf="!ticket.feedbackAssignee || (ticket.assignee?.id === state.you?.id)" class="float-left" style="text-transform: capitalize; position: absolute; right: 0.5rem; top: 0.5rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
+        <b *ngIf="ticket.assignee ? ticket.assignee.id === state.you?.id : true" class="float-left" style="text-transform: capitalize; position: absolute; right: 0.5rem; top: 0.5rem" [class.text-warning]="ticket.status === 'waiting'" [class.text-success]="ticket.status === 'resolve'">{{ticket.status}}</b>
         <div style="position: absolute; right: 0.5rem; bottom: 0.5rem">
             <button (click)="useAssign()" *ngIf="!ticket.assignee && state.canUpdate" class="ml-2" nbButton size="tiny" shape="round" outline status="info">
           Assign Me

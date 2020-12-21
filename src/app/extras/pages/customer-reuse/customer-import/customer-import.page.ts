@@ -155,7 +155,7 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
       this.subscriptions.push(
         this.service.import(this.state.formArray.controls.map((e) => ({
           ...e.value,
-          frequency: parseInt(e.value.frequency, 0),
+          frequency: parseInt(e.value.frequency, 0) / 365,
           totalSpending: parseInt(e.value.totalSpending, 0),
           totalDeal: parseInt(e.value.totalDeal, 0),
         }))).pipe(

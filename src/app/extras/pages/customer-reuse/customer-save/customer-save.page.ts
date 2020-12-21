@@ -89,7 +89,10 @@ export class CustomerSavePage implements OnInit, OnDestroy {
       .pipe(
         tap((data) => {
           this.store.dispatch(CustomerAction.SaveSuccessAction({ res: data }));
-          this.payload.customer = data;
+          this.payload.customer = {
+            ...data,
+            frequency: data.frequency * 365
+          };
           this.state.form.addControl('id', new FormControl(this.payload.customer.id));
           this.state.form.patchValue({
             ...this.payload.customer,
@@ -153,12 +156,12 @@ export class CustomerSavePage implements OnInit, OnDestroy {
       }
       const subscription = (this.payload.customer ? this.service.update({
         ...this.state.form.value,
-        frequency: parseInt(this.state.form.value.frequency),
+        frequency: parseInt(this.state.form.value.frequency) / 365,
         totalSpending: parseInt(this.state.form.value.totalSpending),
         totalDeal: parseInt(this.state.form.value.totalDeal),
       }) : this.service.insert({
         ...this.state.form.value,
-        frequency: parseInt(this.state.form.value.frequency),
+        frequency: parseInt(this.state.form.value.frequency)/ 365,
         totalSpending: parseInt(this.state.form.value.totalSpending),
         totalDeal: parseInt(this.state.form.value.totalDeal),
       }))
