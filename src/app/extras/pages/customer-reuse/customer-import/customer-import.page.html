@@ -125,7 +125,7 @@
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput />
                         </nb-form-field>
                         <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total deal</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Total deal won</span>
+                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Total Deal Won</span>
                         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
                             <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
                         </nb-form-field>
