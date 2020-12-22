@@ -1,4 +1,4 @@
-<button *ngIf="state.menus.length > 0" nbButton shape="round" [status]="state.toggle ? 'danger' : 'basic'" nz-dropdown (nzVisibleChange)="state.toggle = $event" [nzDropdownMenu]="add" [nzPlacement]="'bottom'" [nzTrigger]="'click'" [nzBackdrop]="false"
+<button [disabled]="state.menus.length === 0" nbButton shape="round" [status]="state.toggle ? 'danger' : 'basic'" nz-dropdown (nzVisibleChange)="state.toggle = $event" [nzDropdownMenu]="add" [nzPlacement]="'bottom'" [nzTrigger]="'click'" [nzBackdrop]="false"
     [class.toggle]="state.toggle" class="crm-global-add">
   <nb-icon icon="plus"></nb-icon>
 </button>

@@ -24,6 +24,8 @@ export class ProductEffect {
               return ProductAction.SaveSuccessAction({ res: trigger.data as ProductVM });
             } else if (trigger.type === 'remove') {
               return ProductAction.RemoveSuccessAction({ id: (trigger.data as ProductVM).id });
+            } else if (trigger.type === 'list') {
+              return ProductAction.ImportSuccessAction({ res: trigger.data as ProductVM[] });
             }
           }),
           catchError((error: Error) => {

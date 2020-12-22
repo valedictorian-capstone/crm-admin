@@ -22,6 +22,8 @@ export class CustomerEffect {
               return CustomerAction.SaveSuccessAction({ res: trigger.data as CustomerVM });
             } else if (trigger.type === 'update') {
               return CustomerAction.SaveSuccessAction({ res: trigger.data as CustomerVM });
+            } else if (trigger.type === 'list') {
+              return CustomerAction.ImportSuccessAction({ res: trigger.data as CustomerVM[] });
             }
           }),
           catchError((error: Error) => {

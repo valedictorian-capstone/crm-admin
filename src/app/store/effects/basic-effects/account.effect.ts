@@ -24,6 +24,8 @@ export class AccountEffect {
               return AccountAction.SaveSuccessAction({ res: trigger.data as AccountVM });
             } else if (trigger.type === 'remove') {
               return AccountAction.RemoveSuccessAction({ id: (trigger.data as AccountVM).id });
+            } else if (trigger.type === 'list') {
+              return AccountAction.ImportSuccessAction({ res: trigger.data as AccountVM[] });
             }
           }),
           catchError((error: Error) => {

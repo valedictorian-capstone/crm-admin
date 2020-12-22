@@ -12,6 +12,10 @@ const FindAllSuccessAction = createAction(
   '[Product] Fetch Action Success',
   props<{ res: ProductVM[] }>()
 );
+const ImportSuccessAction = createAction(
+  '[Product] Import Success Action',
+  props<{ res: ProductVM[] }>()
+);
 const SaveSuccessAction = createAction(
   '[Product] Save Success Action',
   props<{ res: ProductVM }>()
@@ -31,6 +35,7 @@ export const ProductAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   RemoveSuccessAction,
+  ImportSuccessAction,
   SocketAction,
   ResetAction
 };

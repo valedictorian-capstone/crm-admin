@@ -16,6 +16,11 @@ export const productReducer = createReducer(
       ...state,
     })
   ),
+  on(ProductAction.ImportSuccessAction,
+    (state, action) => productAdapter.addMany<ProductState>(action.res, {
+      ...state,
+    })
+  ),
   on(ProductAction.RemoveSuccessAction,
     (state, action) => productAdapter.removeOne<ProductState>(action.id, {
       ...state,
