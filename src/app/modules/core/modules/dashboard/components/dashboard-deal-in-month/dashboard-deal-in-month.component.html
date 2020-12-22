@@ -1,5 +1,5 @@
 <div class="deal-in-month">
-    <h5 class="text-center">Deals joined during the month</h5>
+    <h5 class="text-center" style="font-family: monospace, sans-serif;">Deals in the month</h5>
     <div class="search" *ngIf="deals.length > 0">
         <nb-form-field>
             <nb-icon icon="search-outline" nbPrefix></nb-icon>
@@ -23,6 +23,6 @@
         </div>
     </div>
     <div class="empty" *ngIf="deals.length === 0">
-        <b>No new any deals in this month</b>
+        <b style="font-family: monospace, sans-serif;">No new deals in this month</b>
     </div>
 </div>

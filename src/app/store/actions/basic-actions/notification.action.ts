@@ -20,6 +20,10 @@ const SeenAllSuccessAction = createAction(
   '[Notification] SeenAll Success Action',
   props<{ res: NotificationVM[] }>()
 );
+const ListAction = createAction(
+  '[Notification] List Action',
+  props<{ res: NotificationVM[] }>()
+);
 const SocketAction = createAction(
   '[Notification] Socket Action',
 );
@@ -31,6 +35,7 @@ export const NotificationAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   SeenAllSuccessAction,
+  ListAction,
   SocketAction,
   ResetAction
 };

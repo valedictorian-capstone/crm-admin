@@ -34,6 +34,7 @@ export class ActivityEffect {
           } else if (trigger.type === 'remove') {
             return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
           }
+          return ActivityAction.ListAction({ res: [] });
         }),
         catchError((error: Error) => {
           return of(undefined);

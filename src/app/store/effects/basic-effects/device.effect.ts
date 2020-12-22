@@ -25,6 +25,7 @@ export class DeviceEffect {
             } else if (trigger.type === 'remove') {
               return DeviceAction.RemoveSuccessAction({ id: (trigger.data as DeviceVM).id });
             }
+            return DeviceAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

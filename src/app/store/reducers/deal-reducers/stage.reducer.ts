@@ -21,6 +21,11 @@ export const stageReducer = createReducer(
       ...state,
     })
   ),
+  on(StageAction.ListAction,
+    (state, action) => stageAdapter.upsertMany<StageState>(action.res, {
+      ...state,
+    })
+  ),
   on(StageAction.ResetAction,
     () => stageAdapter.setAll<StageState>([], stageInitialState)
   ),

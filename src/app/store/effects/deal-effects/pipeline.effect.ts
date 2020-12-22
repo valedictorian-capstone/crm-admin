@@ -27,6 +27,7 @@ export class PipelineEffect {
           } else if (trigger.type === 'remove') {
             return PipelineAction.RemoveSuccessAction({ id: (trigger.data as PipelineVM).id });
           }
+          return PipelineAction.ListAction({ res: [] });
         }),
         catchError((error: Error) => {
           return of(undefined);

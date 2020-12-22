@@ -12,11 +12,16 @@ const FindAllSuccessAction = createAction(
   '[Group] Fetch Action Success',
   props<{ res: GroupVM[] }>()
 );
+const ListAction = createAction(
+  '[Group] List Action',
+  props<{ res: GroupVM[] }>()
+);
 const ResetAction = createAction(
   '[Group] Reset Action',
 );
 export const GroupAction = {
   FindAllAction,
   FindAllSuccessAction,
+  ListAction,
   ResetAction
 };

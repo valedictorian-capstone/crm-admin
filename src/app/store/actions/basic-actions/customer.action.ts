@@ -20,6 +20,10 @@ const SaveSuccessAction = createAction(
   '[Customer] Save Success Action',
   props<{ res: CustomerVM }>()
 );
+const ListAction = createAction(
+  '[Customer] List Action',
+  props<{ res: CustomerVM[] }>()
+);
 const ResetAction = createAction(
   '[Customer] Reset Action',
 );
@@ -30,6 +34,7 @@ export const CustomerAction = {
   FindAllAction,
   FindAllSuccessAction,
   SaveSuccessAction,
+  ListAction,
   ImportSuccessAction,
   SocketAction,
   ResetAction

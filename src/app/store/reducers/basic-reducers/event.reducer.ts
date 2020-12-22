@@ -21,6 +21,11 @@ export const eventReducer = createReducer(
       ...state,
     })
   ),
+  on(EventAction.ListAction,
+    (state, action) => eventAdapter.upsertMany<EventState>(action.res, {
+      ...state,
+    })
+  ),
   on(EventAction.ResetAction,
     () => eventAdapter.setAll<EventState>([], eventInitialState)
   ),

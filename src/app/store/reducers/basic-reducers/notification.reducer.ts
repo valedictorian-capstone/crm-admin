@@ -21,6 +21,11 @@ export const notificationReducer = createReducer(
       ...state,
     })
   ),
+  on(NotificationAction.ListAction,
+    (state, action) => notificationAdapter.upsertMany<NotificationState>(action.res, {
+      ...state,
+    })
+  ),
   on(NotificationAction.ResetAction,
     () => notificationAdapter.setAll<NotificationState>([], notificationInitialState)
   ),

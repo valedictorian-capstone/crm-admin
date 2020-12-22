@@ -21,6 +21,11 @@ export const ticketReducer = createReducer(
       ...state,
     })
   ),
+  on(TicketAction.ListAction,
+    (state, action) => ticketAdapter.upsertMany<TicketState>(action.res, {
+      ...state,
+    })
+  ),
   on(TicketAction.ResetAction,
     () => ticketAdapter.setAll<TicketState>([], ticketInitialState)
   ),

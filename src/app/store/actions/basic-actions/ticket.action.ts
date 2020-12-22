@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Ticket] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Ticket] List Action',
+  props<{ res: TicketVM[] }>()
+);
 const SocketAction = createAction(
   '[Ticket] Socket Action',
   props<{ requester: AccountVM }>()
@@ -33,5 +37,6 @@ export const TicketAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

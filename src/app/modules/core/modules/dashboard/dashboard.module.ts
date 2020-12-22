@@ -4,7 +4,8 @@ import {
   DashboardCustomerInMonthComponent,
   DashboardDealInMonthComponent,
   DashboardDealInYearComponent,
-  DashboardCustomerInYearComponent
+  DashboardCustomerInYearComponent,
+  DashboardTotalInYaerComponent
 } from './components';
 import { DashboardMainPage } from './pages';
 // import { } from './directives';
@@ -16,7 +17,8 @@ const COMPONENTS = [
   DashboardCustomerInMonthComponent,
   DashboardDealInMonthComponent,
   DashboardDealInYearComponent,
-  DashboardCustomerInYearComponent
+  DashboardCustomerInYearComponent,
+  DashboardTotalInYaerComponent
 ];
 
 const PAGES = [

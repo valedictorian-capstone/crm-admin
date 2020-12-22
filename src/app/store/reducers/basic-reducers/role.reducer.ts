@@ -21,6 +21,11 @@ export const roleReducer = createReducer(
       ...state,
     })
   ),
+  on(RoleAction.ListAction,
+    (state, action) => roleAdapter.upsertMany<RoleState>(action.res, {
+      ...state,
+    })
+  ),
   on(RoleAction.ResetAction,
     () => roleAdapter.setAll<RoleState>([], roleInitialState)
   ),

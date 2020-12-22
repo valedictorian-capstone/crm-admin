@@ -21,6 +21,11 @@ export const pipelineReducer = createReducer(
       ...state,
     })
   ),
+  on(PipelineAction.ListAction,
+    (state, action) => pipelineAdapter.upsertMany<PipelineState>(action.res, {
+      ...state,
+    })
+  ),
   on(PipelineAction.ResetAction,
     () => pipelineAdapter.setAll<PipelineState>([], pipelineInitialState)
   ),

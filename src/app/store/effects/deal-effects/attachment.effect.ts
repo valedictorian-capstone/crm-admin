@@ -27,6 +27,7 @@ export class AttachmentEffect {
             } else if (trigger.type === 'remove') {
               return AttachmentAction.RemoveSuccessAction({ id: (trigger.data as AttachmentVM).id });
             }
+            return AttachmentAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

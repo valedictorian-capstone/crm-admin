@@ -97,6 +97,7 @@ export const environment = {
         dealInMonth: 'api/v1/Statistic/DealInMonth',
         customerInYear: 'api/v1/Statistic/CustomerInYear',
         dealInYear: 'api/v1/Statistic/DealInYear',
+        totalInYear: 'api/v1/Statistic/TotalInYear',
       },
       search: {
         main: 'api/v1/Search',

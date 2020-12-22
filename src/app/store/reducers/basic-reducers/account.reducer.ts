@@ -18,6 +18,16 @@ export const accountReducer = createReducer(
       ...state,
     })
   ),
+  on(AccountAction.ImportSuccessAction,
+    (state, action) => accountAdapter.addMany<AccountState>(action.res, {
+      ...state,
+    })
+  ),
+  on(AccountAction.ListAction,
+    (state, action) => accountAdapter.upsertMany<AccountState>(action.res, {
+      ...state,
+    })
+  ),
   on(AccountAction.RemoveSuccessAction,
     (state, action) => accountAdapter.removeOne<AccountState>(action.id, {
       ...state,

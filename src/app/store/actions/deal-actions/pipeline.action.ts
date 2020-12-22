@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Pipeline] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Pipeline] List Action',
+  props<{ res: PipelineVM[] }>()
+);
 const SocketAction = createAction(
   '[Pipeline] Socket Action',
 );
@@ -32,5 +36,6 @@ export const PipelineAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

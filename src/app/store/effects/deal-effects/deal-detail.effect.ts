@@ -27,6 +27,7 @@ export class DealDetailEffect {
             } else if (trigger.type === 'remove') {
               return DealDetailAction.RemoveSuccessAction({ id: (trigger.data as DealDetailVM).id });
             }
+            return DealDetailAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

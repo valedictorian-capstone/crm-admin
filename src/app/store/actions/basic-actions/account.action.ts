@@ -16,12 +16,20 @@ const SaveSuccessAction = createAction(
   '[Account] Save Success Action',
   props<{ res: AccountVM }>()
 );
+const ImportSuccessAction = createAction(
+  '[Customer] Import Success Action',
+  props<{ res: AccountVM[] }>()
+);
 const RemoveSuccessAction = createAction(
   '[Account] Remove Success Action',
   props<{ id: string }>()
 );
 const SocketAction = createAction(
   '[Account] Socket Action',
+);
+const ListAction = createAction(
+  '[Account] List Action',
+  props<{ res: AccountVM[] }>()
 );
 const ResetAction = createAction(
   '[Account] Reset Action',
@@ -32,5 +40,7 @@ export const AccountAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
+  ImportSuccessAction,
   ResetAction
 };

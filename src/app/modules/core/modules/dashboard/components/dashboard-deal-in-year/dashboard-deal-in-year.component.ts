@@ -22,8 +22,11 @@ export class DashboardDealInYearComponent implements OnInit {
   useSettingYearChart = (groups: { status: string, data: Array<DealVM[]> }[]) => {
     this.option = {
       title: {
-        text: 'Deal in the year',
-        left: 'center'
+        text: 'Deals in the year',
+        left: 'center',
+        textStyle: {
+          fontFamily: 'monospace, sans-serif'
+        }
       },
       tooltip: {
         trigger: 'axis',
@@ -50,7 +53,8 @@ export class DashboardDealInYearComponent implements OnInit {
         ...groups.map((group) => ({
           type: 'bar',
           name: group.status,
-          data: group.data.map((e) => e.length)
+          data: group.data.map((e) => e.length),
+          showBackground: true,
         })),
         {
           name: 'Sum',

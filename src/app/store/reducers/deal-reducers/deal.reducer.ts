@@ -21,6 +21,11 @@ export const dealReducer = createReducer(
       ...state,
     })
   ),
+  on(DealAction.ListAction,
+    (state, action) => dealAdapter.upsertMany<DealState>(action.res, {
+      ...state,
+    })
+  ),
   on(DealAction.ResetAction,
     () => dealAdapter.setAll<DealState>([], dealInitialState)
   ),

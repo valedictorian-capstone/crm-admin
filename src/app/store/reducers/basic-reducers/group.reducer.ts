@@ -11,6 +11,11 @@ export const groupReducer = createReducer(
       firstLoad: true
     })
   ),
+  on(GroupAction.ListAction,
+    (state, action) => groupAdapter.upsertMany<GroupState>(action.res, {
+      ...state,
+    })
+  ),
   on(GroupAction.ResetAction,
     () => groupAdapter.setAll<GroupState>([], groupInitialState)
   ),

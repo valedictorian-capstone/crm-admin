@@ -21,6 +21,11 @@ export const customerReducer = createReducer(
       ...state,
     })
   ),
+  on(CustomerAction.ListAction,
+    (state, action) => customerAdapter.upsertMany<CustomerState>(action.res, {
+      ...state,
+    })
+  ),
   on(CustomerAction.ResetAction,
     () => customerAdapter.setAll<CustomerState>([], customerInitialState)
   ),

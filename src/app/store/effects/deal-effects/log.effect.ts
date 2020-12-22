@@ -26,6 +26,7 @@ export class LogEffect {
           } else if (trigger.type === 'remove') {
             return LogAction.RemoveSuccessAction({ id: (trigger.data as LogVM).id });
           }
+          return LogAction.ListAction({ res: [] });
         }),
         catchError((error: Error) => {
           return of(undefined);

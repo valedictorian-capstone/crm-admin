@@ -23,6 +23,10 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[Category] Socket Action',
 );
+const ListAction = createAction(
+  '[Category] List Action',
+  props<{ res: CategoryVM[] }>()
+);
 const ResetAction = createAction(
   '[Category] Reset Action',
 );
@@ -30,6 +34,7 @@ export const CategoryAction = {
   FindAllAction,
   FindAllSuccessAction,
   SaveSuccessAction,
+  ListAction,
   RemoveSuccessAction,
   SocketAction,
   ResetAction

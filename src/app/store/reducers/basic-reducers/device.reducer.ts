@@ -21,6 +21,11 @@ export const deviceReducer = createReducer(
       ...state,
     })
   ),
+  on(DeviceAction.ListAction,
+    (state, action) => deviceAdapter.upsertMany<DeviceState>(action.res, {
+      ...state,
+    })
+  ),
   on(DeviceAction.ResetAction,
     () => deviceAdapter.setAll<DeviceState>([], deviceInitialState)
   ),
