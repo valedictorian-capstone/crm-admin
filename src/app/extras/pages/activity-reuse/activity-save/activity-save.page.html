@@ -39,7 +39,7 @@
                 [nzVisible]="state.showDateStartPicker" placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
-            <app-reuse-select-date-time [date]="state.form.get('dateStart').value" [min]="state.minStart" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-reuse-select-date-time>
+            <app-reuse-select-date-time [date]="state.form.get('dateStart').value" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-reuse-select-date-time>
         </nz-dropdown-menu>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
