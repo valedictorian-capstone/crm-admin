@@ -22,4 +22,7 @@ export class StatisticService {
   public readonly findDealInYear = (year: number): Observable<{ status: string, data: Array<DealVM[]> }[]> => {
     return this.httpClient.get<{ status: string, data: Array<DealVM[]> }[]>(`${environment.apiEndpont}${environment.api.extra.statistic.dealInYear}?year=${year}`);
   }
+  public readonly findTotalInYear = (year: number): Observable<number[]> => {
+    return this.httpClient.get<number[]>(`${environment.apiEndpont}${environment.api.extra.statistic.totalInYear}?year=${year}`);
+  }
 }

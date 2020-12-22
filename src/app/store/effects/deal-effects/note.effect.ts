@@ -27,6 +27,7 @@ export class NoteEffect {
           } else if (trigger.type === 'remove') {
             return NoteAction.RemoveSuccessAction({ id: (trigger.data as NoteVM).id });
           }
+          return NoteAction.ListAction({ res: [] });
         }),
         catchError((error: Error) => {
           return of(undefined);

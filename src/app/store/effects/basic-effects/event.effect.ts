@@ -25,6 +25,7 @@ export class EventEffect {
             } else if (trigger.type === 'remove') {
               return EventAction.RemoveSuccessAction({ id: (trigger.data as EventVM).id });
             }
+            return EventAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

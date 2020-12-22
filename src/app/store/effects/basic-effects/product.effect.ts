@@ -27,6 +27,7 @@ export class ProductEffect {
             } else if (trigger.type === 'list') {
               return ProductAction.ImportSuccessAction({ res: trigger.data as ProductVM[] });
             }
+            return ProductAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

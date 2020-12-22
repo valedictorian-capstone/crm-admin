@@ -20,7 +20,7 @@ export class TicketEffect {
         this.service.triggerSocket().pipe(
           map(trigger => {
             if (trigger.type === 'create') {
-              if (this.check(action.requester, trigger.data as TicketVM)) {
+              if (this.checkCreate(action.requester, trigger.data as TicketVM)) {
                 return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
               }
             } else if (trigger.type === 'update') {
@@ -32,8 +32,10 @@ export class TicketEffect {
             } else if (trigger.type === 'remove') {
               return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
             }
+            return TicketAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
+            console.log(error);
             return of(undefined);
           }),
         )
@@ -67,6 +69,11 @@ export class TicketEffect {
       )
     )
   );
+  private readonly checkCreate = (requester: AccountVM, ticket: TicketVM) => {
+    const canGetTicketDeal = requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
+    const canGetTicketSupport = requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
+    return (canGetTicketDeal && ticket.type === 'deal') || (canGetTicketSupport && ticket.type === 'other');
+  }
   private readonly check = (requester: AccountVM, ticket: TicketVM) => {
     const canGetTicketDeal = requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
     const canGetTicketSupport = requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
@@ -79,14 +86,14 @@ export class TicketEffect {
       }
     } else {
       if (canGetTicketDeal) {
-        if (canGetFeedbackTicket && ((ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) ||  (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
+        if (canGetFeedbackTicket && ((ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) || (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
           return true;
         } else if (ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {
           return true;
         }
       }
       if (canGetTicketSupport) {
-        if (canGetFeedbackTicket && ((ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) ||  (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
+        if (canGetFeedbackTicket && ((ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) || (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
           return true;
         } else if (ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {
           return true;

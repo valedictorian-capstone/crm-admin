@@ -25,6 +25,7 @@ export class NotificationEffect {
             } else if (trigger.type === 'list') {
               return NotificationAction.SeenAllSuccessAction({ res: trigger.data as NotificationVM[] });
             }
+            return NotificationAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

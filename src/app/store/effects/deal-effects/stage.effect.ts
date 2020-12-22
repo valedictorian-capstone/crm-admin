@@ -27,6 +27,7 @@ export class StageEffect {
           } else if (trigger.type === 'remove') {
             return StageAction.RemoveSuccessAction({ id: (trigger.data as StageVM).id });
           }
+          return StageAction.ListAction({ res: [] });
         }),
         catchError((error: Error) => {
           return of(undefined);

@@ -25,6 +25,7 @@ export class CategoryEffect {
             } else if (trigger.type === 'remove') {
               return CategoryAction.RemoveSuccessAction({ id: (trigger.data as CategoryVM).id });
             }
+            return CategoryAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

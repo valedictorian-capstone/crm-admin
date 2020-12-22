@@ -23,12 +23,17 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[Comment] Socket Action',
 );
+const ListAction = createAction(
+  '[Comment] List Action',
+  props<{ res: CommentVM[] }>()
+);
 const ResetAction = createAction(
   '[Comment] Reset Action',
 );
 export const CommentAction = {
   FindAllAction,
   FindAllSuccessAction,
+  ListAction,
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,

@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Event] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Event] List Action',
+  props<{ res: EventVM[] }>()
+);
 const SocketAction = createAction(
   '[Event] Socket Action',
 );
@@ -31,6 +35,7 @@ export const EventAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   RemoveSuccessAction,
+  ListAction,
   SocketAction,
   ResetAction
 };

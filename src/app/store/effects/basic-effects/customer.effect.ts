@@ -25,6 +25,7 @@ export class CustomerEffect {
             } else if (trigger.type === 'list') {
               return CustomerAction.ImportSuccessAction({ res: trigger.data as CustomerVM[] });
             }
+            return CustomerAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

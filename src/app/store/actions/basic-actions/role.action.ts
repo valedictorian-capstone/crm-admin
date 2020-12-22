@@ -23,6 +23,10 @@ const RemoveSuccessAction = createAction(
 const SocketAction = createAction(
   '[Role] Socket Action',
 );
+const ListAction = createAction(
+  '[Role] List Action',
+  props<{ res: RoleVM[] }>()
+);
 const ResetAction = createAction(
   '[Role] Reset Action',
 );
@@ -31,6 +35,7 @@ export const RoleAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   RemoveSuccessAction,
+  ListAction,
   SocketAction,
   ResetAction
 };

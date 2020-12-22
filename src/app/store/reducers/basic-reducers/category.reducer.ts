@@ -21,6 +21,11 @@ export const categoryReducer = createReducer(
       ...state,
     })
   ),
+  on(CategoryAction.ListAction,
+    (state, action) => categoryAdapter.upsertMany<CategoryState>(action.res, {
+      ...state,
+    })
+  ),
   on(CategoryAction.ResetAction,
     () => categoryAdapter.setAll<CategoryState>([], categoryInitialState)
   ),

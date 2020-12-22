@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Deal] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Deal] List Action',
+  props<{ res: DealVM[] }>()
+);
 const SocketAction = createAction(
   '[Deal] Socket Action',
 );
@@ -31,6 +35,7 @@ export const DealAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   RemoveSuccessAction,
+  ListAction,
   SocketAction,
   ResetAction
 };

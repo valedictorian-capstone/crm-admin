@@ -29,6 +29,12 @@ export class DashboardMainPage implements OnInit {
       selected: new Date(),
     }
   };
+  total = {
+    year: {
+      data: undefined,
+      selected: new Date(),
+    }
+  }
   date = new Date();
   constructor(
     protected readonly statisticService: StatisticService,
@@ -40,6 +46,7 @@ export class DashboardMainPage implements OnInit {
     this.useLoadDealInYear();
     this.useLoadCustomerInMonth();
     this.useLoadDealInMonth();
+    this.useLoadTotalInYear();
   }
 
   useLoadCustomerInYear = () => {
@@ -84,6 +91,18 @@ export class DashboardMainPage implements OnInit {
           this.useHideSpinner('deal-month');
         })
       ).subscribe();
+  }
+  useLoadTotalInYear = () => {
+    this.useShowSpinner('total-year');
+    this.statisticService
+      .findTotalInYear(this.total.year.selected.getFullYear())
+      .pipe(
+        tap((data) => this.total.year.data = data),
+        finalize(() => {
+          this.useHideSpinner('total-year');
+        })
+      )
+      .subscribe();
   }
   useShowSpinner = (name: string) => {
     this.spinner.show(name);

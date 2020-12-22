@@ -25,6 +25,7 @@ export class CommentEffect {
             } else if (trigger.type === 'remove') {
               return CommentAction.RemoveSuccessAction({ id: (trigger.data as CommentVM).id });
             }
+            return CommentAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

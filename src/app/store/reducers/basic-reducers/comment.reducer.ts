@@ -21,6 +21,11 @@ export const commentReducer = createReducer(
       ...state,
     })
   ),
+    on(CommentAction.ListAction,
+    (state, action) => commentAdapter.upsertMany<CommentState>(action.res, {
+      ...state,
+    })
+  ),
   on(CommentAction.ResetAction,
     () => commentAdapter.setAll<CommentState>([], commentInitialState)
   ),

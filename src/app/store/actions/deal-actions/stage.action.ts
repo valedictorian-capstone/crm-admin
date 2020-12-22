@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Stage] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Stage] List Action',
+  props<{ res: StageVM[] }>()
+);
 const SocketAction = createAction(
   '[Stage] Socket Action',
 );
@@ -32,5 +36,6 @@ export const StageAction = {
   SaveSuccessAction,
   RemoveSuccessAction,
   SocketAction,
+  ListAction,
   ResetAction
 };

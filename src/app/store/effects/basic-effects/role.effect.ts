@@ -25,6 +25,7 @@ export class RoleEffect {
             } else if (trigger.type === 'remove') {
               return RoleAction.RemoveSuccessAction({ id: (trigger.data as RoleVM).id });
             }
+            return RoleAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);

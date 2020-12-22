@@ -1,4 +1,20 @@
 <div nz-row class="dashboard-main">
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" [nzXl]="24" [nzXXl]="24" class="mb-2">
+        <nb-card style="margin: auto; width: 99%; position: relative;">
+            <ngx-spinner [name]="'total-year'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+            <nb-card-header>
+                <button (click)="useLoadTotalInYear()" style="float:right" nbButton size="small">
+              <nb-icon icon="sync"></nb-icon>
+            </button>
+                <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="year" [(ngModel)]="total.year.selected" (ngModelChange)="useLoadTotalInYear()"></nz-date-picker>
+            </nb-card-header>
+            <nb-card-body style="width: 100%;">
+                <div style="width: 100%; min-height: 30rem;">
+                    <app-dashboard-total-in-yaer *ngIf="total.year.data" [data]="total.year.data"></app-dashboard-total-in-yaer>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
     <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12" class="mb-2">
         <nb-card style="margin: auto; width: 98%; position: relative;">
             <ngx-spinner [name]="'customer-month'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
@@ -37,7 +53,7 @@
                 <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="year" [(ngModel)]="customer.year.selected" (ngModelChange)="useLoadCustomerInYear()"></nz-date-picker>
             </nb-card-header>
             <nb-card-body style="width: 100%;">
-                <div style="width: 100%;">
+                <div style="width: 100%; min-height: 30rem;">
                     <app-dashboard-customer-in-year *ngIf="customer.year.data" [data]="customer.year.data"></app-dashboard-customer-in-year>
                 </div>
             </nb-card-body>
@@ -52,7 +68,7 @@
                 </button>
                 <nz-date-picker [nzInputReadOnly]="true" [nzAllowClear]="false" nzMode="year" [(ngModel)]="deal.year.selected" (ngModelChange)="useLoadDealInYear()"></nz-date-picker>
             </nb-card-header>
-            <nb-card-body style="width: 100%;">
+            <nb-card-body style="width: 100%; min-height: 30rem;">
                 <div style="width: 100%;">
                     <app-dashboard-deal-in-year *ngIf="deal.year.data" [data]="deal.year.data"></app-dashboard-deal-in-year>
                 </div>

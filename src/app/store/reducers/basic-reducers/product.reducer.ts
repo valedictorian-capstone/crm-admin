@@ -26,6 +26,11 @@ export const productReducer = createReducer(
       ...state,
     })
   ),
+  on(ProductAction.ListAction,
+    (state, action) => productAdapter.upsertMany<ProductState>(action.res, {
+      ...state,
+    })
+  ),
   on(ProductAction.ResetAction,
     () => productAdapter.setAll<ProductState>([], productInitialState)
   ),

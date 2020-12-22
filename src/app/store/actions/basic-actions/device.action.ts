@@ -20,6 +20,10 @@ const RemoveSuccessAction = createAction(
   '[Device] Remove Success Action',
   props<{ id: string }>()
 );
+const ListAction = createAction(
+  '[Device] List Action',
+  props<{ res: DeviceVM[] }>()
+);
 const SocketAction = createAction(
   '[Device] Socket Action',
 );
@@ -31,6 +35,7 @@ export const DeviceAction = {
   FindAllSuccessAction,
   SaveSuccessAction,
   RemoveSuccessAction,
+  ListAction,
   SocketAction,
   ResetAction
 };

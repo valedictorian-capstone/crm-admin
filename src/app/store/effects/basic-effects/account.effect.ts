@@ -27,6 +27,7 @@ export class AccountEffect {
             } else if (trigger.type === 'list') {
               return AccountAction.ImportSuccessAction({ res: trigger.data as AccountVM[] });
             }
+            return AccountAction.ListAction({ res: [] });
           }),
           catchError((error: Error) => {
             return of(undefined);
