@@ -27,7 +27,17 @@ export class NoteService {
   public readonly findById = (id: string): Observable<NoteVM> => {
     return this.httpClient.get<NoteVM>(`${environment.apiEndpont}${environment.api.deal.note.getById}${id}`);
   }
-
+  public readonly findByCampaignId = (id: string): Observable<NoteVM[]> => {
+    return this.httpClient.get<NoteVM[]>(`${environment.apiEndpont}${environment.api.deal.note.getById}${id}/campaign`);
+  }
+  public readonly removeMany = (body: NoteVM[]): Observable<NoteVM[]> => {
+    return this.httpClient.put<NoteVM[]>(`${environment.apiEndpont}${environment.api.deal.note.main}/many`, body);
+  }
+  public readonly query = (params: {key: string, id: string}): Observable<NoteVM[]> => {
+    return this.httpClient.get<NoteVM[]>(`${environment.apiEndpont}${environment.api.deal.note.main}/query`, {
+      params
+    });
+  }
   public readonly insert = (data: NoteCM): Observable<NoteVM> => {
     return this.httpClient.post<NoteVM>(`${environment.apiEndpont}${environment.api.deal.note.main}`, data);
   }

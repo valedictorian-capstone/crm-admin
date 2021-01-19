@@ -123,9 +123,9 @@
                     <div class="no-content" *ngIf="state.close" (click)="state.close = false">
                         <b>Click here to take {{state.type}}...</b>
                     </div>
-                    <app-reuse-activity-save (useClose)="state.close = true" [payload]="{fixDeal: true, inside: true, deal: state.deal}" *ngIf="!state.close && state.type === 'activity'"></app-reuse-activity-save>
-                    <app-reuse-note-save (useClose)="state.close = true" [payload]="{inside: true, fixDeal: true, deal: state.deal}" *ngIf="!state.close && state.type === 'note'"></app-reuse-note-save>
-                    <app-reuse-attachment-save (useClose)="state.close = true" [inside]="true" [fixDeal]="true" [deal]="state.deal" *ngIf="!state.close && state.type === 'attachment'"></app-reuse-attachment-save>
+                    <app-activity-save (useClose)="state.close = true" [payload]="{fixDeal: true, inside: true, deal: state.deal}" *ngIf="!state.close && state.type === 'activity'"></app-activity-save>
+                    <app-note-save (useClose)="state.close = true" [payload]="{inside: true, fixDeal: true, deal: state.deal}" *ngIf="!state.close && state.type === 'note'"></app-note-save>
+                    <app-attachment-save (useClose)="state.close = true" [payload]="{inside: true, fixDeal: true, deal: state.deal}" *ngIf="!state.close && state.type === 'attachment'"></app-attachment-save>
                 </div>
             </div>
             <div class="crm-deal-detail-content-plan">

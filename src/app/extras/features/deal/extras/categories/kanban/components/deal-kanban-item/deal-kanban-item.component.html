@@ -1,0 +1,17 @@
+<nb-card>
+    <nb-card-header>
+        <b>{{stage.name + ' (' + stage.probability + '%)'}} - {{deals | totalMoney}}</b>
+    </nb-card-header>
+    <nb-card-body class="px-0" [class.un-main]="!isMain" [class.dragging]="dragging">
+        <smooth-dnd-container [groupName]="'deal'" [dragHandleSelector]="'.canDrag'" [getChildPayload]="usePayload()" (drop)="useDrop($event)" (dragStart)="dragging = true" (dragEnd)="dragging = false">
+            <smooth-dnd-draggable *ngFor="let deal of deals; let i = index">
+                <app-deal-kanban-sub-item [dragging]="dragging" [for]="for" [isMain]="isMain" [deal]="deal" [canUpdate]="canUpdate" [canRemove]="canRemove" (useRemove)="useRemove(deal.id)"></app-deal-kanban-sub-item>
+            </smooth-dnd-draggable>
+        </smooth-dnd-container>
+    </nb-card-body>
+    <nb-card-footer>
+        <button (click)="useAdd()" nbButton status="info" fullWidth outline size="small">
+        <nb-icon icon="plus-outline"></nb-icon>
+      </button>
+    </nb-card-footer>
+</nb-card>

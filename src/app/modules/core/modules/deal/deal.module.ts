@@ -15,6 +15,10 @@ import {
   DealDetailPage,
   DealMainPage
 } from './pages';
+import {
+  DealDetailContainer,
+  DealMainContainer
+} from './containers';
 import { DealDynamicDirective } from './directives';
 import { SizePipe } from './pipes';
 const COMPONENTS = [
@@ -27,7 +31,10 @@ const COMPONENTS = [
   DealSearchComponent,
   DealLogComponent
 ];
-
+const CONTAINERS = [
+  DealDetailContainer,
+  DealMainContainer
+];
 const PAGES = [
   DealDetailPage,
   DealMainPage
@@ -46,8 +53,7 @@ const DIRECTIVES = [
     ExtrasModule.forChild(),
     DealRoutes
   ],
-  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
-  exports: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES, ...CONTAINERS],
 })
 export class DealModule {
 }

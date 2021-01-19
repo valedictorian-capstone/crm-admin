@@ -1,0 +1,21 @@
+.body {
+    max-height: calc(100vh - 17rem - 56px);
+    min-height: calc(100vh - 17rem - 56px);
+    overflow-y: auto;
+    align-content: baseline;
+    &.un-main {
+        min-height: 24rem;
+        max-height: 24rem;
+    }
+}
+
+@media (max-width: 789px) {
+    .body {
+        max-height: calc(100vh - 17rem - 112px);
+        min-height: calc(100vh - 17rem - 112px);
+        &.un-main {
+            min-height: 24rem;
+            max-height: 24rem;
+        }
+    }
+}

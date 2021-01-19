@@ -1,0 +1,245 @@
+.datatable-item {
+    white-space: nowrap;
+    width: 100%;
+    .select {
+        display: inline-block;
+        position: relative;
+        nb-checkbox {
+            width: 3rem;
+            height: 3rem;
+            top: 0.5rem;
+            left: 0.5rem;
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+    }
+    .check {
+        display: inline-block;
+        position: relative;
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+        nb-icon {
+            position: absolute;
+            top: 1rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            left: 1rem;
+        }
+    }
+    .action {
+        display: inline-block;
+        position: relative;
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+        button {
+            position: absolute;
+            top: 1rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            left: 1rem;
+        }
+    }
+    .field {
+        display: inline-block;
+        width: 15rem;
+        &.short {
+            width: 5rem;
+        }
+        &.medium {
+            width: 10rem;
+        }
+        &.large {
+            width: 15rem;
+        }
+        &.gaint {
+            width: 20rem;
+        }
+        &.b-gaint {
+            min-width: 20rem;
+            width: 56vw;
+        }
+        input {
+            height: 4rem;
+        }
+    }
+}
+
+nb-card {
+    width: 789px;
+    margin-top: 29px;
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow: auto;
+        .attachment {
+            width: 100%;
+            min-height: 4rem;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            border: 1px solid #e5e5e5;
+            display: inline-block;
+            .extension {
+                height: 4rem;
+                width: 4rem;
+                display: flex;
+                float: left;
+                justify-content: center;
+                align-items: center;
+                nb-icon {
+                    font-size: 1.5rem;
+                }
+            }
+            .content {
+                float: left;
+                padding: 0.5rem;
+                width: calc(100% - 6rem);
+                cursor: pointer;
+                a {
+                    color: rgb(49, 122, 226);
+                    text-decoration: none;
+                }
+            }
+            .time {
+                float: right;
+                padding: 0 0.5rem 0 0.5rem;
+                width: calc(100% - 4rem);
+                span {
+                    display: inline-block;
+                    font: 400 13px/16px monospace, sans-serif;
+                    color: #747678;
+                }
+                .separator {
+                    margin: 0;
+                    padding: 0 16px 0 9px;
+                    width: 8px;
+                    display: inline-block;
+                    cursor: default;
+                    text-align: center;
+                    font-weight: 900;
+                }
+            }
+            button {
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
+        }
+        .description {
+            width: 100%;
+            min-height: 4rem;
+            background: #fffcdc;
+            border: 1px solid #e5e5e5;
+            padding: 1rem;
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card {
+        width: 95vw;
+    }
+}
+
+nb-card.child {
+    width: 789px;
+    margin-top: 29px;
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow: auto;
+        .attachment {
+            width: 100%;
+            min-height: 4rem;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            border: 1px solid #e5e5e5;
+            display: inline-block;
+            .extension {
+                height: 4rem;
+                width: 4rem;
+                display: flex;
+                float: left;
+                justify-content: center;
+                align-items: center;
+                nb-icon {
+                    font-size: 1.5rem;
+                }
+            }
+            .content {
+                float: left;
+                padding: 0.5rem;
+                width: calc(100% - 6rem);
+                cursor: pointer;
+                a {
+                    color: rgb(49, 122, 226);
+                    text-decoration: none;
+                }
+            }
+            .time {
+                float: right;
+                padding: 0 0.5rem 0 0.5rem;
+                width: calc(100% - 4rem);
+                span {
+                    display: inline-block;
+                    font: 400 13px/16px monospace, sans-serif;
+                    color: #747678;
+                }
+                .separator {
+                    margin: 0;
+                    padding: 0 16px 0 9px;
+                    width: 8px;
+                    display: inline-block;
+                    cursor: default;
+                    text-align: center;
+                    font-weight: 900;
+                }
+            }
+            button {
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
+        }
+        .description {
+            width: 100%;
+            min-height: 4rem;
+            background: #fffcdc;
+            border: 1px solid #e5e5e5;
+            padding: 1rem;
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card.child {
+        width: 95vw;
+    }
+}

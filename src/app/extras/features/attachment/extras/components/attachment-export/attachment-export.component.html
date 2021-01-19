@@ -1,0 +1,27 @@
+<button class="float-right mr-1" (click)="useExport(export)" status="success" outline nbButton size="small">
+  <nb-icon icon="download-outline"></nb-icon>
+</button>
+<table #export style="display: none">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>size</th>
+            <th>extension</th>
+            <th>url</th>
+            <th>deal</th>
+            <th>campaign</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of data">
+            <th>{{ item.id }}</th>
+            <th>{{ item.name }}</th>
+            <th>{{ item.size }}</th>
+            <th>{{ item.extension }}</th>
+            <th>{{ item.url }}</th>
+            <th>{{ item.deal?.title }}</th>
+            <th>{{ item.campaign?.name }}</th>
+        </tr>
+    </tbody>
+</table>

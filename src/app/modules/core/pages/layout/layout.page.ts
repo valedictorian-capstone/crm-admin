@@ -1,55 +1,23 @@
 import {
   AccountAction, ActivityAction,
   AttachmentAction,
-
-
-
-
   CategoryAction,
   CommentAction,
-  CustomerAction, DealAction,
-
-
-  DealDetailAction, DeviceAction,
-
-
-
-
-
-
-
-
-
-
+  CustomerAction,
+  DealAction,
+  DealDetailAction,
+  DeviceAction,
   EventAction,
-
-
-
-
-
-
-  GroupAction, LogAction, NoteAction,
-  NotificationAction, PipelineAction,
-
-
-
-
-
-
-
-
+  GroupAction,
+  LogAction,
+  NoteAction,
+  NotificationAction,
+  PipelineAction,
   ProductAction,
-  RoleAction, StageAction,
-
-
-
-
-
-
-
-
-
-  TicketAction
+  RoleAction,
+  StageAction,
+  TicketAction,
+  CampaignAction
 } from '@actions';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -150,6 +118,7 @@ export class LayoutPage implements OnInit {
     this.store.dispatch(NoteAction.SocketAction());
     this.store.dispatch(NotificationAction.SocketAction());
     this.store.dispatch(ProductAction.SocketAction());
+    this.store.dispatch(CampaignAction.SocketAction());
   }
   useDialog(context: { type: string, payload: any }) {
     (context);

@@ -1,4 +1,4 @@
-import { AccountVM, DealVM } from '@view-models';
+import { AccountVM, DealVM, CampaignVM } from '@view-models';
 
 export interface ActivityVM {
   id: string;
@@ -10,6 +10,7 @@ export interface ActivityVM {
   assignBy: AccountVM;
   assignee: AccountVM;
   deal: DealVM;
+  campaign: CampaignVM;
   dateStart: Date;
   dateEnd: Date;
   isDelete: boolean;
@@ -27,6 +28,7 @@ export interface ActivityCM {
   assignBy: AccountVM;
   assignee: AccountVM;
   status: string;
+  campaign: CampaignVM;
   deal: DealVM;
   dateStart: Date;
   dateEnd: Date;
@@ -41,6 +43,7 @@ export interface ActivityUM {
   assignBy: AccountVM;
   assignee: AccountVM;
   status: string;
+  campaign: CampaignVM;
   deal: DealVM;
   dateStart: Date;
   dateEnd: Date;

@@ -1,0 +1,80 @@
+<div class="datatable-item">
+    <div class="check">
+        <nb-icon *ngIf="!isHeader" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-icon *ngIf="isHeader" (click)="control.setValue(control.value === 'radio-button-on-outline' ? 'radio-button-off-outline' : 'radio-button-on-outline'); useItemCheck.emit()" [icon]="control.value" [status]="control.value === 'radio-button-on-outline' ? 'success' : (control.value === 'minus-circle-outline' ? 'warning' : 'info')"></nb-icon>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="image">
+        <img *ngIf="!isHeader && employee.avatar" [src]="employee.avatar" />
+        <div *ngIf="!isHeader && !employee.avatar" class="empty-image">
+            <b>{{ employee.fullname | key }}</b>
+        </div>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field gaint" (click)="useSort('code')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Code' : employee.code" placeHolder="Code" />
+            <nb-icon *ngIf="isHeader && sort.key === 'code'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(employee.code)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field gaint" (click)="useSort('fullname')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Fullname' : employee.fullname" placeHolder="Fullname" />
+            <nb-icon *ngIf="isHeader && sort.key === 'fullname'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(employee.fullname)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field gaint" (click)="useSort('email')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Email' : employee.email" placeHolder="Email" />
+            <nb-icon *ngIf="isHeader && sort.key === 'email'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(employee.email)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field gaint" (click)="useSort('phone')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Phone' : employee.phone" placeHolder="Phone" />
+            <nb-icon *ngIf="isHeader && sort.key === 'phone'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(employee.phone)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+      <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useView()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+    <nb-icon [icon]="'eye-outline'"></nb-icon>
+</button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+    <nb-icon [icon]="'trash-2-outline'"></nb-icon>
+</button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

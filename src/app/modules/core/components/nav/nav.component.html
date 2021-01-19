@@ -10,8 +10,8 @@
         <nb-icon [icon]="item.icon" [pack]="item.pack"></nb-icon>
         <b>{{item.label}}</b>
     </a>
-    <a *ngIf="state.more.length > 0" class="crm-menu-item" [class.selected]="state.active !== 'dashboard' && state.active !== 'lead' && state.active !== 'process' && state.active !== 'profile' && state.active !== 'activity' && state.active !== 'deal'" (click)="useUpdate()"
-        [nbTooltip]="'More'" [nbTooltipPlacement]="'end'" (clickOutside)="state.showMore = false" (click)="state.showMore = !state.showMore">
+    <a *ngIf="state.more.length > 0" class="crm-menu-item" [class.selected]="state.active !== 'dashboard' && state.active !== 'lead' && state.active !== 'profile' && state.active !== 'activity' && state.active !== 'deal'" (click)="useUpdate()" [nbTooltip]="'More'"
+        [nbTooltipPlacement]="'end'" (clickOutside)="state.showMore = false" (click)="state.showMore = !state.showMore">
         <nb-icon [icon]="'more-horizontal'" [pack]="'eva'"></nb-icon>
         <b>More</b>
     </a>

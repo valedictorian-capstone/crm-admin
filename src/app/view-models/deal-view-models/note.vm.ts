@@ -1,10 +1,11 @@
-import { DealVM } from '@view-models';
+import { CampaignVM, DealVM } from '@view-models';
 
 export interface NoteVM {
   id: string;
   description: string;
   pin: boolean;
   deal: DealVM;
+  campaign: CampaignVM;
   isDelete: boolean;
   createdBy: string;
   updatedBy: string;
@@ -16,11 +17,13 @@ export interface NoteCM {
   description: string;
   pin: boolean;
   deal: DealVM;
+  campaign: CampaignVM;
 }
 
 export interface NoteUM {
   id: string;
   description: string;
   pin: boolean;
+  campaign: CampaignVM;
   deal: DealVM;
 }

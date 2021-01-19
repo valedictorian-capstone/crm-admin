@@ -1,0 +1,15 @@
+nb-card {
+    nb-card-body {
+        background: #ffe498;
+        min-height: 15rem;
+        max-height: 15rem;
+        white-space: pre-wrap;
+        white-space: -moz-pre-wrap;
+        white-space: -pre-wrap;
+        white-space: -o-pre-wrap;
+        word-wrap: break-word;
+    }
+    b {
+        font-family: monospace, sans-serif;
+    }
+}

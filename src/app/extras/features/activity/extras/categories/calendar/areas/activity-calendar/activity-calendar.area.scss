@@ -1,0 +1,37 @@
+mwl-calendar-month-view {
+     ::ng-deep {
+        div.cal-month-view {
+            min-width: 50rem;
+        }
+    }
+}
+
+mwl-calendar-week-view {
+     ::ng-deep {
+        div.cal-week-view {
+            min-width: 50rem;
+        }
+    }
+}
+
+.body {
+    max-height: calc(100vh - 13rem - 56px);
+    min-height: calc(100vh - 13rem - 56px);
+    overflow-y: auto;
+    align-content: baseline;
+    &.un-main {
+        min-height: 28rem;
+        max-height: 28rem;
+    }
+}
+
+@media (max-width: 789px) {
+    .body {
+        max-height: calc(100vh - 13rem - 112px);
+        min-height: calc(100vh - 13rem - 112px);
+        &.un-main {
+            min-height: 28rem;
+            max-height: 28rem;
+        }
+    }
+}

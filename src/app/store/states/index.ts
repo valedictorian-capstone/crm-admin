@@ -22,6 +22,7 @@ export interface State {
   attachment: fromNormal.AttachmentState;
   dealDetail: fromNormal.DealDetailState;
   deal: fromNormal.DealState;
+  campaign: fromNormal.CampaignState;
   note: fromNormal.NoteState;
   pipeline: fromNormal.PipelineState;
   stage: fromNormal.StageState;

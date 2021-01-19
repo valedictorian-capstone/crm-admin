@@ -35,6 +35,7 @@ export class ImportDataPage implements OnInit, OnDestroy {
     canImportEmployee: false,
     canImportCustomer: false,
   };
+  text = '';
   constructor(
     protected readonly toastrService: NbToastrService,
     public readonly spinner: NgxSpinnerService,
@@ -73,7 +74,6 @@ export class ImportDataPage implements OnInit, OnDestroy {
         const wsname: string = wb.SheetNames[0];
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         this.state.data = XLSX.utils.sheet_to_json(ws);
-        console.log(this.state.data);
       };
       reader.readAsBinaryString(file as any);
     } else {

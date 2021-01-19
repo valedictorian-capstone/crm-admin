@@ -20,17 +20,24 @@ export class ActivityEffect {
       this.service.triggerSocket().pipe(
         map(trigger => {
 
-          const canGetAll = action.requester.roles.filter((role) => role.canGetAllActivity).length > 0;
+          // const canGetAll = action.requester.roles.filter((role) => role.canGetAllActivity).length > 0;
+          // if (trigger.type === 'create') {
+          //   if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
+          //     return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
+          //   }
+          // } else if (trigger.type === 'update') {
+          //   if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
+          //     return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
+          //   } else {
+          //     return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
+          //   }
+          // } else if (trigger.type === 'remove') {
+          //   return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
+          // }
           if (trigger.type === 'create') {
-            if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
-              return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
-            }
+            return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
           } else if (trigger.type === 'update') {
-            if ((trigger.data as ActivityVM).assignee.id === action.requester.id || canGetAll) {
-              return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
-            } else {
-              return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
-            }
+            return ActivityAction.SaveSuccessAction({ res: trigger.data as ActivityVM });
           } else if (trigger.type === 'remove') {
             return ActivityAction.RemoveSuccessAction({ id: (trigger.data as ActivityVM).id });
           }

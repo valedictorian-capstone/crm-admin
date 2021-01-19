@@ -1,0 +1,30 @@
+<nb-card class="m-0 w-100">
+    <nb-card-header class="p-0">
+        <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
+            <div class="float-left" style="display: inline-block; width: 100%; min-width: 23rem;">
+                <nb-form-field class="w-100">
+                    <input style="height: 3rem;" fullWidth [(ngModel)]="search.name" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in attachment by name" />
+                    <nb-icon *ngIf="search.name" icon="close-circle-outline" status="danger" nbSuffix (click)="search.name = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+            <div *ngIf="isMain" class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.deal?.title" style="height: 3rem;" fullWidth placeholder="Select deal" />
+                    <nb-icon *ngIf="search.deal" icon="close-circle-outline" status="danger" nbSuffix (click)="search.deal = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #dealRef="nzDropdownMenu">
+                    <app-deal-select [(model)]="search.deal" #dealSelect (modelChange)="search.deal = $event; useSearch.emit(search);"></app-deal-select>
+                </nz-dropdown-menu>
+            </div>
+            <div *ngIf="isMain" class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="campaignRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.campaign?.name" style="height: 3rem;" fullWidth placeholder="Select campaign" />
+                    <nb-icon *ngIf="search.campaign" icon="close-circle-outline" status="danger" nbSuffix (click)="search.campaign = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #campaignRef="nzDropdownMenu">
+                    <app-campaign-select [(model)]="search.campaign" #campaignSelect (modelChange)="search.campaign = $event; useSearch.emit(search);"></app-campaign-select>
+                </nz-dropdown-menu>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>

@@ -62,7 +62,6 @@ export class NavComponent implements OnDestroy {
       this.router.navigate(['core/' + link]);
     } else {
       this.state.active = document.location.hash.replace('#/core/', '').split('/')[0];
-      this.state.active = this.state.active === 'deal' ? 'process' : this.state.active;
     }
   }
   useCheckRole = (name: string) => {

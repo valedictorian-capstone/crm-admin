@@ -1,0 +1,37 @@
+<nb-card class="position-relative" [class.h-100]="isMain" [class.w-100]="isMain">
+    <ngx-spinner [name]="'attachment-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+    <nb-icon icon="attach-outline"  class="mr-2"></nb-icon>
+    <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Attachment</b>
+  </span>
+        <button *ngIf="!isMain" class="float-right ml-1" (click)="state.show = !state.show" outline nbButton size="small">
+    <nb-icon [icon]="state.show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+  </button>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+    <nb-icon icon="sync-outline"></nb-icon>
+    </button>
+        <app-attachment-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-attachment-type>
+        <app-attachment-export [data]="state.array"></app-attachment-export>
+        <app-attachment-add [isMain]="isMain" [for]="for" [deal]="deal" [campaign]="campaign" [canAdd]="state.canAdd"></app-attachment-add>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="isMain || state.show">
+        <div class="query">
+            <app-attachment-query [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-attachment-query>
+        </div>
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-attachment-datatable (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'datatable'" [for]="for" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-attachment-datatable>
+                <app-attachment-card (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'card'" [for]="for" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-attachment-card>
+            </div>
+            <app-attachment-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-attachment-page-count>
+            <app-attachment-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-attachment-solve-check>
+            <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="isMain || state.show">
+        <app-attachment-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-attachment-pagination>
+    </nb-card-footer>
+</nb-card>

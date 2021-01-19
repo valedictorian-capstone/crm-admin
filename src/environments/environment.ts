@@ -47,10 +47,10 @@ export const environment = {
         deactive: 'api/v1/Device/Deactive',
       },
       account: {
-        main: 'api/v1/Account',
-        getById: 'api/v1/Account/',
-        active: 'api/v1/Account/Active',
-        deactive: 'api/v1/Account/Deactive',
+        main: 'api/v1/Employee',
+        getById: 'api/v1/Employee/',
+        active: 'api/v1/Employee/Active',
+        deactive: 'api/v1/Employee/Deactive',
       },
       customer: {
         main: 'api/v1/Customer',
@@ -107,6 +107,10 @@ export const environment = {
       activity: {
         main: 'api/v1/Activity',
         getById: 'api/v1/Activity/',
+      },
+      campaign: {
+        main: 'api/v1/Campaign',
+        getById: 'api/v1/Campaign/',
       },
       stage: {
         main: 'api/v1/Stage',
@@ -165,9 +169,16 @@ export const environment = {
     },
     {
       label: 'Deal',
-      value: 'process',
+      value: 'deal',
       icon: 'donate',
       pack: 'font-awesome',
+      can: 'canAccessDeal'
+    },
+    {
+      label: 'Process',
+      value: 'process',
+      icon: 'browser',
+      pack: 'eva',
       can: 'canAccessDeal'
     },
     {
@@ -192,8 +203,8 @@ export const environment = {
       can: 'canAccessProduct'
     },
     {
-      label: 'Event',
-      value: 'event',
+      label: 'Campaign',
+      value: 'campaign',
       icon: 'gift',
       pack: 'eva',
       can: 'canAccessEvent'
@@ -244,13 +255,6 @@ export const environment = {
       icon: 'calendar-plus',
       pack: 'font-awesome',
       can: 'canUpdateDeal',
-    },
-    {
-      label: 'Event',
-      value: 'event',
-      icon: 'gift',
-      pack: 'eva',
-      can: 'canCreateEvent',
     },
     {
       label: 'Customer',
@@ -308,8 +312,8 @@ export const environment = {
     },
   },
   stringee: {
-    sid: 'SKG3Y1zHDriSAoY1s5QtZvlrXvrWWnY4',
-    serect: 'TDdsMXN5QVd5YmJRRXNhMk9FaUFncXlFcmpLZE1HaA==',
+    sid: 'SKSRxhCU4f6gO82IbX7Jhgcgzd1y1TrDt',
+    serect: 'WmFnT1haSXRKUHh6NFhkejBCRHlZRXdwZlNZdGdUYjk=',
     api: 'https://v2.stringee.com/web-sdk-conference-samples/php/token_helper.php',
     endpoint: 'https://api.stringee.com/v1/room2',
   },

@@ -1,0 +1,84 @@
+<div class="datatable-item">
+    <div class="check">
+        <nb-icon *ngIf="!isHeader" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-icon *ngIf="isHeader" (click)="control.setValue(control.value === 'radio-button-on-outline' ? 'radio-button-off-outline' : 'radio-button-on-outline'); useItemCheck.emit()" [icon]="control.value" [status]="control.value === 'radio-button-on-outline' ? 'success' : (control.value === 'minus-circle-outline' ? 'warning' : 'info')"></nb-icon>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field gaint" (click)="useSort('name')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Name' : activity.name" placeHolder="Name" />
+            <nb-icon *ngIf="isHeader && sort.key === 'name'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(activity.name)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('type')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Type' : activity.type" style="text-transform: capitalize;" placeHolder="Type" />
+            <nb-icon *ngIf="isHeader && sort.key === 'type'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('dateStart')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Date Start' : activity.dateStart | date: 'hh:mm dd/MM/yyyy'" placeHolder="Date Start" />
+            <nb-icon *ngIf="isHeader && sort.key === 'dateStart'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('dateEnd')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Date End' : activity.dateEnd | date: 'hh:mm dd/MM/yyyy'" placeHolder="Date End" />
+            <nb-icon *ngIf="isHeader && sort.key === 'dateEnd'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('assignee')">
+        <nb-form-field class="w-100">
+            <nb-icon *ngIf="!isHeader" nbPrefix icon="person-outline"></nb-icon>
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Assignee' : activity.assignee?.fullname" placeHolder="Assignee" />
+            <nb-icon *ngIf="isHeader && sort.key === 'assignee'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('assignBy')">
+        <nb-form-field class="w-100">
+            <nb-icon *ngIf="!isHeader" nbPrefix icon="person-outline"></nb-icon>
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'AssignBy' : activity.assignBy?.fullname" placeHolder="AssignBy" />
+            <nb-icon *ngIf="isHeader && sort.key === 'assignBy'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" *ngIf="isMain" (click)="useSort('deal')">
+        <nb-form-field class="w-100">
+            <nb-icon *ngIf="!isHeader" nbPrefix icon="donate" pack="font-awesome"></nb-icon>
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Deal' : activity.deal?.title" placeHolder="Deal" />
+            <nb-icon *ngIf="isHeader && sort.key === 'deal'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" *ngIf="isMain" (click)="useSort('campaign')">
+        <nb-form-field class="w-100">
+            <nb-icon *ngIf="!isHeader" nbPrefix icon="gift-outline"></nb-icon>
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Campaign' : activity.campaign?.name" placeHolder="Campaign" />
+            <nb-icon *ngIf="isHeader && sort.key === 'campaign'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+          <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+      </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+        <nb-icon [icon]="'trash-2-outline'"></nb-icon>
+    </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,3 @@
-<button *ngIf="!data" nbButton status="success" (click)="useDownload(example)" size="small">Download Example</button>
 <table #example style="display: none;">
     <thead>
         <tr>
@@ -7,13 +6,9 @@
             <th>phone</th>
             <th>birthDay</th>
             <th>gender</th>
-            <th>type</th>
             <th>frequency</th>
             <th>totalSpending</th>
             <th>totalDeal</th>
-            <th>company</th>
-            <th>fax</th>
-            <th>website</th>
             <th>skypeName</th>
             <th>facebook</th>
             <th>twitter</th>
@@ -34,9 +29,6 @@
             <td>100</td>
             <td>100</td>
             <td>100</td>
-            <td>FPT</td>
-            <td>'0123456789</td>
-            <td>https://fb.com/</td>
             <td>abc</td>
             <td>https://fb.com/</td>
             <td>https://twitter.com/</td>
@@ -47,169 +39,277 @@
         </tr>
     </tbody>
 </table>
-<nb-accordion *ngIf="data">
-    <nb-accordion-item *ngFor="let form of state.formArray['controls']; let i = index" class="mb-2">
-        <nb-accordion-item-header>{{form.value.fullname}}</nb-accordion-item-header>
-        <nb-accordion-item-body>
-            <div class="avatar">
-                <div class="avatar-picker" [class.danger]="form.value.errorImage">
-                    <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect, form)" #avatarSelect type="file" style="opacity: 0; height: 0; width: 0" />
-                    <button *ngIf="!form.get('avatar').value" nbButton status="default" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
-                    <img *ngIf="form.get('avatar').value" [src]="form.get('avatar').value" style="width: 80%; height: 80%; border-radius: 50%;" />
-                    <button *ngIf="form.get('avatar').value" style="position: absolute; top: 98px; left: 127px;" shape="round" nbButton [status]="form.value.errorImage ? 'danger' : 'primary'" size="small" (click)="avatarSelect.click()"><nb-icon icon="camera-outline"></nb-icon></button>
+<div *ngIf="data" class="w-100 display-flex align-items-center justify-content-center" style="height: 3rem;">
+    <b style="font-size: 2rem; margin-right: 0.25rem;">{{useGetCount('valid')}}</b>
+    <nb-icon style="font-size: 2rem; margin-right: 0.5rem;" icon="checkmark-outline" status="success"></nb-icon><b style="font-size: 2rem; margin-right: 0.25rem;">{{useGetCount('invalid')}}</b>
+    <nb-icon style="font-size: 2rem;" icon="alert-triangle-outline" status="danger"></nb-icon>
+</div>
+<div class="datatable" *ngIf="data">
+    <div class="datatable-item">
+        <div class="action">
+            <div class="field" (click)="useSort('position')">
+                <nb-form-field>
+                    <nb-icon *ngIf="sortBy.key === 'position'" nbSuffix [icon]="'arrow-' + sortBy.stage + '-outline'"></nb-icon>
+                    <input nbInput fullWidth readonly />
+                    <input nbInput fullWidth readonly />
+                </nb-form-field>
+            </div>
+        </div>
+        <div class="action">
+            <div class="field" (click)="useSort('valid')">
+                <nb-form-field>
+                    <nb-icon *ngIf="sortBy.key === 'valid'" nbSuffix [icon]="'arrow-' + sortBy.stage + '-outline'"></nb-icon>
+                    <input nbInput fullWidth readonly />
+                </nb-form-field>
+            </div>
+        </div>
+        <div class="image">
+            <div class="field">
+                <nb-form-field>
+                    <input nbInput fullWidth readonly />
+                </nb-form-field>
+            </div>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Full Name" placeHolder="Full Name" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Email" placeHolder="Email" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Phone" placeHolder="Phone" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="BirthDay" placeHolder="BirthDay" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="Gender" placeHolder="Gender" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Total Spending" placeHolder="Total Spending" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Total Deal" placeHolder="Total Deal" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <nb-icon icon="loader-outline" status="danger" nbSuffix></nb-icon>
+                <input nbInput fullWidth readonly value="Total Deal Won" placeHolder="Total Deal Won" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="SkypeName" placeHolder="SkypeName" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="Facebook" placeHolder="Facebook" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="Twitter" placeHolder="Twitter" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="Street" placeHolder="Street" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="City" placeHolder="City" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="State" placeHolder="State" />
+            </nb-form-field>
+        </div>
+        <div class="field">
+            <nb-form-field class="gaint">
+                <input nbInput fullWidth readonly value="Country" placeHolder="Country" />
+            </nb-form-field>
+        </div>
+        <div class="action">
+            <div class="field">
+                <nb-form-field>
+                    <input nbInput fullWidth readonly />
+                </nb-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="datatable-body">
+        <div *ngFor="let group of state.array.controls; let i = index;">
+            <div class="datatable-item" *ngIf="(i + 1) >= state.page && (i + 1) <= state.page + 9" [formGroup]="group">
+                <div class="action">
+                    <button style="font-size: 0.75rem;" nbButton shape="round" outline size="tiny">
+                {{group['position']}}
+              </button>
+                    <div class="field">
+                        <nb-form-field>
+                            <input nbInput fullWidth readonly />
+                        </nb-form-field>
+                    </div>
                 </div>
-                <b *ngIf="form.value.errorImage" class="text-danger" style="position: absolute; bottom: 5px; text-align: center;">{{form.value.errorImageMessage}}</b>
+                <div class="action">
+                    <button nbButton [status]="group.invalid ? 'danger' : 'success'" shape="round" outline size="tiny">
+              <nb-icon [icon]="group.invalid ? 'alert-triangle-outline' : 'checkmark-outline'"></nb-icon>
+            </button>
+                    <div class="field">
+                        <nb-form-field>
+                            <input nbInput fullWidth readonly />
+                        </nb-form-field>
+                    </div>
+                </div>
+                <div class="image">
+                    <img *ngIf="group.get('avatar').value" [class.error]="group.get('errorImage').value" [src]="group.get('avatar').value" />
+                    <div *ngIf="!group.get('avatar').value" class="empty-image">
+                        <b>{{ group.get('fullname').value | key }}</b>
+                    </div>
+                    <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect, group)" #avatarSelect type="file" style="display:none" />
+                    <button (click)="avatarSelect.click()" nbButton size="tiny" status="info" shape="round">
+                <nb-icon icon="camera-outline"></nb-icon>
+              </button>
+                    <div class="field">
+                        <nb-form-field>
+                            <input nbInput fullWidth readonly />
+                        </nb-form-field>
+                    </div>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-icon nbTooltip="Fullname can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('fullname').invalid"></nb-icon>
+                        <input nbInput fullWidth [status]="group.get('fullname').invalid ? 'danger' : 'basic'" [formControl]="group.get('fullname')" placeHolder="Full Name" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field [nbSpinner]="group.value.emailStage === 'querying'" [nbSpinnerSize]="'tiny'" class="gaint not-search">
+                        <nb-icon *ngIf="group.get('email').valid" [ngStyle]="{'opacity': group.value.emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+                        <nb-icon [nbTooltip]="group.get('email').errors ? 'This email is existed in system! Fill another one' : 'Email can not be blank'" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix [ngStyle]="{'opacity': group.value.emailStage === 'done' ? '1' : '0'}"
+                            *ngIf="group.get('email').invalid"></nb-icon>
+                        <input nbInput fullWidth [status]="group.get('email').invalid ? 'danger' : 'basic'" [formControl]="group.get('email')" placeHolder="Email" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint" [nbSpinner]="group.value.phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" class="gaint not-search">
+                        <nb-icon *ngIf="group.get('phone').valid" [ngStyle]="{'opacity': group.value.phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+                        <nb-icon [nbTooltip]="group.get('phone').errors ? 'This phone is existed in system! Fill another one' : 'Phone can not be blank'" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" [ngStyle]="{'opacity': group.value.phoneStage === 'done' ? '1' : '0'}"
+                            nbPrefix *ngIf="group.get('phone').invalid"></nb-icon>
+                        <input nbInput fullWidth [status]="group.get('phone').invalid ? 'danger' : 'basic'" [formControl]="group.get('phone')" placeHolder="Phone" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-icon nbTooltip="Birthday can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('birthDay').invalid"></nb-icon>
+                        <input nbInput readonly fullWidth [value]="group.get('birthDay').value | date: 'dd/MM/yyyy'" [nzVisible]="group.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'"
+                            placeHolder="Birthday" />
+                    </nb-form-field>
+                    <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
+                        <app-reuse-select-date [date]="group.get('birthDay').value" (useChange)="group.get('birthDay').setValue($event); group.get('showBirthday').setValue(false)"></app-reuse-select-date>
+                    </nz-dropdown-menu>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-select style="width: 100%;" fullWidth placeholder="Gender" [formControl]="group.get('gender')">
+                            <nb-option value="-1">-None-</nb-option>
+                            <nb-option value="0">Male</nb-option>
+                            <nb-option value="1">Female</nb-option>
+                            <nb-option value="2">Other</nb-option>
+                        </nb-select>
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-icon nbTooltip="Total Spending can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('totalSpending').invalid"></nb-icon>
+                        <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('totalSpending').invalid ? 'danger' : 'basic'" [formControl]="group.get('totalSpending')" placeHolder="Total Spending" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-icon nbTooltip="Total Deal can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('totalDeal').invalid"></nb-icon>
+                        <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('totalDeal').invalid ? 'danger' : 'basic'" [formControl]="group.get('totalDeal')" placeHolder="Total Deal" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <nb-icon nbTooltip="Total Deal Won can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('frequency').invalid"></nb-icon>
+                        <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('frequency').invalid ? 'danger' : 'basic'" [formControl]="group.get('frequency')" placeHolder="Total Deal Won" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('skypeName')" placeHolder="Skype Name" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('facebook')" placeHolder="Facebook" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('twitter')" placeHolder="Twitter" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('street')" placeHolder="Street" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('city')" placeHolder="City" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('state')" placeHolder="State" />
+                    </nb-form-field>
+                </div>
+                <div class="field">
+                    <nb-form-field class="gaint">
+                        <input nbInput fullWidth [formControl]="group.get('country')" placeHolder="Country" />
+                    </nb-form-field>
+                </div>
+                <div class="action">
+                    <button (click)="useRemoveItem(i)" nbButton shape="round" status="danger" outline size="small">
+              <nb-icon icon="trash-2-outline"></nb-icon>
+            </button>
+                    <div class="field">
+                        <nb-form-field>
+                            <input nbInput fullWidth readonly />
+                        </nb-form-field>
+                    </div>
+                </div>
             </div>
-            <div class="crm-customer-type">
-                <a class="crm-customer-type-item" (click)="form.get('type').setValue('personal')" [class.selected]="form.get('type').value === 'personal'" [nbTooltip]="'Personal'" [nbTooltipPlacement]="'bottom'">
-                    <nb-icon icon="person-outline"></nb-icon>
-                </a>
-                <a class="crm-customer-type-item" (click)="form.get('type').setValue('company')" [class.selected]="form.get('type').value === 'company'" [nbTooltip]="'Company'" [nbTooltipPlacement]="'bottom'">
-                    <nb-icon icon="building" pack="font-awesome"></nb-icon>
-                </a>
-            </div>
-            <span style="display: block; margin-bottom: 0.5rem; text-transform: capitalize; font-weight: 600;" [class.text-danger]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)">Fullname <span class="text-danger">*</span></span>
-            <nb-form-field style="width: 100%; margin-bottom: 1rem;">
-                <input style="height: 3rem;" [status]="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Fullname'" shape="rectangle" [formControl]="form.get('fullname')"
-                    nbInput size="large" />
-            </nb-form-field>
-            <span *ngIf="form.get('fullname').invalid && (form.get('fullname').touched || form.get('fullname').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill fullname</span>
-            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty)">Phone <span class="text-danger">*</span></span>
-            <nb-form-field class="not-search" [nbSpinner]="form.value.phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
-                <nb-icon [ngStyle]="{'opacity': form.value.phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
-                <input style="height: 3rem;" [status]="form.get('phone').invalid && (form.get('phone').touched || form.get('phone').dirty) ? 'danger' : 'basic'" (blur)="useCheckPhone(form)" fullWidth nz-dropdown [placeholder]="'Phone'" shape="rectangle" [formControl]="form.get('phone')"
-                    nbInput size="large" />
-            </nb-form-field>
-            <span *ngIf="(form.get('phone').errors?.required || form.get('phone').errors?.pattern) && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct phone format (Ex: 0902818547)</span>
-            <span *ngIf="form.get('phone').errors?.duplicate && (form.get('phone').touched || form.get('phone').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another phone. Because this phone is exsited</span>
-            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty)">Email <span class="text-danger">*</span></span>
-            <nb-form-field class="not-search" [nbSpinner]="form.value.emailStage === 'querying'" [nbSpinnerSize]="'tiny'" style="width: 100%; margin-bottom: 1rem;">
-                <nb-icon [ngStyle]="{'opacity': form.value.emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
-                <input style="height: 3rem;" [status]="form.get('email').invalid && (form.get('email').touched || form.get('email').dirty) ? 'danger' : 'basic'" (blur)="useCheckEmail(form)" fullWidth nz-dropdown [placeholder]="'Email'" shape="rectangle" [formControl]="form.get('email')"
-                    nbInput size="large" />
-            </nb-form-field>
-            <span *ngIf="(form.get('email').errors?.required || form.get('email').errors?.pattern) && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill correct email format (Ex: vinhdkse62975@fpt.edu.vn)</span>
-            <span *ngIf="form.get('email').errors?.duplicate && (form.get('email').touched || form.get('email').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill another email. Because this email is exsited</span>
-            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Gender</span>
-            <nb-form-field style="max-width: 100%; margin-bottom: 1rem;">
-                <nb-icon nbPrefix icon="transgender" pack="font-awesome"></nb-icon>
-                <nb-select style="width: 100%; height: 3rem;" fullWidth placeholder="Gender" [formControl]="form.get('gender')">
-                    <nb-option value="-1">-None-</nb-option>
-                    <nb-option value="0">Male</nb-option>
-                    <nb-option value="1">Female</nb-option>
-                    <nb-option value="2">Other</nb-option>
-                </nb-select>
-            </nb-form-field>
-            <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty)">Birthday <span class="text-danger">*</span></span>
-            <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                <nb-icon nbPrefix icon="birthday-cake" pack="font-awesome"></nb-icon>
-                <input style="height: 3rem;" readonly fullWidth [status]="form.get('birthDay').invalid && (form.get('birthDay').touched || form.get('birthDay').dirty) ? 'danger' : 'basic'" [value]="form.get('birthDay').value | date: 'dd/MM/yyyy'" (focus)="form.get('showBirthday').setValue(true)"
-                    [nzVisible]="form.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
-            </nb-form-field>
-            <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
-                <app-reuse-select-date [date]="form.get('birthDay').value" (useChange)="form.get('birthDay').setValue($event); form.get('showBirthday').setValue(false)"></app-reuse-select-date>
-            </nz-dropdown-menu>
-            <nb-accordion style="width: 100%; margin-bottom: 1rem; float: left;" multi>
-                <nb-accordion-item expanded>
-                    <nb-accordion-item-header>
-                        <b class="text-primary">Valuation In Month</b>
-                    </nb-accordion-item-header>
-                    <nb-accordion-item-body>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)">Total Spending</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalSpending')" nbInput />
-                        </nb-form-field>
-                        <span *ngIf="form.get('totalSpending').invalid && (form.get('totalSpending').touched || form.get('totalSpending').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total spending</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)">Total Deal</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty) ? 'danger' : 'basic'" [formControl]="form.get('totalDeal')" nbInput />
-                        </nb-form-field>
-                        <span *ngIf="form.get('totalDeal').invalid && (form.get('totalDeal').touched || form.get('totalDeal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total deal</span>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)">Total Deal Won</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <input fullWidth mask="separator.0" thousandSeparator="," [status]="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty) ? 'danger' : 'basic'" [formControl]="form.get('frequency')" nbInput />
-                        </nb-form-field>
-                        <span *ngIf="form.get('frequency').invalid && (form.get('frequency').touched || form.get('frequency').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill total deal won</span>
-                    </nb-accordion-item-body>
-                </nb-accordion-item>
-                <nb-accordion-item expanded *ngIf="form.get('type')?.value === 'company'">
-                    <nb-accordion-item-header>
-                        <b class="text-primary">Company</b>
-                    </nb-accordion-item-header>
-                    <nb-accordion-item-body>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Company</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="building" pack="font-awesome"></nb-icon>
-                            <input fullWidth [formControl]="form.get('company')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Fax</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="fax" pack="font-awesome"></nb-icon>
-                            <input fullWidth [formControl]="form.get('fax')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Website</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="browser-outline"></nb-icon>
-                            <input fullWidth [formControl]="form.get('website')" nbInput />
-                        </nb-form-field>
-                    </nb-accordion-item-body>
-                </nb-accordion-item>
-                <nb-accordion-item expanded>
-                    <nb-accordion-item-header>
-                        <b class="text-primary">Social connect</b>
-                    </nb-accordion-item-header>
-                    <nb-accordion-item-body>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Skype</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <svg style="width: 20px;" nbPrefix xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Logo Skype</title><path d='M467.16 303.6a205.69 205.69 0 004.9-45.15c0-116.32-95.69-210.7-213.79-210.7a221.83 221.83 0 00-36.52 3A123.58 123.58 0 00155.93 32C87.55 32 32 86.72 32 154.15A119.56 119.56 0 0049 216a211.16 211.16 0 00-4.32 42.35c0 116.44 95.69 210.7 213.67 210.7a214 214 0 0039.09-3.5A125.45 125.45 0 00356.07 480C424.57 480 480 425.28 480 357.85a118 118 0 00-12.84-54.25zM368 359c-9.92 13.76-24.51 24.73-43.41 32.43S283.36 403 257.69 403c-30.69 0-56.36-5.37-76.55-15.87a101 101 0 01-35.24-30.8c-9.11-12.83-13.66-25.66-13.66-38 0-7.7 3-14.35 8.87-19.95 5.84-5.37 13.42-8.17 22.29-8.17 7.35 0 13.65 2.1 18.79 6.42 4.9 4.08 9.1 10.15 12.48 18.08A108.09 108.09 0 00207 336.15q6.32 8.22 17.86 13.65c7.82 3.62 18.2 5.48 31 5.48 17.62 0 32.09-3.73 42.94-11.08 10.74-7.12 15.88-15.75 15.88-26.25 0-8.28-2.69-14.82-8.29-19.95-5.83-5.37-13.42-9.57-22.87-12.37-9.69-3-22.87-6.18-39.21-9.56-22.17-4.67-41-10.27-56-16.57-15.28-6.42-27.65-15.4-36.76-26.48-9.22-11.32-13.77-25.55-13.77-42.24a67.86 67.86 0 0114.47-42.58c9.57-12.25 23.46-21.82 41.55-28.35 17.74-6.53 38.86-9.8 62.66-9.8 19.14 0 35.83 2.22 49.83 6.42s25.91 10.15 35.36 17.38 16.34 14.93 20.77 23 6.66 16.22 6.66 24c0 7.46-2.92 14.35-8.76 20.3a29.65 29.65 0 01-21.94 9.1c-7.93 0-14.12-1.87-18.43-5.6-4-3.5-8.17-8.87-12.72-16.69-5.37-9.91-11.79-17.85-19.14-23.45-7.24-5.36-19.14-8.16-35.71-8.16-15.29 0-27.77 3-37 9-8.87 5.72-13.19 12.37-13.19 20.18a18.26 18.26 0 004.32 12.25 38.13 38.13 0 0012.72 9.57 80.14 90.14 0 0017.15 6.53c6 1.64 15.87 4.09 29.53 7.12 17.38 3.62 33.25 7.82 47.26 12.13 14.24 4.55 26.49 10 36.52 16.45a72.93 72.93 0 0124.16 25.09c5.72 10 8.64 22.63 8.64 37.1A75.09 75.09 0 01368 359z'/></svg>
-                            <input fullWidth [formControl]="form.get('skypeName')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Facebook</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <svg style="width: 20px;" nbPrefix xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Logo Facebook</title><path d='M480 257.35c0-123.7-100.3-224-224-224s-224 100.3-224 224c0 111.8 81.9 204.47 189 221.29V322.12h-56.89v-64.77H221V208c0-56.13 33.45-87.16 84.61-87.16 24.51 0 50.15 4.38 50.15 4.38v55.13H327.5c-27.81 0-36.51 17.26-36.51 35v42h62.12l-9.92 64.77H291v156.54c107.1-16.81 189-109.48 189-221.31z' fill-rule='evenodd'/></svg>
-                            <input fullWidth [formControl]="form.get('facebook')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Twitter</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <svg style="width: 20px;" nbPrefix xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Logo Twitter</title><path d='M496 109.5a201.8 201.8 0 01-56.55 15.3 97.51 97.51 0 0043.33-53.6 197.74 197.74 0 01-62.56 23.5A99.14 99.14 0 00348.31 64c-54.42 0-98.46 43.4-98.46 96.9a93.21 93.21 0 002.54 22.1 280.7 280.7 0 01-203-101.3A95.69 95.69 0 0036 130.4c0 33.6 17.53 63.3 44 80.7A97.5 97.5 0 0135.22 199v1.2c0 47 34 86.1 79 95a100.76 100.76 0 01-25.94 3.4 94.38 94.38 0 01-18.51-1.8c12.51 38.5 48.92 66.5 92.05 67.3A199.59 199.59 0 0139.5 405.6a203 203 0 01-23.5-1.4A278.68 278.68 0 00166.74 448c181.36 0 280.44-147.7 280.44-275.8 0-4.2-.11-8.4-.31-12.5A198.48 198.48 0 00496 109.5z'/></svg>
-                            <input fullWidth [formControl]="form.get('twitter')" nbInput />
-                        </nb-form-field>
-                    </nb-accordion-item-body>
-                </nb-accordion-item>
-                <nb-accordion-item expanded>
-                    <nb-accordion-item-header>
-                        <b class="text-primary">Address</b>
-                    </nb-accordion-item-header>
-                    <nb-accordion-item-body>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Street</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="pin-outline"></nb-icon>
-                            <input fullWidth [formControl]="form.get('street')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="city" pack="font-awesome"></nb-icon>
-                            <input fullWidth [formControl]="form.get('city')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="flag-usa" pack="font-awesome"></nb-icon>
-                            <input fullWidth [formControl]="form.get('state')" nbInput />
-                        </nb-form-field>
-                        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Country</span>
-                        <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
-                            <nb-icon nbPrefix icon="globe-asia" pack="font-awesome"></nb-icon>
-                            <input fullWidth [formControl]="form.get('country')" nbInput />
-                        </nb-form-field>
-                    </nb-accordion-item-body>
-                </nb-accordion-item>
-            </nb-accordion>
-            <nb-form-field style="width: 100%; margin-bottom: 1rem;">
-                <textarea #area placeHolder="Description" fullWidth [formControl]="form.get('description')" (focus)="area.rows = 5" [rows]="2" (blur)="area.rows = 2" nbInput></textarea>
-            </nb-form-field>
-            <button class="my-2" status="danger" size="small" nbButton (click)="useRemoveItem(i); data = state.formArray.length === 0 ? undefined : data">Remove</button>
-        </nb-accordion-item-body>
-    </nb-accordion-item>
-</nb-accordion>
-<button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()" [disabled]="state.formArray.invalid">Save</button>
-<button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>
+        </div>
+        <!-- <app-customer-import-item [group]="group" *ngFor="let group of state.formArray.controls; let i = index" (useRemoveItem)="useRemoveItem(i)"></app-customer-import-item> -->
+    </div>
+</div>
+<div class="w-100 p-2">
+    <button *ngIf="!data" nbButton status="success" (click)="useDownload(example)" size="small">Download Example</button>
+    <button *ngIf="data" nbButton class="mt-1 mr-1" status="primary" size="small" (click)="useImport()">Save</button>
+    <button *ngIf="data" nbButton class="mt-1" (click)="useChange.emit()" size="small">Cancel</button>
+</div>

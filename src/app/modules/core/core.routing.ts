@@ -11,6 +11,12 @@ const routes: Routes = [
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.DashboardModule),
       },
       {
+        path: 'campaign',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.CampaignModule),
+        // canLoad: [CoreGuard],
+        // data: { permission: 'Customer' }
+      },
+      {
         path: 'customer',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ContactModule),
         canLoad: [CoreGuard],
@@ -21,12 +27,6 @@ const routes: Routes = [
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.LeadModule),
         canLoad: [CoreGuard],
         data: { permission: 'Customer' }
-      },
-      {
-        path: 'event',
-        loadChildren: () => import('@app/modules/core/modules').then((m) => m.EventModule),
-        canLoad: [CoreGuard],
-        data: { permission: 'Event' }
       },
       {
         path: 'process',
@@ -53,6 +53,12 @@ const routes: Routes = [
         data: { permission: 'Product' }
       },
       {
+        path: 'category',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.CategoryModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Product' }
+      },
+      {
         path: 'activity',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.ActivityModule),
         canLoad: [CoreGuard],
@@ -63,12 +69,6 @@ const routes: Routes = [
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.RoleModule),
         canLoad: [CoreGuard],
         data: { permission: 'Role' }
-      },
-      {
-        path: 'call',
-        loadChildren: () => import('@app/modules/core/modules').then((m) => m.CallModule),
-        canLoad: [CoreGuard],
-        data: { permission: 'Call' }
       },
       { path: 'error', loadChildren: () => import('src/app/modules/core/modules').then((m) => m.ErrorModule) },
       { path: '**', redirectTo: 'error' }

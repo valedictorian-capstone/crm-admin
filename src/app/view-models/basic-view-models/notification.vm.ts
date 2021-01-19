@@ -3,7 +3,7 @@ import { AccountVM, CustomerVM } from '@view-models';
 export interface NotificationVM {
   id: string;
   data: any;
-  account: AccountVM;
+  employee: AccountVM;
   customer: CustomerVM;
   type: string;
   body: string;

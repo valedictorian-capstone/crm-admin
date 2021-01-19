@@ -1,0 +1,17 @@
+<nb-card class="w-per-95 m-auto">
+    <nb-card-header>
+        <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{pipeline.name}}</b>
+    </nb-card-header>
+    <nb-card-footer>
+        <b><nb-icon icon="clock-outline"></nb-icon> [{{pipeline.updatedAt | date: 'dd/MM/yyyy'}}]</b>
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+  <nb-icon icon="trash-2-outline"></nb-icon>
+</button>
+        <button (click)="useView()" class="float-right ml-1" size="small" outline shape="round" nbButton status="info">
+  <nb-icon icon="eye-outline"></nb-icon>
+</button>
+        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+  <nb-icon icon="edit-2-outline"></nb-icon>
+</button>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,5 @@
+<div class="w-100 body" [class.un-main]="!isMain" nz-row>
+    <div nz-col *ngFor="let log of state.array" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzLg]="24" [nzXl]="24" [nzXXl]="24">
+        <app-log-card-item [deal]="deal" [campaign]="campaign" [log]="log" (useRemove)="useRemove(log.id)"></app-log-card-item>
+    </div>
+</div>

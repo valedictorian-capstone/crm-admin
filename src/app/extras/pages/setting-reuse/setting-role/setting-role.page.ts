@@ -299,10 +299,11 @@ export class SettingRolePage implements OnInit, OnDestroy {
       this.useShowSpinner();
       const subscription = (this.role ? this.service.update({
         ...this.state.form.value,
-        price: parseInt(this.state.form.value.price, 0)
+        level: parseInt(this.state.form.value.level, 0)
       }) : this.service.insert({
         ...this.state.form.value,
-        price: parseInt(this.state.form.value.price, 0)
+        level: parseInt(this.state.form.value.level, 0),
+        id: undefined
       }))
         .pipe(
           tap((data) => {

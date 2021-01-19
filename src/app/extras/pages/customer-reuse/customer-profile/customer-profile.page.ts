@@ -102,6 +102,9 @@ export class CustomerProfilePage implements OnInit, OnDestroy {
     this.clipboard.copy(link);
     this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
+  useSkype = () => {
+    window.open('skype:' + this.payload.customer.skypeName + '?chat', '_self');
+  }
   useShowSpinner = () => {
     this.spinner.show('customer-profile');
   }

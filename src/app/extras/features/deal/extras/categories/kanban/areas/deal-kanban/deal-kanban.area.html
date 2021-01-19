@@ -1,0 +1,8 @@
+<div class="body" [class.un-main]="!isMain">
+    <div class="stage" cdkDropListGroup *ngFor="let stage of (pipeline ? pipeline.stages : [])">
+        <app-deal-kanban-item [pipeline]="pipeline" [for]="for" [campaign]="campaign" [isMain]="isMain" [stage]="stage" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" [deals]="useGetDeals(stage)"></app-deal-kanban-item>
+    </div>
+    <div *ngIf="!pipeline" class="w-100 empty display-flex justify-content-center align-items-center">
+        <b style="font-family: monospace, sans-serif;">Please select process first</b>
+    </div>
+</div>

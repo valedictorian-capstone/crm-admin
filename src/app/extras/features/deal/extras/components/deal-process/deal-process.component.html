@@ -1,0 +1,13 @@
+<nb-card class="w-100 m-0">
+    <nb-card-header style="padding: 0.5rem 1rem; height: 4rem;">
+        <nb-form-field class="float-right">
+            <nb-icon icon="browser-outline" nbPrefix></nb-icon>
+            <input style="height: 3rem; width: 15rem" #pipelineInput fullWidth nz-dropdown [nzDropdownMenu]="pipelineRef" [nzPlacement]="'bottomCenter'" [placeholder]="'Select process'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="selectedProcess.value?.name"
+                nbInput size="small" readonly />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
+            <app-pipeline-select #pipelineSelect [control]="selectedProcess"></app-pipeline-select>
+        </nz-dropdown-menu>
+    </nb-card-header>
+</nb-card>

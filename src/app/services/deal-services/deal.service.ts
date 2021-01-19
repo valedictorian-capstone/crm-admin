@@ -25,6 +25,17 @@ export class DealService {
   public readonly findById = (id: string): Observable<DealVM> => {
     return this.httpClient.get<DealVM>(`${environment.apiEndpont}${environment.api.deal.deal.getById}${id}`);
   }
+  public readonly query = (params: {key: string, id: string}): Observable<DealVM[]> => {
+    return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.main}/query`, {
+      params
+    });
+  }
+  public readonly removeMany = (body: DealVM[]): Observable<DealVM[]> => {
+    return this.httpClient.put<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.main}/many`, body);
+  }
+  public readonly findByCampaignId = (id: string): Observable<DealVM[]> => {
+    return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.getById}${id}/customer`);
+  }
   public readonly findByCustomerId = (id: string): Observable<DealVM[]> => {
     return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.getById}customer/${id}`);
   }

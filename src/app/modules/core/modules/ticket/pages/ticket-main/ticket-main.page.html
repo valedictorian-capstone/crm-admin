@@ -8,10 +8,10 @@
         <button class="float-right" (click)="useReload()" outline nbButton size="small">
           <nb-icon icon="sync-outline"></nb-icon>
           </button>
-        <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="ticketSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
+        <button class="float-right mr-1" nz-dropdown [nzDropdownMenu]="ticketSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
           <nb-icon icon="search-outline"></nb-icon>
           </button>
-        <button *ngIf="state.canAssign" class="float-right mr-2" nz-dropdown [nzDropdownMenu]="assigneeSearch" [nzTrigger]="'click'" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" outline nbButton status="info" size="small">
+        <button *ngIf="state.canAssign" class="float-right mr-1" nz-dropdown [nzDropdownMenu]="assigneeSearch" [nzTrigger]="'click'" [nzBackdrop]="false" [nzPlacement]="'bottomCenter'" outline nbButton status="info" size="small">
           <nb-icon icon="people-outline"></nb-icon>
           </button>
         <nz-dropdown-menu #assigneeSearch="nzDropdownMenu">

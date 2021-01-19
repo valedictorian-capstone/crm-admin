@@ -1,0 +1,37 @@
+<nb-card class="position-relative" [class.h-100]="isMain" [class.w-100]="isMain">
+    <ngx-spinner [name]="'campaign-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+    <nb-icon icon="gift-outline" class="mr-2"></nb-icon>
+    <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Campaign</b>
+  </span>
+        <button *ngIf="!isMain" class="float-right ml-1" (click)="state.show = !state.show" outline nbButton size="small">
+    <nb-icon [icon]="state.show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+  </button>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+    <nb-icon icon="sync-outline"></nb-icon>
+    </button>
+        <app-campaign-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-campaign-type>
+        <app-campaign-export [data]="state.array"></app-campaign-export>
+        <app-campaign-add [canAdd]="state.canAdd"></app-campaign-add>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="isMain || state.show">
+        <div class="query">
+            <app-campaign-query [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-campaign-query>
+        </div>
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-campaign-datatable (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-campaign-datatable>
+                <app-campaign-card (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-campaign-card>
+            </div>
+            <app-campaign-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-campaign-page-count>
+            <app-campaign-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-campaign-solve-check>
+            <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="isMain || state.show">
+        <app-campaign-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-campaign-pagination>
+    </nb-card-footer>
+</nb-card>

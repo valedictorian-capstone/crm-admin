@@ -23,6 +23,11 @@ export class CustomerService {
   public readonly findAll = (): Observable<CustomerVM[]> => {
     return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}`);
   }
+  public readonly query = (params: {id: string}): Observable<CustomerVM[]> => {
+    return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/query`, {
+      params
+    });
+  }
   public readonly findAllLead = (): Observable<CustomerVM[]> => {
     return this.httpClient.get<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/lead`);
   }

@@ -1,0 +1,37 @@
+<nb-card class="position-relative" [class.h-100]="isMain" [class.w-100]="isMain">
+    <ngx-spinner [name]="'customer-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+<nb-icon [icon]="query ? query.icon : 'phone-outline'" [pack]="query ? query.pack : 'eva'" class="mr-2"></nb-icon>
+<b style="font: 600 17px/16px monospace, sans-serif; color: #747678">{{query ? query.name : 'Customer'}}</b>
+</span>
+        <button *ngIf="!isMain" class="float-right ml-1" (click)="state.show = !state.show" outline nbButton size="small">
+<nb-icon [icon]="state.show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+<nb-icon icon="sync-outline"></nb-icon>
+</button>
+        <app-customer-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-customer-type>
+        <app-customer-export [data]="state.array"></app-customer-export>
+        <app-customer-add [canAdd]="state.canAdd"></app-customer-add>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="isMain || state.show">
+        <div class="query">
+            <app-customer-query [queryGroup]="!query" [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-customer-query>
+        </div>
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-customer-datatable (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-customer-datatable>
+                <app-customer-card (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-customer-card>
+            </div>
+            <app-customer-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-customer-page-count>
+            <app-customer-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-customer-solve-check>
+            <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="isMain || state.show">
+        <app-customer-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-customer-pagination>
+    </nb-card-footer>
+</nb-card>

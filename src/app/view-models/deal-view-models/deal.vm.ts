@@ -1,4 +1,4 @@
-import { AccountVM, StageVM, CustomerVM, DealDetailVM, AttachmentVM, NoteVM, ActivityVM, LogVM } from '@view-models';
+import { AccountVM, StageVM, CustomerVM, DealDetailVM, AttachmentVM, NoteVM, ActivityVM, LogVM, CampaignVM } from '@view-models';
 
 export interface DealVM {
   id: string;
@@ -9,6 +9,7 @@ export interface DealVM {
   status: string;
   service: string;
   assignee: AccountVM;
+  campaign: CampaignVM;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
   feedbackStatus: boolean;
@@ -33,6 +34,7 @@ export interface DealCM {
   service: string;
   stage: StageVM;
   status: string;
+  campaign: CampaignVM;
   dealDetails: DealDetailVM[];
 }
 
@@ -43,6 +45,7 @@ export interface DealUM {
   description: string;
   customer: CustomerVM;
   stage: StageVM;
+  campaign: CampaignVM;
   status: string;
   assignee: AccountVM;
   feedbackAssignee: AccountVM;

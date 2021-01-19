@@ -26,7 +26,7 @@ interface IProductMainPageState {
   canRemove: boolean;
 }
 @Component({
-  selector: 'app-product-main',
+  selector: 'app-2-product-main',
   templateUrl: './product-main.page.html',
   styleUrls: ['./product-main.page.scss']
 })

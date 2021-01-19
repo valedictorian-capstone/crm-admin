@@ -1,0 +1,22 @@
+.body {
+    width: fit-content;
+    max-height: calc(100vh - 21rem - 56px);
+    min-height: calc(100vh - 21rem - 56px);
+    overflow-y: auto;
+    min-width: 100%;
+    &.un-main {
+        min-height: 20rem;
+        max-height: 20rem;
+    }
+}
+
+@media (max-width: 789px) {
+    .body {
+        max-height: calc(100vh - 21rem - 112px);
+        min-height: calc(100vh - 21rem - 112px);
+        &.un-main {
+            min-height: 20rem;
+            max-height: 20rem;
+        }
+    }
+}

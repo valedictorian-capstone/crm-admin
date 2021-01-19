@@ -1,0 +1,74 @@
+<nb-card style="position: relative; margin: 0;" [class.inside]="payload.inside">
+    <ngx-spinner [name]="'note-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        {{payload.note ? 'Edit' : 'New'}} Note
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="state.form">
+        <nb-form-field [style.display]="payload.fix ? 'none' : 'block'" style="width: 100%; max-width: 100%; margin-bottom: 1rem; float: left;">
+            <nb-select style="width: 100%; height: 3rem;" fullWidth placeholder="For" [formControl]="state.form.get('for')">
+                <nb-option value="campaign">For campaign</nb-option>
+                <nb-option value="deal">For deal</nb-option>
+            </nb-select>
+        </nb-form-field>
+        <span *ngIf="state.form.get('for').value === 'deal'" [style.display]="payload.fix ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty)">Deal <span class="text-danger">*</span></span>
+        <nb-form-field *ngIf="state.form.get('for').value === 'deal'" [style.display]="payload.fix ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon icon="donate" pack="font-awesome" nbPrefix></nb-icon>
+            <input #dealInput fullWidth (blur)="state.form.get('deal').markAsTouched()" [status]="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="dealRef" [nzPlacement]="'bottomCenter'"
+                [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('deal').value?.title" nbInput size="small" (input)="dealSelect.useSearch($event.target.value)" />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <span *ngIf="state.form.get('deal').invalid && (state.form.get('deal').touched || state.form.get('deal').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select deal</span>
+        <nz-dropdown-menu #dealRef="nzDropdownMenu">
+            <app-deal-select #dealSelect [control]="state.form.get('deal')"></app-deal-select>
+        </nz-dropdown-menu>
+        <span *ngIf="state.form.get('for').value === 'campaign'" [style.display]="payload.fix ? 'none' : 'block'" style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('campaign').invalid && (state.form.get('campaign').touched || state.form.get('campaign').dirty)">Campaign <span class="text-danger">*</span></span>
+        <nb-form-field *ngIf="state.form.get('for').value === 'campaign'" [style.display]="payload.fix ? 'none' : null" style="width: 100%; margin-bottom: 1rem;">
+            <nb-icon icon="gift-outline" nbPrefix></nb-icon>
+            <input #campaignInput fullWidth (blur)="state.form.get('campaign').markAsTouched()" [status]="state.form.get('campaign').invalid && (state.form.get('campaign').touched || state.form.get('campaign').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="campaignRef"
+                [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('campaign').value?.name" nbInput size="small" (input)="campaignSelect.useSearch($event.target.value)" />
+            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <span *ngIf="state.form.get('campaign').invalid && (state.form.get('campaign').touched || state.form.get('campaign').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select campaign</span>
+        <nz-dropdown-menu #campaignRef="nzDropdownMenu">
+            <app-campaign-select #campaignSelect [control]="state.form.get('campaign')"></app-campaign-select>
+        </nz-dropdown-menu>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem;">
+            <textarea style="background: #ffe498;" #area placeHolder="Aa" fullWidth [formControl]="state.form.get('description')" [rows]="8" nbInput></textarea>
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="payload.inside ? useClose.emit() : useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="payload.inside ? useSubmit() : useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+Save and hide
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+Hide modal
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

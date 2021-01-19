@@ -28,6 +28,7 @@ export const reducers: ActionReducerMap<State> = {
   attachment: fromDealReducers.attachmentReducer,
   dealDetail: fromDealReducers.dealDetailReducer,
   note: fromDealReducers.noteReducer,
+  campaign: fromDealReducers.campaignReducer,
   pipeline: fromDealReducers.pipelineReducer,
   stage: fromDealReducers.stageReducer,
   auth: fromExtraReducers.authReducer,

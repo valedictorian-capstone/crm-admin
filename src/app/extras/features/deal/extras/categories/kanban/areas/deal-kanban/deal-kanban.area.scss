@@ -1,0 +1,40 @@
+.body {
+    max-height: calc(100vh - 12rem - 56px);
+    min-height: calc(100vh - 12rem - 56px);
+    width: fit-content;
+    min-width: 100%;
+    overflow-y: auto;
+    display: flex;
+    .empty {
+        min-height: calc(100vh - 12rem - 56px);
+    }
+    .stage {
+        min-width: 25rem;
+        display: inline-block;
+        height: fit-content;
+    }
+    &.un-main {
+        min-height: 32rem;
+        max-height: 32rem;
+        .empty {
+            min-height: 32rem;
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    .body {
+        max-height: calc(100vh - 12rem - 112px);
+        min-height: calc(100vh - 12rem - 112px);
+        .empty {
+            min-height: calc(100vh - 12rem - 112px);
+        }
+        &.un-main {
+            min-height: 32rem;
+            max-height: 32rem;
+            .empty {
+                min-height: 32rem;
+            }
+        }
+    }
+}

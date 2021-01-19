@@ -1,0 +1,35 @@
+<nb-card class="position-relative w-100 h-100">
+    <ngx-spinner [name]="'category-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+  <nb-icon icon="compass-outline" class="mr-2"></nb-icon>
+  <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Category</b>
+</span>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+  <nb-icon icon="sync-outline"></nb-icon>
+  </button>
+        <app-category-product></app-category-product>
+        <app-category-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-category-type>
+        <app-category-export [data]="state.array"></app-category-export>
+        <app-category-add [canAdd]="state.canAdd"></app-category-add>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="state.show">
+        <div class="query">
+            <app-category-query [search]="search" (useSearch)="useSearch($event)"></app-category-query>
+        </div>
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-category-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-category-datatable>
+                <app-category-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-category-card>
+            </div>
+            <app-category-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-category-page-count>
+            <app-category-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-category-solve-check>
+            <div class="empty" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="state.show">
+        <app-category-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-category-pagination>
+    </nb-card-footer>
+</nb-card>

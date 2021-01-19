@@ -1,0 +1,12 @@
+<nb-card class="m-0 w-100">
+    <nb-card-header class="p-0">
+        <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
+            <div class="float-left" style="display: inline-block; width: 100%;">
+                <nb-form-field class="w-100">
+                    <input style="height: 3rem;" fullWidth [(ngModel)]="search.name" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in deal by name" />
+                    <nb-icon *ngIf="search.name" icon="close-circle-outline" status="danger" nbSuffix (click)="search.name = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>

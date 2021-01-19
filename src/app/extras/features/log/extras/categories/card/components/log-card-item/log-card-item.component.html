@@ -1,0 +1,11 @@
+<nb-card class="w-100">
+    <nb-card-header>
+        {{log.description ? log.description : 'None'}}
+    </nb-card-header>
+    <nb-card-footer>
+        <b><nb-icon icon="clock-outline"></nb-icon> </b>
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+    <nb-icon icon="trash-2-outline"></nb-icon>
+  </button>
+    </nb-card-footer>
+</nb-card>

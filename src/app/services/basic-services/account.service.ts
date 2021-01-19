@@ -19,7 +19,7 @@ export class AccountService {
     type: 'update' | 'create' | 'remove' | 'view' | 'list',
     data: AccountVM | AccountVM[]
   }> => {
-    return this.socket.fromEvent('accounts');
+    return this.socket.fromEvent('employees');
   }
 
   public readonly findAll = (): Observable<AccountVM[]> => {
@@ -29,7 +29,11 @@ export class AccountService {
   public readonly findById = (id: string): Observable<AccountVM> => {
     return this.httpClient.get<AccountVM>(`${environment.apiEndpont}${environment.api.basic.account.getById}${id}`);
   }
-
+  public readonly query = (params: {id: string}): Observable<AccountVM[]> => {
+    return this.httpClient.get<AccountVM[]>(`${environment.apiEndpont}${environment.api.basic.account.main}/query`, {
+      params
+    });
+  }
   public readonly import = (data: AccountCM[]): Observable<AccountVM[]> => {
     return this.httpClient.post<AccountVM[]>(`${environment.apiEndpont}${environment.api.basic.account.main}/import`, data);
   }
