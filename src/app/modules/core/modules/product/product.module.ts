@@ -9,6 +9,10 @@ import {
   ProductMainPage,
   ProductDetailPage
 } from './pages';
+import {
+  ProductMainContainer,
+  // ProductDetailContainer
+} from './containers';
 // import { } from './directives';
 // import { } from './pipes';
 import { ProductRoutes } from './product.routing';
@@ -17,7 +21,7 @@ const COMPONENTS = [
   ProductRestoreComponent,
   ProductSearchComponent
 ];
-
+const CONTAINERS = [ProductMainContainer];
 const PAGES = [
   ProductMainPage,
   ProductDetailPage
@@ -35,6 +39,6 @@ const DIRECTIVES = [
     ExtrasModule.forChild(),
     ProductRoutes
   ],
-  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES, ...CONTAINERS]
 })
 export class ProductModule { }

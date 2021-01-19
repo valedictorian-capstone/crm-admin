@@ -70,7 +70,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       this.service.triggerSocket()
         .pipe(
           tap((trigger) => {
-            if (trigger.type === 'create' && (trigger.data as NotificationVM).account.id === this.state.you.id) {
+            if (trigger.type === 'create' && (trigger.data as NotificationVM).employee.id === this.state.you.id) {
               if (!this.state.show) {
                 this.state.new = true;
               }

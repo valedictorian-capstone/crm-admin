@@ -1,0 +1,132 @@
+<nb-card style="position: relative; margin: 0">
+    <ngx-spinner [name]="'pipeline-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5">
+        {{payload.pipeline ? 'Edit' : 'New'}} Process
+        <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
+      <nb-icon icon="close"></nb-icon>
+    </button>
+    </nb-card-header>
+    <nb-card-body>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <input style="height: 3rem" [status]="state.name.invalid && (state.name.touched || state.name.dirty) ? 'danger' : 'basic'" fullWidth nz-dropdown [placeholder]="'Name'" shape="rectangle" [formControl]="state.name" nbInput size="large" />
+        </nb-form-field>
+        <span *ngIf="state.name.invalid && (state.name.touched || state.name.dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span
+    >
+    <nb-card class="w-100">
+      <nb-card-header>
+        <b style="font-family: monospace sans-serif">Stages</b>
+      </nb-card-header>
+      <nb-card-body style="max-height: fit-content;">
+        <smooth-dnd-container
+          (drop)="useDrop($event)"
+        >
+          <smooth-dnd-draggable
+            *ngFor="let stage of state.stages.controls; let i = index"
+          >
+        <nb-card class="w-100 m-0">
+            <nb-card-header>
+                <b style="font-family: monospace sans-serif">{{stage.value.name}}</b
+                >
+                <nb-icon
+                  class="drag-handle"
+                  class="float-right"
+                  style="cursor: move;"
+                  icon="move"
+                ></nb-icon>
+              </nb-card-header>
+              <nb-card-body>
+                <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="stage.get('name').invalid && (stage.get('name').touched || stage.get('name').dirty)">Name <span class="text-danger">*</span></span>
+        <input [formControl]="stage.get('name')" [status]="stage.get('name').invalid && (stage.get('name').touched || stage.get('name').dirty) ? 'danger' : 'default'" placeholder="Name" size="small" nbInput class="mb-2" fullWidth />
+        <span *ngIf="stage.get('name').invalid && (stage.get('name').touched || stage.get('name').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill name</span>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="stage.get('probability').invalid && (stage.get('probability').touched || stage.get('probability').dirty)">Probability <span class="text-danger">*</span></span>
+        <input [formControl]="stage.get('probability')" [status]="stage.get('probability').invalid && (stage.get('probability').touched || stage.get('probability').dirty) ? 'danger' : 'default'" placeholder="Probability" size="small" nbInput class="mb-2" fullWidth
+        />
+        <span *ngIf="stage.get('probability').invalid && (stage.get('probability').touched || stage.get('probability').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please fill probability</span>
+    </nb-card-body>
+    <nb-card-footer>
+        <button (click)="useDialog(removeRef, i, stage.value)" status="danger" size="small" outline nbButton>Delete Stage</button>
+        <ng-template #removeRef let-data let-ref="dialogRef">
+            <nb-card style="min-width: 420px; position: relative
+          ;">
+                <ngx-spinner [name]="'edit-pipeline'" bdColor="transparent" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+                <nb-card-header>Delete {{data.stage.name}} stage
+                </nb-card-header>
+                <nb-card-body>
+                    <b *ngIf="data.stage.deals.length === 0">There are no deals in this stage right now.</b>
+                    <span *ngIf="data.stage.deals.length > 0" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Select another stage to move all deals before remove stage</span>
+                    <nb-form-field class="w-100 mw-100" *ngIf="data.stage.deals.length > 0">
+                        <nb-select style="height: 3rem;" [placeholder]="'Select stage'" fullWidth (selectedChange)="useMoveAndRemove(data.index, ref, data.stage.deals, $event, data.stage)">
+                            <nb-option [disabled]="s.id === data.stage.id" [value]="s" *ngFor="let s of payload.pipeline.stages">{{s.name}} {{s.id === data.stage.id ? '(Current)' : ''}}</nb-option>
+                        </nb-select>
+                    </nb-form-field>
+
+                </nb-card-body>
+                <nb-card-footer>
+                    <button *ngIf="data.stage.deals.length === 0" style="float: right;" status="danger" nbButton size="small" (click)="useRemove(data.index, data.stage, ref)"><nb-icon icon="trash-2"></nb-icon> Delete stage</button>
+                    <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Cancel</button>
+                </nb-card-footer>
+            </nb-card>
+        </ng-template>
+    </nb-card-footer>
+</nb-card>
+</smooth-dnd-draggable>
+</smooth-dnd-container>
+</nb-card-body>
+<nb-card-footer>
+    <button (click)="useAdd()" nbButton size="small" outline status="success">
+          <nb-icon icon="plus-outline"></nb-icon> New Stage
+        </button>
+</nb-card-footer>
+</nb-card>
+</nb-card-body>
+<nb-card-footer>
+    <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef, 0, undefined)">
+      Cancel
+    </button>
+    <button style="float: right; margin-right: 0.5rem" [disabled]="state.name.invalid || state.stages.invalid" status="primary" (click)="useDialog(submitRef,  0, undefined)" nbButton size="small">
+      Save
+    </button>
+</nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+        Save and hide
+      </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+        Continue editing
+      </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+        Hide modal
+      </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+        Continue editing
+      </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #removeRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Remove pipeline </nb-card-header>
+        <nb-card-body>Are you sure you wish to remove this pipeline?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useRemove(ref)">
+        Remove
+      </button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+        Cancel
+      </button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

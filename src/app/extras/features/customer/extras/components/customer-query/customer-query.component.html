@@ -1,0 +1,163 @@
+<nb-card class="m-0 w-100">
+    <nb-card-header class="p-0">
+        <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
+            <div class="float-left" style="display: inline-block; width: calc(100% - 33.5rem); min-width: 23rem;">
+                <nb-form-field class="w-100">
+                    <button [disabled]="show" (click)="show = true" nbPrefix shape="round" nbButton status="primary" size="small">
+                <nb-icon icon="funnel-outline"></nb-icon>
+              </button>
+                    <input style="height: 3rem;" fullWidth class="pl-5" [(ngModel)]="search.value" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in customer (fullname, phone, email)" />
+                    <nb-icon *ngIf="search.value" icon="close-circle-outline" status="danger" nbSuffix (click)="search.value = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <nb-icon icon="gift-outline" nbPrefix></nb-icon>
+                    <input readonly nbInput [(ngModel)]="search.birthDay" (ngModelChange)="useSearch.emit(search)" style="height: 3rem;" fullWidth placeholder="Select range birthday" [nbDatepicker]="birthdayPicker" />
+                    <nb-rangepicker #birthdayPicker format="yyyy-MM-dd"></nb-rangepicker>
+                    <nb-icon *ngIf="search.birthDay" icon="close-circle-outline" status="danger" nbSuffix (click)="search.birthDay = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+            <div *ngIf="queryGroup" class="float-left" style="display: inline-block; min-width: 9rem;">
+                <nb-form-field class="w-100">
+                    <nb-select style="height: 3rem;" [(ngModel)]="search.groups" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select group'">
+                        <nb-option [value]="group" *ngFor="let group of groups">{{group.name}}</nb-option>
+                    </nb-select>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 9rem;">
+                <nb-form-field>
+                    <nb-select style="height: 3rem;" [(ngModel)]="search.genders" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select gender'">
+                        <nb-option value="-1">None</nb-option>
+                        <nb-option value="0">Male</nb-option>
+                        <nb-option value="1">Female</nb-option>
+                        <nb-option value="2">Other</nb-option>
+                    </nb-select>
+                </nb-form-field>
+            </div>
+        </div>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <div nz-row class="w-100">
+            <div nz-col class="px-2" [nzXs]="24" [nzSm]="24" [nzMd]="8" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
+                <div class="w-100">
+                    <span>Frequency (min - max)</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput [(ngModel)]="search.frequency.from" fullWidth placeholder="Min" />
+                        <nb-icon *ngIf="search.frequency.from" icon="close-circle-outline" status="danger" nbSuffix (click)="search.frequency.from = undefined;"></nb-icon>
+                    </nb-form-field>
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput [(ngModel)]="search.frequency.to" fullWidth placeholder="Max" />
+                        <nb-icon *ngIf="search.frequency.to" icon="close-circle-outline" status="danger" nbSuffix (click)="search.frequency.to = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>Total Deal (min - max)</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput mask="separator.0" thousandSeparator="," [(ngModel)]="search.totalDeal.from" fullWidth placeholder="Min" />
+                        <nb-icon *ngIf="search.totalDeal.from" icon="close-circle-outline" status="danger" nbSuffix (click)="search.totalDeal.from = undefined;"></nb-icon>
+                    </nb-form-field>
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput mask="separator.0" thousandSeparator="," [(ngModel)]="search.totalDeal.to" fullWidth placeholder="Max" />
+                        <nb-icon *ngIf="search.totalDeal.to" icon="close-circle-outline" status="danger" nbSuffix (click)="search.totalDeal.to = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>Total Spending (min - max)</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput mask="separator.0" thousandSeparator="," [(ngModel)]="search.totalSpending.from" fullWidth placeholder="Min" />
+                        <nb-icon *ngIf="search.totalSpending.from" icon="close-circle-outline" status="danger" nbSuffix (click)="search.totalSpending.from = undefined;"></nb-icon>
+                    </nb-form-field>
+                    <nb-form-field class="w-50 float-left">
+                        <input nbInput mask="separator.0" thousandSeparator="," [(ngModel)]="search.totalSpending.to" fullWidth placeholder="Max" />
+                        <nb-icon *ngIf="search.totalSpending.to" icon="close-circle-outline" status="danger" nbSuffix (click)="search.totalSpending.to = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+            </div>
+            <div nz-col class="px-2" [nzXs]="24" [nzSm]="24" [nzMd]="8" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
+                <div class="w-100">
+                    <span>Skype Name</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.skypeName" fullWidth placeholder="Type shype name" />
+                        <nb-icon *ngIf="search.skypeName" icon="close-circle-outline" status="danger" nbSuffix (click)="search.skypeName = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>Facebook</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.facebook" fullWidth placeholder="Type facebook" />
+                        <nb-icon *ngIf="search.facebook" icon="close-circle-outline" status="danger" nbSuffix (click)="search.facebook = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>Twitter</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.twitter" fullWidth placeholder="Type twitter" />
+                        <nb-icon *ngIf="search.twitter" icon="close-circle-outline" status="danger" nbSuffix (click)="search.twitter = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+            </div>
+            <div nz-col class="px-2" [nzXs]="24" [nzSm]="24" [nzMd]="8" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
+                <div class="w-100">
+                    <span>Street</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.street" fullWidth placeholder="Type street" />
+                        <nb-icon *ngIf="search.street" icon="close-circle-outline" status="danger" nbSuffix (click)="search.street = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>City</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.city" fullWidth placeholder="Type city" />
+                        <nb-icon *ngIf="search.city" icon="close-circle-outline" status="danger" nbSuffix (click)="search.city = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>State</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.state" fullWidth placeholder="Type state" />
+                        <nb-icon *ngIf="search.state" icon="close-circle-outline" status="danger" nbSuffix (click)="search.state = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+                <div class="w-100">
+                    <span>Country</span>
+                </div>
+                <div class="w-100 my-3 display-flex">
+                    <nb-form-field class="w-100">
+                        <input nbInput [(ngModel)]="search.country" fullWidth placeholder="Type country" />
+                        <nb-icon *ngIf="search.country" icon="close-circle-outline" status="danger" nbSuffix (click)="search.country = undefined;"></nb-icon>
+                    </nb-form-field>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useSearch.emit(search);" nbButton class="mr-2" status="primary" outline size="small">
+      Apply search
+    </button>
+        <button (click)="useClear();" nbButton status="danger" outline size="small">
+      Clear
+    </button>
+        <button class="float-right" (click)="show = false" nbButton shape="round" status="primary" size="small">
+      <nb-icon icon="arrowhead-up-outline"></nb-icon>
+    </button>
+    </nb-card-footer>
+</nb-card>

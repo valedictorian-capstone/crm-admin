@@ -1,0 +1,42 @@
+<button class="float-right mr-1" (click)="useExport(export)" status="success" outline nbButton size="small">
+  <nb-icon icon="download-outline"></nb-icon>
+</button>
+<table #export style="display: none">
+    <thead>
+        <tr>
+            <th>fullname</th>
+            <th>email</th>
+            <th>phone</th>
+            <th>street</th>
+            <th>city</th>
+            <th>state</th>
+            <th>country</th>
+            <th>source</th>
+            <th>skypeName</th>
+            <th>facebook</th>
+            <th>twitter</th>
+            <th>totalDeal</th>
+            <th>totalSpending</th>
+            <th>frequency</th>
+            <th>group</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of data">
+            <th>{{ item.fullname }}</th>
+            <th>{{ item.email }}</th>
+            <th>{{ item.phone }}</th>
+            <th>{{ item.street }}</th>
+            <th>{{ item.city }}</th>
+            <th>{{ item.state }}</th>
+            <th>{{ item.country }}</th>
+            <th>{{ item.source }}</th>
+            <th>{{ item.skypeName }}</th>
+            <th>{{ item.facebook }}</th>
+            <th>{{ item.twitter }}</th>
+            <th>{{ item.totalDeal }}</th>
+            <th>{{ item.totalSpending }}</th>
+            <th>{{ item.frequency }}</th>
+        </tr>
+    </tbody>
+</table>

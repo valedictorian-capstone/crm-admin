@@ -27,6 +27,14 @@ export class ActivityService {
   public readonly findById = (id: string): Observable<ActivityVM> => {
     return this.httpClient.get<ActivityVM>(`${environment.apiEndpont}${environment.api.deal.activity.getById}${id}`);
   }
+  public readonly findByCampaignId = (id: string): Observable<ActivityVM[]> => {
+    return this.httpClient.get<ActivityVM[]>(`${environment.apiEndpont}${environment.api.deal.activity.getById}${id}/campaign`);
+  }
+  public readonly query = (params: {key: string, id: string}): Observable<ActivityVM[]> => {
+    return this.httpClient.get<ActivityVM[]>(`${environment.apiEndpont}${environment.api.deal.activity.main}/query`, {
+      params
+    });
+  }
   public readonly insert = (data: ActivityCM): Observable<ActivityVM> => {
     return this.httpClient.post<ActivityVM>(`${environment.apiEndpont}${environment.api.deal.activity.main}`, data);
   }
@@ -36,8 +44,16 @@ export class ActivityService {
   public readonly remove = (id: string): Observable<string> => {
     return this.httpClient.delete<string>(`${environment.apiEndpont}${environment.api.deal.activity.getById}${id}`);
   }
+  public readonly removeMany = (body: ActivityVM[]): Observable<ActivityVM[]> => {
+    return this.httpClient.put<ActivityVM[]>(`${environment.apiEndpont}${environment.api.deal.activity.main}/many`, body);
+  }
   public readonly checkUnique = (label: string, value: string): Observable<boolean> => {
     return this.httpClient.get<boolean>(`${environment.apiEndpont}
-    ${environment.api.deal.activity.getById}unique?label=${label}&value=${value}`);
+    ${environment.api.deal.activity.getById}unique`, {
+      params: {
+        label,
+        value
+      }
+    });
   }
 }

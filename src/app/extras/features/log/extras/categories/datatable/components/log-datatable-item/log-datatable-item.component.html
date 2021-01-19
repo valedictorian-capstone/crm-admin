@@ -1,0 +1,33 @@
+<div class="datatable-item">
+    <div class="check">
+        <nb-icon *ngIf="!isHeader" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-icon *ngIf="isHeader" (click)="control.setValue(control.value === 'radio-button-on-outline' ? 'radio-button-off-outline' : 'radio-button-on-outline'); useItemCheck.emit()" [icon]="control.value" [status]="control.value === 'radio-button-on-outline' ? 'success' : (control.value === 'minus-circle-outline' ? 'warning' : 'info')"></nb-icon>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field b-gaint" (click)="useSort('description')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Description' : log.description" placeHolder="Description" />
+            <nb-icon *ngIf="isHeader && sort.key === 'description'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('updatedAt')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Time' : log.updatedAt | date: 'hh:mm dd/MM/yyyy'" placeHolder="Time" />
+            <nb-icon *ngIf="isHeader && sort.key === 'updatedAt'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+      <nb-icon [icon]="'trash-2-outline'"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 export * from './activity.selector';
 export * from './attachment.selector';
+export * from './campaign.selector';
 export * from './deal-detail.selector';
 export * from './deal.selector';
 export * from './log.selector';

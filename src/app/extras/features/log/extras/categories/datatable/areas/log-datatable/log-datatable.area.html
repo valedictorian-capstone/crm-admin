@@ -1,0 +1,4 @@
+<app-log-datatable-item [isHeader]="true" (useItemCheck)="useItemCheck(true)" [control]="headerCheck" [sort]="sort" (useSortable)="useSort($event)"></app-log-datatable-item>
+<div class="body" [class.un-main]="!isMain">
+    <app-log-datatable-item (useItemCheck)="useItemCheck(false)" [deal]="deal" [campaign]="campaign" *ngFor="let data of checkList" [log]="data.log" [control]="data.formControl" (useRemove)="useRemove(data.log.id)"></app-log-datatable-item>
+</div>

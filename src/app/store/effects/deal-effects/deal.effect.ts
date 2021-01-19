@@ -23,6 +23,7 @@ export class DealEffect {
             if (trigger.type === 'create') {
               return DealAction.SaveSuccessAction({ res: trigger.data as DealVM });
             } else if (trigger.type === 'update') {
+              (trigger.data as DealVM & { changing: boolean }).changing = false;
               return DealAction.SaveSuccessAction({ res: trigger.data as DealVM });
             } else if (trigger.type === 'remove') {
               return DealAction.RemoveSuccessAction({ id: (trigger.data as DealVM).id });

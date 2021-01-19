@@ -1,0 +1,78 @@
+<div class="datatable-item">
+    <div class="check">
+        <nb-icon *ngIf="!isHeader" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-icon *ngIf="isHeader" (click)="control.setValue(control.value === 'radio-button-on-outline' ? 'radio-button-off-outline' : 'radio-button-on-outline'); useItemCheck.emit()" [icon]="control.value" [status]="control.value === 'radio-button-on-outline' ? 'success' : (control.value === 'minus-circle-outline' ? 'warning' : 'info')"></nb-icon>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field" [class.gaint]="!isMain" [class.b-gaint]="isMain" (click)="useSort('name')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Name' : campaign.name" placeHolder="Name" />
+            <nb-icon *ngIf="isHeader && sort.key === 'name'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(campaign.name)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('type')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Type' : campaign.type" style="text-transform: capitalize;" placeHolder="Type" />
+            <nb-icon *ngIf="isHeader && sort.key === 'type'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('status')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Status' : campaign.status" style="text-transform: capitalize;" placeHolder="Status" />
+            <nb-icon *ngIf="isHeader && sort.key === 'status'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('autoCreateDeal')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Create Deal' : (campaign.autoCreateDeal ? 'Auto' : 'Non-Auto')" style="text-transform: capitalize;" placeHolder="Create Deal" />
+            <nb-icon *ngIf="isHeader && sort.key === 'autoCreateDeal'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('dateStart')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Date Start' : campaign.dateStart | date: 'hh:mm dd/MM/yyyy'" placeHolder="Date Start" />
+            <nb-icon *ngIf="isHeader && sort.key === 'dateStart'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="field large" (click)="useSort('dateEnd')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Date End' : campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'" placeHolder="Date End" />
+            <nb-icon *ngIf="isHeader && sort.key === 'dateEnd'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+        <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+    </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useView()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+      <nb-icon [icon]="'eye-outline'"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+      <nb-icon [icon]="'trash-2-outline'"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

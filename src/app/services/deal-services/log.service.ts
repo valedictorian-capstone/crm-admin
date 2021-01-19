@@ -20,6 +20,15 @@ export class LogService {
     return this.socket.fromEvent('logs');
   }
 
+
+  public readonly query = (params: {key: string, id: string}): Observable<LogVM[]> => {
+    return this.httpClient.get<LogVM[]>(`${environment.apiEndpont}${environment.api.deal.log.main}/query`, {
+      params
+    });
+  }
+  public readonly removeMany = (body: LogVM[]): Observable<LogVM[]> => {
+    return this.httpClient.put<LogVM[]>(`${environment.apiEndpont}${environment.api.deal.log.main}/many`, body);
+  }
   public readonly findAll = (): Observable<LogVM[]> => {
     return this.httpClient.get<LogVM[]>(`${environment.apiEndpont}${environment.api.deal.log.main}`);
   }

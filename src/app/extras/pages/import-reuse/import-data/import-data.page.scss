@@ -2,8 +2,12 @@ nb-card {
     width: 789px;
     margin-top: 29px;
     nb-card-body {
-        max-height: calc(100vh - 238px);
+        max-height: 75vh;
+        padding: 0;
         overflow: auto;
+    }
+    &.full {
+        width: 95vW;
     }
 }
 

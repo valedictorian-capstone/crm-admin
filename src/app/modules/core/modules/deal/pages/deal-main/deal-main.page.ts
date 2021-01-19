@@ -27,7 +27,7 @@ interface IDealMainPageState {
   canRemove: boolean;
 }
 @Component({
-  selector: 'app-deal-main',
+  selector: 'app-real-deal-main',
   templateUrl: './deal-main.page.html',
   styleUrls: ['./deal-main.page.scss']
 })

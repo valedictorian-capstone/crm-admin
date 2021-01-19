@@ -129,12 +129,12 @@ export class EmployeeSavePage implements OnInit, OnDestroy {
       }))
         .pipe(
           tap((data) => {
-            this.toastrService.success('', 'Save account successful!', { duration: 3000 });
+            this.toastrService.success('', 'Save employee successful!', { duration: 3000 });
             this.useDone.emit(data);
             this.useClose.emit();
           }),
           catchError((err) => {
-            this.toastrService.danger('', 'Save account fail! ' + err.error.message, { duration: 3000 });
+            this.toastrService.danger('', 'Save employee fail! ' + err.error.message, { duration: 3000 });
             return of(undefined);
           }),
           finalize(() => {

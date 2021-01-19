@@ -1,5 +1,7 @@
-<nb-card style="position: relative; margin: 0;">
-    <ngx-spinner [name]="'import-data'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+<nb-card style="position: relative; margin: 0;" [class.full]="state.data">
+    <ngx-spinner [name]="'import-data'" bdColor="#e5e5e5" [zIndex]="999" size="medium" color="#3de2ab" type="square-jelly-box" [fullScreen]="false">
+        <b style="color: #3de2ab"> {{text}} </b>
+    </ngx-spinner>
     <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
         Import data
         <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
@@ -7,24 +9,26 @@
     </button>
     </nb-card-header>
     <nb-card-body>
-        <div class="mb-2" *ngIf="!importType">
+        <div class="mb-2 p-2" *ngIf="!importType">
             <button *ngIf="state.canImportCustomer" nbButton class="mr-1" [status]="state.type === 'customer' ? 'primary' : 'basic'" (click)="state.type = 'customer'; state.data = undefined" size="small">Customer</button>
             <button *ngIf="state.canImportProduct" nbButton class="mr-1" [status]="state.type === 'product' ? 'primary' : 'basic'" (click)="state.type = 'product'; state.data = undefined" size="small">Product</button>
             <button *ngIf="state.canImportEmployee" nbButton class="mr-1" [status]="state.type === 'employee' ? 'primary' : 'basic'" (click)="state.type = 'employee'; state.data = undefined" size="small">Account</button>
         </div>
-        <nz-upload *ngIf="!state.data" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
-            <p class="ant-upload-drag-icon">
-                <i nz-icon nzType="inbox"></i>
-            </p>
-            <p class="ant-upload-text">Click or drag file to this area to upload</p>
-            <p class="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band datas
-            </p>
-        </nz-upload>
+        <div class="px-2" *ngIf="!state.data">
+            <nz-upload nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="true">
+                <p class="ant-upload-drag-icon">
+                    <i nz-icon nzType="inbox"></i>
+                </p>
+                <p class="ant-upload-text">Click or drag file to this area to upload</p>
+                <p class="ant-upload-hint">
+                    Support for a single or bulk upload. Strictly prohibit from uploading company data or other band datas
+                </p>
+            </nz-upload>
+        </div>
         <div class="mt-2">
-            <app-customer-import [data]="state.data" *ngIf="state.type === 'customer'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
-            <app-product-import [data]="state.data" *ngIf="state.type === 'product'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-product-import>
-            <app-employee-import [data]="state.data" *ngIf="state.type === 'employee'" (useChange)="state.data = undefined" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import>
+            <app-customer-import [data]="state.data" *ngIf="state.type === 'customer'" (useChange)="state.data = undefined" (useTextLoading)="text = $event" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
+            <app-product-import [data]="state.data" *ngIf="state.type === 'product'" (useChange)="state.data = undefined" (useLoading)="text = $event; useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-product-import>
+            <app-employee-import [data]="state.data" *ngIf="state.type === 'employee'" (useChange)="state.data = undefined" (useLoading)="text = $event; useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import>
         </div>
     </nb-card-body>
 </nb-card>

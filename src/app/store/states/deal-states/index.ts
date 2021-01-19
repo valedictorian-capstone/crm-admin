@@ -1,4 +1,5 @@
 export * from './activity.state';
+export * from './campaign.state';
 export * from './attachment.state';
 export * from './deal-detail.state';
 export * from './deal.state';

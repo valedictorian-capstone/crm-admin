@@ -1,0 +1,4 @@
+<app-customer-datatable-item (useItemCheck)="useItemCheck(true)" [control]="headerCheck" [isHeader]="true" [isMain]="isMain" [sort]="sort" (useSortable)="useSort($event)"></app-customer-datatable-item>
+<div class="body" [class.un-main]="!isMain">
+    <app-customer-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [isMain]="isMain" [customer]="data.customer" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.customer.id)"></app-customer-datatable-item>
+</div>

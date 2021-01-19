@@ -1,0 +1,23 @@
+<nb-card class="h-100 w-100 position-relative">
+    <nb-card-header style="padding: 1rem 1rem">
+        <span class="display-flex align-items-center float-left h-100">
+          <nb-icon icon="gift-outline" class="mr-2"></nb-icon>
+          <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Campaign {{state.main ? ' / ' + state.main.name : ''}}</b>
+        </span>
+    </nb-card-header>
+    <nb-card-body class="p-0">
+        <div class="w-100" nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
+                <app-campaign-information *ngIf="state.main" [campaign]='state.main'></app-campaign-information>
+            </div>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="16" [nzXl]="16" [nzXXl]="16">
+                <app-activity-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-activity-main>
+                <app-note-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-note-main>
+                <app-attachment-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-attachment-main>
+                <app-deal-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-deal-main>
+                <app-log-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-log-main>
+                <!-- <app-campaign-customer></app-campaign-customer> -->
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

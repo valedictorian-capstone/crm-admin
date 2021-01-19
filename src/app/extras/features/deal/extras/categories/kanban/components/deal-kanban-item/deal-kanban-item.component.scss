@@ -1,0 +1,106 @@
+nb-card {
+    b {
+        font-family: monospace, sans-serif;
+    }
+    nb-card-body {
+        min-height: calc(100vh - 21rem - 56px);
+        &.un-main {
+            min-height: 24rem;
+            &.dragging {
+                height: fit-content;
+                &:hover {
+                    background-color: #e5e5e5;
+                }
+                smooth-dnd-container {
+                     ::ng-deep {
+                        .smooth-dnd-container.vertical {
+                            height: 24rem;
+                            min-height: 24rem;
+                        }
+                    }
+                }
+            }
+            smooth-dnd-container {
+                 ::ng-deep {
+                    .smooth-dnd-container.vertical {
+                        min-height: 0;
+                    }
+                }
+            }
+        }
+        &.dragging {
+            height: fit-content;
+            &:hover {
+                background-color: #e5e5e5;
+            }
+            smooth-dnd-container {
+                 ::ng-deep {
+                    .smooth-dnd-container.vertical {
+                        height: calc(100vh - 21rem - 56px);
+                        min-height: calc(100vh - 21rem - 56px);
+                    }
+                }
+            }
+        }
+        smooth-dnd-container {
+             ::ng-deep {
+                .smooth-dnd-container.vertical {
+                    min-height: 0;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card {
+        nb-card-body {
+            max-height: calc(100vh - 21rem - 112px);
+            &.un-main {
+                min-height: 24rem;
+                &.dragging {
+                    height: fit-content;
+                    &:hover {
+                        background-color: #e5e5e5;
+                    }
+                    smooth-dnd-container {
+                         ::ng-deep {
+                            .smooth-dnd-container.vertical {
+                                height: 24rem;
+                                min-height: 24rem;
+                            }
+                        }
+                    }
+                }
+                smooth-dnd-container {
+                     ::ng-deep {
+                        .smooth-dnd-container.vertical {
+                            min-height: 0;
+                        }
+                    }
+                }
+            }
+            &.dragging {
+                height: fit-content;
+                &:hover {
+                    background-color: #e5e5e5;
+                }
+                smooth-dnd-container {
+                     ::ng-deep {
+                        .smooth-dnd-container.vertical {
+                            height: calc(100vh - 21rem - 112px);
+                            min-height: calc(100vh - 21rem - 112px);
+                        }
+                    }
+                }
+            }
+            smooth-dnd-container {
+                 ::ng-deep {
+                    .smooth-dnd-container.vertical {
+                        min-height: 0;
+                    }
+                }
+            }
+        }
+    }
+}

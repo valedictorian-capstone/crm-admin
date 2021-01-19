@@ -1,0 +1,50 @@
+nb-card {
+    nb-card-body {
+        .query {
+            width: 100%;
+            float: left;
+            display: block;
+            margin-bottom: calc(1rem - 10px);
+        }
+        .main {
+            width: 100%;
+            float: left;
+            display: block;
+            .content {
+                width: 100%;
+                max-width: 100%;
+                overflow: auto;
+                float: left;
+                display: block;
+            }
+            .empty {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: calc(100vh - 13rem - 56px);
+                &.un-main {
+                    height: 28rem;
+                }
+                img {
+                    width: 20rem;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card {
+        nb-card-body {
+            .main {
+                .empty {
+                    height: calc(100vh - 13rem - 56px);
+                    &.un-main {
+                        height: 28rem;
+                    }
+                }
+            }
+        }
+    }
+}

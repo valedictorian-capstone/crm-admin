@@ -16,6 +16,11 @@ export const logReducer = createReducer(
       ...state,
     })
   ),
+  on(LogAction.RemoveSuccessAction,
+    (state, action) => logAdapter.removeOne<LogState>(action.id, {
+      ...state,
+    })
+  ),
   on(LogAction.ListAction,
     (state, action) => logAdapter.upsertMany<LogState>(action.res, {
       ...state,

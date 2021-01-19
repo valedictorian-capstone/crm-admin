@@ -78,16 +78,12 @@
           [value]="form?.get('category').value?.name"
           nbInput
           size="small"
-          (input)="categoryPlus.useSearch($event.target.value)"
+          readonly
         />
         <nb-icon icon="arrow-down" nbSuffix></nb-icon>
       </nb-form-field>
       <nz-dropdown-menu #categoryRef="nzDropdownMenu">
-        <app-reuse-category-select
-        [selected]="form.get('category').value"
-          #categoryPlus
-          (useSelect)="form.get('category').setValue($event)"
-        ></app-reuse-category-select>
+        <app-category-select #categoryPlus [control]="form.get('category')"></app-category-select>
       </nz-dropdown-menu>
       <span *ngIf="form.get('category').invalid && (form.get('category').touched || form.get('category').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select category</span>
             <nb-accordion>

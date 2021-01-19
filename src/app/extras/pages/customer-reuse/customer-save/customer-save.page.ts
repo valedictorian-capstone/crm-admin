@@ -123,17 +123,11 @@ export class CustomerSavePage implements OnInit, OnDestroy {
       avatar: new FormControl(undefined),
       gender: new FormControl('-1'),
       source: new FormControl('import'),
-      type: new FormControl('personal', [Validators.required]),
 
       frequency: new FormControl(0, [Validators.required]),
       totalSpending: new FormControl(0, [Validators.required]),
       totalDeal: new FormControl(0, [Validators.required]),
 
-      company: new FormControl(''),
-      fax: new FormControl(''),
-      website: new FormControl(''),
-
-      stage: new FormControl(''),
       skypeName: new FormControl(''),
       facebook: new FormControl(''),
       twitter: new FormControl(''),

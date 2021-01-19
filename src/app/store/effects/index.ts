@@ -22,7 +22,8 @@ import {
   NoteEffect,
   PipelineEffect,
   StageEffect,
-  LogEffect
+  LogEffect,
+  CampaignEffect
 } from './deal-effects';
 import { AuthEffect } from './extra-effects';
 export const effects = [
@@ -39,6 +40,7 @@ export const effects = [
   GroupEffect,
   NotificationEffect,
   ActivityEffect,
+  CampaignEffect,
   AttachmentEffect,
   DealDetailEffect,
   DealEffect,

@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ActivityMainPage } from './pages';
+import { ActivityMainContainer } from './containers';
 
 const routes: Routes = [
-  { path: '', component: ActivityMainPage },
+  { path: '', component: ActivityMainContainer },
 ];
 
 export const ActivityRoutes = RouterModule.forChild(routes);

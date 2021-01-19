@@ -1,0 +1,18 @@
+<nb-card class="position-relative">
+    <ngx-spinner [name]="'employee-select'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header class="p-0">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth placeholder="Search" [(ngModel)]="state.search" (keyup)="useSearch()" />
+            <nb-icon icon="search-outline" nbSuffix></nb-icon>
+        </nb-form-field>
+    </nb-card-header>
+    <nb-card-body>
+        <nb-form-field class="w-100 mb-2" *ngFor="let item of state.filterArray">
+            <nb-icon icon="shopping-cart-outline" nbPrefix></nb-icon>
+            <input [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.name" nbInput fullWidth readonly (click)="useSelectItem(item)" />
+        </nb-form-field>
+        <div class="w-100 h-100 display-flex justify-content-center align-items-center" *ngIf="state.filterArray.length === 0">
+            <img height="13rem" width="auto" src="assets/empty.png" />
+        </div>
+    </nb-card-body>
+</nb-card>

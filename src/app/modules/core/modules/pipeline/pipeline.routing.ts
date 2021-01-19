@@ -1,16 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import {
-  PipelineAddPage,
-  PipelineDetailPage,
-  PipelineEditPage,
-  PipelineLoadingPage
-} from './pages';
+import { PipelineMainContainer } from './containers';
 
 const routes: Routes = [
-  { path: '', component: PipelineLoadingPage },
-  { path: 'add', component: PipelineAddPage },
-  { path: 'detail', component: PipelineDetailPage },
-  { path: 'edit', component: PipelineEditPage },
+  { path: '', component: PipelineMainContainer },
 ];
 
 export const PipelineRoutes = RouterModule.forChild(routes);

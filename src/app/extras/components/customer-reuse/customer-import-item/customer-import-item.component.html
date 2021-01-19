@@ -1,0 +1,142 @@
+<div class="datatable-item" [formGroup]="group">
+    <div class="action">
+        <button style="font-size: 0.75rem;" nbButton shape="round" outline size="tiny">
+      {{group['position']}}
+    </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button nbButton [status]="group.invalid ? 'danger' : 'success'" shape="round" outline size="tiny">
+    <nb-icon [icon]="group.invalid ? 'alert-triangle-outline' : 'checkmark-outline'"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="image">
+        <img *ngIf="group.get('avatar').value" [class.error]="group.get('errorImage').value" [src]="group.get('avatar').value" />
+        <div *ngIf="!group.get('avatar').value" class="empty-image">
+            <b>{{ group.get('fullname').value | key }}</b>
+        </div>
+        <input accept="image/jpeg,image/jpg,image/png" (change)="useSelectImage($event, avatarSelect)" #avatarSelect type="file" style="display:none" />
+        <button (click)="avatarSelect.click()" nbButton size="tiny" status="info" shape="round">
+      <nb-icon icon="camera-outline"></nb-icon>
+    </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-icon nbTooltip="Fullname can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('fullname').invalid"></nb-icon>
+            <input nbInput fullWidth [status]="group.get('fullname').invalid ? 'danger' : 'basic'" [formControl]="group.get('fullname')" placeHolder="Full Name" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field [nbSpinner]="group.value.emailStage === 'querying'" [nbSpinnerSize]="'tiny'" class="gaint not-search">
+            <nb-icon *ngIf="group.get('email').valid" [ngStyle]="{'opacity': group.value.emailStage === 'done' ? '1' : '0'}" nbPrefix icon="email-outline"></nb-icon>
+            <nb-icon [nbTooltip]="group.get('email').errors ? 'This email is existed in system! Fill another one' : 'Email can not be blank'" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix [ngStyle]="{'opacity': group.value.emailStage === 'done' ? '1' : '0'}"
+                *ngIf="group.get('email').invalid"></nb-icon>
+            <input nbInput fullWidth [status]="group.get('email').invalid ? 'danger' : 'basic'" [formControl]="group.get('email')" placeHolder="Email" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint" [nbSpinner]="group.value.phoneStage === 'querying'" [nbSpinnerSize]="'tiny'" class="gaint not-search">
+            <nb-icon *ngIf="group.get('phone').valid" [ngStyle]="{'opacity': group.value.phoneStage === 'done' ? '1' : '0'}" nbPrefix icon="phone-outline"></nb-icon>
+            <nb-icon [nbTooltip]="group.get('phone').errors ? 'This phone is existed in system! Fill another one' : 'Phone can not be blank'" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" [ngStyle]="{'opacity': group.value.phoneStage === 'done' ? '1' : '0'}"
+                nbPrefix *ngIf="group.get('phone').invalid"></nb-icon>
+            <input nbInput fullWidth [status]="group.get('phone').invalid ? 'danger' : 'basic'" [formControl]="group.get('phone')" placeHolder="Phone" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-icon nbTooltip="Birthday can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('birthDay').invalid"></nb-icon>
+            <input nbInput readonly fullWidth [value]="group.get('birthDay').value | date: 'dd/MM/yyyy'" [nzVisible]="group.value.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'"
+                placeHolder="Birthday" />
+        </nb-form-field>
+        <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
+            <app-reuse-select-date [date]="group.get('birthDay').value" (useChange)="group.get('birthDay').setValue($event); group.get('showBirthday').setValue(false)"></app-reuse-select-date>
+        </nz-dropdown-menu>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-select style="width: 100%;" fullWidth placeholder="Gender" [formControl]="group.get('gender')">
+                <nb-option value="-1">-None-</nb-option>
+                <nb-option value="0">Male</nb-option>
+                <nb-option value="1">Female</nb-option>
+                <nb-option value="2">Other</nb-option>
+            </nb-select>
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-icon nbTooltip="Total Spending can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('totalSpending').invalid"></nb-icon>
+            <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('totalSpending').invalid ? 'danger' : 'basic'" [formControl]="group.get('totalSpending')" placeHolder="Total Spending" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-icon nbTooltip="Total Deal can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('totalDeal').invalid"></nb-icon>
+            <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('totalDeal').invalid ? 'danger' : 'basic'" [formControl]="group.get('totalDeal')" placeHolder="Total Deal" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <nb-icon nbTooltip="Total Deal Won can not be blank" nbTooltipIcon="alert-triangle-outline" nbTooltipStatus="danger" icon="alert-triangle-outline" status="danger" nbPrefix *ngIf="group.get('frequency').invalid"></nb-icon>
+            <input nbInput fullWidth mask="separator.0" thousandSeparator="," [status]="group.get('frequency').invalid ? 'danger' : 'basic'" [formControl]="group.get('frequency')" placeHolder="Total Deal Won" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('skypeName')" placeHolder="Skype Name" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('facebook')" placeHolder="Facebook" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('twitter')" placeHolder="Twitter" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('street')" placeHolder="Street" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('city')" placeHolder="City" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('state')" placeHolder="State" />
+        </nb-form-field>
+    </div>
+    <div class="field">
+        <nb-form-field class="gaint">
+            <input nbInput fullWidth [formControl]="group.get('country')" placeHolder="Country" />
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useRemoveItem.emit()" nbButton shape="round" status="danger" outline size="small">
+    <nb-icon icon="trash-2-outline"></nb-icon>
+  </button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

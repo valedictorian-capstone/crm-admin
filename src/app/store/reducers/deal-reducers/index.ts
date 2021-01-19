@@ -1,6 +1,7 @@
 export * from './activity.reducer';
 export * from './attachment.reducer';
 export * from './deal-detail.reducer';
+export * from './campaign.reducer';
 export * from './deal.reducer';
 export * from './log.reducer';
 export * from './note.reducer';

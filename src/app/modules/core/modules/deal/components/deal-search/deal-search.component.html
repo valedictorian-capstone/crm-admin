@@ -6,11 +6,11 @@
         <nb-form-field class="float-left mb-2 w-100">
             <nb-icon nbSuffix icon="phone-outline"></nb-icon>
             <input nz-dropdown [nzDropdownMenu]="customerSelect" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" class="border-radius-0" [value]="search.customer?.fullname" [style.height]="'40px'" fullWidth placeholder="Select customer"
-                nbInput (input)="select.useSearch($event.target.value)" />
+                nbInput readonly />
             <nb-icon *ngIf="search.customer" nbSuffix status="danger" (click)="search.customer = undefined; useSearch.emit(search)" icon="close-circle-outline"></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #customerSelect="nzDropdownMenu">
-            <app-reuse-customer-select #select [selected]="search.customer" (useSelect)="search.customer = $event; useSearch.emit(search)"></app-reuse-customer-select>
+            <app-customer-select [(model)]="search.customer" #customerSelect (modelChange)="search.customer = $event; useSearch.emit(search);"></app-customer-select>
         </nz-dropdown-menu>
         <nb-form-field class="float-left mb-2 w-100">
             <input class="border-radius-0" [(ngModel)]="search.name" [style.height]="'40px'" fullWidth placeholder="Search by name" nbInput (ngModelChange)="useSearch.emit(search)" />

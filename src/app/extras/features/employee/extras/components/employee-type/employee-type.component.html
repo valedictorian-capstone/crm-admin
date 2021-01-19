@@ -1,0 +1,6 @@
+<button class="float-right mr-1" (click)="typeChange.emit('datatable'); type = 'datatable'" outline nbButton size="small" [status]="type !== 'datatable' ? 'info' : 'warning'">
+  <nb-icon icon="keypad-outline"></nb-icon>
+</button>
+<button class="float-right mr-1" (click)="typeChange.emit('card'); type = 'card'" outline nbButton size="small" [status]="type !== 'card' ? 'info' : 'warning'">
+  <nb-icon icon="layout-outline"></nb-icon>
+</button>

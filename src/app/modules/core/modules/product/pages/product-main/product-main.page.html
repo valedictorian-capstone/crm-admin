@@ -8,17 +8,17 @@
         <button class="float-right" (click)="useReload()" outline nbButton size="small">
     <nb-icon icon="sync-outline"></nb-icon>
     </button>
-        <button *ngIf="state.restores.length > 0 && state.canRemove" class="float-right mr-2" nbButton status="default" status="warning" (click)="useDialog(restoreRef)" outline size="small">
+        <button *ngIf="state.restores.length > 0 && state.canRemove" class="float-right mr-1" nbButton status="default" status="warning" (click)="useDialog(restoreRef)" outline size="small">
       <nb-icon pack="font-awesome" style="font-size: 1rem;" icon="trash-restore"></nb-icon>
     </button>
-        <button class="float-right mr-2" nz-dropdown [nzDropdownMenu]="productSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
+        <button class="float-right mr-1" nz-dropdown [nzDropdownMenu]="productSearch" [nzTrigger]="'click'" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" outline nbButton status="primary" size="small">
       <nb-icon icon="search-outline"></nb-icon>
       </button>
 
-        <button *ngIf="state.canImport" class="float-right mr-2" (click)="useImport()" status="info" outline nbButton size="small">
+        <button *ngIf="state.canImport" class="float-right mr-1" (click)="useImport()" status="info" outline nbButton size="small">
         <nb-icon icon="upload" class="display-flex justify-content-center align-items-center" pack="font-awesome"></nb-icon>
         </button>
-        <button *ngIf="state.canAdd" class="float-right mr-2" (click)="usePlus()" status="success" outline nbButton size="small">
+        <button *ngIf="state.canAdd" class="float-right mr-1" (click)="usePlus()" status="success" outline nbButton size="small">
         <nb-icon icon="plus-outline"></nb-icon>
         </button>
         <nz-dropdown-menu #productSearch="nzDropdownMenu">

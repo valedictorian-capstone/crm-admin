@@ -73,11 +73,11 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
     .pipe(
       tap((data) => {
         this.toastrService.success('', !role
-          ? 'Set role for account successful' : 'Unset role for account successful', { duration: 3000 });
+          ? 'Set role for employee successful' : 'Unset role for employee successful', { duration: 3000 });
       }),
       catchError((err) => {
         this.toastrService.danger('', (!role
-          ? 'Set role account fail! ' : 'Unset role account fail! ') + err.message, { duration: 3000 });
+          ? 'Set role employee fail! ' : 'Unset role employee fail! ') + err.message, { duration: 3000 });
         return of(undefined);
       }),
       finalize(() => {
@@ -95,12 +95,12 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
       .pipe(
         tap((data) => {
           this.toastrService.success('', !this.account.isDelete
-            ? 'Disabled account successful' : 'Active account successful', { duration: 3000 });
+            ? 'Disabled employee successful' : 'Active employee successful', { duration: 3000 });
         }),
         catchError((err) => {
           (err);
           this.toastrService.danger('', (!this.account.isDelete
-            ? 'Disabled account fail! ' : 'Active account fail! ') + err.message, { duration: 3000 });
+            ? 'Disabled employee fail! ' : 'Active employee fail! ') + err.message, { duration: 3000 });
           return of(undefined);
         }),
         finalize(() => {
@@ -116,11 +116,11 @@ export class RoleAccountComponent implements OnInit, OnDestroy {
     const subscription = this.service.remove(this.account.id)
       .pipe(
         tap((data) => {
-          this.toastrService.success('', 'Remove account successful', { duration: 3000 });
+          this.toastrService.success('', 'Remove employee successful', { duration: 3000 });
         }),
         catchError((err) => {
           (err);
-          this.toastrService.danger('', 'Remove account fail! ' + err.message, { duration: 3000 });
+          this.toastrService.danger('', 'Remove employee fail! ' + err.message, { duration: 3000 });
           return of(undefined);
         }),
         finalize(() => {

@@ -114,11 +114,11 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
       const subscription = this.service.import(this.state.formArray.controls.map((e) => e.value))
         .pipe(
           tap((data) => {
-            this.toastrService.success('', 'Import accounts successful!', { duration: 3000 });
+            this.toastrService.success('', 'Import employees successful!', { duration: 3000 });
             this.useChange.emit();
           }),
           catchError((err) => {
-            this.toastrService.danger('', 'Import accounts fail! ' + err.message, { duration: 3000 });
+            this.toastrService.danger('', 'Import employees fail! ' + err.message, { duration: 3000 });
             return of(undefined);
           }),
           finalize(() => {

@@ -1,0 +1,48 @@
+<nb-card class="m-0 w-100">
+    <nb-card-header class="p-0">
+        <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
+            <div class="float-left" style="display: inline-block; width: calc(100% - 27.5rem); min-width: 23rem;">
+                <nb-form-field class="w-100">
+                    <input style="height: 3rem;" fullWidth [(ngModel)]="search.title" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in deal by title" />
+                    <nb-icon *ngIf="search.title" icon="close-circle-outline" status="danger" nbSuffix (click)="search.title = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 12rem;">
+                <nb-form-field>
+                    <nb-select style="height: 3rem;" [(ngModel)]="search.statuss" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select statuss'">
+                        <nb-option value="won">Won</nb-option>
+                        <nb-option value="lost">Lost</nb-option>
+                        <nb-option value="processing">Processing</nb-option>
+                    </nb-select>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.customer?.fullname" style="height: 3rem;" fullWidth placeholder="Select customer" />
+                    <nb-icon *ngIf="search.customer" icon="close-circle-outline" status="danger" nbSuffix (click)="search.customer = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #customerRef="nzDropdownMenu">
+                    <app-customer-select [(model)]="search.customer" #customerSelect (modelChange)="search.customer = $event; useSearch.emit(search);"></app-customer-select>
+                </nz-dropdown-menu>
+            </div>
+            <div *ngIf="isMain" class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="campaignRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.campaign?.name" style="height: 3rem;" fullWidth placeholder="Select campaign" />
+                    <nb-icon *ngIf="search.campaign" icon="close-circle-outline" status="danger" nbSuffix (click)="search.campaign = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #campaignRef="nzDropdownMenu">
+                    <app-campaign-select [(model)]="search.campaign" #campaignSelect (modelChange)="search.campaign = $event; useSearch.emit(search);"></app-campaign-select>
+                </nz-dropdown-menu>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.assignee?.fullname" style="height: 3rem;" fullWidth placeholder="Select assignee" />
+                    <nb-icon *ngIf="search.assignee" icon="close-circle-outline" status="danger" nbSuffix (click)="search.assignee = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
+                    <app-employee-select [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
+                </nz-dropdown-menu>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>

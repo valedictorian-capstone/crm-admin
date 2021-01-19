@@ -1,4 +1,5 @@
 export * from './activity.adapter';
+export * from './campaign.adapter';
 export * from './attachment.adapter';
 export * from './deal-detail.adapter';
 export * from './deal.adapter';

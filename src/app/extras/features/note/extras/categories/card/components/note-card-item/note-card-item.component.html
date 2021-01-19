@@ -1,0 +1,17 @@
+<nb-card class="w-per-95 m-auto">
+    <nb-card-header>
+        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+    </nb-card-header>
+    <nb-card-body>
+        <b>{{note.description}}</b>
+    </nb-card-body>
+    <nb-card-footer>
+        <b><nb-icon icon="clock-outline"></nb-icon> [{{note.updatedAt | date: 'hh:mm dd/MM/yyyy'}}]</b>
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+        <nb-icon icon="trash-2-outline"></nb-icon>
+      </button>
+        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+      </button>
+    </nb-card-footer>
+</nb-card>

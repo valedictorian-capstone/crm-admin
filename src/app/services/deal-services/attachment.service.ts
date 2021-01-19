@@ -28,7 +28,17 @@ export class AttachmentService {
   public readonly findById = (id: string): Observable<AttachmentVM> => {
     return this.httpClient.get<AttachmentVM>(`${environment.apiEndpont}${environment.api.deal.attachment.getById}${id}`);
   }
-
+  public readonly findByCampaignId = (id: string): Observable<AttachmentVM[]> => {
+    return this.httpClient.get<AttachmentVM[]>(`${environment.apiEndpont}${environment.api.deal.attachment.getById}${id}/campaign`);
+  }
+  public readonly query = (params: {key: string, id: string}): Observable<AttachmentVM[]> => {
+    return this.httpClient.get<AttachmentVM[]>(`${environment.apiEndpont}${environment.api.deal.attachment.main}/query`, {
+      params
+    });
+  }
+  public readonly removeMany = (body: AttachmentVM[]): Observable<AttachmentVM[]> => {
+    return this.httpClient.put<AttachmentVM[]>(`${environment.apiEndpont}${environment.api.deal.attachment.main}/many`, body);
+  }
   public readonly insert = (data: FormData): Observable<AttachmentVM[]> => {
     return this.httpClient.post<AttachmentVM[]>(`${environment.apiEndpont}${environment.api.deal.attachment.main}`, data);
   }

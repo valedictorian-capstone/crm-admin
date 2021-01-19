@@ -3,11 +3,12 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
 import { CustomerService } from '@services';
 import { CustomerVM } from '@view-models';
-import { Subscription, of } from 'rxjs';
-import { finalize, tap, catchError } from 'rxjs/operators';
+import { Subscription, of, merge } from 'rxjs';
+import { finalize, tap, catchError, debounceTime, combineAll } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 interface ICustomerImportPageState {
-  formArray: FormArray;
+  array: FormArray;
+  page: number;
 }
 @Component({
   selector: 'app-customer-import',
@@ -17,26 +18,33 @@ interface ICustomerImportPageState {
 export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
   @Input() data: CustomerVM[];
   @Output() useChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useTextLoading: EventEmitter<string> = new EventEmitter<string>();
   @Output() useLoading: EventEmitter<any> = new EventEmitter<any>();
   @Output() useUnLoading: EventEmitter<any> = new EventEmitter<any>();
   subscriptions: Subscription[] = [];
   state: ICustomerImportPageState = {
-    formArray: new FormArray([])
+    array: new FormArray([]),
+    page: 1
+  };
+  sortBy = {
+    key: undefined,
+    stage: 'up',
   };
   constructor(
     protected readonly service: CustomerService,
     protected readonly toastrService: NbToastrService,
     protected readonly cdr: ChangeDetectorRef
   ) { }
-  ngOnChanges() {
+  async ngOnChanges() {
     if (this.data) {
-      this.state.formArray.clear();
-      for (const item of this.data) {
+      this.state.array.clear();
+      for (let i = 0; i < this.data.length; i++) {
+        const item = this.data[i];
         const group = new FormGroup({
           phone: new FormControl('', [Validators.required, Validators.pattern(/^(\(\d{2,4}\)\s{0,1}\d{6,9})$|^\d{8,13}$|^\d{3,5}\s?\d{3}\s?\d{3,4}$|^[\d\(\)\s\-\/]{6,}$/)]),
           email: new FormControl('', [Validators.required, Validators.email]),
           fullname: new FormControl(undefined, [Validators.required]),
-          birthDay: new FormControl(''),
+          birthDay: new FormControl(undefined),
           avatar: new FormControl(undefined),
           gender: new FormControl('-1'),
           phoneStage: new FormControl('done'),
@@ -45,17 +53,11 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
           errorImage: new FormControl(false),
           errorImageMessage: new FormControl(''),
           source: new FormControl('import'),
-          type: new FormControl('personal', [Validators.required]),
 
           frequency: new FormControl(0, [Validators.required]),
           totalSpending: new FormControl(0, [Validators.required]),
           totalDeal: new FormControl(0, [Validators.required]),
 
-          company: new FormControl(''),
-          fax: new FormControl(''),
-          website: new FormControl(''),
-
-          stage: new FormControl(''),
           skypeName: new FormControl(''),
           facebook: new FormControl(''),
           twitter: new FormControl(''),
@@ -67,15 +69,18 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
 
           description: new FormControl(''),
         });
-        const elements = [];
         for (const key in item) {
           if (Object.prototype.hasOwnProperty.call(item, key)) {
             const element = item[key];
-            elements.push(element);
             if (group.get(key)) {
               if (key === 'birthDay') {
-                group.get(key).setValue(new Date((element - (25567 + 2)) * 86400 * 1000));
-                console.log(group.get(key).value);
+                if (element) {
+                  if (typeof element === 'string') {
+                    group.get(key).setValue(new Date((element)));
+                  } else {
+                    group.get(key).setValue(new Date((element - (25567 + 2)) * 86400 * 1000));
+                  }
+                }
               } else if (key === 'gender') {
                 switch (element.toLowerCase()) {
                   case 'male':
@@ -91,32 +96,81 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
                     group.get(key).setValue('-1');
                     break;
                 }
-              } else if (key === 'type') {
-                switch (element.toLowerCase()) {
-                  case 'personal':
-                    group.get(key).setValue('personal');
-                    break;
-                  case 'company':
-                    group.get(key).setValue('company');
-                    break;
-                  case 'organization':
-                    group.get(key).setValue('company');
-                    break;
-                  default:
-                    group.get(key).setValue('personal');
-                    break;
-                }
               } else {
                 group.get(key).setValue(element);
               }
-              group.get(key).markAsTouched();
             }
           }
         }
-        this.state.formArray.push(group);
+        group['id'] = new FormControl(Array(10).fill('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+          .map((x) => x[Math.floor(Math.random() * x.length)]).join(''));
+          group['position'] = i + 1;
+        this.state.array.push(group);
       }
-      console.log(this.state.formArray);
-      this.state.formArray.markAsTouched();
+      this.state.array.controls.forEach(async (group, i) => {
+        const phone = group.get('phone');
+        const email = group.get('email');
+        if (phone.valid) {
+          group.get('phoneStage').setValue('querying');
+          this.service.checkUnique('phone', phone.value)
+            .pipe(
+              tap((checkPhone) => {
+                if (checkPhone) {
+                  phone.setErrors({ duplicate: true });
+                }
+              }),
+              finalize(() => {
+                group.get('phoneStage').setValue('done');
+              })
+            ).subscribe();
+        }
+        if (email.valid) {
+          group.get('emailStage').setValue('querying');
+          this.service.checkUnique('email', email.value)
+            .pipe(
+              tap((checkPhone) => {
+                if (checkPhone) {
+                  email.setErrors({ duplicate: true });
+                }
+              }),
+              finalize(() => {
+                group.get('emailStage').setValue('done');
+              })
+            ).subscribe();
+        }
+        phone.valueChanges.pipe(
+          debounceTime(250),
+          tap(async () => {
+            console.log('changes');
+            if (phone.valid) {
+              group.get('phoneStage').setValue('querying');
+              const checkPhone = await this.service.checkUnique('phone', phone.value).toPromise();
+              if (checkPhone) {
+                phone.setErrors({ duplicate: true });
+              } else {
+                phone.setErrors(null);
+              }
+              group.get('phoneStage').setValue('done');
+            }
+          })
+        ).subscribe();
+        email.valueChanges.pipe(
+          debounceTime(250),
+          tap(async () => {
+
+            if (email.valid) {
+              group.get('emailStage').setValue('querying');
+              const checkPhone = await this.service.checkUnique('email', email.value).toPromise();
+              if (checkPhone) {
+                email.setErrors({ duplicate: true });
+              } else {
+                email.setErrors(null);
+              }
+              group.get('emailStage').setValue('done');
+            }
+          })
+        ).subscribe();
+      });
     }
   }
   ngAfterViewInit() {
@@ -150,71 +204,95 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
     XLSX.writeFile(wb, 'customer-example-' + new Date().getTime() + '.xlsx');
   }
   useImport = () => {
-    if (this.state.formArray.valid) {
+    const array = this.state.array.controls.filter((e) => e.valid);
+    if (array.length > 0) {
+      let count = 0;
+      this.useTextLoading.emit(count + '/' + array.length);
       this.useLoading.emit();
-      this.subscriptions.push(
-        this.service.import(this.state.formArray.controls.map((e) => ({
-          ...e.value,
-          frequency: parseInt(e.value.frequency, 0) / 365,
-          totalSpending: parseInt(e.value.totalSpending, 0),
-          totalDeal: parseInt(e.value.totalDeal, 0),
-        }))).pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Import formArray successful!', { duration: 3000 });
-            this.useChange.emit();
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Import formArray fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          }),
-          finalize(() => {
+      const combines = [];
+      let start = 0;
+      while (start < array.length - 1) {
+        if (start + 10 <= array.length - 1) {
+          const data = array.slice(start, start + 11);
+          combines.push(
+            this.service.import(data.map((e) => ({
+              ...e.value,
+              frequency: parseInt(e.value.frequency, 0) / 365,
+              totalSpending: parseInt(e.value.totalSpending, 0),
+              totalDeal: parseInt(e.value.totalDeal, 0),
+            }))).pipe(
+              tap(() => {
+                this.toastrService.success('', 'Import 10 customers successful!', { duration: 3000 });
+                count += 10;
+                this.useTextLoading.emit(count + '/' + array.length);
+                this.state.array.controls = this.state.array.controls.filter((e) => !data.find((d) => d['id'] === e['id']));
+                if (this.state.array.controls.length === 0) {
+                  this.data = undefined;
+                  this.useChange.emit();
+                }
+              })
+            )
+          );
+          start += 10;
+        } else {
+          const data = array.slice(start, array.length - start);
+          combines.push(
+            this.service.import(data.map((e) => ({
+              ...e.value,
+              frequency: parseInt(e.value.frequency, 0) / 365,
+              totalSpending: parseInt(e.value.totalSpending, 0),
+              totalDeal: parseInt(e.value.totalDeal, 0),
+            }))).pipe(
+              tap(() => {
+                this.toastrService.success('', 'Import ' + (array.length - start) + ' customers successful!', { duration: 3000 });
+                count += array.length - 1;
+                this.useTextLoading.emit(count + '/' + array.length);
+                this.state.array.controls = this.state.array.controls.filter((e) => !data.find((d) => d['id'] === e['id']));
+                if (this.state.array.controls.length === 0) {
+                  this.data = undefined;
+                  this.useChange.emit();
+                }
+              })
+            )
+          );
+          start = array.length - 1;
+        }
+      }
+      merge(
+        ...combines
+      ).pipe(
+        finalize(() => {
+          setTimeout(() => {
             this.useUnLoading.emit();
-          })
-        ).subscribe()
-      );
-    }
-  }
-  useCheckPhone = (form: FormGroup) => {
-    const phone = form.get('phone');
-    if (phone.valid) {
-      form.get('phoneStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('phone', phone.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                phone.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('phoneStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
-    }
-
-  }
-  useCheckEmail = (form: FormGroup) => {
-    const email = form.get('email');
-    if (email.valid) {
-      form.get('emailStage').setValue('querying');
-      this.subscriptions.push(
-        this.service.checkUnique('email', email.value)
-          .pipe(
-            tap((check) => {
-              if (check) {
-                email.setErrors({ duplicate: true });
-              }
-            }),
-            finalize(() => {
-              setTimeout(async () => {
-                form.get('emailStage').setValue('done');
-              }, 1000);
-            })
-          ).subscribe()
-      );
+          }, 1000);
+        })
+      ).subscribe();
+      // this.subscriptions.push(
+      //   this.service.import(this.state.array.controls.filter((e) => e.valid).map((e) => ({
+      //     ...e.value,
+      //     frequency: parseInt(e.value.frequency, 0) / 365,
+      //     totalSpending: parseInt(e.value.totalSpending, 0),
+      //     totalDeal: parseInt(e.value.totalDeal, 0),
+      //   }))).pipe(
+      //     tap((data) => {
+      //       this.toastrService.success('', 'Import customers successful!', { duration: 3000 });
+      //       this.state.array.controls = this.state.array.controls.filter((e) => e.invalid);
+      //       if (this.state.array.length === 0) {
+      //         this.data = undefined;
+      //         this.useChange.emit();
+      //       }
+      //     }),
+      //     catchError((err) => {
+      //       this.toastrService.danger('', 'Import customers fail! ' + err.message, { duration: 3000 });
+      //       return of(undefined);
+      //     }),
+      //     finalize(() => {
+      //       this.useUnLoading.emit();
+      //     })
+      //   ).subscribe()
+      // );
+    } else {
+      this.toastrService.warning('', 'No valid customers to import', { duration: 3000 });
     }
   }
   useSelectImage = (event: any, input: HTMLElement, form: FormGroup) => {
@@ -245,13 +323,25 @@ export class CustomerImportPage implements OnChanges, AfterViewInit, OnDestroy {
     }
   }
   useRemoveItem = (index: number) => {
-    this.state.formArray.removeAt(index);
-    if (this.state.formArray.length === 0) {
+    this.state.array.removeAt(index);
+    if (this.state.array.length === 0) {
       this.data = undefined;
       this.useChange.emit();
     }
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
+  }
+  useSort = (key: string) => {
+    if (this.sortBy.key === key) {
+      this.sortBy.stage = this.sortBy.stage === 'up' ? 'down' : 'up';
+    } else {
+      this.sortBy.key = key;
+    }
+    console.log('sort');
+    this.state.array.controls = this.state.array.controls.sort((a, b) => a[this.sortBy.key] < b[this.sortBy.key] ? (this.sortBy.stage === 'down' ? -1 : 1) : (this.sortBy.stage === 'down' ? 1 : -1));
+  }
+  useGetCount = (type: 'valid' | 'invalid') => {
+    return this.state.array.controls.filter((group) => group[type]).length;
   }
 }
