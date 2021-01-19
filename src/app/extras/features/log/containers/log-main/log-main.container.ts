@@ -1,4 +1,4 @@
-import { ILogMainState, ILogSearch } from '@extras/features/Log';
+import { ILogMainState, ILogSearch } from '@extras/features/log';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ISort } from '@extras/interfaces';
 import { Store } from '@ngrx/store';
