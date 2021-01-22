@@ -118,11 +118,11 @@ export class RoleMainPage implements OnInit, OnDestroy {
       },
       {
         label: 'GetTicketDeal',
-        value: 'canGetTicketDeal'
+        value: 'canGetDealTicket'
       },
       {
         label: 'GetTicketSupport',
-        value: 'canGetTicketSupport'
+        value: 'canGetSupportTicket'
       },
       {
         label: 'UpdateTicket',

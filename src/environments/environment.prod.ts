@@ -183,7 +183,7 @@ export const environment = {
       value: 'process',
       icon: 'browser',
       pack: 'eva',
-      can: 'canAccessDeal'
+      can: 'canAccessProcess'
     },
     {
       label: 'Customer',
@@ -211,7 +211,7 @@ export const environment = {
       value: 'campaign',
       icon: 'gift',
       pack: 'eva',
-      can: 'canAccessEvent'
+      can: 'canAccessCampaign'
     },
 
   ],

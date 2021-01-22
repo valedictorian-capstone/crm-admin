@@ -15,6 +15,7 @@ export interface RoleVM {
   canCreateDeal: boolean;
   canUpdateDeal: boolean;
   canRemoveDeal: boolean;
+  canAccessProcess: boolean;
   canCreateProcess: boolean;
   canUpdateProcess: boolean;
   canRemoveProcess: boolean;
@@ -26,8 +27,8 @@ export interface RoleVM {
   canAssignActivity: boolean;
   canGetAllActivity: boolean;
   canAccessTicket: boolean;
-  canGetTicketDeal: boolean;
-  canGetTicketSupport: boolean;
+  canGetDealTicket: boolean;
+  canGetSupportTicket: boolean;
   canUpdateTicket: boolean;
   canRemoveTicket: boolean;
   canAssignTicket: boolean;
@@ -37,10 +38,10 @@ export interface RoleVM {
   canRemoveProduct: boolean;
   canImportProduct: boolean;
   canImportEmployee: boolean;
-  canAccessEvent: boolean;
-  canCreateEvent: boolean;
-  canUpdateEvent: boolean;
-  canRemoveEvent: boolean;
+  canAccessCampaign: boolean;
+  canCreateCampaign: boolean;
+  canUpdateCampaign: boolean;
+  canRemoveCampaign: boolean;
   description: string;
   accounts: AccountVM[];
   isDelete: boolean;
@@ -62,6 +63,7 @@ export interface RoleCM {
   canCreateDeal: boolean;
   canUpdateDeal: boolean;
   canRemoveDeal: boolean;
+  canAccessProcess: boolean;
   canCreateProcess: boolean;
   canUpdateProcess: boolean;
   canRemoveProcess: boolean;
@@ -75,8 +77,8 @@ export interface RoleCM {
   canGetAllActivity: boolean;
   canAccessTicket: boolean;
   canAssignTicket: boolean;
-  canGetTicketDeal: boolean;
-  canGetTicketSupport: boolean;
+  canGetDealTicket: boolean;
+  canGetSupportTicket: boolean;
   canUpdateTicket: boolean;
   canRemoveTicket: boolean;
   canAccessProduct: boolean;
@@ -85,10 +87,10 @@ export interface RoleCM {
   canRemoveProduct: boolean;
   canImportProduct: boolean;
   canImportEmployee: boolean;
-  canAccessEvent: boolean;
-  canCreateEvent: boolean;
-  canUpdateEvent: boolean;
-  canRemoveEvent: boolean;
+  canAccessCampaign: boolean;
+  canCreateCampaign: boolean;
+  canUpdateCampaign: boolean;
+  canRemoveCampaign: boolean;
   description: string;
 }
 export interface RoleUM {
@@ -100,7 +102,6 @@ export interface RoleUM {
   canCreateEmployee: boolean;
   canUpdateEmployee: boolean;
   canRemoveEmployee: boolean;
-  canExportEmployee: boolean;
   canGetFeedbackDeal: boolean;
   canGetFeedbackTicket: boolean;
   canGetAssignDeal: boolean;
@@ -110,14 +111,10 @@ export interface RoleUM {
   canAssignDeal: boolean;
   canUpdateDeal: boolean;
   canRemoveDeal: boolean;
-  canImportDeal: boolean;
-  canExportDeal: boolean;
   canAccessProcess: boolean;
   canCreateProcess: boolean;
   canUpdateProcess: boolean;
   canRemoveProcess: boolean;
-  canImportProcess: boolean;
-  canExportProcess: boolean;
   canAccessRole: boolean;
   canCreateRole: boolean;
   canUpdateRole: boolean;
@@ -129,26 +126,23 @@ export interface RoleUM {
   canUpdateCustomer: boolean;
   canRemoveCustomer: boolean;
   canImportCustomer: boolean;
-  canExportCustomer: boolean;
   canAccessTicket: boolean;
   canCreateTicket: boolean;
   canUpdateTicket: boolean;
   canRemoveTicket: boolean;
   canAssignTicket: boolean;
-  canExportTicket: boolean;
   canAccessProduct: boolean;
   canCreateProduct: boolean;
   canUpdateProduct: boolean;
   canRemoveProduct: boolean;
   canImportProduct: boolean;
   canImportEmployee: boolean;
-  canExportProduct: boolean;
-  canAccessEvent: boolean;
-  canCreateEvent: boolean;
+  canAccessCampaign: boolean;
+  canCreateCampaign: boolean;
   canGetAllDeal: boolean;
-  canGetTicketDeal: boolean;
-  canGetTicketSupport: boolean;
-  canRemoveEvent: boolean;
-  canExportEvent: boolean;
+  canGetDealTicket: boolean;
+  canGetSupportTicket: boolean;
+  canRemoveCampaign: boolean;
+  canExportCampaign: boolean;
   description: string;
 }

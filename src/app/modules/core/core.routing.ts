@@ -13,8 +13,8 @@ const routes: Routes = [
       {
         path: 'campaign',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.CampaignModule),
-        // canLoad: [CoreGuard],
-        // data: { permission: 'Customer' }
+        canLoad: [CoreGuard],
+        data: { permission: 'Campaign' }
       },
       {
         path: 'customer',
@@ -32,7 +32,7 @@ const routes: Routes = [
         path: 'process',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.PipelineModule),
         canLoad: [CoreGuard],
-        data: { permission: 'Deal' }
+        data: { permission: 'Process' }
       },
       {
         path: 'ticket',
