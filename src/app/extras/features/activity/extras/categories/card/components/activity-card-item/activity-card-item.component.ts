@@ -1,6 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { ActivityService, GlobalService } from '@services';
@@ -33,11 +33,7 @@ export class ActivityCardItemComponent implements OnDestroy {
     key: '',
     stage: 'up'
   };
-  form: FormGroup;
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

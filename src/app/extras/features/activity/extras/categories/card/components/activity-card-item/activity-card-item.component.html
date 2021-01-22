@@ -1,26 +1,31 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon [icon]="useIcon(activity.type).icon" [pack]="useIcon(activity.type).pack"></nb-icon> {{activity.name}}</b>
-        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+          <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+        </button>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="calendar-outline"></nb-icon> {{activity.name}} (Name)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{activity.assignee.fullname}} (Assignee)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{activity.assignBy.fullname}} (AssignBy)</b><br>
-        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{activity.status}}</b><br>
-        <b><nb-icon icon="pin-outline"></nb-icon> {{activity.location ? activity.location : 'None'}}</b><br>
-        <b *ngIf="isMain"><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{activity.deal ? activity.deal.title : 'None'}}</b><br *ngIf="isMain" />
-        <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{activity.campaign ? activity.campaign.name : 'None'}}</b><br *ngIf="isMain" /><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{activity.dateStart | date: 'hh:mm dd/MM/yyyy'}} (Start)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{activity.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br>
+        <b class="text-capitalize"><nb-icon [icon]="useIcon(activity.type).icon" [pack]="useIcon(activity.type).pack"></nb-icon> {{activity.type}} (Type)</b><br>
+        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{activity.status}} (Status)</b><br>
+        <b><nb-icon icon="pin-outline"></nb-icon> {{activity.location ? activity.location : 'None'}} (Location)</b><br>
+        <b *ngIf="isMain"><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{activity.deal ? activity.deal.title : 'None'}} (Deal)</b><br *ngIf="isMain" />
+        <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{activity.campaign ? activity.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" /><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="activity.description ? activity.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
-    <nb-card-footer>
-        <b><nb-icon icon="clock-outline"></nb-icon> [{{activity.dateStart | date: 'hh:mm dd/MM/yyyy'}}] - [{{activity.dateEnd | date: 'hh:mm dd/MM/yyyy'}}]</b>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
-      <nb-icon icon="trash-2-outline"></nb-icon>
-    </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
-      <nb-icon icon="edit-2-outline"></nb-icon>
-    </button>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+        <nb-icon icon="trash-2-outline"></nb-icon>
+      </button>
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+      </button>
     </nb-card-footer>
 </nb-card>

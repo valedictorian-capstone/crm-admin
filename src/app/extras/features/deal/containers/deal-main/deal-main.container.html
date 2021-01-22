@@ -20,12 +20,12 @@
             <app-deal-query [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-deal-query>
         </div>
         <div class="main">
-            <div class="content" *ngIf="state.filterArray.length > 0">
+            <div class="content" *ngIf="state.filterArray.length > 0 || state.type === 'kanban'">
                 <app-deal-datatable (useCheck)="useCheck($event)" [for]="for" [isMain]="isMain" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-deal-datatable>
                 <app-deal-card (useCheck)="useCheck($event)" [for]="for" [isMain]="isMain" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-deal-card>
                 <app-deal-kanban [pipeline]="campaign ? campaign.pipeline : pipeline" [campaign]="campaign" [for]="for" [isMain]="isMain" *ngIf="state.type === 'kanban'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-deal-kanban>
             </div>
-            <app-deal-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0 && state.type !== 'kanban'" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-deal-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0  && checkList.length === 0 && state.type !== 'kanban'" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'deals'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-deal-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0 && state.type !== 'kanban'" [checkList]="checkList"></app-deal-solve-check>
             <app-deal-process *ngIf="isMain && state.type === 'kanban'" (useSelectProcess)="pipeline = $event"></app-deal-process>
             <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0 && state.type !== 'kanban'">
@@ -34,6 +34,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="(isMain || state.show) && state.type !== 'kanban'">
-        <app-deal-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-deal-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

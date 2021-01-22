@@ -1,5 +1,5 @@
 <div class="w-100 body" nz-row>
-    <div nz-col class="mb-2" *ngFor="let pipeline of state.paginationArray" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="12">
-        <app-pipeline-card-item [pipeline]="pipeline" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(pipeline.id)"></app-pipeline-card-item>
+    <div nz-col class="mb-2" *ngFor="let data of checkList" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="8">
+        <app-pipeline-card-item (useItemCheck)="useItemCheck()" [control]="data.formControl" [pipeline]="data.pipeline" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.pipeline.id)"></app-pipeline-card-item>
     </div>
 </div>

@@ -6,6 +6,7 @@ import { GlobalService, PipelineService } from '@services';
 import { PipelineVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-pipeline-card-item',
@@ -16,6 +17,8 @@ export class PipelineCardItemComponent {
   @Output() useToggleState: EventEmitter<any> = new EventEmitter<any>();
   @Output() useSortable: EventEmitter<any> = new EventEmitter<any>();
   @Output() useRemove: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useItemCheck: EventEmitter<any> = new EventEmitter<any>();
+  @Input() control: FormControl;
   @Input() pipeline: PipelineVM;
   @Input() canUpdate = false;
   @Input() canRemove = false;
@@ -23,6 +26,7 @@ export class PipelineCardItemComponent {
     key: '',
     stage: 'up'
   };
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

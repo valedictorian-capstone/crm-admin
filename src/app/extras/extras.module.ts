@@ -34,6 +34,15 @@ import {
   EventSavePage,
 } from './pages';
 import {
+  SupportPaginationComponent,
+  SupportPageCountComponent,
+  SupportDateComponent,
+  SupportDateTimeComponent,
+  SupportMailModal,
+  SupportPasswordModal,
+  SupportProfileModal
+} from './features/support';
+import {
   ActivityAddComponent,
   ActivityCalendarArea,
   ActivityCalendarItemComponent,
@@ -44,12 +53,37 @@ import {
   ActivityExportComponent,
   ActivityMainContainer,
   ActivityQueryComponent,
-  ActivityPaginationComponent,
   ActivityTypeComponent,
   ActivitySaveModal,
   ActivitySolveCheckComponent,
-  ActivityPageCountComponent,
 } from './features/activity';
+import {
+  TicketCardArea,
+  TicketCardItemComponent,
+  TicketDatatableArea,
+  TicketDatatableItemComponent,
+  TicketExportComponent,
+  TicketMainContainer,
+  TicketQueryComponent,
+  TicketTypeComponent,
+  TicketSaveModal,
+  TicketSolveCheckComponent,
+} from './features/ticket';
+import {
+  RoleCardArea,
+  RoleCardItemComponent,
+  RoleDatatableArea,
+  RoleDatatableItemComponent,
+  RoleExportComponent,
+  RoleMainContainer,
+  RoleQueryComponent,
+  RoleTypeComponent,
+  RoleSaveModal,
+  RoleSolveCheckComponent,
+  RoleAddComponent,
+  RoleEmployeeComponent,
+  RoleSelectComponent
+} from './features/role';
 import {
   DealAddComponent,
   DealKanbanArea,
@@ -61,13 +95,11 @@ import {
   DealExportComponent,
   DealMainContainer,
   DealQueryComponent,
-  DealPaginationComponent,
   DealTypeComponent,
   DealProcessComponent,
   DealSaveModal,
   DealSelect1Component,
   DealKanbanSubItemComponent,
-  DealPageCountComponent,
   DealSolveCheckComponent
 } from './features/deal';
 import {
@@ -79,9 +111,7 @@ import {
   NoteExportComponent,
   NoteMainContainer,
   NoteQueryComponent,
-  NotePaginationComponent,
   NoteSaveModal,
-  NotePageCountComponent,
   NoteSolveCheckComponent
 } from './features/note';
 import {
@@ -92,10 +122,7 @@ import {
   LogExportComponent,
   LogMainContainer,
   LogTypeComponent,
-  LogPageCountComponent,
-  LogSolveCheckComponent,
-  LogPaginationComponent
-} from './features/log';
+  LogSolveCheckComponent,} from './features/log';
 import {
   CampaignAddComponent,
   CampaignCardArea,
@@ -105,12 +132,10 @@ import {
   CampaignExportComponent,
   CampaignMainContainer,
   CampaignQueryComponent,
-  CampaignPaginationComponent,
   CampaignTypeComponent,
   CampaignSaveModal,
   CampaignSelect1Component,
   CampaignSolveCheckComponent,
-  CampaignPageCountComponent,
   CampaignInformationComponent
 } from './features/campaign';
 import {
@@ -122,11 +147,10 @@ import {
   PipelineExportComponent,
   PipelineMainContainer,
   PipelineQueryComponent,
-  PipelinePaginationComponent,
   PipelineTypeComponent,
   PipelineSaveModal,
   PipelineSelect1Component,
-  PipelinePageCountComponent
+  PipelineSolveCheckComponent
 } from './features/pipeline';
 import {
   AttachmentAddComponent,
@@ -137,11 +161,9 @@ import {
   AttachmentExportComponent,
   AttachmentMainContainer,
   AttachmentQueryComponent,
-  AttachmentPaginationComponent,
   AttachmentTypeComponent,
   AttachmentSaveModal,
   SizePipe,
-  AttachmentPageCountComponent,
   AttachmentSolveCheckComponent
 } from './features/attachment';
 import {
@@ -153,13 +175,11 @@ import {
   CustomerExportComponent,
   CustomerMainContainer,
   CustomerQueryComponent,
-  CustomerPaginationComponent,
   CustomerTypeComponent,
   CustomerSaveModal,
   CustomerImportComponent,
   CustomerSelect1Component,
   CustomerSolveCheckComponent,
-  CustomerPageCountComponent,
 } from './features/customer';
 import {
   ProductAddComponent,
@@ -170,13 +190,11 @@ import {
   ProductExportComponent,
   ProductMainContainer,
   ProductQueryComponent,
-  ProductPaginationComponent,
   ProductTypeComponent,
   ProductSaveModal,
   ProductImportComponent,
   ProductSelect1Component,
   ProductSolveCheckComponent,
-  ProductPageCountComponent,
   ProductCategoryComponent
 } from './features/product';
 import {
@@ -188,12 +206,10 @@ import {
   CategoryExportComponent,
   CategoryMainContainer,
   CategoryQueryComponent,
-  CategoryPaginationComponent,
   CategoryTypeComponent,
   CategorySaveModal,
   CategorySelect1Component,
   CategorySolveCheckComponent,
-  CategoryPageCountComponent,
   CategoryProductComponent
 } from './features/category';
 import {
@@ -205,12 +221,11 @@ import {
   EmployeeExportComponent,
   EmployeeMainContainer,
   EmployeeQueryComponent,
-  EmployeePaginationComponent,
   EmployeeTypeComponent,
   EmployeeSaveModal,
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
-  EmployeePageCountComponent
+  EmployeeRoleComponent
 } from './features/employee';
 import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -241,13 +256,11 @@ export const FEATURES = [
   ProductExportComponent,
   ProductMainContainer,
   ProductQueryComponent,
-  ProductPaginationComponent,
   ProductTypeComponent,
   ProductSaveModal,
   ProductImportComponent,
   ProductSelect1Component,
   ProductSolveCheckComponent,
-  ProductPageCountComponent,
   ProductCategoryComponent,
 
   CategoryAddComponent,
@@ -258,13 +271,25 @@ export const FEATURES = [
   CategoryExportComponent,
   CategoryMainContainer,
   CategoryQueryComponent,
-  CategoryPaginationComponent,
   CategoryTypeComponent,
   CategorySaveModal,
   CategorySelect1Component,
   CategorySolveCheckComponent,
-  CategoryPageCountComponent,
   CategoryProductComponent,
+
+  RoleCardArea,
+  RoleCardItemComponent,
+  RoleDatatableArea,
+  RoleDatatableItemComponent,
+  RoleExportComponent,
+  RoleMainContainer,
+  RoleQueryComponent,
+  RoleTypeComponent,
+  RoleSaveModal,
+  RoleSolveCheckComponent,
+  RoleAddComponent,
+  RoleEmployeeComponent,
+  RoleSelectComponent,
 
   EmployeeAddComponent,
   EmployeeCardArea,
@@ -274,12 +299,11 @@ export const FEATURES = [
   EmployeeExportComponent,
   EmployeeMainContainer,
   EmployeeQueryComponent,
-  EmployeePaginationComponent,
   EmployeeTypeComponent,
   EmployeeSaveModal,
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
-  EmployeePageCountComponent,
+  EmployeeRoleComponent,
 
   CustomerAddComponent,
   CustomerCardArea,
@@ -289,13 +313,11 @@ export const FEATURES = [
   CustomerExportComponent,
   CustomerMainContainer,
   CustomerQueryComponent,
-  CustomerPaginationComponent,
   CustomerTypeComponent,
   CustomerSaveModal,
   CustomerImportComponent,
   CustomerSelect1Component,
   CustomerSolveCheckComponent,
-  CustomerPageCountComponent,
 
   LogCardArea,
   LogCardItemComponent,
@@ -304,9 +326,7 @@ export const FEATURES = [
   LogExportComponent,
   LogMainContainer,
   LogTypeComponent,
-  LogPageCountComponent,
   LogSolveCheckComponent,
-  LogPaginationComponent,
 
   NoteAddComponent,
   NoteCardArea,
@@ -316,9 +336,7 @@ export const FEATURES = [
   NoteExportComponent,
   NoteMainContainer,
   NoteQueryComponent,
-  NotePaginationComponent,
   NoteSaveModal,
-  NotePageCountComponent,
   NoteSolveCheckComponent,
 
   CampaignAddComponent,
@@ -329,12 +347,10 @@ export const FEATURES = [
   CampaignExportComponent,
   CampaignMainContainer,
   CampaignQueryComponent,
-  CampaignPaginationComponent,
   CampaignTypeComponent,
   CampaignSaveModal,
   CampaignSelect1Component,
   CampaignSolveCheckComponent,
-  CampaignPageCountComponent,
   CampaignInformationComponent,
 
   ActivityAddComponent,
@@ -347,11 +363,9 @@ export const FEATURES = [
   ActivityExportComponent,
   ActivityMainContainer,
   ActivityQueryComponent,
-  ActivityPaginationComponent,
   ActivityTypeComponent,
   ActivitySaveModal,
   ActivitySolveCheckComponent,
-  ActivityPageCountComponent,
 
   DealAddComponent,
   DealKanbanArea,
@@ -364,12 +378,10 @@ export const FEATURES = [
   DealMainContainer,
   DealProcessComponent,
   DealQueryComponent,
-  DealPaginationComponent,
   DealTypeComponent,
   DealKanbanSubItemComponent,
   DealSaveModal,
   DealSelect1Component,
-  DealPageCountComponent,
   DealSolveCheckComponent,
 
   AttachmentAddComponent,
@@ -380,9 +392,7 @@ export const FEATURES = [
   AttachmentExportComponent,
   AttachmentMainContainer,
   AttachmentQueryComponent,
-  AttachmentPaginationComponent,
   AttachmentTypeComponent,
-  AttachmentPageCountComponent,
   AttachmentSolveCheckComponent,
   AttachmentSaveModal,
   SizePipe,
@@ -395,11 +405,29 @@ export const FEATURES = [
   PipelineExportComponent,
   PipelineMainContainer,
   PipelineQueryComponent,
-  PipelinePaginationComponent,
   PipelineTypeComponent,
   PipelineSaveModal,
   PipelineSelect1Component,
-  PipelinePageCountComponent
+  PipelineSolveCheckComponent,
+
+  TicketCardArea,
+  TicketCardItemComponent,
+  TicketDatatableArea,
+  TicketDatatableItemComponent,
+  TicketExportComponent,
+  TicketMainContainer,
+  TicketQueryComponent,
+  TicketTypeComponent,
+  TicketSaveModal,
+  TicketSolveCheckComponent,
+
+  SupportPaginationComponent,
+  SupportPageCountComponent,
+  SupportDateComponent,
+  SupportDateTimeComponent,
+  SupportMailModal,
+  SupportPasswordModal,
+  SupportProfileModal
 ];
 export const REUSE_COMPONENTS = [
   CategorySelectComponent,

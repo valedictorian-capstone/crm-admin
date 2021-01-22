@@ -30,10 +30,7 @@ export class CustomerCardItemComponent implements OnDestroy {
     stage: 'up'
   };
   form: FormGroup;
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,
@@ -45,14 +42,26 @@ export class CustomerCardItemComponent implements OnDestroy {
   ) {
   }
   useEdit() {
-    this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer } });
+    this.globalService.triggerView$.next({ type: 'customer', payload: { customer: this.customer, for: 'customer' } });
   }
   useView() {
     this.router.navigate(['core/customer/' + this.customer.id]);
   }
-  useCopy(data: string) {
-    this.clipboard.copy(data);
+  usePhone = () => {
+    window.open('tel:' + this.customer.phone, '_self');
+  }
+  useMail = () => {
+    this.globalService.triggerView$.next({ type: 'mail', payload: { email: this.customer.email } });
+  }
+  useCopy = (link: string) => {
+    this.clipboard.copy(link);
     this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
+  }
+  useOpen = (link: string) => {
+    window.open(link, '_blank');
+  }
+  useDeal = () => {
+    this.globalService.triggerView$.next({ type: 'deal', payload: { customer: this.customer } });
   }
   useSort(key: string) {
     if (this.sort.key === key) {
@@ -61,6 +70,12 @@ export class CustomerCardItemComponent implements OnDestroy {
       this.sort.key = key;
     }
     this.useSortable.emit(this.sort);
+  }
+  useRenderGroup = () => {
+    return this.customer.groups.map((e) => e.name).join(',');
+  }
+  useSkype = () => {
+    window.open('skype:' + this.customer.skypeName + '?chat', '_self');
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

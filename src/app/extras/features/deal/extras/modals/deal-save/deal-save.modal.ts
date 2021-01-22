@@ -147,8 +147,6 @@ export class DealSaveModal implements OnInit, OnDestroy {
           this.payload.deal = data;
           this.state.form.addControl('id', new FormControl(this.payload.deal.id));
           this.state.form.patchValue(this.payload.deal);
-          this.payload.stage = data.stage;
-          this.payload.pipeline = data.stage.pipeline;
           this.state.form.get('pipeline').setValue(data.stage.pipeline);
         }),
         finalize(() => {
@@ -164,20 +162,21 @@ export class DealSaveModal implements OnInit, OnDestroy {
   useSelectPipeline = async (selected: PipelineVM) => {
     if (this.payload.deal) {
       if (this.payload.deal.stage.pipeline.id !== selected.id) {
-        this.payload.pipeline = selected;
-        this.payload.stage = this.payload.pipeline.stages.find((stage) => stage.position === 0);
-        this.state.form.get('stage').setValue(this.payload.stage);
+        console.log('a', selected);
+        this.state.form.get('pipeline').setValue(selected);
+        this.state.form.get('stage').setValue(selected.stages.find((stage) => stage.position === 0));
       } else {
-        this.payload.stage = this.payload.deal.stage;
-        this.state.form.get('stage').setValue(this.payload.stage);
+        console.log('b', selected);
+        this.state.form.get('stage').setValue(this.payload.deal.stage);
       }
     } else {
       if (selected.id !== this.payload.pipeline?.id) {
-        this.payload.pipeline = selected;
-        this.payload.stage = this.payload.pipeline.stages.find((stage) => stage.position === 0);
-        this.state.form.get('stage').setValue(this.payload.stage);
+        console.log('c', selected);
+        this.state.form.get('pipeline').setValue(selected);
+        this.state.form.get('stage').setValue(selected.stages.find((stage) => stage.position === 0));
       }
     }
+    console.log(this.state.form);
   }
   useSubmit = async (ref: NbDialogRef<any>) => {
     ref.close();

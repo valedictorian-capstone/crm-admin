@@ -16,6 +16,7 @@
                 <app-attachment-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-attachment-main>
                 <app-deal-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-deal-main>
                 <app-log-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-log-main>
+                <app-customer-main *ngFor="let item of (state.main ? state.main.campaignGroups : [])" [query]="{id: item.id, name: (item.group.name.charAt(0).toUpperCase() + item.group.name.slice(1)), icon: 'phone-outline', pack: 'eva'}"></app-customer-main>
                 <!-- <app-campaign-customer></app-campaign-customer> -->
             </div>
         </div>

@@ -33,11 +33,7 @@ export class NoteCardItemComponent implements OnDestroy {
     key: '',
     stage: 'up'
   };
-  form: FormGroup;
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

@@ -1,5 +1,5 @@
 import { LogVM, NoteVM, AttachmentVM, ActivityVM, DealVM, PipelineVM } from ".";
-import { GroupVM } from "../basic-view-models";
+import { CampaignGroupVM } from ".";
 
 export interface CampaignVM {
   id: string;
@@ -10,7 +10,7 @@ export interface CampaignVM {
   autoCreateDeal: boolean;
   dateStart: Date;
   dateEnd: Date;
-  groups: GroupVM[];
+  campaignGroups: CampaignGroupVM[];
   logs: LogVM[];
   notes: NoteVM[];
   attachments: AttachmentVM[];

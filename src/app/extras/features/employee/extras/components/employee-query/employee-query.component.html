@@ -3,7 +3,7 @@
         <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
             <div class="float-left" style="display: inline-block; width: 100%;">
                 <nb-form-field class="w-100">
-                    <input style="height: 3rem;" fullWidth [(ngModel)]="search.value" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in campaign by code, fullname, email, phone" />
+                    <input style="height: 3rem;" fullWidth [(ngModel)]="search.value" (ngModelChange)="useSearch.emit(search)" nbInput placeholder="Search in employee by code, fullname, email, phone" />
                     <nb-icon *ngIf="search.value" icon="close-circle-outline" status="danger" nbSuffix (click)="search.value = undefined; useSearch.emit(search);"></nb-icon>
                 </nb-form-field>
             </div>

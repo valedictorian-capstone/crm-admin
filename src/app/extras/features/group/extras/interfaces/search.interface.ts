@@ -1,7 +1,6 @@
 
-export interface IEmployeeSearch {
-  value?: string;
-  genders: string[];
+export interface IGroupSearch {
+  name?: string;
   isDelete?: boolean;
   createdBy?: string;
   updatedBy?: string;

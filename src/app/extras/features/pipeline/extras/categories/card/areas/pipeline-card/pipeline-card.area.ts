@@ -6,6 +6,8 @@ import { PipelineService } from '@services';
 import { of, Subscription } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
+import { FormControl } from '@angular/forms';
+import { PipelineVM } from '@view-models';
 
 @Component({
   selector: 'app-pipeline-card',
@@ -14,6 +16,8 @@ import swal from 'sweetalert2';
 })
 export class PipelineCardArea implements OnDestroy {
   @Output() useSortState: EventEmitter<ISort> = new EventEmitter<ISort>();
+  @Output() useCheck: EventEmitter<{formControl: FormControl, pipeline: PipelineVM}[]> = new EventEmitter<{formControl: FormControl, pipeline: PipelineVM}[]>();
+  checkList: {formControl: FormControl, pipeline: PipelineVM}[] = [];
   @Input() state: IPipelineMainState;
   @Input() sort: ISort;
   subscriptions: Subscription[] = [];
@@ -21,6 +25,13 @@ export class PipelineCardArea implements OnDestroy {
     protected readonly service: PipelineService,
     protected readonly toastrService: NbToastrService,
   ) { }
+  ngOnChanges() {
+    this.checkList = this.state.paginationArray.map((pipeline) => ({
+      pipeline,
+      formControl: new FormControl(false),
+    }))
+    this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
+  }
   useSort = (sort: { key: string, stage: 'down' | 'up' }) => {
     this.useSortState.emit(sort);
   }
@@ -43,6 +54,9 @@ export class PipelineCardArea implements OnDestroy {
         ).subscribe(console.log);
       this.subscriptions.push(subscription);
     }
+  }
+  useItemCheck() {
+    this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

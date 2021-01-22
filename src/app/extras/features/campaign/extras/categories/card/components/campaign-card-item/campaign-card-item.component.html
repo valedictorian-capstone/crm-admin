@@ -1,24 +1,29 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}} - {{campaign.type}}</b>
-        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+          <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+        </button>
     </nb-card-header>
-    <nb-card-body>
-        <!-- <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{campaign.status}}</b><br>
-      <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{campaign.campaign ? campaign.campaign.name : 'None'}}</b><br *ngIf="isMain" /> -->
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}} (Name)</b><br>
+        <b><nb-icon icon="bar-chart-2-outline"></nb-icon> {{campaign.type}} (Type)</b><br>
+        <b class="text-capitalize"><nb-icon icon="flag-outline"></nb-icon> {{campaign.status}} (Status)</b><br>
+        <b><nb-icon icon="flag-outline"></nb-icon> {{campaign.pipeline.name}} (Process)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateStart | date: 'hh:mm dd/MM/yyyy'}} (Start)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="campaign.description ? campaign.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
-    <nb-card-footer>
-        <b><nb-icon icon="clock-outline"></nb-icon> [{{campaign.dateStart | date: 'hh:mm dd/MM/yyyy'}}] - [{{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}}]</b>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
   <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useView()" class="float-right ml-1" size="small" outline shape="round" nbButton status="info">
+        <button (click)="useView()" class="float-left" size="small" outline nbButton status="info">
   <nb-icon icon="eye-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
   <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
     </nb-card-footer>
