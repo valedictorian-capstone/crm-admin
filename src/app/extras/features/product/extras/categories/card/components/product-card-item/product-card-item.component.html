@@ -1,21 +1,21 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon icon="code-outline"></nb-icon> {{product.code}}</b>
-        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+  <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+  </button>
     </nb-card-header>
-    <nb-card-body>
-        <b><nb-icon icon="shopping-cart-outline"></nb-icon> {{product.name}}</b><br>
-        <b><nb-icon icon="money-bill" pack="font-awesome"></nb-icon> {{product.price | separator}}</b><br>
-        <b><nb-icon icon="compass-outline"></nb-icon> {{product.category.name}}</b><br>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="code-outline"></nb-icon> {{product.code}} (Code)</b><br>
+        <b><nb-icon icon="shopping-cart-outline"></nb-icon> {{product.name}} (Name)</b><br>
+        <b><nb-icon icon="money-bill" pack="font-awesome"></nb-icon> {{product.price | separator}} (Price)</b><br>
+        <b><nb-icon icon="compass-outline"></nb-icon> {{product.category.name}} (Category)</b><br>
     </nb-card-body>
-    <nb-card-footer>
-        <span class="display-flex align-items-center h-100">
-        <b><nb-icon icon="clock-outline"></nb-icon> [{{product.updatedAt | date: 'dd/MM/yyyy'}}]</b>
-      </span>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
 <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
 <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
     </nb-card-footer>

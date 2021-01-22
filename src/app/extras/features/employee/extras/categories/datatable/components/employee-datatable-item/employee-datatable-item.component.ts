@@ -63,6 +63,9 @@ export class EmployeeDatatableItemComponent implements OnDestroy {
     }
     this.useSortable.emit(this.sort);
   }
+  useRenderRole = () => {
+    return this.employee.roles.map((e) => e.name).join(',');
+  }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }

@@ -96,7 +96,7 @@
       <nb-icon icon="arrow-down" nbSuffix></nb-icon>
     </nb-form-field>
     <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
-      <app-pipeline-select #pipelineSelect [control]="state.form.get('pipeline')"></app-pipeline-select>
+      <app-pipeline-select #pipelineSelect [control]="state.form.get('pipeline')" (modelChange)="useSelectPipeline($event)"></app-pipeline-select>
     </nz-dropdown-menu>
     <span
       *ngIf="state.form.get('pipeline').value"

@@ -17,7 +17,7 @@ import { CampaignVM } from '@view-models';
 export class CampaignDatatableArea implements OnDestroy {
   @Output() useSortState: EventEmitter<ISort> = new EventEmitter<ISort>();
   @Output() useCheck: EventEmitter<{formControl: FormControl, campaign: CampaignVM}[]> = new EventEmitter<{formControl: FormControl, campaign: CampaignVM}[]>();
-  headerCheck = new FormControl('radio-button-off-outline');
+  headerCheck = new FormControl('off');
   checkList: {formControl: FormControl, campaign: CampaignVM}[] = [];
   @Input() state: ICampaignMainState;
   @Input() sort: ISort;
@@ -28,7 +28,7 @@ export class CampaignDatatableArea implements OnDestroy {
     protected readonly toastrService: NbToastrService,
   ) { }
   ngOnChanges() {
-    this.headerCheck.setValue('radio-button-off-outline');
+    this.headerCheck.setValue('off');
     console.log(this.state);
     this.checkList = this.state.paginationArray.map((campaign) => ({
       campaign,
@@ -41,14 +41,14 @@ export class CampaignDatatableArea implements OnDestroy {
   }
   useItemCheck(isHeader: boolean) {
     if (isHeader) {
-      const value = this.headerCheck.value === 'radio-button-on-outline';
+      const value = this.headerCheck.value === 'on';
       this.checkList = this.state.paginationArray.map((campaign) => ({
         campaign,
         formControl: new FormControl(value),
       }))
     } else {
       const size = this.checkList.filter((e) => e.formControl.value).length;
-      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'radio-button-on-outline' : 'minus-circle-outline') : 'radio-button-off-outline');
+      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'on' : 'indeterminate') : 'off');
     }
     this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }

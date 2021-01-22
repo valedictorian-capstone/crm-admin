@@ -1,0 +1,16 @@
+<nb-card class="w-100 m-0">
+    <nb-card-header style="padding: 0.5rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+  <b>{{(((active - 1) * pageCount) + 1) + ' - ' + (active * pageCount > length ? length : active * pageCount) + ' of ' + length + ' ' + variable}}</b>
+</span>
+        <nb-form-field class="float-right">
+            <nb-select style="height: 3rem; width: 10rem" [(ngModel)]="pageCount" (ngModelChange)="useSelectPageCount.emit($event)" fullWidth [placeholder]="'Select page count'">
+                <nb-option [value]="10">10</nb-option>
+                <nb-option [value]="20">20</nb-option>
+                <nb-option [value]="50">50</nb-option>
+                <nb-option [value]="100">100</nb-option>
+                <nb-option [value]="200">200</nb-option>
+            </nb-select>
+        </nb-form-field>
+    </nb-card-header>
+</nb-card>

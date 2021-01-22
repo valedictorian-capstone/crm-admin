@@ -1,20 +1,43 @@
 <nb-card class="w-per-95 m-auto">
-    <nb-card-header>
-        <b><nb-icon icon="person-outline"></nb-icon> {{customer.fullname}}</b>
-        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+    <nb-card-header class="position-relative">
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+        <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+      </button>
+        <div class="position-absolute display-flex justify-content-center align-items-centerh-100" style="top: 0; left: 4rem; right: 4rem; width: calc(100% - 8rem)">
+            <img *ngIf="customer.avatar" [src]="customer.avatar" style="border-radius: 50%; border: 1px solid #e5e5e5; width: 3.5rem; height: 3.5rem;" />
+            <div *ngIf="!customer.avatar" class="display-flex justify-content-center align-items-center" style="border-radius: 50%; height: 3.5rem; width: 3.5rem; border: 1px solid #e5e5e5">
+                <b>{{ customer.fullname | key }}</b>
+            </div>
+        </div>
     </nb-card-header>
-    <nb-card-body>
-        <b><nb-icon icon="email-outline"></nb-icon> {{customer.email}}</b><br>
-        <b><nb-icon icon="phone-outline"></nb-icon> {{customer.phone}}</b><br>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="person-outline"></nb-icon> {{customer.fullname}} (Fullname)</b><br>
+        <b><nb-icon icon="email-outline"></nb-icon> {{customer.email}} (Email)</b><br>
+        <b><nb-icon icon="phone-outline"></nb-icon> {{customer.phone}} (Phone)</b><br>
+        <b><nb-icon icon="gift-outline"></nb-icon> {{customer.birthDay | date: 'dd/MM/yyyy'}} (Birthday)</b><br>
+        <b><nb-icon icon="transgender" pack="font-awesome"></nb-icon> {{customer.gender == '-1' ? 'None' :
+          customer.gender == '0' ? 'Male' :
+          customer.gender == '1' ? 'Female' : 'Other'}} (Gender)</b><br>
+        <b><nb-icon icon="people-outline"></nb-icon> {{useRenderGroup()}} (Groups)</b><br>
     </nb-card-body>
-    <nb-card-footer>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
 <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useView()" class="float-right ml-1" size="small" outline shape="round" nbButton status="info">
+        <button (click)="usePhone()" class="float-left mr-1" size="small" outline nbButton status="success">
+  <nb-icon icon="phone-outline"></nb-icon>
+  </button>
+        <button (click)="useMail()" class="float-left mr-1" size="small" outline nbButton status="danger">
+    <nb-icon icon="email-outline"></nb-icon>
+    </button>
+        <button (click)="useDeal()" class="float-left mr-1" size="small" outline nbButton status="success">
+      <nb-icon class="display-flex align-items-center justify-content-center" icon="donate" pack="font-awesome"></nb-icon>
+      </button>
+        <button (click)="useView()" class="float-left mr-1" size="small" outline nbButton status="info">
 <nb-icon icon="eye-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
 <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
     </nb-card-footer>

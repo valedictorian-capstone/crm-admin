@@ -22,7 +22,7 @@
                 <app-category-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-category-datatable>
                 <app-category-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-category-card>
             </div>
-            <app-category-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-category-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0  && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'categories'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-category-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-category-solve-check>
             <div class="empty" *ngIf="state.filterArray.length === 0">
                 <img src="assets/empty.png" />
@@ -30,6 +30,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="state.show">
-        <app-category-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-category-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

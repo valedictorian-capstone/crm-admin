@@ -37,10 +37,7 @@ export class AttachmentCardItemComponent implements OnDestroy, OnInit {
   icon = 'image-outline';
   form: FormGroup;
   description = new FormControl('');
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

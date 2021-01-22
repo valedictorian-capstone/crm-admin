@@ -65,8 +65,14 @@ const routes: Routes = [
         data: { permission: 'Deal' }
       },
       {
-        path: 'setting',
+        path: 'role',
         loadChildren: () => import('@app/modules/core/modules').then((m) => m.RoleModule),
+        canLoad: [CoreGuard],
+        data: { permission: 'Role' }
+      },
+      {
+        path: 'employee',
+        loadChildren: () => import('@app/modules/core/modules').then((m) => m.EmployeeModule),
         canLoad: [CoreGuard],
         data: { permission: 'Role' }
       },

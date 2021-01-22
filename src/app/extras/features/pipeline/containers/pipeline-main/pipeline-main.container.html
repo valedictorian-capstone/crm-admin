@@ -21,16 +21,17 @@
         </div>
         <div class="main">
             <div class="content" *ngIf="state.filterArray.length > 0">
-                <app-pipeline-datatable *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-pipeline-datatable>
-                <app-pipeline-card *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-pipeline-card>
+                <app-pipeline-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-pipeline-datatable>
+                <app-pipeline-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-pipeline-card>
             </div>
-            <app-pipeline-page-count *ngIf="state.filterArray.length > 0" [state]="state" (useSelectPageCount)="state.pageCount = $event; useFilter()"></app-pipeline-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'process'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
+            <app-pipeline-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-pipeline-solve-check>
             <div class="empty" *ngIf="state.filterArray.length === 0">
                 <img src="assets/empty.png" />
             </div>
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="state.show">
-        <app-pipeline-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-pipeline-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

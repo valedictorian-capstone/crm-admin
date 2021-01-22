@@ -1,0 +1,38 @@
+<div class="datatable-item">
+    <div class="select">
+        <nb-checkbox *ngIf="!isHeader" (checkedChange)="control.setValue($event); useItemCheck.emit()" [checked]="control.value"></nb-checkbox>
+        <nb-checkbox *ngIf="isHeader" (checkedChange)="control.setValue($event ? 'on' : 'off'); useItemCheck.emit()" [checked]="control.value === 'on'" [indeterminate]="control.value === 'indeterminate'"></nb-checkbox>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="field b-gaint" (click)="useSort('name')">
+        <nb-form-field class="w-100">
+            <input nbInput fullWidth readOnly [value]="isHeader ? 'Name' : role.name" placeHolder="Name" />
+            <nb-icon *ngIf="isHeader && sort.key === 'name'" nbSuffix [icon]="'arrow-' + sort.stage + '-outline'"></nb-icon>
+            <nb-icon *ngIf="!isHeader" (click)="useCopy(role.name)" nbSuffix [icon]="'clipboard-outline'"></nb-icon>
+        </nb-form-field>
+    </div>
+    <div class="action">
+        <button (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+    <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+</button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+  <nb-icon [icon]="'trash-2-outline'"></nb-icon>
+</button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+</div>

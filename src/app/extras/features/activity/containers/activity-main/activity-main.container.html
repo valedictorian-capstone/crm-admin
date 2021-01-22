@@ -20,7 +20,7 @@
             <app-activity-query [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-activity-query>
         </div>
         <div class="main">
-            <div class="content" *ngIf="state.filterArray.length > 0">
+            <div class="content" *ngIf="state.filterArray.length > 0 || state.type === 'calendar'">
                 <app-activity-datatable (useCheck)="useCheck($event)" [for]="for" [deal]="deal" [campaign]="campaign" [isMain]="isMain" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-activity-datatable>
                 <app-activity-card (useCheck)="useCheck($event)" [for]="for" [deal]="deal" [campaign]="campaign" [isMain]="isMain" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-activity-card>
                 <div *ngIf="state.type === 'calendar'" class="w-100 mb-2 display-flex" style="max-width: 100%; overflow-x: auto">
@@ -58,7 +58,7 @@
                 </div>
                 <app-activity-calendar [for]="for" [deal]="deal" [campaign]="campaign" [isMain]="isMain" [subType]="subType" [viewDate]="viewDate" *ngIf="state.type === 'calendar'" [state]="state" [sort]="sort"></app-activity-calendar>
             </div>
-            <app-activity-page-count *ngIf="state.filterArray.length > 0 && state.type !== 'calendar' && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-activity-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0 && state.type !== 'calendar' && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'activities'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-activity-solve-check *ngIf="state.filterArray.length > 0 && state.type !== 'calendar' && checkList.length > 0" [checkList]="checkList"></app-activity-solve-check>
             <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0 && state.type !== 'calendar'">
                 <img src="assets/empty.png" />
@@ -66,6 +66,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="(isMain || state.show) && state.type !== 'calendar'">
-        <app-activity-pagination (useChange)="usePagination()" [max]="state.max" [active]="state.active"></app-activity-pagination>
+        <app-support-pagination (useChange)="usePagination()" [max]="state.max" [active]="state.active"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

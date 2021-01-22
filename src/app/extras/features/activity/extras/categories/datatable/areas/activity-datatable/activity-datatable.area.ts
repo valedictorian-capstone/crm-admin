@@ -23,7 +23,7 @@ export class ActivityDatatableArea implements OnDestroy, OnChanges {
   @Input() for: string;
   @Input() campaign: CampaignVM;
   @Input() deal: DealVM;
-  headerCheck = new FormControl('radio-button-off-outline');
+  headerCheck = new FormControl('off');
   checkList: {formControl: FormControl, activity: ActivityVM}[] = [];
   subscriptions: Subscription[] = [];
   constructor(
@@ -32,7 +32,7 @@ export class ActivityDatatableArea implements OnDestroy, OnChanges {
   ) {
   }
   ngOnChanges() {
-    this.headerCheck.setValue('radio-button-off-outline');
+    this.headerCheck.setValue('off');
     this.checkList = this.state.paginationArray.map((activity) => ({
       activity,
       formControl: new FormControl(false),
@@ -64,14 +64,15 @@ export class ActivityDatatableArea implements OnDestroy, OnChanges {
   }
   useItemCheck(isHeader: boolean) {
     if (isHeader) {
-      const value = this.headerCheck.value === 'radio-button-on-outline';
+      const value = this.headerCheck.value === 'on';
+      console.log(this.headerCheck.value);
       this.checkList = this.state.paginationArray.map((activity) => ({
         activity,
         formControl: new FormControl(value),
       }))
     } else {
       const size = this.checkList.filter((e) => e.formControl.value).length;
-      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'radio-button-on-outline' : 'minus-circle-outline') : 'radio-button-off-outline');
+      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'on' : 'indeterminate') : 'off');
     }
     this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }

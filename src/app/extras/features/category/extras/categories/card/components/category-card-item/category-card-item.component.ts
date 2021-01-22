@@ -26,10 +26,7 @@ export class CategoryCardItemComponent {
     key: '',
     stage: 'up'
   };
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,

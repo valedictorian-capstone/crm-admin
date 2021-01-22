@@ -1,8 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
-import { RoleMainPage } from './pages';
+import { RoleMainContainer } from './containers';
 
 const routes: Routes = [
-  { path: '', component: RoleMainPage },
+  { path: '', component: RoleMainContainer },
 ];
 
 export const RoleRoutes = RouterModule.forChild(routes);

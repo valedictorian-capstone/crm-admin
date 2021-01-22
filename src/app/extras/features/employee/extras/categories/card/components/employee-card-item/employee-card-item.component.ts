@@ -30,11 +30,7 @@ export class EmployeeCardItemComponent implements OnDestroy {
     key: '',
     stage: 'up'
   };
-  form: FormGroup;
-  exist = {
-    email: false,
-    phone: false,
-  }
+  show = true;
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly globalService: GlobalService,
@@ -51,6 +47,12 @@ export class EmployeeCardItemComponent implements OnDestroy {
   useView() {
     this.router.navigate(['core/employee/' + this.employee.id]);
   }
+  usePhone = () => {
+    window.open('tel:' + this.employee.phone, '_self');
+  }
+  useMail = () => {
+    this.globalService.triggerView$.next({ type: 'mail', payload: { email: this.employee.email } });
+  }
   useCopy(data: string) {
     this.clipboard.copy(data);
     this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
@@ -62,6 +64,9 @@ export class EmployeeCardItemComponent implements OnDestroy {
       this.sort.key = key;
     }
     this.useSortable.emit(this.sort);
+  }
+  useRenderRole = () => {
+    return this.employee.roles.map((e) => e.name).join(',');
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

@@ -1,27 +1,29 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon [icon]="icon"></nb-icon> <a [href]="attachment.url" target="_blank">{{attachment.name}}</a></b>
-        <nb-icon class="float-right" style="font-size: 2rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
-        <button (click)="useDownload()" class="float-right mr-2" nbButton status="success" outline size="small">
-          <nb-icon [icon]="'download-outline'"></nb-icon>
-      </button>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+          <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+        </button>
     </nb-card-header>
-    <nb-card-body>
-        <b><nb-icon icon="options-outline"></nb-icon> {{attachment.size | size}}</b><br>
-        <b *ngIf="isMain"><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{attachment.deal ? attachment.deal.title : 'None'}}</b><br *ngIf="isMain" />
-        <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{attachment.campaign ? attachment.campaign.name : 'None'}}</b><br *ngIf="isMain" /><br>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="attach-outline"></nb-icon> {{attachment.name}} (Name)</b><br>
+        <b><nb-icon icon="options-outline"></nb-icon> {{attachment.size | size}} (Size)</b><br>
+        <b *ngIf="isMain"><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{attachment.deal ? attachment.deal.title : 'None'}} (Deal</b><br *ngIf="isMain" />
+        <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{attachment.campaign ? attachment.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" /><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="attachment.description ? attachment.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
-    <nb-card-footer>
-        <b><nb-icon icon="clock-outline"></nb-icon> [{{attachment.updatedAt | date: 'hh:mm dd/MM/yyyy'}}]</b>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
-    <nb-icon icon="trash-2-outline"></nb-icon>
-  </button>
-        <button (click)="useDialog(editRef)" class="float-right" size="small" outline shape="round" nbButton status="info">
-    <nb-icon icon="edit-2-outline"></nb-icon>
-  </button>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useDownload()" class="float-left" nbButton status="success" outline size="small">
+        <nb-icon [icon]="'download-outline'"></nb-icon>
+    </button>
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+      <nb-icon icon="trash-2-outline"></nb-icon>
+    </button>
+        <button (click)="useDialog(editRef)" class="float-right" size="small" outline nbButton status="info">
+      <nb-icon icon="edit-2-outline"></nb-icon>
+    </button>
     </nb-card-footer>
 </nb-card>
 <ng-template #editRef let-data let-ref="dialogRef">

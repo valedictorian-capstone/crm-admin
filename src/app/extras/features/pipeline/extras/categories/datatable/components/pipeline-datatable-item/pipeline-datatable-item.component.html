@@ -1,4 +1,13 @@
 <div class="datatable-item">
+    <div class="select">
+        <nb-checkbox *ngIf="!isHeader" (checkedChange)="control.setValue($event); useItemCheck.emit()" [checked]="control.value"></nb-checkbox>
+        <nb-checkbox *ngIf="isHeader" (checkedChange)="control.setValue($event ? 'on' : 'off'); useItemCheck.emit()" [checked]="control.value === 'on'" [indeterminate]="control.value === 'indeterminate'"></nb-checkbox>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
     <div class="field b-gaint" (click)="useSort('name')">
         <nb-form-field class="w-100">
             <input nbInput fullWidth readOnly [value]="isHeader ? 'Name' : pipeline.name" placeHolder="Name" />

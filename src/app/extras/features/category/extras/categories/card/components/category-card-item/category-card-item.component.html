@@ -1,16 +1,18 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{category.name}}</b>
-        <nb-icon class="float-right" style="font-size: 1.5rem;" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+          <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+        </button>
     </nb-card-header>
-    <nb-card-footer>
-        <span class="display-flex align-items-center h-100">
-          <b><nb-icon icon="clock-outline"></nb-icon> [{{category.updatedAt | date: 'dd/MM/yyyy'}}]</b>
-        </span>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{category.name}} (Name)</b>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
   <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
   <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
     </nb-card-footer>

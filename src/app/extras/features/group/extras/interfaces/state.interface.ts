@@ -1,15 +1,9 @@
-import { FormGroup } from '@angular/forms';
-import { ISort } from "@extras/interfaces";
-import { AccountVM } from "@view-models";
-import { IEmployeeSearch } from ".";
+import { GroupVM } from "@view-models";
 
-export interface IEmployeeMainState {
-  array: Account[];
-  filterArray: Account[];
-  paginationArray: Account[];
-  search: IEmployeeSearch;
-  sortBy: ISort;
-  you?: AccountVM;
+export interface IGroupMainState {
+  array: GroupVM[];
+  filterArray: GroupVM[];
+  paginationArray: GroupVM[];
   type: 'card' | 'datatable';
   max?: number;
   active?: number;
@@ -17,12 +11,4 @@ export interface IEmployeeMainState {
   canImport?: boolean;
   canUpdate?: boolean;
   canRemove?: boolean;
-}
-
-export interface IEmployeeImportState {
-  max?: number;
-  active?: number;
-  data: { name: string, array: FormGroup[] }[];
-  array: FormGroup[];
-  paginationArray: FormGroup[];
 }

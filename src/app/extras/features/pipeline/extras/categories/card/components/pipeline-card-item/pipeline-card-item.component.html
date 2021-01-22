@@ -1,8 +1,14 @@
 <nb-card class="w-per-95 m-auto">
     <nb-card-header>
-        <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{pipeline.name}}</b>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+        <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+      </button>
     </nb-card-header>
-    <nb-card-footer>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="browser-outline"></nb-icon> {{pipeline.name}} (Name)</b>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
         <b><nb-icon icon="clock-outline"></nb-icon> [{{pipeline.updatedAt | date: 'dd/MM/yyyy'}}]</b>
         <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline shape="round" nbButton status="danger">
   <nb-icon icon="trash-2-outline"></nb-icon>

@@ -125,6 +125,7 @@ export class ProductMainContainer implements OnInit {
   }
   useCheck(checkList: {formControl: FormControl, product: ProductVM}[]) {
     this.checkList = checkList;
+    console.log(this.checkList);
   }
   useHideSpinner = () => {
     this.spinner.hide('product-main');

@@ -22,7 +22,7 @@
             <div class="content" *ngIf="state.filterArray.length > 0">
                 <app-note-card (useCheck)="useCheck($event)" [for]="for" [deal]="deal" [campaign]="campaign" [isMain]="isMain" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-note-card>
             </div>
-            <app-note-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-note-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0  && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'notes'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-note-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-note-solve-check>
             <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0">
                 <img src="assets/empty.png" />
@@ -30,6 +30,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="isMain || state.show">
-        <app-note-pagination (useChange)="usePagination()" [max]="state.max" [active]="state.active"></app-note-pagination>
+        <app-support-pagination (useChange)="usePagination()" [max]="state.max" [active]="state.active"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

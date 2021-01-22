@@ -5,6 +5,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { PipelineService, GlobalService } from '@services';
 import { PipelineVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-pipeline-datatable-item',
@@ -15,6 +16,8 @@ export class PipelineDatatableItemComponent {
   @Output() useToggleState: EventEmitter<any> = new EventEmitter<any>();
   @Output() useSortable: EventEmitter<any> = new EventEmitter<any>();
   @Output() useRemove: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useItemCheck: EventEmitter<any> = new EventEmitter<any>();
+  @Input() control: FormControl;
   @Input() pipeline: PipelineVM;
   @Input() canUpdate = false;
   @Input() canRemove = false;

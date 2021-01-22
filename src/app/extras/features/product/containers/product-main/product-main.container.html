@@ -22,7 +22,7 @@
                 <app-product-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-product-datatable>
                 <app-product-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-product-card>
             </div>
-            <app-product-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-product-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'products'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-product-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-product-solve-check>
             <div class="empty" *ngIf="state.filterArray.length === 0">
                 <img src="assets/empty.png" />
@@ -30,6 +30,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer>
-        <app-product-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-product-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

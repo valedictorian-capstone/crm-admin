@@ -24,7 +24,7 @@
                 <app-attachment-datatable (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'datatable'" [for]="for" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-attachment-datatable>
                 <app-attachment-card (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'card'" [for]="for" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-attachment-card>
             </div>
-            <app-attachment-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-attachment-page-count>
+            <app-support-page-count *ngIf="state.filterArray.length > 0  && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'attachments'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-attachment-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-attachment-solve-check>
             <div class="empty" [class.un-main]="!isMain" *ngIf="state.filterArray.length === 0">
                 <img src="assets/empty.png" />
@@ -32,6 +32,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="isMain || state.show">
-        <app-attachment-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-attachment-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

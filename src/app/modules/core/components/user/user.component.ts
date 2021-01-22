@@ -61,7 +61,7 @@ export class UserComponent implements OnDestroy {
     this.globalService.triggerView$.next({ type: 'setting-password', payload: {} });
   }
   useSetting = () => {
-    this.router.navigate(['core/setting']);
+    this.router.navigate(['core/role']);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

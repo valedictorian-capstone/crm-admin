@@ -1,7 +1,7 @@
 <div class="datatable-item">
-    <div class="check">
-        <nb-icon *ngIf="!isHeader" (click)="control.setValue(!control.value); useItemCheck.emit()" nbButton [status]="control.value ? 'success' : 'info'" [icon]="control.value ? 'radio-button-on-outline' : 'radio-button-off-outline'"></nb-icon>
-        <nb-icon *ngIf="isHeader" (click)="control.setValue(control.value === 'radio-button-on-outline' ? 'radio-button-off-outline' : 'radio-button-on-outline'); useItemCheck.emit()" [icon]="control.value" [status]="control.value === 'radio-button-on-outline' ? 'success' : (control.value === 'minus-circle-outline' ? 'warning' : 'info')"></nb-icon>
+    <div class="select">
+        <nb-checkbox *ngIf="!isHeader" (checkedChange)="control.setValue($event); useItemCheck.emit()" [checked]="control.value"></nb-checkbox>
+        <nb-checkbox *ngIf="isHeader" (checkedChange)="control.setValue($event ? 'on' : 'off'); useItemCheck.emit()" [checked]="control.value === 'on'" [indeterminate]="control.value === 'indeterminate'"></nb-checkbox>
         <div class="field">
             <nb-form-field>
                 <input nbInput fullWidth readonly />

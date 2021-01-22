@@ -7,6 +7,7 @@ import { authSelector } from '@selectors';
 import { PipelineService } from '@services';
 import { State } from '@states';
 import { PipelineAction } from '@store/actions';
+import { PipelineVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -33,6 +34,7 @@ export class PipelineMainContainer implements OnInit {
     key: undefined,
     stage: 'up',
   };
+  checkList: { formControl: FormControl, pipeline: PipelineVM }[] = [];
   subscriptions: Subscription[] = [];
   constructor(
     protected readonly service: PipelineService,
@@ -98,6 +100,9 @@ export class PipelineMainContainer implements OnInit {
     } else {
       this.state.max = 1;
     }
+  }
+  useCheck(checkList: { formControl: FormControl, pipeline: PipelineVM }[]) {
+    this.checkList = checkList;
   }
   usePagination = () => {
     this.state.paginationArray = this.state.filterArray.filter((e, i) => {

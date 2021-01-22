@@ -20,7 +20,7 @@
                 <app-log-datatable (useCheck)="useCheck($event)" [isMain]="isMain" *ngIf="state.type === 'datatable'" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-log-datatable>
                 <app-log-card [isMain]="isMain" *ngIf="state.type === 'card'" [deal]="deal" [campaign]="campaign" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-log-card>
             </div>
-            <app-log-page-count *ngIf="state.array.length > 0 && checkList.length === 0" [state]="state" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-log-page-count>
+            <app-support-page-count *ngIf="state.array.length > 0 && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'logs'" [length]="state.array.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-log-solve-check *ngIf="state.array.length > 0 && checkList.length > 0" [checkList]="checkList"></app-log-solve-check>
             <div class="empty" [class.un-main]="!isMain" *ngIf="state.array.length === 0">
                 <img src="assets/empty.png" />
@@ -28,6 +28,6 @@
         </div>
     </nb-card-body>
     <nb-card-footer *ngIf="isMain || state.show">
-        <app-log-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-log-pagination>
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
     </nb-card-footer>
 </nb-card>

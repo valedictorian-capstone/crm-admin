@@ -1,22 +1,27 @@
 <nb-card class="w-100">
     <ngx-spinner [name]="'campaign-detail'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
-        <span class="display-flex align-items-center float-left h-100">
-    <nb-icon icon="gift-outline" class="mr-2"></nb-icon>
-    <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Campaign Information</b>
-  </span>
+        <span class="h-100 display-flex align-items-center float-left">
+        <b>Information</b>
+      </span>
         <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
     <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
   </button>
     </nb-card-header>
     <nb-card-body *ngIf="show">
+        <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}} (Name)</b><br>
+        <b><nb-icon icon="bar-chart-2-outline"></nb-icon> {{campaign.type}} (Type)</b><br>
+        <b class="text-capitalize"><nb-icon icon="flag-outline"></nb-icon> {{campaign.status}} (Status)</b><br>
+        <b><nb-icon icon="flag-outline"></nb-icon> {{campaign.pipeline.name}} (Process)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateStart | date: 'hh:mm dd/MM/yyyy'}} (Start)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="campaign.description ? campaign.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
     <nb-card-footer *ngIf="show">
-        <button (click)="useEdit()" class="float-right" size="small" outline shape="round" nbButton status="info">
-            <nb-icon icon="edit-2-outline"></nb-icon>
-          </button>
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+      </button>
     </nb-card-footer>
 </nb-card>

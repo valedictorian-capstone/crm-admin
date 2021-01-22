@@ -2,6 +2,7 @@ export * from './deal.vm';
 export * from './activity.vm';
 export * from './stage.vm';
 export * from './campaign.vm';
+export * from './campaign-group.vm';
 export * from './log.vm';
 export * from './note.vm';
 export * from './attachment.vm';

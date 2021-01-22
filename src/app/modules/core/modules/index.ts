@@ -8,5 +8,6 @@ export * from './role/role.module';
 export * from './product/product.module';
 export * from './pipeline/pipeline.module';
 export * from './error/error.module';
+export * from './employee/employee.module';
 export * from './ticket/ticket.module';
 export * from './category/category.module';

@@ -17,7 +17,7 @@ import swal from 'sweetalert2';
 export class DealDatatableArea implements OnDestroy {
   @Output() useSortState: EventEmitter<ISort> = new EventEmitter<ISort>();
   @Output() useCheck: EventEmitter<{formControl: FormControl, deal: DealVM}[]> = new EventEmitter<{formControl: FormControl, deal: DealVM}[]>();
-  headerCheck = new FormControl('radio-button-off-outline');
+  headerCheck = new FormControl('off');
   checkList: {formControl: FormControl, deal: DealVM}[] = [];
   @Input() state: IDealMainState;
   @Input() sort: ISort;
@@ -30,7 +30,7 @@ export class DealDatatableArea implements OnDestroy {
     protected readonly toastrService: NbToastrService,
   ) { }
   ngOnChanges() {
-    this.headerCheck.setValue('radio-button-off-outline');
+    this.headerCheck.setValue('off');
     console.log(this.state);
     this.checkList = this.state.paginationArray.map((deal) => ({
       deal,
@@ -63,14 +63,14 @@ export class DealDatatableArea implements OnDestroy {
   }
   useItemCheck(isHeader: boolean) {
     if (isHeader) {
-      const value = this.headerCheck.value === 'radio-button-on-outline';
+      const value = this.headerCheck.value === 'on';
       this.checkList = this.state.paginationArray.map((deal) => ({
         deal,
         formControl: new FormControl(value),
       }))
     } else {
       const size = this.checkList.filter((e) => e.formControl.value).length;
-      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'radio-button-on-outline' : 'minus-circle-outline') : 'radio-button-off-outline');
+      this.headerCheck.setValue(size > 0 ? (size === this.checkList.length ? 'on' : 'indeterminate') : 'off');
     }
     this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }

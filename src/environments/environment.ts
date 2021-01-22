@@ -112,6 +112,10 @@ export const environment = {
         main: 'api/v1/Campaign',
         getById: 'api/v1/Campaign/',
       },
+      campaignGroup: {
+        main: 'api/v1/CampaignGroup',
+        getById: 'api/v1/CampaignGroup/',
+      },
       stage: {
         main: 'api/v1/Stage',
         getById: 'api/v1/Stage/',

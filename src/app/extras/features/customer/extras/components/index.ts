@@ -4,6 +4,4 @@ export * from './customer-export/customer-export.component';
 export * from './customer-query/customer-query.component';
 export * from './customer-select/customer-select.component';
 export * from './customer-type/customer-type.component';
-export * from './customer-pagination/customer-pagination.component';
-export * from './customer-page-count/customer-page-count.component';
 export * from './customer-solve-check/customer-solve-check.component';

@@ -112,6 +112,10 @@ export const environment = {
         main: 'api/v1/Campaign',
         getById: 'api/v1/Campaign/',
       },
+      campaignGroup: {
+        main: 'api/v1/CampaignGroup',
+        getById: 'api/v1/CampaignGroup/',
+      },
       stage: {
         main: 'api/v1/Stage',
         getById: 'api/v1/Stage/',
@@ -312,8 +316,8 @@ export const environment = {
     },
   },
   stringee: {
-    sid: 'SKG3Y1zHDriSAoY1s5QtZvlrXvrWWnY4',
-    serect: 'TDdsMXN5QVd5YmJRRXNhMk9FaUFncXlFcmpLZE1HaA==',
+    sid: 'SKSRxhCU4f6gO82IbX7Jhgcgzd1y1TrDt',
+    serect: 'WmFnT1haSXRKUHh6NFhkejBCRHlZRXdwZlNZdGdUYjk=',
     api: 'https://v2.stringee.com/web-sdk-conference-samples/php/token_helper.php',
     endpoint: 'https://api.stringee.com/v1/room2',
   },
