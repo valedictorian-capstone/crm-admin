@@ -70,29 +70,29 @@ export class TicketEffect {
     )
   );
   private readonly checkCreate = (requester: AccountVM, ticket: TicketVM) => {
-    const canGetTicketDeal = requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
-    const canGetTicketSupport = requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
-    return (canGetTicketDeal && ticket.type === 'deal') || (canGetTicketSupport && ticket.type === 'other');
+    const canGetDealTicket = requester.roles.filter((role) => role.canGetDealTicket).length > 0;
+    const canGetSupportTicket = requester.roles.filter((role) => role.canGetSupportTicket).length > 0;
+    return (canGetDealTicket && ticket.type === 'deal') || (canGetSupportTicket && ticket.type === 'other');
   }
   private readonly check = (requester: AccountVM, ticket: TicketVM) => {
-    const canGetTicketDeal = requester.roles.filter((role) => role.canGetTicketDeal).length > 0;
-    const canGetTicketSupport = requester.roles.filter((role) => role.canGetTicketSupport).length > 0;
+    const canGetDealTicket = requester.roles.filter((role) => role.canGetDealTicket).length > 0;
+    const canGetSupportTicket = requester.roles.filter((role) => role.canGetSupportTicket).length > 0;
     const canGetFeedbackTicket = requester.roles.filter((e) => e.canGetFeedbackTicket).length > 0;
-    if (canGetTicketDeal && canGetTicketSupport) {
+    if (canGetDealTicket && canGetSupportTicket) {
       return true;
-    } else if (!canGetTicketDeal && !canGetTicketSupport) {
+    } else if (!canGetDealTicket && !canGetSupportTicket) {
       if (canGetFeedbackTicket && ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)) {
         return true;
       }
     } else {
-      if (canGetTicketDeal) {
+      if (canGetDealTicket) {
         if (canGetFeedbackTicket && ((ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) || (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
           return true;
         } else if (ticket.type === 'deal' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {
           return true;
         }
       }
-      if (canGetTicketSupport) {
+      if (canGetSupportTicket) {
         if (canGetFeedbackTicket && ((ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) || (ticket.status === 'resolve' && (ticket.feedbackAssignee ? (ticket.feedbackAssignee.id === requester.id) : true)))) {
           return true;
         } else if (ticket.type === 'other' && (ticket.assignee ? (ticket.assignee?.id === requester.id) : true)) {

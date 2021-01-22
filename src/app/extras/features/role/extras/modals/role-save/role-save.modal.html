@@ -1,3 +1,98 @@
-<p>
-  role-save works!
-</p>
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'setting-role'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5">
+        {{payload.role ? 'Edit' : 'New'}} Role
+        <button (click)="useClose.emit()" style="float: right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="state.form">
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+  state.form.get('name').invalid &&
+  (state.form.get('name').touched || state.form.get('name').dirty)
+">Name <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="pin-outline" nbPrefix></nb-icon>
+            <input [status]="
+      state.form.get('name').invalid &&
+      (state.form.get('name').touched || state.form.get('name').dirty) ? 'danger' : 'basic'
+    " fullWidth [formControl]="state.form.get('name')" nbInput size="small" />
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600" [class.text-danger]="
+          state.form.get('level').invalid &&
+          (state.form.get('level').touched || state.form.get('level').dirty)
+        ">Level <span class="text-danger">*</span></span>
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <button nbButton ghost (click)="useMinusLevel()" nbPrefix>
+          <nb-icon icon="minus-outline"></nb-icon>
+        </button>
+            <input style="text-align: center;" readonly [status]="
+              state.form.get('level').invalid &&
+              (state.form.get('level').touched || state.form.get('level').dirty) ? 'danger' : 'basic'
+            " fullWidth [value]="state.form.get('level').value" nbInput size="small" />
+            <button nbButton ghost (click)="usePlusLevel()" nbSuffix>
+              <nb-icon icon="plus-outline"></nb-icon>
+            </button>
+        </nb-form-field>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Description</span
+    >
+  <nb-form-field style="width: 100%; margin-bottom: 1rem">
+    <textarea
+      #area
+      placeHolder="Description"
+      fullWidth
+      [formControl]="state.form.get('description')"
+      rows="5"
+      nbInput
+    ></textarea>
+  </nb-form-field>
+  <nb-accordion multi>
+    <nb-accordion-item [expanded]="true" *ngFor="let group of state.permissions" class="mb-2">
+     <nb-accordion-item-header>{{group.name}}</nb-accordion-item-header>
+     <nb-accordion-item-body>
+      <div nz-row style="width: 100%;">
+        <div nz-col [nzSpan]="24" *ngFor="let item of group.data">
+          <nb-toggle status="success" [formControl]="state.form.get(item.value)">{{item.label}}</nb-toggle>
+        </div>
+      </div>
+     </nb-accordion-item-body>
+    </nb-accordion-item>
+   </nb-accordion>
+</nb-card-body>
+<nb-card-footer>
+  <button style="float: right" status="default" nbButton size="small" (click)="useDialog(cancelRef)">
+Cancel
+</button>
+  <button style="float: right; margin-right: 0.5rem" [disabled]="state.form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">
+Save
+</button>
+</nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+<nb-card>
+  <nb-card-header>Saved changes </nb-card-header>
+  <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+  <nb-card-footer class="p-2">
+      <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+  Save and hide
+</button>
+      <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+  Continue editing
+</button>
+  </nb-card-footer>
+</nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+<nb-card>
+  <nb-card-header>You have unsaved changes </nb-card-header>
+  <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+  <nb-card-footer class="p-2">
+      <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+  Hide modal
+</button>
+      <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+  Continue editing
+</button>
+  </nb-card-footer>
+</nb-card>
+</ng-template>

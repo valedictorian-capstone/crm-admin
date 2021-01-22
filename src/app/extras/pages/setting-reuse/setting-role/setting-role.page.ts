@@ -144,11 +144,11 @@ export class SettingRolePage implements OnInit, OnDestroy {
           },
           {
             label: 'Can Get Deal Ticket',
-            value: 'canGetTicketDeal'
+            value: 'canGetDealTicket'
           },
           {
             label: 'Can Get Support Ticket',
-            value: 'canGetTicketSupport'
+            value: 'canGetSupportTicket'
           },
           {
             label: 'Can Update',
@@ -258,8 +258,8 @@ export class SettingRolePage implements OnInit, OnDestroy {
       canAssignActivity: new FormControl(false),
       canGetAllActivity: new FormControl(false),
       canAccessTicket: new FormControl(false),
-      canGetTicketDeal: new FormControl(false),
-      canGetTicketSupport: new FormControl(false),
+      canGetDealTicket: new FormControl(false),
+      canGetSupportTicket: new FormControl(false),
       canUpdateTicket: new FormControl(false),
       canRemoveTicket: new FormControl(false),
       canImportEmployee: new FormControl(false),
