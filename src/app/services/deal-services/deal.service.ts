@@ -42,11 +42,11 @@ export class DealService {
   public readonly findByStage = (id: string): Observable<DealVM[]> => {
     return this.httpClient.get<DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.getById}stage/${id}`);
   }
-  public readonly insert = (data: DealCM): Observable<DealVM> => {
-    return this.httpClient.post<DealVM>(`${environment.apiEndpont}${environment.api.deal.deal.main}`, data);
+  public readonly insert = (data: DealCM | DealCM[]): Observable<DealVM | DealVM[]> => {
+    return this.httpClient.post<DealVM | DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.main}`, data);
   }
-  public readonly update = (data: DealUM): Observable<DealVM> => {
-    return this.httpClient.put<DealVM>(`${environment.apiEndpont}${environment.api.deal.deal.main}`, data);
+  public readonly update = (data: DealUM | DealUM[]): Observable<DealVM | DealVM[]> => {
+    return this.httpClient.put<DealVM | DealVM[]>(`${environment.apiEndpont}${environment.api.deal.deal.main}`, data);
   }
   public readonly remove = (id: string): Observable<string> => {
     return this.httpClient.delete<string>(`${environment.apiEndpont}${environment.api.deal.deal.getById}${id}`);

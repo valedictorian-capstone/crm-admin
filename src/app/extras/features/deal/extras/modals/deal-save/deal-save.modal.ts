@@ -171,7 +171,7 @@ export class DealSaveModal implements OnInit, OnDestroy {
       }))
         .pipe(
           tap((data) => {
-            this.useDone.emit(data);
+            this.useDone.emit(data as DealVM);
             this.toastrService.success('', 'Save deal successful!', { duration: 3000 });
             this.useClose.emit();
           }),

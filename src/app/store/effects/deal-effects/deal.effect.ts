@@ -27,6 +27,8 @@ export class DealEffect {
               return DealAction.SaveSuccessAction({ res: trigger.data as DealVM });
             } else if (trigger.type === 'remove') {
               return DealAction.RemoveSuccessAction({ id: (trigger.data as DealVM).id });
+            } else if (trigger.type === 'list') {
+              return DealAction.ListAction({ res: trigger.data as DealVM[] });
             }
             return DealAction.ListAction({ res: [] });
           }),

@@ -26,6 +26,7 @@ export class EmployeeSelect1Component implements OnInit, OnDestroy {
   @Input() control: FormControl;
   @Input() model: AccountVM;
   @Input() showYou: boolean;
+  @Input() showNone: boolean;
   subscriptions: Subscription[] = [];
   state: IEmployeeSelectComponentState = {
     search: '',
@@ -114,7 +115,6 @@ export class EmployeeSelect1Component implements OnInit, OnDestroy {
       this.control.setValue(item);
     }
     this.model = item;
-    console.log(item);
     this.modelChange.emit(item);
   }
   ngOnDestroy() {

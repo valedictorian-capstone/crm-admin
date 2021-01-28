@@ -13,7 +13,7 @@
         <b><nb-icon icon="person-outline"></nb-icon> {{deal.feedbackAssignee ? deal.feedbackAssignee.fullname : 'None'}} (Feedback Assignee)</b><br>
         <b><nb-icon icon="arrowhead-right-outline"></nb-icon> {{deal.stage.name}} (Stage)</b><br>
         <b><nb-icon icon="browser-outline"></nb-icon> {{deal.stage.pipeline.name}} (Process)</b><br>
-        <b [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
+        <b [class.text-danger]="deal.status === 'lost' || deal.status === 'expired'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
         <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{deal.campaign ? deal.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" />
         <b><nb-icon icon="receipt" pack="font-awesome"></nb-icon> {{deal.dealDetails | money}} (Value)</b><br><br>
         <nb-form-field class="w-100">

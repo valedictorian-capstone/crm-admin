@@ -9,6 +9,7 @@
         <div class="w-100" nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
                 <app-campaign-information *ngIf="state.main" [campaign]='state.main'></app-campaign-information>
+                <app-campaign-process *ngIf="state.main" [campaign]='state.main'></app-campaign-process>
                 <app-campaign-group *ngIf="state.main" [campaign]='state.main' [cGroups]="state.main.campaignGroups"></app-campaign-group>
                 <app-campaign-statistical *ngIf="state.main" [campaign]='state.main'></app-campaign-statistical>
             </div>
@@ -18,7 +19,8 @@
                 <app-attachment-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-attachment-main>
                 <app-deal-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-deal-main>
                 <app-log-main [query]="{key: 'campaign', id: state.id}" [for]="'campaign'" [campaign]="state.main"></app-log-main>
-                <app-customer-main *ngFor="let campaignGroup of (state.main ? state.main.campaignGroups : [])" [query]="{id: campaignGroup.group.id, name: campaignGroup.group.name, icon: 'phone-outline', pack: 'eva'}"></app-customer-main>
+                <app-customer-main *ngFor="let campaignGroup of (state.main ? state.main.campaignGroups : [])" [campaign]="state.main" [query]="{id: campaignGroup.group.id, name: campaignGroup.group.name, icon: 'phone-outline', pack: 'eva'}"></app-customer-main>
+                <app-campaign-following *ngIf="state.main" [campaign]='state.main'></app-campaign-following>
             </div>
         </div>
     </nb-card-body>

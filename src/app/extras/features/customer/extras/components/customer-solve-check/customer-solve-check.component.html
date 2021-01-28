@@ -3,8 +3,34 @@
         <span class="h-100 display-flex align-items-center float-left">
 <b>{{checkList.length + ' selected'}}</b>
 </span>
-        <button (click)="useRemove()" class="float-right ml-1" outline nbButton status="danger" size="small">
-<nb-icon icon="trash-2-outline"></nb-icon>
+        <button *ngIf="campaign ? campaign.status === 'active' : true" (click)="campaign ? useCreateDeal() : useDialog(selectRef)" class="float-right ml-1" outline nbButton status="success" size="small">
+Create Deal
 </button>
     </nb-card-header>
 </nb-card>
+<ng-template #selectRef let-data let-ref="dialogRef">
+    <nb-card class="child">
+        <nb-card-header>Select process</nb-card-header>
+        <nb-card-body>
+            <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                <nb-icon icon="browser-outline" nbPrefix></nb-icon>
+                <input #pipelineInput fullWidth (blur)="pipeline.markAsTouched()" [status]="pipeline.invalid && (pipeline.touched || pipeline.dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="pipelineRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'"
+                    placeholder="Select process" [value]="pipeline.value?.name ? pipeline.value.name : ''" nbInput size="small" readonly />
+                <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+            </nb-form-field>
+            <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
+                <app-pipeline-select #pipelineSelect [control]="pipeline"></app-pipeline-select>
+            </nz-dropdown-menu>
+            <span *ngIf="pipeline.invalid && (pipeline.touched || pipeline.dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select process</span
+      >
+      </nb-card-body>
+      <nb-card-footer class="p-2">
+          <button style="float: right" status="default" nbButton size="small" (click)="ref.close();">
+      Cancel
+    </button>
+          <button style="float: right; margin-right: 0.5rem" status="info" outline nbButton size="small" (click)="ref.close(); useCreateDeal()">
+      Submit
+    </button>
+      </nb-card-footer>
+  </nb-card>
+</ng-template>

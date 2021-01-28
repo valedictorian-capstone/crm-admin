@@ -12,8 +12,8 @@ import { tap } from 'rxjs/operators';
 export class CampaignStatisticalComponent {
   @Input() campaign: CampaignVM;
   total;
-  totalValue = 0;
-  totalGroupValues = [];
+  totalValue = () => 0;
+  totalGroupValues;
   showTotal = true;
   showTotalValue = true;
   showTotalGroupsValues = true;
@@ -24,12 +24,48 @@ export class CampaignStatisticalComponent {
 
   }
   ngOnInit() {
+    console.log('statistical');
     this.service.statistical(this.campaign.id)
       .pipe(
         tap((data) => {
           console.log(data);
-          this.totalValue = data.totalValue;
-          this.totalGroupValues = data.totalGroupValues;
+          this.totalValue = () => data.totalValue;
+          this.totalGroupValues = {
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+              }
+            },
+            grid: {
+              left: '3%',
+              right: '4%',
+              bottom: '3%',
+              containLabel: true
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: data.totalGroupValues.map((e) => e.name),
+                axisTick: {
+                  alignWithLabel: true
+                }
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                name: 'Group',
+                type: 'bar',
+                barWidth: '60%',
+                data: data.totalGroupValues.map((e) => e.value)
+              }
+            ]
+          }
           this.total = {
             tooltip: {
               trigger: 'item'
@@ -44,10 +80,10 @@ export class CampaignStatisticalComponent {
                 type: 'pie',
                 radius: '50%',
                 data: [
-                  { value: data.total[0], name: 'processing' },
-                  { value: data.total[1], name: 'won' },
-                  { value: data.total[2], name: 'lost' },
-                  { value: data.total[3], name: 'other' },
+                  { value: data.total[0].length, name: 'Processing' },
+                  { value: data.total[1].length, name: 'Won' },
+                  { value: data.total[2].length, name: 'Lost' },
+                  { value: data.total[3].length, name: 'Expired' },
                 ],
                 emphasis: {
                   itemStyle: {
@@ -59,6 +95,7 @@ export class CampaignStatisticalComponent {
               }
             ]
           };
+          console.log('total:', this.total)
         })
       )
       .subscribe();

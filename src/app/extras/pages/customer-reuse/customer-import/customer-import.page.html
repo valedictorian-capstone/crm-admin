@@ -227,7 +227,7 @@
                             placeHolder="Birthday" />
                     </nb-form-field>
                     <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
-                        <app-reuse-select-date [date]="group.get('birthDay').value" (useChange)="group.get('birthDay').setValue($event); group.get('showBirthday').setValue(false)"></app-reuse-select-date>
+                        <app-support-date [date]="group.get('birthDay').value" (useChange)="group.get('birthDay').setValue($event); group.get('showBirthday').setValue(false)"></app-support-date>
                     </nz-dropdown-menu>
                 </div>
                 <div class="field">

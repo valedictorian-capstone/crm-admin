@@ -1,3 +1,31 @@
-<p>
-  campaign-following works!
-</p>
+<nb-card class="w-100 position-relative">
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+<b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Followers</b>
+</span>
+        <button class="float-right" (click)="state.show = !state.show" outline nbButton size="small">
+<nb-icon [icon]="state.show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+        <app-customer-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-customer-type>
+        <app-customer-export [data]="state.array"></app-customer-export>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="state.show">
+        <div class="query">
+            <app-customer-query [queryGroup]="true" [search]="search" (useSearch)="useSearch($event)"></app-customer-query>
+        </div>
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-customer-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-customer-datatable>
+                <app-customer-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-customer-card>
+            </div>
+            <app-support-page-count *ngIf="state.filterArray.length > 0  && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'customers'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
+            <app-customer-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-customer-solve-check>
+            <div class="empty un-main" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="state.show">
+        <app-support-pagination (useChange)="usePagination()" [active]="state.active" [max]="state.max"></app-support-pagination>
+    </nb-card-footer>
+</nb-card>

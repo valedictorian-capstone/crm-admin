@@ -19,7 +19,7 @@ interface ICampaignSelectComponentState {
   styleUrls: ['./campaign-select.component.scss']
 })
 export class CampaignSelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<CampaignVM> = new EventEmitter<CampaignVM>();
+  @Output() modelChange: EventEmitter<CampaignVM> = new EventEmitter<CampaignVM>();
   @Input() control: FormControl;
   @Input() model: CampaignVM;
   subscriptions: Subscription[] = [];

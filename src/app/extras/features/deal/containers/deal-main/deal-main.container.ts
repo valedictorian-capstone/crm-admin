@@ -117,7 +117,7 @@ export class DealMainContainer implements OnInit {
   useFilter = () => {
     this.state.filterArray = this.state.array.filter((e) =>
       (this.search.title ? e.title.toLowerCase().includes(this.search.title.toLowerCase()) : true)
-      && (this.search.assignee ? e.assignee?.id === this.search.assignee.id : true)
+      && (this.search.assignee ? (this.search.assignee.id === 'None' ? !e.assignee : e.assignee?.id === this.search.assignee.id) : true)
       && (this.search.customer ? e.customer?.id === this.search.customer.id : true)
       && (this.search.campaign ? e.campaign?.id === this.search.campaign.id : true)
       && (this.search.statuss.length > 0 ? this.search.statuss.includes(e.status) : true)
