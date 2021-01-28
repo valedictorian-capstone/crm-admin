@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { tap, finalize } from 'rxjs/operators';
 import { CustomerAction } from '@store/actions';
 import { FormControl } from '@angular/forms';
-import { CustomerVM } from '@view-models';
+import { CustomerVM, CampaignVM } from '@view-models';
 
 @Component({
   selector: 'app-customer-main',
@@ -25,6 +25,7 @@ export class CustomerMainContainer implements OnInit, OnDestroy {
     pack: string;
   };
   @Input() isMain: boolean;
+  @Input() campaign: CampaignVM;
   state: ICustomerMainState = {
     array: [],
     filterArray: [],

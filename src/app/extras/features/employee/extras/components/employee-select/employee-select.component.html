@@ -7,18 +7,22 @@
         </nb-form-field>
     </nb-card-header>
     <nb-card-body>
-        <!-- <nb-form-field class="w-100 mb-2" *ngFor="let item of state.filterArray">
-            <nb-icon icon="donate" nbPrefix pack="font-awesome"></nb-icon>
-            <input [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.fullname" nbInput fullWidth readonly (click)="useSelectItem(item)" />
-        </nb-form-field> -->
+        <nb-card *ngIf="showNone" class="w-100 mb-2 bg-white">
+            <nb-card-header class="p-0">
+                <nb-form-field class="w-100">
+                    <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                    <input (click)="useSelectItem({id: 'None'})" [status]="control?.value?.id === 'None' || model?.id === 'None' ? 'success' : 'info'" [value]="'None'" nbInput fullWidth readonly />
+                </nb-form-field>
+            </nb-card-header>
+        </nb-card>
         <nb-card class="w-100 mb-2 bg-white" *ngFor="let item of state.filterArray">
             <nb-card-header class="p-0">
                 <nb-form-field class="w-100">
                     <nb-icon icon="person-outline" nbPrefix></nb-icon>
-                    <input [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.fullname + (state.you?.id === item.id ? ' (You)' : '')" nbInput fullWidth readonly />
+                    <input (click)="useSelectItem(item)" [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.fullname + (state.you?.id === item.id ? ' (You)' : '')" nbInput fullWidth readonly />
                 </nb-form-field>
             </nb-card-header>
-            <nb-card-footer style="height: 4rem;">
+            <nb-card-footer style="height: 3rem;">
                 <span class="float-left h-100 display-flex align-items-center" *ngIf="item['canGetAssignDeal']">
                 <b class="text-success mr-2">W: {{item['won'] | separator}}</b>
                 <b>-</b>
@@ -28,12 +32,6 @@
                 <b>-</b>
                 <b class="text-default ml-2">T: {{item.deals.length | separator}}</b>
               </span>
-                <button *ngIf="control?.value?.id !== item.id && model?.id !== item.id" (click)="useSelectItem(item)" class="float-right" size="small" outline nbButton status="info">
-              Select {{state.you?.id === item.id ? ' Me' : ''}}
-            </button>
-                <span class="float-right h-100 display-flex align-items-center" *ngIf="control?.value?.id === item.id || model?.id === item.id">
-              <b class="text-success">Selected</b>
-            </span>
             </nb-card-footer>
         </nb-card>
         <div class="w-100 h-100 display-flex justify-content-center align-items-center" *ngIf="state.filterArray.length === 0">

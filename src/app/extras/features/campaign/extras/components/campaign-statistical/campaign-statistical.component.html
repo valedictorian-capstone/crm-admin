@@ -4,11 +4,40 @@
       <b>Statistical Deal's Situation In Campaign</b>
       </span>
         <button class="float-right ml-1" (click)="showTotal = !showTotal" outline nbButton size="small">
-      <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+      <nb-icon [icon]="showTotal ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
       </button>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-body *ngIf="showTotal">
         <div echarts [options]="total" class="chart">
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card class="w-100" *ngIf="totalGroupValues">
+    <nb-card-header>
+        <span class="h-100 display-flex align-items-center float-left">
+    <b>Statistical Total Value Of Groups In Campaign</b>
+    </span>
+        <button class="float-right ml-1" (click)="showTotalGroupsValues = !showTotalGroupsValues" outline nbButton size="small">
+    <nb-icon [icon]="showTotalGroupsValues ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+    </button>
+    </nb-card-header>
+    <nb-card-body *ngIf="showTotalGroupsValues">
+        <div echarts [options]="totalGroupValues" class="chart">
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card class="w-100">
+    <nb-card-header>
+        <span class="h-100 display-flex align-items-center float-left">
+  <b>Statistical Total Value Of Campaign</b>
+  </span>
+        <button class="float-right ml-1" (click)="showTotalValue = !showTotalValue" outline nbButton size="small">
+  <nb-icon [icon]="showTotalValue ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+  </button>
+    </nb-card-header>
+    <nb-card-body *ngIf="showTotalValue">
+        <div style="height: 20rem;" class="w-100 display-flex align-items-center justify-content-center float-left">
+            <nz-progress [nzPercent]="100" nzType="circle" [nzFormat]="totalValue"></nz-progress>
         </div>
     </nb-card-body>
 </nb-card>

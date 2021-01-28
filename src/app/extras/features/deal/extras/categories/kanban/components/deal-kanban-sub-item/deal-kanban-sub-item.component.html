@@ -2,7 +2,7 @@
     <ngx-spinner [name]="'deal-kanban-' + deal.id" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
     <nb-card-header style="height: 4rem; padding: 1rem 1rem;">
         <span class="display-flex h-100 align-items-center float-left">
-        <b class="text-capitalize" [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="font-family: monospace sans-serif;">{{deal.status}}</b>
+        <b class="text-capitalize" [class.text-danger]="deal.status === 'lost' || deal.status === 'expired'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="font-family: monospace sans-serif;">{{deal.status}}</b>
       </span>
         <button [disabled]="deal.changing" *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('won')" class="float-right ml-1" size="small" outline nbButton status="success">
         Won
@@ -17,8 +17,8 @@
     <nb-card-body>
         <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{deal.title}} (Title)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{deal.customer.fullname}} (Customer)</b><br>
-        <b><nb-icon icon="person-outline"></nb-icon> {{deal.assignee.fullname}} (Assignee)</b><br>
-        <b style="text-transform: capitalize;" [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{deal.assignee ? deal.assignee.fullname : 'None'}} (Assignee)</b><br>
+        <b style="text-transform: capitalize;" [class.text-danger]="deal.status === 'lost' || deal.status === 'expired'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
         <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{deal.campaign ? deal.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" />
         <b><nb-icon icon="receipt" pack="font-awesome"></nb-icon> {{deal.dealDetails | money}} (Value)</b><br><br>
     </nb-card-body>

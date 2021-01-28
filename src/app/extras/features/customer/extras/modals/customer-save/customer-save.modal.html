@@ -60,7 +60,7 @@
                 nbInput />
         </nb-form-field>
         <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
-            <app-reuse-select-date [date]="state.form.get('birthDay').value" [max]="state.max" [min]="state.min" (useChange)="state.form.get('birthDay').setValue($event); state.showBirthday = false"></app-reuse-select-date>
+            <app-support-date [date]="state.form.get('birthDay').value" [max]="state.max" [min]="state.min" (useChange)="state.form.get('birthDay').setValue($event); state.showBirthday = false"></app-support-date>
         </nz-dropdown-menu>
         <nb-accordion style="width: 100%; margin-bottom: 1rem; float: left;" multi>
             <nb-accordion-item expanded>

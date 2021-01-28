@@ -19,7 +19,7 @@ interface IRoleSelectComponentState {
   styleUrls: ['./role-select.component.scss']
 })
 export class RoleSelectComponent implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
+  @Output() modelChange: EventEmitter<RoleVM> = new EventEmitter<RoleVM>();
   @Input() control: FormControl;
   @Input() model: RoleVM;
   subscriptions: Subscription[] = [];

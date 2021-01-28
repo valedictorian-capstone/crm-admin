@@ -19,7 +19,7 @@ interface IPipelineSelectComponentState {
   styleUrls: ['./pipeline-select.component.scss']
 })
 export class PipelineSelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
+  @Output() modelChange: EventEmitter<PipelineVM> = new EventEmitter<PipelineVM>();
   @Input() control: FormControl;
   @Input() model: PipelineVM;
   subscriptions: Subscription[] = [];

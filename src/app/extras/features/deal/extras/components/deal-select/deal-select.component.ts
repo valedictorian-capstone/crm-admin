@@ -20,7 +20,7 @@ interface IDealSelectComponentState {
   styleUrls: ['./deal-select.component.scss']
 })
 export class DealSelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<DealVM> = new EventEmitter<DealVM>();
+  @Output() modelChange: EventEmitter<DealVM> = new EventEmitter<DealVM>();
   @Input() control: FormControl;
   @Input() model: DealVM;
   subscriptions: Subscription[] = [];

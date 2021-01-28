@@ -1,3 +1,4 @@
+import { CustomerVM } from "@view-models";
 import { LogVM, NoteVM, AttachmentVM, ActivityVM, DealVM, PipelineVM } from ".";
 import { CampaignGroupVM } from ".";
 
@@ -10,6 +11,7 @@ export interface CampaignVM {
   autoCreateDeal: boolean;
   dateStart: Date;
   dateEnd: Date;
+  followers: CustomerVM[];
   campaignGroups: CampaignGroupVM[];
   logs: LogVM[];
   notes: NoteVM[];

@@ -3,3 +3,18 @@ nb-card {
         font-family: monospace, sans-serif;
     }
 }
+
+nb-card.child {
+    width: 789px;
+    margin-top: 29px;
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow: auto;
+    }
+}
+
+@media (max-width: 789px) {
+    nb-card.child {
+        width: 95vw;
+    }
+}

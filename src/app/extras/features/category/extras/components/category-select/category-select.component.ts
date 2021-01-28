@@ -19,7 +19,7 @@ interface ICategorySelectComponentState {
   styleUrls: ['./category-select.component.scss']
 })
 export class CategorySelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<CategoryVM> = new EventEmitter<CategoryVM>();
+  @Output() modelChange: EventEmitter<CategoryVM> = new EventEmitter<CategoryVM>();
   @Input() control: FormControl;
   @Input() model: CategoryVM;
   subscriptions: Subscription[] = [];

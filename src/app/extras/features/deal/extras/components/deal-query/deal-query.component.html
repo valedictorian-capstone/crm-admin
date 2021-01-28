@@ -12,6 +12,7 @@
                     <nb-select style="height: 3rem;" [(ngModel)]="search.statuss" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select statuss'">
                         <nb-option value="won">Won</nb-option>
                         <nb-option value="lost">Lost</nb-option>
+                        <nb-option value="expired">Expired</nb-option>
                         <nb-option value="processing">Processing</nb-option>
                     </nb-select>
                 </nb-form-field>
@@ -36,11 +37,12 @@
             </div>
             <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
                 <nb-form-field class="w-100">
-                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.assignee?.fullname" style="height: 3rem;" fullWidth placeholder="Select assignee" />
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.assignee ? (search.assignee.id === 'None' ? 'None' : search.assignee.fullname) : ''" style="height: 3rem;"
+                        fullWidth placeholder="Select assignee" />
                     <nb-icon *ngIf="search.assignee" icon="close-circle-outline" status="danger" nbSuffix (click)="search.assignee = undefined; useSearch.emit(search);"></nb-icon>
                 </nb-form-field>
                 <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-                    <app-employee-select [type]="'assignee'" [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
+                    <app-employee-select [showNone]="true" [type]="'assignee'" [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
                 </nz-dropdown-menu>
             </div>
         </div>

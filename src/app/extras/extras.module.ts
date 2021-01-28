@@ -148,7 +148,8 @@ import {
   CampaignInformationComponent,
   CampaignGroupComponent,
   CampaignFollowingComponent,
-  CampaignStatisticalComponent
+  CampaignStatisticalComponent,
+  CampaignProcessComponent
 } from './features/campaign';
 import {
   PipelineAddComponent,
@@ -192,6 +193,7 @@ import {
   CustomerImportComponent,
   CustomerSelect1Component,
   CustomerSolveCheckComponent,
+  CustomerImportModal
 } from './features/customer';
 import {
   ProductAddComponent,
@@ -245,6 +247,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 export const EXTRA_MODULES = [
   AntModule,
   NebularModule,
@@ -332,6 +336,7 @@ export const FEATURES = [
   CustomerImportComponent,
   CustomerSelect1Component,
   CustomerSolveCheckComponent,
+  CustomerImportModal,
 
   LogCardArea,
   LogCardItemComponent,
@@ -369,6 +374,7 @@ export const FEATURES = [
   CampaignGroupComponent,
   CampaignFollowingComponent,
   CampaignStatisticalComponent,
+  CampaignProcessComponent,
 
   ActivityAddComponent,
   ActivityCalendarArea,
@@ -501,6 +507,9 @@ export const PIPES = [
   imports: [
     ...ANGULAR_MODULES,
     ...EXTRA_MODULES,
+    NgxEchartsModule.forRoot({
+      echarts
+    }),
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,

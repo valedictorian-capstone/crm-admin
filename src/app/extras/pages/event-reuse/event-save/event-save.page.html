@@ -28,7 +28,7 @@
                 [nzVisible]="state.showDateStartPicker" placeholder="Activity Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
-            <app-reuse-select-date-time [date]="state.form.get('dateStart').value" [min]="state.minStart" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-reuse-select-date-time>
+            <app-support-date-time [date]="state.form.get('dateStart').value" [min]="state.minStart" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-support-date-time>
         </nz-dropdown-menu>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
@@ -37,7 +37,7 @@
                 [nzVisible]="state.showDateEndPicker" placeholder="Activity End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
-            <app-reuse-select-date-time [date]="state.form.get('dateEnd').value" [min]="state.minEnd" [max]="state.max" (useChange)="state.form.get('dateEnd').setValue($event); useCheckTime(); state.showDateEndPicker = false"></app-reuse-select-date-time>
+            <app-support-date-time [date]="state.form.get('dateEnd').value" [min]="state.minEnd" [max]="state.max" (useChange)="state.form.get('dateEnd').setValue($event); useCheckTime(); state.showDateEndPicker = false"></app-support-date-time>
         </nz-dropdown-menu>
         <span *ngIf="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select End Date greater than Start Date!</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Group</span>
@@ -57,7 +57,7 @@
             </nb-form-field>
             <span *ngIf="trigger.get('time').invalid && (trigger.get('time').touched || trigger.get('time').dirty)" class="text-danger mb-3 display-block font-weight-bold">Trigger time must be greater than Start Date and less than End Date</span>
             <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
-                <app-reuse-select-date-time [date]="trigger.get('time').value" [min]="state.form.get('dateStart').value" [max]="state.form.get('dateEnd').value" (useChange)="trigger.get('time').setValue($event); trigger.get('showTime').setValue(false)"></app-reuse-select-date-time>
+                <app-support-date-time [date]="trigger.get('time').value" [min]="state.form.get('dateStart').value" [max]="state.form.get('dateEnd').value" (useChange)="trigger.get('time').setValue($event); trigger.get('showTime').setValue(false)"></app-support-date-time>
             </nz-dropdown-menu>
         </div>
         <button nbButton status="success" (click)="useAddTrigger()" size="small" class="my-3">New Trigger Time</button>
