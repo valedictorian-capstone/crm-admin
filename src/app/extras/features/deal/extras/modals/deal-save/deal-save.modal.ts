@@ -79,17 +79,12 @@ export class DealSaveModal implements OnInit, OnDestroy {
     } else {
       this.useInit();
     }
-    if (this.payload.for) {
-      this.state.form.get('for').setValue(this.payload.for);
-    }
   }
   useInit() {
     console.log(this.payload);
     this.state.form.get('assignee').setValue(this.state.you);
     this.state.form.get('customer').setValue(this.payload.customer);
-    this.state.form.get('campaign').setValue(this.payload.campaign);
     this.state.form.get('pipeline').setValue(this.payload.pipeline);
-    console.log(this.state.form);
     if (this.state.form.get('pipeline').value) {
       if (this.payload.stage) {
         this.state.form.get('stage').setValue(this.payload.stage);
@@ -118,25 +113,11 @@ export class DealSaveModal implements OnInit, OnDestroy {
       for: new FormControl('basic'),
       service: new FormControl(undefined),
       status: new FormControl('processing'),
-      campaign: new FormControl(undefined, [Validators.required]),
       pipeline: new FormControl(undefined),
       stage: new FormControl(undefined, [Validators.required]),
       customer: new FormControl(undefined, [Validators.required]),
       assignee: new FormControl(undefined, [Validators.required]),
     });
-    this.subscriptions.push(
-      this.state.form.get('for').valueChanges
-        .pipe(
-          tap((data) => {
-            if (data === 'campaign') {
-              this.state.form.get('campaign').setValidators([Validators.required]);
-            } else {
-              this.state.form.get('campaign').setValidators([]);
-              this.state.form.get('campaign').setErrors(null);
-            }
-          })
-        ).subscribe()
-    );
   }
   useSetData = () => {
     this.useShowSpinner();
@@ -176,7 +157,6 @@ export class DealSaveModal implements OnInit, OnDestroy {
         this.state.form.get('stage').setValue(selected.stages.find((stage) => stage.position === 0));
       }
     }
-    console.log(this.state.form);
   }
   useSubmit = async (ref: NbDialogRef<any>) => {
     ref.close();
@@ -184,10 +164,10 @@ export class DealSaveModal implements OnInit, OnDestroy {
       this.useShowSpinner();
       const subscription = (this.payload.deal ? this.service.update({
         ...this.state.form.value,
-        campaign: this.state.form.value.for === 'campaign' ? this.state.form.value.campaign : undefined,
+        campaign: this.payload.campaign
       }) : this.service.insert({
         ...this.state.form.value,
-        campaign: this.state.form.value.for === 'campaign' ? this.state.form.value.campaign : undefined,
+        campaign: this.payload.campaign
       }))
         .pipe(
           tap((data) => {

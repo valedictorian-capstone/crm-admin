@@ -4,4 +4,7 @@ export * from './campaign-export/campaign-export.component';
 export * from './campaign-type/campaign-type.component';
 export * from './campaign-select/campaign-select.component';
 export * from './campaign-information/campaign-information.component';
+export * from './campaign-group/campaign-group.component';
+export * from './campaign-following/campaign-following.component';
+export * from './campaign-statistical/campaign-statistical.component';
 export * from './campaign-solve-check/campaign-solve-check.component';

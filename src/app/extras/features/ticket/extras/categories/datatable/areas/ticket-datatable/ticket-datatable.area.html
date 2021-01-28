@@ -1,3 +1,4 @@
-<p>
-  ticket-datatable works!
-</p>
+<app-ticket-datatable-item (useItemCheck)="useItemCheck(true)" [control]="headerCheck" [isHeader]="true" [sort]="sort" (useSortable)="useSort($event)"></app-ticket-datatable-item>
+<div class="body">
+    <app-ticket-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [ticket]="data.ticket" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.ticket.id)"></app-ticket-datatable-item>
+</div>

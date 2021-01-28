@@ -70,7 +70,7 @@
             <nb-icon icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-            <app-employee-select #employeeSelect [control]="state.form.get('assignee')"></app-employee-select>
+            <app-employee-select #employeeSelect [control]="state.form.get('assignee')" [type]="'assignee'"></app-employee-select>
         </nz-dropdown-menu>
         <span *ngIf="state.form.get('assignee').invalid && (state.form.get('assignee').touched || state.form.get('assignee').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select owner</span
     >
@@ -114,7 +114,7 @@
         *ngFor="let stage of state.form.get('pipeline').value.stages; let i = index"
       ></label>
     </div>
-    <nb-form-field
+    <!-- <nb-form-field
       [style.display]="payload.fix ? 'none' : 'block'"
       style="width: 100%; max-width: 100%; margin-bottom: 1rem; float: left"
     >
@@ -146,7 +146,7 @@
 
     <nz-dropdown-menu #campaignRef="nzDropdownMenu">
       <app-campaign-select #campaignSelect [control]="state.form.get('campaign')"></app-campaign-select>
-    </nz-dropdown-menu>
+    </nz-dropdown-menu> -->
     <span style="display: block; margin-bottom: 0.5rem; font-weight: 600"
       >Description</span
     >

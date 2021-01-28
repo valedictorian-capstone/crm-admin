@@ -1,0 +1,32 @@
+<nb-card class="w-100">
+    <ngx-spinner [name]="'deal-detail'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+      <b>Information</b>
+    </span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+  <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{deal.title}} (Title)</b><br>
+        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br><br>
+        <nb-form-field class="w-100">
+            <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="deal.description ? deal.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useEdit()" class="float-right ml-1" size="small" outline nbButton status="info">
+      <nb-icon icon="edit-2-outline"></nb-icon>
+    </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('won')" class="float-right ml-1" size="small" outline nbButton status="success">
+      Won
+    </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('lost')" class="float-right ml-1" size="small" outline nbButton status="danger">
+      Lost
+    </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && (deal.status === 'won' || deal.status === 'lost')" (click)="useUpdateStatus('processing')" class="float-right ml-1" size="small" outline nbButton status="info">
+      Reopen
+    </button>
+    </nb-card-footer>
+</nb-card>

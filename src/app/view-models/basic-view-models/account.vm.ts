@@ -11,7 +11,7 @@ export interface AccountVM {
   ownerActivitys: ActivityVM[];
   assignTickets: TicketVM[];
   feedbackAssignTickets: TicketVM[];
-  feedbackDeals: DealVM[];
+  deals: DealVM[];
   notifications: NotificationVM[];
   roles: RoleVM[];
   isDelete: boolean;

@@ -27,6 +27,9 @@ export class CampaignService {
   public readonly findById = (id: string): Observable<CampaignVM> => {
     return this.httpClient.get<CampaignVM>(`${environment.apiEndpont}${environment.api.deal.campaign.getById}${id}`);
   }
+  public readonly statistical = (id: string): Observable<any> => {
+    return this.httpClient.get<any>(`${environment.apiEndpont}${environment.api.deal.campaign.getById}statistical/${id}`);
+  }
   public readonly query = (params: {key: string, id: string}): Observable<CampaignVM[]> => {
     return this.httpClient.get<CampaignVM[]>(`${environment.apiEndpont}${environment.api.deal.campaign.main}/query`, {
       params

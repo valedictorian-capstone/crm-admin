@@ -52,6 +52,15 @@ export class DealCardItemComponent {
     this.clipboard.copy(data);
     this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
   }
+  useUpdateStatus = (status: string) => {
+    this.useShowSpinner();
+    this.deal = { ...this.deal };
+      this.service.update({
+        id: this.deal.id,
+        status
+      } as any)
+        .subscribe()
+  }
   useSort(key: string) {
     if (this.sort.key === key) {
       this.sort.stage = this.sort.stage === 'up' ? 'down' : 'up';
@@ -59,6 +68,12 @@ export class DealCardItemComponent {
       this.sort.key = key;
     }
     this.useSortable.emit(this.sort);
+  }
+  useShowSpinner = () => {
+    this.spinner.show('deal-card-' + this.deal.id);
+  }
+  useHideSpinner = () => {
+    this.spinner.hide('deal-card-' + this.deal.id);
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

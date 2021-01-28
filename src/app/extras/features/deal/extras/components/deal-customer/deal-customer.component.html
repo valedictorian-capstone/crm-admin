@@ -1,0 +1,54 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'deal-customer'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+  <b>Customer</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <div class="w-100 display-block float-left" *ngIf="!showChange && deal.customer">
+            <div class="w-100 display-flex mb-2 justify-content-center align-items-center" style="height: 8rem;">
+                <div class="display-flex justify-content-center align-items-center" style="height: 6rem; width: 6rem; border-radius: 50%; border: 2px solid #e5e5e5;">
+                    <b *ngIf="!deal.customer.avatar">{{deal.customer.fullname | key}}</b>
+                    <img *ngIf="deal.customer.avatar" [src]="deal.customer.avatar" style="height: 6rem; width: 6rem; border-radius: 50%;" />
+                </div>
+            </div>
+            <nb-form-field class="w-100 mb-2">
+                <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.customer.fullname" />
+            </nb-form-field>
+            <nb-form-field class="w-100 mb-2">
+                <nb-icon (click)="useMail()" icon="email-outline" status="danger" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.customer.email" />
+            </nb-form-field>
+            <nb-form-field class="w-100">
+                <nb-icon (click)="usePhone()" icon="phone-outline" status="success" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.customer.phone" />
+            </nb-form-field>
+        </div>
+        <div class="w-100 display-block float-left" *ngIf="showChange || !deal.customer">
+            <nb-form-field class="w-100">
+                <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                <input readonly nbInput nz-dropdown [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="selectedCustomer ? (selectedCustomer.fullname + (deal.customer?.id === selectedCustomer?.id ? ' (Choose another one)' : '')) : ''"
+                    style="height: 3rem;" fullWidth placeholder="Select customer" />
+            </nb-form-field>
+            <nz-dropdown-menu #customerRef="nzDropdownMenu">
+                <app-customer-select [(model)]="selectedCustomer" #customerSelect (modelChange)="selectedCustomer = $event;"></app-customer-select>
+            </nz-dropdown-menu>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button *ngIf="!showChange && deal.customer" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+        Change
+      </button>
+        <button *ngIf="showChange && deal.customer" (click)="showChange = false; selectedCustomer = undefined" class="float-right ml-1" size="small" outline nbButton status="basic">
+        Cancel
+      </button>
+        <button *ngIf="showChange || !deal.customer" (click)="useChange(selectedCustomer)" [disabled]="!selectedCustomer || deal.customer?.id === selectedCustomer?.id" class="float-right" size="small" outline nbButton status="info">
+        Submit Change
+      </button>
+    </nb-card-footer>
+</nb-card>

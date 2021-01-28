@@ -19,7 +19,7 @@ interface ICustomerSelectComponentState {
   styleUrls: ['./customer-select.component.scss']
 })
 export class CustomerSelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
+  @Output() modelChange: EventEmitter<CustomerVM> = new EventEmitter<CustomerVM>();
   @Input() control: FormControl;
   @Input() model: CustomerVM;
   subscriptions: Subscription[] = [];

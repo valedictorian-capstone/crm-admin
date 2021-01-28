@@ -55,10 +55,10 @@ export class UserComponent implements OnDestroy {
     this.router.navigate(['auth/login']);
   }
   useProfile = () => {
-    this.globalService.triggerView$.next({ type: 'setting-profile', payload: {} });
+    this.globalService.triggerView$.next({ type: 'support-profile', payload: {} });
   }
   usePassword = () => {
-    this.globalService.triggerView$.next({ type: 'setting-password', payload: {} });
+    this.globalService.triggerView$.next({ type: 'support-password', payload: {} });
   }
   useSetting = () => {
     this.router.navigate(['core/role']);

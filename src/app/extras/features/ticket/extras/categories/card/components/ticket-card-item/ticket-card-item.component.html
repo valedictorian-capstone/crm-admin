@@ -1,3 +1,26 @@
-<p>
-  ticket-card-item works!
-</p>
+<nb-card class="w-per-95 m-auto">
+    <nb-card-header>
+        <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.customer.fullname}} (Customer)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.assignee.fullname}} (Assignee)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.feedbackAssignee.fullname}} (Feedback Assignee)</b><br>
+        <b class="text-capitalize"><nb-icon icon="person-outline"></nb-icon> {{ticket.type}} (Type)</b><br>
+        <b class="text-capitalize"><nb-icon icon="person-outline"></nb-icon> {{ticket.status}} (Status)</b><br>
+        <nb-form-field class="w-100">
+            <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="ticket.description ? ticket.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+<nb-icon icon="trash-2-outline"></nb-icon>
+</button>
+        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+<nb-icon icon="edit-2-outline"></nb-icon>
+</button>
+    </nb-card-footer>
+</nb-card>

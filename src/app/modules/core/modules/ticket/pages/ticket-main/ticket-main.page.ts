@@ -27,7 +27,7 @@ interface ITicketMainPageState {
   canAssign: boolean;
 }
 @Component({
-  selector: 'app-ticket-main',
+  selector: 'app-r-ticket-main',
   templateUrl: './ticket-main.page.html',
   styleUrls: ['./ticket-main.page.scss']
 })

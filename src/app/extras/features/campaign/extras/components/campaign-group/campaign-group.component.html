@@ -1,0 +1,61 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'campaign-group'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+<b>Groups</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <nb-card class="w-100" *ngFor="let campaignGroup of campaignGroups.controls; let i = index">
+            <nb-card-header class="p-0">
+                <nb-form-field style="width: 100%; max-width: 100%;">
+                    <nb-select *ngIf="showChange" style="height: 3rem;" placeholder="Select Group" fullWidth [formControl]="campaignGroup.get('group')">
+                        <nb-option *ngFor="let group of groups" [disabled]="useCheckGroup(group)" [value]="group.id">{{group.name}}</nb-option>
+                    </nb-select>
+                    <input style="height: 3rem;" fullWidth [value]="useRenderGroup(campaignGroup.get('group').value)" placeholder="Select group" readonly nbInput size="small" *ngIf="!showChange" />
+                </nb-form-field>
+            </nb-card-header>
+            <nb-card-body>
+                <smooth-dnd-container [dragHandleSelector]="'.drag-handle'" (drop)="useDrop($event)">
+                    <smooth-dnd-draggable *ngFor="let parameter of campaignGroup.value.parameters; let k = index">
+                        <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+                            <nb-icon *ngIf="showChange" class="drag-handle" style="cursor: move;" nbPrefix icon="move-outline"></nb-icon>
+                            <input [readOnly]="!showChange" fullWidth [(ngModel)]="parameter.label" placeholder="Label" nbInput size="small" />
+                        </nb-form-field>
+                        <nb-form-field style="width: 50%; float: left; margin-bottom: 1rem">
+                            <input [readOnly]="!showChange" fullWidth [(ngModel)]="parameter.value" placeholder="Value" nbInput size="small" />
+                            <nb-icon *ngIf="showChange" (click)="useRemoveParameter(k, campaignGroup)" style="cursor: pointer;" nbSuffix icon="trash-2-outline" status="danger"></nb-icon>
+                        </nb-form-field>
+                    </smooth-dnd-draggable>
+                </smooth-dnd-container>
+                <b *ngIf="!showChange && campaignGroup.value.parameters.length === 0">No parameters</b>
+                <button *ngIf="showChange" (click)="usePlusParameter(campaignGroup)" class="float-left" size="small" outline nbButton status="success">
+            Add parameter
+          </button>
+            </nb-card-body>
+            <nb-card-footer *ngIf="showChange" style="height: 4rem;">
+                <button (click)="useRemoveGroup(i)" class="float-left" size="small" outline nbButton status="danger">
+            Remove
+          </button>
+            </nb-card-footer>
+        </nb-card>
+        <b *ngIf="!showChange && campaign.campaignGroups.length === 0">No groups</b>
+        <button *ngIf="showChange && campaignGroups.controls.length < groups.length" (click)="usePlusGroup()" class="float-left" size="small" outline nbButton status="success">
+      Add group
+    </button>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+Change
+</button>
+        <button *ngIf="showChange" (click)="showChange = false;" class="float-right ml-1" size="small" outline nbButton status="basic">
+Cancel
+</button>
+        <button *ngIf="showChange" (click)="useChange()" class="float-right" size="small" outline nbButton status="info">
+Submit Change
+</button>
+    </nb-card-footer>
+</nb-card>

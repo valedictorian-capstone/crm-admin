@@ -5,6 +5,7 @@ import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { DealService, GlobalService } from '@services';
 import { DealVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-deal-kanban-sub-item',
@@ -36,12 +37,29 @@ export class DealKanbanSubItemComponent {
     protected readonly toastrService: NbToastrService,
     protected readonly router: Router,
   ) {
+
+  }
+  ngOnInit() {
+    if (this.deal.changing) {
+      this.useShowSpinner();
+    } else {
+      this.useHideSpinner();
+    }
   }
   useEdit() {
     this.globalService.triggerView$.next({ type: 'deal', payload: { deal: this.deal, fix: !this.isMain, for: this.for } });
   }
   useView() {
     this.router.navigate(['core/deal/' + this.deal.id]);
+  }
+  useUpdateStatus = (status: string) => {
+    this.useShowSpinner();
+    this.deal = { ...this.deal, changing: true };
+      this.service.update({
+        id: this.deal.id,
+        status
+      } as any)
+        .subscribe()
   }
   useCopy(data: string) {
     this.clipboard.copy(data);
@@ -54,5 +72,11 @@ export class DealKanbanSubItemComponent {
       this.sort.key = key;
     }
     this.useSortable.emit(this.sort);
+  }
+  useShowSpinner = () => {
+    this.spinner.show('deal-kanban-' + this.deal.id);
+  }
+  useHideSpinner = () => {
+    this.spinner.hide('deal-kanban-' + this.deal.id);
   }
 }

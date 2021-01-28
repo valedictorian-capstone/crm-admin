@@ -19,7 +19,7 @@ interface IProductSelectComponentState {
   styleUrls: ['./product-select.component.scss']
 })
 export class ProductSelect1Component implements OnInit, OnDestroy {
-  @Input() modelChange: EventEmitter<ProductVM> = new EventEmitter<ProductVM>();
+  @Output() modelChange: EventEmitter<ProductVM> = new EventEmitter<ProductVM>();
   @Input() control: FormControl;
   @Input() model: ProductVM;
   subscriptions: Subscription[] = [];

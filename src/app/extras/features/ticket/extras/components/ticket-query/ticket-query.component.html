@@ -1,3 +1,59 @@
-<p>
-  ticket-query works!
-</p>
+<nb-card class="m-0 w-100">
+    <nb-card-header class="p-0">
+        <div class="w-100" style="max-width: 100%; display: flex; overflow-x: auto;">
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput [(ngModel)]="search.range" (ngModelChange)="useSearch.emit(search)" style="height: 3rem;" fullWidth placeholder="Select range day" [nbDatepicker]="dayPicker" />
+                    <nb-rangepicker #dayPicker format="yyyy-MM-dd"></nb-rangepicker>
+                    <nb-icon *ngIf="search.range" icon="close-circle-outline" status="danger" nbSuffix (click)="search.range = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 12rem;">
+                <nb-form-field>
+                    <nb-select style="height: 3rem;" [(ngModel)]="search.types" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select types'">
+                        <nb-option value="other">Other</nb-option>
+                        <nb-option value="deal">Deal</nb-option>
+                    </nb-select>
+                </nb-form-field>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 12rem;">
+                <nb-form-field>
+                    <nb-select style="height: 3rem;" [(ngModel)]="search.statuss" (ngModelChange)="useSearch.emit(search)" fullWidth multiple [placeholder]="'Select statuss'">
+                        <nb-option value="not-start">Not Start</nb-option>
+                        <nb-option value="waiting">Waiting</nb-option>
+                        <nb-option value="have assignee">Has Assingee</nb-option>
+                        <nb-option value="resolve">Resolve</nb-option>
+                    </nb-select>
+                </nb-form-field>
+            </div>
+            <div *ngIf="isMain" class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="customerRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.customer?.fullname" style="height: 3rem;" fullWidth placeholder="Select customer" />
+                    <nb-icon *ngIf="search.customer" icon="close-circle-outline" status="danger" nbSuffix (click)="search.customer = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #customerRef="nzDropdownMenu">
+                    <app-customer-select [(model)]="search.customer" #customerSelect (modelChange)="search.customer = $event; useSearch.emit(search);"></app-customer-select>
+                </nz-dropdown-menu>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.assignee?.fullname" style="height: 3rem;" fullWidth placeholder="Select assignee" />
+                    <nb-icon *ngIf="search.assignee" icon="close-circle-outline" status="danger" nbSuffix (click)="search.assignee = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
+                    <app-employee-select [type]="'assignee'" [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
+                </nz-dropdown-menu>
+            </div>
+            <div class="float-left" style="display: inline-block; min-width: 15.5rem;">
+                <nb-form-field class="w-100">
+                    <input readonly nbInput nz-dropdown [nzDropdownMenu]="feedbackAssigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="search.feedbackAssignee?.fullname" style="height: 3rem;" fullWidth placeholder="Select feedbackAssignee"
+                    />
+                    <nb-icon *ngIf="search.feedbackAssignee" icon="close-circle-outline" status="danger" nbSuffix (click)="search.feedbackAssignee = undefined; useSearch.emit(search);"></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #feedbackAssigneeRef="nzDropdownMenu">
+                    <app-employee-select [type]="'feedbackAssignee'" [(model)]="search.feedbackAssignee" #employeeSelect (modelChange)="search.feedbackAssignee = $event; useSearch.emit(search);"></app-employee-select>
+                </nz-dropdown-menu>
+            </div>
+        </div>
+    </nb-card-header>
+</nb-card>

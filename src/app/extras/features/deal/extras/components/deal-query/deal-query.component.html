@@ -40,7 +40,7 @@
                     <nb-icon *ngIf="search.assignee" icon="close-circle-outline" status="danger" nbSuffix (click)="search.assignee = undefined; useSearch.emit(search);"></nb-icon>
                 </nb-form-field>
                 <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-                    <app-employee-select [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
+                    <app-employee-select [type]="'assignee'" [(model)]="search.assignee" #employeeSelect (modelChange)="search.assignee = $event; useSearch.emit(search);"></app-employee-select>
                 </nz-dropdown-menu>
             </div>
         </div>

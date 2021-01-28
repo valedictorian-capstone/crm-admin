@@ -1,0 +1,55 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'deal-product'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+<b>Value - ({{deal.dealDetails | money}})</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <nb-card class="w-100" *ngFor="let detail of details.controls; let i = index">
+            <nb-card-header class="p-0">
+                <nb-form-field style="width: 100%; margin-bottom: 1rem">
+                    <nb-icon icon="shopping-cart-outline" nbPrefix></nb-icon>
+                    <input fullWidth nz-dropdown [nzDropdownMenu]="productRef" [value]="detail.get('product').value?.name" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" placeholder="Select product" readonly nbInput size="small" *ngIf="showChange"
+                    />
+                    <input fullWidth nz-dropdown [value]="detail.get('product').value?.name" placeholder="Select product" readonly nbInput size="small" *ngIf="!showChange" />
+                    <nb-icon *ngIf="showChange" icon="arrow-down" nbSuffix></nb-icon>
+                </nb-form-field>
+                <nz-dropdown-menu #productRef="nzDropdownMenu">
+                    <app-product-select [control]="detail.get('product')"></app-product-select>
+                </nz-dropdown-menu>
+            </nb-card-header>
+            <nb-card-body>
+                <nb-form-field class="w-100">
+                    <input fullWidth nz-dropdown [formControl]="detail.get('quantity')" placeholder="Quantity" [readonly]="!showChange" nbInput size="small" />
+                </nb-form-field>
+            </nb-card-body>
+            <nb-card-footer style="height: 4rem;">
+                <button *ngIf="showChange" (click)="useRemoveDetail(i)" class="float-left" size="small" outline nbButton status="danger">
+                Remove
+              </button>
+                <span class="h-100 float-right display-flex align-items-center">
+              <b>Total: {{detail.get('product').value ? ([detail.value] | money) : 0}}</b>
+            </span>
+            </nb-card-footer>
+        </nb-card>
+        <b *ngIf="!showChange && deal.dealDetails.length === 0">No products</b>
+        <button *ngIf="showChange" (click)="usePlusDetail()" class="float-left" size="small" outline nbButton status="success">
+          Add product
+        </button>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+  Change
+</button>
+        <button *ngIf="showChange" (click)="showChange = false; useReset()" class="float-right ml-1" size="small" outline nbButton status="basic">
+  Cancel
+</button>
+        <button *ngIf="showChange" (click)="useChange()" [disabled]="details.invalid" class="float-right" size="small" outline nbButton status="info">
+  Submit Change
+</button>
+    </nb-card-footer>
+</nb-card>

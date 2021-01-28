@@ -1,0 +1,64 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'deal-assignee'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+    <b>Assignee</b>
+  </span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <div class="w-100 display-block float-left" *ngIf="!showChange && deal.assignee">
+            <div class="w-100 display-flex mb-2 justify-content-center align-items-center" style="height: 8rem;">
+                <div class="display-flex justify-content-center align-items-center" style="height: 6rem; width: 6rem; border-radius: 50%; border: 2px solid #e5e5e5;">
+                    <b *ngIf="!deal.assignee.avatar">{{deal.assignee.fullname | key}}</b>
+                    <img *ngIf="deal.assignee.avatar" [src]="deal.assignee.avatar" style="height: 6rem; width: 6rem; border-radius: 50%;" />
+                </div>
+            </div>
+            <nb-form-field class="w-100 mb-2">
+                <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.assignee.fullname" />
+            </nb-form-field>
+            <nb-form-field class="w-100 mb-2">
+                <nb-icon (click)="useMail()" icon="email-outline" status="danger" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.assignee.email" />
+            </nb-form-field>
+            <nb-form-field class="w-100">
+                <nb-icon (click)="usePhone()" icon="phone-outline" status="success" nbPrefix></nb-icon>
+                <input readonly style="height: 3rem;" size="small" status="info" nbInput fullWidth [value]="deal.assignee.phone" />
+            </nb-form-field>
+        </div>
+        <div class="w-100 display-block float-left" *ngIf="showChange || !deal.assignee">
+            <nb-form-field class="w-100" *ngIf="canAssign">
+                <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                <input readonly nbInput nz-dropdown [nzDropdownMenu]="assigneeRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="selectedAccount ? (selectedAccount.fullname + (deal.assignee?.id === selectedAccount?.id ? ' (Choose another one)' : '')) : ''"
+                    style="height: 3rem;" fullWidth placeholder="Select assignee" />
+            </nb-form-field>
+            <nb-form-field class="w-100" *ngIf="!canAssign">
+                <nb-icon icon="person-outline" nbPrefix></nb-icon>
+                <input readonly nbInput nz-dropdown value="None" style="height: 3rem;" fullWidth placeholder="Select assignee" />
+            </nb-form-field>
+            <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
+                <app-employee-select [type]="'assignee'" [(model)]="selectedAccount" #employeeSelect (modelChange)="selectedAccount = $event;"></app-employee-select>
+            </nz-dropdown-menu>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show && canAssign">
+        <button *ngIf="!showChange && deal.assignee" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+    Change
+  </button>
+        <button *ngIf="showChange && deal.assignee" (click)="showChange = false; selectedAccount = undefined" class="float-right ml-1" size="small" outline nbButton status="basic">
+    Cancel
+  </button>
+        <button *ngIf="showChange || !deal.assignee" (click)="useChange(selectedAccount)" [disabled]="!selectedAccount || deal.assignee?.id === selectedAccount?.id" class="float-right" size="small" outline nbButton status="info">
+    Submit Change
+  </button>
+
+    </nb-card-footer>
+    <nb-card-footer *ngIf="show && !canAssign && !deal.assignee">
+        <button (click)="useChange(you)" class="float-right" size="small" outline nbButton status="info">
+  Assgin Me
+</button>
+    </nb-card-footer>
+</nb-card>
