@@ -35,7 +35,7 @@ interface IActivitySavePagePayload {
   campaign: CampaignVM;
   inside: boolean;
   fix: boolean;
-  for: 'campaign' | 'deal'
+  for: 'campaign' | 'deal' | 'main'
 }
 
 @Component({
@@ -51,7 +51,7 @@ export class ActivitySaveModal implements OnInit, OnChanges, OnDestroy {
     campaign: undefined,
     inside: false,
     fix: false,
-    for: 'deal'
+    for: 'main'
   };
   @Output() useClose: EventEmitter<any> = new EventEmitter<any>();
   @Output() useDone: EventEmitter<ActivityVM> = new EventEmitter<ActivityVM>();
@@ -113,9 +113,6 @@ export class ActivitySaveModal implements OnInit, OnChanges, OnDestroy {
     } else {
       this.useInput();
     }
-    if (this.payload.for) {
-      this.state.form.get('for').setValue(this.payload.for);
-    }
   }
   ngOnChanges() {
     this.useInput();
@@ -158,8 +155,8 @@ export class ActivitySaveModal implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.push(subscription);
   }
   useInput = () => {
-    this.state.form.get('deal').setValue(this.payload.deal);
-    this.state.form.get('campaign').setValue(this.payload.campaign);
+    // this.state.form.get('deal').setValue(this.payload.deal);
+    // this.state.form.get('campaign').setValue(this.payload.campaign);
     if (this.payload.time) {
       this.state.form.get('dateStart').setValue(this.payload.time);
       this.state.form.get('dateEnd').setValue(new Date(this.payload.time.getTime() + 86400000));
@@ -181,8 +178,8 @@ export class ActivitySaveModal implements OnInit, OnChanges, OnDestroy {
       this.useShowSpinner();
       const subscription = (this.payload.activity ? this.service.update : this.service.insert)({
         ...this.state.form.value,
-        campaign: this.state.form.value.for === 'campaign' ? this.state.form.value.campaign : undefined,
-        deal: this.state.form.value.for === 'deal' ? this.state.form.value.deal : undefined,
+        campaign: this.payload.campaign,
+        deal: this.payload.deal
       })
         .pipe(
           tap((data) => {
@@ -250,33 +247,12 @@ export class ActivitySaveModal implements OnInit, OnChanges, OnDestroy {
       for: new FormControl('deal'),
       status: new FormControl('processing'),
       dateStart: new FormControl(new Date(), [Validators.required]),
-      deal: new FormControl(undefined, [Validators.required]),
-      campaign: new FormControl(undefined),
+      // deal: new FormControl(undefined, [Validators.required]),
+      // campaign: new FormControl(undefined),
       dateEnd: new FormControl(new Date(new Date().getTime() + (86400000 * 30)), [Validators.required]),
       description: new FormControl(''),
       assignee: new FormControl(undefined, [Validators.required]),
     });
-    this.subscriptions.push(
-      this.state.form.get('for').valueChanges
-        .pipe(
-          tap((data) => {
-            this.state.form.get('deal').setValidators([]);
-            this.state.form.get('deal').setErrors(null);
-            this.state.form.get('campaign').setValidators([]);
-            this.state.form.get('campaign').setErrors(null);
-            switch (data) {
-              case 'deal':
-                this.state.form.get('deal').setValidators([Validators.required]);
-                break;
-              case 'campaign':
-                this.state.form.get('campaign').setValidators([Validators.required]);
-                break;
-              default:
-                break;
-            }
-          })
-        ).subscribe()
-    );
   }
   useShowSpinner = () => {
     this.spinner.show('activity-save');

@@ -1,0 +1,93 @@
+.datatable-item {
+    white-space: nowrap;
+    width: 100%;
+    .select {
+        display: inline-block;
+        position: relative;
+        nb-checkbox {
+            width: 3rem;
+            height: 3rem;
+            top: 0.5rem;
+            left: 0.5rem;
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+    }
+    .check {
+        display: inline-block;
+        position: relative;
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+        nb-icon {
+            position: absolute;
+            top: 1rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            left: 1rem;
+        }
+    }
+    .action {
+        display: inline-block;
+        position: relative;
+        .field {
+            display: inline-block;
+            width: 4rem;
+            nb-form-field {
+                input {
+                    height: 4rem;
+                }
+            }
+        }
+        button {
+            position: absolute;
+            top: 1rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            left: 1rem;
+        }
+    }
+    .field {
+        display: inline-block;
+        width: 15rem;
+        &.short {
+            width: 5rem;
+        }
+        &.medium {
+            width: 10rem;
+        }
+        &.large {
+            width: 15rem;
+        }
+        &.gaint {
+            width: 20rem;
+        }
+        &.b-gaint {
+            min-width: 20rem;
+            width: calc(100% - 57rem);
+        }
+        input {
+            height: 4rem;
+        }
+    }
+}

@@ -14,7 +14,7 @@
         <b class="text-capitalize"><nb-icon icon="flag-outline"></nb-icon> {{campaign.status}} (Status)</b><br>
         <b><nb-icon icon="flag-outline"></nb-icon> {{campaign.pipeline.name}} (Process)</b><br>
         <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateStart | date: 'hh:mm dd/MM/yyyy'}} (Start)</b><br>
-        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br>
+        <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="campaign.description ? campaign.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>

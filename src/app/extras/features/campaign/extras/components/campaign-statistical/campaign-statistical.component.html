@@ -1,0 +1,14 @@
+<nb-card class="w-100" *ngIf="total">
+    <nb-card-header>
+        <span class="h-100 display-flex align-items-center float-left">
+      <b>Statistical Deal's Situation In Campaign</b>
+      </span>
+        <button class="float-right ml-1" (click)="showTotal = !showTotal" outline nbButton size="small">
+      <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body>
+        <div echarts [options]="total" class="chart">
+        </div>
+    </nb-card-body>
+</nb-card>

@@ -7,6 +7,12 @@ import { TicketMainPage } from './pages';
 // import { } from './directives';
 // import { } from './pipes';
 import { TicketRoutes } from './ticket.routing';
+
+import {
+  TicketMainContainer,
+  // TicketDetailContainer
+} from './containers';
+const CONTAINERS = [TicketMainContainer];
 const COMPONENTS = [
   TicketSearchComponent
 ];
@@ -27,6 +33,6 @@ const DIRECTIVES = [
     ExtrasModule.forChild(),
     TicketRoutes
   ],
-  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES]
+  declarations: [...PAGES, ...COMPONENTS, ...PIPES, ...DIRECTIVES, ...CONTAINERS]
 })
 export class TicketModule { }

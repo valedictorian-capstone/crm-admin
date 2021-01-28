@@ -30,7 +30,7 @@ interface INoteSavePagePayload {
   templateUrl: './note-save.modal.html',
   styleUrls: ['./note-save.modal.scss']
 })
-export class NoteSaveModal implements OnInit, OnChanges, OnDestroy {
+export class NoteSaveModal implements OnInit, OnDestroy {
   @Input() payload: INoteSavePagePayload = {
     note: undefined,
     deal: undefined,
@@ -86,44 +86,12 @@ export class NoteSaveModal implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     if (this.payload.note) {
       this.useSetData();
-    } else {
-      this.useInput();
     }
-    if (this.payload.for) {
-      this.state.form.get('for').setValue(this.payload.for);
-    }
-  }
-  ngOnChanges() {
-    this.useInput();
   }
   useInitForm = () => {
     this.state.form = new FormGroup({
       description: new FormControl(''),
-      for: new FormControl('deal'),
-      campaign: new FormControl(undefined),
-      deal: new FormControl(this.payload.deal, [Validators.required]),
     });
-    this.subscriptions.push(
-      this.state.form.get('for').valueChanges
-        .pipe(
-          tap((data) => {
-            this.state.form.get('deal').setValidators([]);
-            this.state.form.get('deal').setErrors(null);
-            this.state.form.get('campaign').setValidators([]);
-            this.state.form.get('campaign').setErrors(null);
-            switch (data) {
-              case 'deal':
-                this.state.form.get('deal').setValidators([Validators.required]);
-                break;
-              case 'campaign':
-                this.state.form.get('campaign').setValidators([Validators.required]);
-                break;
-              default:
-                break;
-            }
-          })
-        ).subscribe()
-    );
   }
   useSetData = () => {
     this.useShowSpinner();
@@ -142,10 +110,6 @@ export class NoteSaveModal implements OnInit, OnChanges, OnDestroy {
       .subscribe();
     this.subscriptions.push(subscription);
   }
-  useInput = () => {
-    this.state.form.get('deal').setValue(this.payload.deal);
-    this.state.form.get('campaign').setValue(this.payload.campaign);
-  }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
   }
@@ -157,8 +121,8 @@ export class NoteSaveModal implements OnInit, OnChanges, OnDestroy {
       this.useShowSpinner();
       const subscription = (this.payload.note ? this.service.update : this.service.insert)({
         ...this.state.form.value,
-        campaign: this.state.form.value.for === 'campaign' ? this.state.form.value.campaign : undefined,
-        deal: this.state.form.value.for === 'deal' ? this.state.form.value.deal : undefined,
+        campaign: this.payload.campaign,
+        deal: this.payload.deal,
       })
         .pipe(
           tap((data) => {

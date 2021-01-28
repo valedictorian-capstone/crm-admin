@@ -100,7 +100,16 @@ import {
   DealSaveModal,
   DealSelect1Component,
   DealKanbanSubItemComponent,
-  DealSolveCheckComponent
+  DealSolveCheckComponent,
+  DealInformationComponent,
+  DealAssigneeComponent,
+  DealCampaignComponent,
+  DealCustomerComponent,
+  DealFeedbackAssigneeComponent,
+  DealFeedbackComponent,
+  DealStageComponent,
+  DealStatisticalComponent,
+  DealProductComponent
 } from './features/deal';
 import {
   NoteAddComponent,
@@ -136,7 +145,10 @@ import {
   CampaignSaveModal,
   CampaignSelect1Component,
   CampaignSolveCheckComponent,
-  CampaignInformationComponent
+  CampaignInformationComponent,
+  CampaignGroupComponent,
+  CampaignFollowingComponent,
+  CampaignStatisticalComponent
 } from './features/campaign';
 import {
   PipelineAddComponent,
@@ -225,7 +237,8 @@ import {
   EmployeeSaveModal,
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
-  EmployeeRoleComponent
+  EmployeeRoleComponent,
+  EmployeeInformationComponent
 } from './features/employee';
 import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -304,6 +317,7 @@ export const FEATURES = [
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
   EmployeeRoleComponent,
+  EmployeeInformationComponent,
 
   CustomerAddComponent,
   CustomerCardArea,
@@ -352,6 +366,9 @@ export const FEATURES = [
   CampaignSelect1Component,
   CampaignSolveCheckComponent,
   CampaignInformationComponent,
+  CampaignGroupComponent,
+  CampaignFollowingComponent,
+  CampaignStatisticalComponent,
 
   ActivityAddComponent,
   ActivityCalendarArea,
@@ -383,6 +400,15 @@ export const FEATURES = [
   DealSaveModal,
   DealSelect1Component,
   DealSolveCheckComponent,
+  DealInformationComponent,
+  DealAssigneeComponent,
+  DealCampaignComponent,
+  DealCustomerComponent,
+  DealFeedbackAssigneeComponent,
+  DealFeedbackComponent,
+  DealStageComponent,
+  DealStatisticalComponent,
+  DealProductComponent,
 
   AttachmentAddComponent,
   AttachmentCardArea,

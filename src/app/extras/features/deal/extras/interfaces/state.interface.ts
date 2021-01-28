@@ -21,4 +21,8 @@ export interface IDealDetailState {
   id: string;
   main: DealVM;
   you?: AccountVM;
+  canUpdate?: boolean;
+  canAssign?: boolean;
+  canGetAssign?: boolean;
+  canGetFeedback?: boolean;
 }

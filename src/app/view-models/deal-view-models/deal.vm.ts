@@ -12,7 +12,7 @@ export interface DealVM {
   campaign: CampaignVM;
   feedbackAssignee: AccountVM;
   feedbackMessage: string;
-  feedbackStatus: boolean;
+  feedbackStatus: string;
   feedbackRating: number;
   feedbackAssigneeRating: number;
   dealDetails: DealDetailVM[];
@@ -51,7 +51,7 @@ export interface DealUM {
   feedbackAssignee: AccountVM;
   feedbackAssigneeRating: number;
   feedbackMessage: string;
-  feedbackStatus: boolean;
+  feedbackStatus: string;
   feedbackRating: number;
   dealDetails: DealDetailVM[];
 }

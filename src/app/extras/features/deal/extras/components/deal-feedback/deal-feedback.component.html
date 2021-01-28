@@ -1,0 +1,29 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'deal-feedback'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+<b>Feedback</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" class="mt-3">Rating about quality of deal</span>
+        <bar-rating [formControl]="feedbackRating" [rate]="feedbackRating.value" [readOnly]="!showChange" [max]="5" [theme]="'stars'"></bar-rating>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" class="mt-3">Rating about employee's attitude</span>
+        <bar-rating [formControl]="feedbackAssigneeRating" [rate]="feedbackAssigneeRating.value" [readOnly]="!showChange" [max]="5" [theme]="'stars'"></bar-rating>
+        <textarea [formControl]="feedbackMessage" [readOnly]="!showChange" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+Change
+</button>
+        <button *ngIf="showChange" (click)="showChange = false; useReset()" class="float-right ml-1" size="small" outline nbButton status="basic">
+Cancel
+</button>
+        <button *ngIf="showChange" (click)="useChange()" class="float-right" size="small" outline nbButton status="info">
+Submit Change
+</button>
+    </nb-card-footer>
+</nb-card>

@@ -4,4 +4,5 @@ export * from './employee-query/employee-query.component';
 export * from './employee-select/employee-select.component';
 export * from './employee-type/employee-type.component';
 export * from './employee-role/employee-role.component';
+export * from './employee-information/employee-information.component';
 export * from './employee-solve-check/employee-solve-check.component';

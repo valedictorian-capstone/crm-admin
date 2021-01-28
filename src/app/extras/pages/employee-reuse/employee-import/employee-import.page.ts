@@ -206,9 +206,9 @@ export class EmployeeImportPage implements OnInit, OnChanges, OnDestroy {
       input.nodeValue = undefined;
     } else {
       if (['image/png', 'image/jpeg', 'image/jpg'].includes(files[0].type)) {
-        if (files[0].size > 1024 * 1024 * 18) {
+        if (files[0].size > 1024 * 1024 * 2) {
           form.get('errorImage').setValue(true);
-          form.get('errorImageMessage').setValue('Only image size less than 18MB accept');
+          form.get('errorImageMessage').setValue('Only image size less than 2MB accept');
           input.nodeValue = undefined;
         } else {
           const reader = new FileReader();

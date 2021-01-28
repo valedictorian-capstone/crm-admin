@@ -84,7 +84,7 @@
         }
         &.b-gaint {
             min-width: 20rem;
-            width: 56vw;
+            width: calc(100% - 23rem);
         }
         input {
             height: 4rem;

@@ -1,3 +1,23 @@
-<p>
-  ticket-export works!
-</p>
+<button class="float-right mr-1" (click)="useExport(export)" status="success" outline nbButton size="small">
+  <nb-icon icon="download-outline"></nb-icon>
+</button>
+<table #export style="display: none">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>type</th>
+            <th>status</th>
+            <th>customer</th>
+            <th>assignee</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of data">
+            <th>{{ item.id }}</th>
+            <th>{{ item.type }}</th>
+            <th>{{ item.status }}</th>
+            <th>{{ item.customer.fullname }}</th>
+            <th>{{ item.assignee?.fullname }}</th>
+        </tr>
+    </tbody>
+</table>

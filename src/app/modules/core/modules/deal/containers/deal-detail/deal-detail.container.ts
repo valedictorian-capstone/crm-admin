@@ -54,9 +54,10 @@ export class DealDetailContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              // this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              // this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              // this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+              this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+              this.state.canGetAssign = this.state.you.roles.filter((role) => role.canGetAssignDeal).length > 0;
+              this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
             }
           })
         )

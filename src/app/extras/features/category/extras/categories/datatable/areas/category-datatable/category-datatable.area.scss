@@ -4,6 +4,9 @@
     min-height: calc(100vh - 21rem - 56px);
     overflow-y: auto;
     min-width: 100%;
+    &::-webkit-scrollbar {
+        width: 0;
+    }
     &.un-main {
         min-height: 20rem;
         max-height: 20rem;

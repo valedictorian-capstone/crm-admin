@@ -72,6 +72,7 @@ export class LayoutPage implements OnInit {
   }
   useSocket = () => {
     this.authService.triggerValue$.subscribe((data) => {
+      console.log(data);
       this.you = data;
       if (Math.min(...data.roles.map((e) => e.level)) <= 0) {
         this.canSetting = true;

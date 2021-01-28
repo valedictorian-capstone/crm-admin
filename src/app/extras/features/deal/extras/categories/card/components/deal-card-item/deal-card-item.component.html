@@ -1,5 +1,6 @@
-<nb-card class="w-per-95 m-auto">
+<nb-card class="w-per-95 m-auto position-relative">
     <nb-card-header>
+        <ngx-spinner [name]="'deal-card-' + deal.id" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
         <nb-checkbox (checkedChange)="control.setValue($event); useItemCheck.emit()" class="float-left display-flex align-items-center" style="height: 2rem;"></nb-checkbox>
         <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
       <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
@@ -8,10 +9,11 @@
     <nb-card-body *ngIf="show">
         <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{deal.title}} (Title)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{deal.customer.fullname}} (Customer)</b><br>
-        <b><nb-icon icon="person-outline"></nb-icon> {{deal.assignee.fullname}} (Assignee)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{deal.assignee ? deal.assignee.fullname : 'None'}} (Assignee)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{deal.feedbackAssignee ? deal.feedbackAssignee.fullname : 'None'}} (Feedback Assignee)</b><br>
         <b><nb-icon icon="arrowhead-right-outline"></nb-icon> {{deal.stage.name}} (Stage)</b><br>
         <b><nb-icon icon="browser-outline"></nb-icon> {{deal.stage.pipeline.name}} (Process)</b><br>
-        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
+        <b [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
         <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{deal.campaign ? deal.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" />
         <b><nb-icon icon="receipt" pack="font-awesome"></nb-icon> {{deal.dealDetails | money}} (Value)</b><br><br>
         <nb-form-field class="w-100">
@@ -25,8 +27,17 @@
         <button (click)="useView()" class="float-left" size="small" outline nbButton status="info">
     <nb-icon icon="eye-outline"></nb-icon>
   </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <button (click)="useEdit()" class="float-right ml-1" size="small" outline nbButton status="info">
     <nb-icon icon="edit-2-outline"></nb-icon>
+  </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('won')" class="float-right ml-1" size="small" outline nbButton status="success">
+    Won
+  </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('lost')" class="float-right ml-1" size="small" outline nbButton status="danger">
+    Lost
+  </button>
+        <button *ngIf="deal.feedbackStatus === 'not-start' && (deal.status === 'won' || deal.status === 'lost')" (click)="useUpdateStatus('processing')" class="float-right ml-1" size="small" outline nbButton status="info">
+    Reopen
   </button>
     </nb-card-footer>
 </nb-card>

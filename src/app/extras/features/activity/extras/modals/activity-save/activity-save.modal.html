@@ -65,9 +65,9 @@
         </nb-form-field>
         <span *ngIf="state.form.get('assignee').invalid && (state.form.get('assignee').touched || state.form.get('assignee').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select owner</span>
         <nz-dropdown-menu #assigneeRef="nzDropdownMenu">
-            <app-employee-select #employeeSelect [control]="state.form.get('assignee')"></app-employee-select>
+            <app-employee-select [type]="payload.deal ? 'assignee' : 'all'" #employeeSelect [control]="state.form.get('assignee')"></app-employee-select>
         </nz-dropdown-menu>
-        <nb-form-field [style.display]="payload.fix ? 'none' : 'block'" style="width: 100%; max-width: 100%; margin-bottom: 1rem; float: left;">
+        <!-- <nb-form-field [style.display]="payload.fix ? 'none' : 'block'" style="width: 100%; max-width: 100%; margin-bottom: 1rem; float: left;">
             <nb-select style="width: 100%; height: 3rem;" fullWidth placeholder="For" [formControl]="state.form.get('for')">
                 <nb-option value="campaign">For campaign</nb-option>
                 <nb-option value="deal">For deal</nb-option>
@@ -94,7 +94,7 @@
         <span *ngIf="state.form.get('campaign').invalid && (state.form.get('campaign').touched || state.form.get('campaign').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select campaign</span>
         <nz-dropdown-menu #campaignRef="nzDropdownMenu">
             <app-campaign-select #campaignSelect [control]="state.form.get('campaign')"></app-campaign-select>
-        </nz-dropdown-menu>
+        </nz-dropdown-menu> -->
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description</span>
         <angular-editor [formControl]="state.form.get('description')" [config]="state.config"></angular-editor>
     </nb-card-body>

@@ -1,22 +1,35 @@
-<nb-card class="w-per-95 m-auto" [class.canDrag]="deal?.status === 'processing' && !deal.changing" [class.dragging]="dragging" [class.changing]="deal.changing">
-    <!-- <nb-card-header>
-    </nb-card-header> -->
+<nb-card class="w-per-95 m-auto position-relative" [class.canDrag]="deal?.status === 'processing' && !deal.changing" [class.dragging]="dragging">
+    <ngx-spinner [name]="'deal-kanban-' + deal.id" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="height: 4rem; padding: 1rem 1rem;">
+        <span class="display-flex h-100 align-items-center float-left">
+        <b class="text-capitalize" [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'" style="font-family: monospace sans-serif;">{{deal.status}}</b>
+      </span>
+        <button [disabled]="deal.changing" *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('won')" class="float-right ml-1" size="small" outline nbButton status="success">
+        Won
+      </button>
+        <button [disabled]="deal.changing" *ngIf="deal.feedbackStatus === 'not-start' && deal.status === 'processing'" (click)="useUpdateStatus('lost')" class="float-right ml-1" size="small" outline nbButton status="danger">
+        Lost
+      </button>
+        <button [disabled]="deal.changing" *ngIf="deal.feedbackStatus === 'not-start' && (deal.status === 'won' || deal.status === 'lost')" (click)="useUpdateStatus('processing')" class="float-right ml-1" size="small" outline nbButton status="info">
+        Reopen
+      </button>
+    </nb-card-header>
     <nb-card-body>
         <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{deal.title}} (Title)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{deal.customer.fullname}} (Customer)</b><br>
         <b><nb-icon icon="person-outline"></nb-icon> {{deal.assignee.fullname}} (Assignee)</b><br>
-        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
+        <b style="text-transform: capitalize;" [class.text-danger]="deal.status === 'lost' || deal.status === 'expried'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br>
         <b *ngIf="isMain"><nb-icon icon="gift-outline"></nb-icon> {{deal.campaign ? deal.campaign.name : 'None'}} (Campaign)</b><br *ngIf="isMain" />
         <b><nb-icon icon="receipt" pack="font-awesome"></nb-icon> {{deal.dealDetails | money}} (Value)</b><br><br>
     </nb-card-body>
     <nb-card-footer>
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+        <button [disabled]="deal.changing" (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
   <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useView()" class="float-left" size="small" outline nbButton status="info">
+        <button [disabled]="deal.changing" (click)="useView()" class="float-left" size="small" outline nbButton status="info">
   <nb-icon icon="eye-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <button [disabled]="deal.changing" (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
   <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
     </nb-card-footer>

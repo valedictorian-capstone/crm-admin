@@ -1,0 +1,18 @@
+<nb-card class="w-100">
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+  <b>Campaign</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}}</b><br>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show">
+        <button (click)="useView()" class="float-right" size="small" outline nbButton status="info">
+<nb-icon icon="eye-outline"></nb-icon>
+</button>
+    </nb-card-footer>
+</nb-card>
