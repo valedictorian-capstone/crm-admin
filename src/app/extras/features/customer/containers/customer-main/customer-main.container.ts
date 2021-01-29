@@ -83,9 +83,9 @@ export class CustomerMainContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateCustomer).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCustomer).length > 0;
+              this.state.canImport = this.state.you.roles.filter((role) => role.canImportCustomer).length > 0;
             }
           })
         )

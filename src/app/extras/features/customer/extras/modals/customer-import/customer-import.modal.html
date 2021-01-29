@@ -1,3 +1,237 @@
-<p>
-  customer-import works!
-</p>
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'customer-import'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false">
+        <b>Check {{state.formArray.length}} customers...</b>
+    </ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5; text-transform: capitalize;">
+        Import Customer
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body>
+        <button *ngIf="state.formArray.length > 0" (click)="useReset()" class="mb-1 mr-1" nbButton size="small" status="info" outline>
+        Change
+      </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('all')" class="mb-1 mr-1" nbButton size="small" status="default" outline>
+        All: {{state.formArray.length}}
+      </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('error')" class="mb-1 mr-1" nbButton size="small" status="danger" outline>
+        Error: {{useCheck().error}}
+      </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('success')" class="mb-1" nbButton size="small" status="success" outline>
+        Success: {{useCheck().success}}
+      </button>
+        <nz-upload *ngIf="state.formArray.length === 0" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="false">
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band datas
+            </p>
+        </nz-upload>
+
+        <div *ngIf="state.formArray.length > 0" style="width: fit-content; max-width: 100%; overflow-x: auto;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Status</th>
+                        <th>Fullname</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>BirthDay</th>
+                        <th>Gender</th>
+                        <th>Total Spending</th>
+                        <th>Total Deal</th>
+                        <th>Total Deal Won</th>
+                        <th>Skype Name</th>
+                        <th>Facebook</th>
+                        <th>Twitter</th>
+                        <th>Street</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of state.paginationArray;">
+                        <th>
+                            <div class="display-flex justify-content-center align-items-center" style="height: 5rem; width: 5rem;">
+                                <b>{{item.extra.position + 1}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="display-flex justify-content-center align-items-center" style="height: 5rem; width: 5rem;">
+                                <nb-icon [status]="state.formArray[item.extra.position].data.valid ? 'success' : 'danger'" [icon]="state.formArray[item.extra.position].data.valid ? 'checkmark-outline' : 'close-outline'"></nb-icon>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Fullname" [formControl]="state.formArray[item.extra.position].data.get('fullname')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('fullname').invalid">{{(state.formArray[item.extra.position].data.get('fullname').valid ? '' : 'Must Required')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Email" [formControl]="state.formArray[item.extra.position].data.get('email')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('email').invalid || item.extra.email.error">{{item.extra.email.error ? item.extra.email.error : (state.formArray[item.extra.position].data.get('email').valid ? '': 'Must Required and True Format Email')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Phone" [formControl]="state.formArray[item.extra.position].data.get('phone')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('phone').invalid || item.extra.phone.error">{{item.extra.phone.error ? item.extra.phone.error : (state.formArray[item.extra.position].data.get('phone').valid ? '': 'Must Required And True Format Phone')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input style="height: 3rem;" readonly fullWidth [value]="state.formArray[item.extra.position].data.get('birthDay').value ? (state.formArray[item.extra.position].data.get('birthDay').value | date: 'dd/MM/yyyy') : 'None'" (focus)="item.extra.showBirthday = true"
+                                        [nzVisible]="item.extra.showBirthday" placeholder="Birthday" nz-dropdown [nzDropdownMenu]="birthDayRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('birthDay').invalid">{{(state.formArray[item.extra.position].data.get('birthDay').valid ? '' : 'Must Required')}}</b>
+                                <nz-dropdown-menu #birthDayRef="nzDropdownMenu">
+                                    <app-support-date [date]="state.formArray[item.extra.position].data.get('birthDay').value" [max]="state.max" [min]="state.min" (useChange)="state.formArray[item.extra.position].data.get('birthDay').setValue($event); item.extra.showBirthday = false"></app-support-date>
+                                </nz-dropdown-menu>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <nb-select style="width: 100%; height: 3rem;" fullWidth placeholder="Gender" [formControl]="state.formArray[item.extra.position].data.get('gender')">
+                                        <nb-option value="-1">-None-</nb-option>
+                                        <nb-option value="0">Male</nb-option>
+                                        <nb-option value="1">Female</nb-option>
+                                        <nb-option value="2">Other</nb-option>
+                                    </nb-select>
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input type="number" nbInput style="height: 3rem;" fullWidth placeholder="Total Spending" [formControl]="state.formArray[item.extra.position].data.get('totalSpending')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('totalSpending').invalid">{{(state.formArray[item.extra.position].data.get('totalSpending').valid ? '' : 'Must Required and Equal than 0')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input type="number" nbInput style="height: 3rem;" fullWidth placeholder="Total Deal" [formControl]="state.formArray[item.extra.position].data.get('totalDeal')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('totalDeal').invalid">{{(state.formArray[item.extra.position].data.get('totalDeal').valid ? '' : 'Must Required and Equal than 0')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput type="number" style="height: 3rem;" fullWidth placeholder="Total Deal Won" [formControl]="state.formArray[item.extra.position].data.get('totalDealWon')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('totalDealWon').invalid">{{(state.formArray[item.extra.position].data.get('totalDealWon').valid ? '' : 'Must Required and Equal than 0')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Skype Name" [formControl]="state.formArray[item.extra.position].data.get('skypeName')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Facebook" [formControl]="state.formArray[item.extra.position].data.get('facebook')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Twitter" [formControl]="state.formArray[item.extra.position].data.get('twitter')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Street" [formControl]="state.formArray[item.extra.position].data.get('street')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="City" [formControl]="state.formArray[item.extra.position].data.get('city')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="State" [formControl]="state.formArray[item.extra.position].data.get('state')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Country" [formControl]="state.formArray[item.extra.position].data.get('country')" />
+                                </nb-form-field>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="display-flex justify-content-center align-items-center" style="height: 5rem; width: 5rem;">
+                                <button (click)="useRemoveCustomer(item.extra.position)" nbButton size="small" status="danger" outline>
+                          <nb-icon icon="trash-2-outline"></nb-icon>
+                        </button>
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="state.maxCount.length > 0" class="display-flex justify-content-center align-items-center w-100 mt-2" style="height: fit-content;">
+            <div>
+                <button class="mx-1 mb-1" *ngFor="let item of state.maxCount" (click)="useIndex(item)" nbButton size="small" status="info" outline>
+              {{item}}
+            </button>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="useCheck().error > 0 || state.formArray.length === 0" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="primary" nbButton size="small" (click)="useSubmit(ref)">Save and hide</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="default" nbButton size="small" (click)="ref.close(); useClose.emit();">Hide modal</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

@@ -93,7 +93,8 @@ export class CampaignStatisticalComponent {
                   }
                 }
               }
-            ]
+            ],
+            color: ['#17a2b8', '#28a745', '#dc3545', '#dc3545'],
           };
           console.log('total:', this.total)
         })

@@ -14,6 +14,7 @@
         <app-customer-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-customer-type>
         <app-customer-export [data]="state.array"></app-customer-export>
         <app-customer-add [canAdd]="state.canAdd"></app-customer-add>
+        <app-customer-import [canImport]="state.canImport"></app-customer-import>
     </nb-card-header>
     <nb-card-body class="p-0" *ngIf="isMain || state.show">
         <div class="query">

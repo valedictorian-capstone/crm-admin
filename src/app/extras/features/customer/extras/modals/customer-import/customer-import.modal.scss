@@ -1,0 +1,12 @@
+nb-card {
+    width: 95vw;
+    margin-top: 29px;
+    b {
+        font-family: monospace, sans-serif;
+    }
+    nb-card-body {
+        max-height: calc(100vh - 238px);
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+}

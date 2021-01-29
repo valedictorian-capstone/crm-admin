@@ -26,9 +26,9 @@
             </nz-upload>
         </div>
         <div class="mt-2">
-            <app-customer-import [data]="state.data" *ngIf="state.type === 'customer'" (useChange)="state.data = undefined" (useTextLoading)="text = $event" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
+            <!-- <app-customer-import [data]="state.data" *ngIf="state.type === 'customer'" (useChange)="state.data = undefined" (useTextLoading)="text = $event" (useLoading)="useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-customer-import>
             <app-product-import [data]="state.data" *ngIf="state.type === 'product'" (useChange)="state.data = undefined" (useLoading)="text = $event; useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-product-import>
-            <app-employee-import [data]="state.data" *ngIf="state.type === 'employee'" (useChange)="state.data = undefined" (useLoading)="text = $event; useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import>
+            <app-employee-import [data]="state.data" *ngIf="state.type === 'employee'" (useChange)="state.data = undefined" (useLoading)="text = $event; useShowSpinner()" (useUnLoading)="useHideSpinner()"></app-employee-import> -->
         </div>
     </nb-card-body>
 </nb-card>
