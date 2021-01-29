@@ -11,7 +11,7 @@ interface ICustomerImportPageState {
   page: number;
 }
 @Component({
-  selector: 'app-customer-import',
+  selector: 'app-customer-r-import',
   templateUrl: './customer-import.page.html',
   styleUrls: ['./customer-import.page.scss'],
 })

@@ -10,7 +10,8 @@
     </nb-card-header>
     <nb-card-body *ngIf="show">
         <b><nb-icon icon="donate" pack="font-awesome"></nb-icon> {{deal.title}} (Title)</b><br>
-        <b style="text-transform: capitalize;"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br><br>
+        <b><nb-icon icon="car-outline"></nb-icon> {{deal.service ? deal.service : 'None'}} (Service)</b><br>
+        <b style="text-transform: capitalize;" [class.text-danger]="deal.status === 'lost' || deal.status === 'expired'" [class.text-success]="deal.status === 'won'" [class.text-info]="deal.status === 'processing'"><nb-icon icon="flag-outline"></nb-icon> {{deal.status}} (Status)</b><br><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="deal.description ? deal.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>

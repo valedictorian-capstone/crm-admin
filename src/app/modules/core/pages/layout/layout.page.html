@@ -24,6 +24,7 @@
             <app-attachment-save *ngIf="context.type === 'attachment'" [payload]="context.payload" (useClose)="ref.close()"></app-attachment-save>
             <app-employee-save *ngIf="context.type === 'employee'" [payload]="context.payload" (useClose)="ref.close()"></app-employee-save>
             <app-product-save *ngIf="context.type === 'product'" [product]="context.payload.product" (useClose)="ref.close()"></app-product-save>
+            <app-customer-import-modal *ngIf="context.type === 'customer-import'" (useClose)="ref.close()"></app-customer-import-modal>
             <app-reuse-import-data *ngIf="context.type === 'import'" [importType]="context.payload.importType" (useClose)="ref.close()"></app-reuse-import-data>
             <app-support-mail *ngIf="context.type === 'mail'" [payload]="context.payload" (useClose)="ref.close()"></app-support-mail>
             <app-support-profile *ngIf="context.type === 'support-profile'" (useClose)="ref.close()"></app-support-profile>

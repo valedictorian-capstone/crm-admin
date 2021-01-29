@@ -38,7 +38,9 @@ export class CustomerService {
   public readonly import = (data: CustomerCM[]): Observable<CustomerVM[]> => {
     return this.httpClient.post<CustomerVM[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/import`, data);
   }
-
+  public readonly valid = (data: {phone: string, email: string, position: number}[]): Observable<{phone: string, email: string, position: number}[]> => {
+    return this.httpClient.post<{phone: string, email: string, position: number}[]>(`${environment.apiEndpont}${environment.api.basic.customer.main}/multiple-validate`, data);
+  }
   public readonly insert = (data: CustomerCM): Observable<CustomerVM> => {
     return this.httpClient.post<CustomerVM>(`${environment.apiEndpont}${environment.api.basic.customer.main}`, data);
   }

@@ -29,7 +29,7 @@
         <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
       Change
     </button>
-        <button *ngIf="showChange" (click)="showChange = false; selectedStage = undefined" class="float-right ml-1" size="small" outline nbButton status="basic">
+        <button *ngIf="showChange" (click)="showChange = false; selectedStage = deal.stage" class="float-right ml-1" size="small" outline nbButton status="basic">
       Cancel
     </button>
         <button *ngIf="showChange" (click)="useChange(selectedStage)" [disabled]="!selectedStage || deal.stage?.id === selectedStage?.id" class="float-right" size="small" outline nbButton status="info">

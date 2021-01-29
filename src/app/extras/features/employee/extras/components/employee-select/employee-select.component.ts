@@ -69,6 +69,7 @@ export class EmployeeSelect1Component implements OnInit, OnDestroy {
             won: e.deals.filter((deal) => deal.status === 'won').length,
             lost: e.deals.filter((deal) => deal.status === 'lost').length,
             processing: e.deals.filter((deal) => deal.status === 'processing').length,
+            expired: e.deals.filter((deal) => deal.status === 'expired').length,
           })).filter((e) => this.showYou ? true : e.id !== this.state.you.id);
           if (!firstLoad) {
             this.useReload();
