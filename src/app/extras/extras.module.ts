@@ -242,10 +242,12 @@ import {
   EmployeeQueryComponent,
   EmployeeTypeComponent,
   EmployeeSaveModal,
+  EmployeeImportModal,
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
   EmployeeRoleComponent,
-  EmployeeInformationComponent
+  EmployeeInformationComponent,
+  EmployeeImportComponent,
 } from './features/employee';
 import {
   CommentCardArea,
@@ -337,10 +339,12 @@ export const FEATURES = [
   EmployeeQueryComponent,
   EmployeeTypeComponent,
   EmployeeSaveModal,
+  EmployeeImportModal,
   EmployeeSelect1Component,
   EmployeeSolveCheckComponent,
   EmployeeRoleComponent,
   EmployeeInformationComponent,
+  EmployeeImportComponent,
 
   CustomerAddComponent,
   CustomerCardArea,
