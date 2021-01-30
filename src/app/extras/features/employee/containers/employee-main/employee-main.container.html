@@ -15,6 +15,7 @@
         <app-employee-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-employee-type>
         <app-employee-export [data]="state.array"></app-employee-export>
         <app-employee-add [canAdd]="state.canAdd"></app-employee-add>
+        <app-employee-import [canImport]="state.canImport"></app-employee-import>
     </nb-card-header>
     <nb-card-body class="p-0" *ngIf="isMain || state.show">
         <div class="query">

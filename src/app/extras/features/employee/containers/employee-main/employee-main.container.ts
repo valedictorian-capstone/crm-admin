@@ -33,6 +33,7 @@ export class EmployeeMainContainer implements OnInit, OnDestroy {
     canAdd: true,
     canUpdate: true,
     canRemove: true,
+    canImport: true,
   }
   search: IEmployeeSearch = {
     value: '',

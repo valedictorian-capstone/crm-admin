@@ -29,7 +29,10 @@ export class AccountService {
   public readonly findById = (id: string): Observable<AccountVM> => {
     return this.httpClient.get<AccountVM>(`${environment.apiEndpont}${environment.api.basic.account.getById}${id}`);
   }
-  public readonly query = (params: {id: string}): Observable<AccountVM[]> => {
+  public readonly valid = (data: { phone: string, code: string, email: string, position: number }[]): Observable<{ phone: string, code: string, email: string, position: number }[]> => {
+    return this.httpClient.post<{ phone: string, code: string, email: string, position: number }[]>(`${environment.apiEndpont}${environment.api.basic.account.main}/multiple-validate`, data);
+  }
+  public readonly query = (params: { id: string }): Observable<AccountVM[]> => {
     return this.httpClient.get<AccountVM[]>(`${environment.apiEndpont}${environment.api.basic.account.main}/query`, {
       params
     });

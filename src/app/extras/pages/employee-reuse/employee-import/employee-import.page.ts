@@ -18,7 +18,7 @@ interface IEmployeeImportPageState {
   level: number;
 }
 @Component({
-  selector: 'app-employee-import',
+  selector: 'app-employee-real-import',
   templateUrl: './employee-import.page.html',
   styleUrls: ['./employee-import.page.scss']
 })
