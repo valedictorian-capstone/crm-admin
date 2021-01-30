@@ -19,7 +19,7 @@
             <app-pipeline-select [control]="control"></app-pipeline-select>
         </nz-dropdown-menu>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdate">
         <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
     Change
   </button>

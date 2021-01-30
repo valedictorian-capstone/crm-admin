@@ -14,6 +14,7 @@ import { FormControl } from '@angular/forms';
 })
 export class DealFeedbackComponent {
   @Input() deal: DealVM;
+  @Input() canUpdateFeedback: boolean;
   show = true;
   showChange = false;
   feedbackMessage = new FormControl('');

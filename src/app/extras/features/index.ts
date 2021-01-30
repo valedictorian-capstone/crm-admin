@@ -4,6 +4,7 @@ export * from './note';
 export * from './customer';
 export * from './activity';
 export * from './product';
+export * from './comment';
 export * from './category';
 export * from './employee';
 export * from './log';

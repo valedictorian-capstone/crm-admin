@@ -52,9 +52,9 @@ export class PipelineMainContainer implements OnInit {
         .pipe(
           tap((profile) => {
             if (profile) {
-              this.state.canAdd = profile.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = profile.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canAdd = profile.roles.filter((role) => role.canCreateProcess).length > 0;
+              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateProcess).length > 0;
+              this.state.canRemove = profile.roles.filter((role) => role.canRemoveProcess).length > 0;
             }
           })
         )

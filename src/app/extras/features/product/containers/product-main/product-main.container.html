@@ -12,6 +12,7 @@
         <app-product-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-product-type>
         <app-product-export [data]="state.array"></app-product-export>
         <app-product-add [canAdd]="state.canAdd"></app-product-add>
+        <app-product-import [canImport]="state.canImport"></app-product-import>
     </nb-card-header>
     <nb-card-body class="p-0">
         <div class="query">

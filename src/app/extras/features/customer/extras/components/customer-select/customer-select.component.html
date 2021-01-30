@@ -12,7 +12,7 @@
             <input [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.fullname" nbInput fullWidth readonly (click)="useSelectItem(item)" />
         </nb-form-field>
         <div class="w-100 h-100 display-flex justify-content-center align-items-center" *ngIf="state.filterArray.length === 0">
-            <img height="13rem" width="auto" src="assets/empty.png" />
+            <img height="auto" width="17rem" src="assets/empty.png" />
         </div>
     </nb-card-body>
 </nb-card>

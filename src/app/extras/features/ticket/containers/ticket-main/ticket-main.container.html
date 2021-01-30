@@ -8,7 +8,7 @@
         <button class="float-right" (click)="useReload()" outline nbButton size="small">
 <nb-icon icon="sync-outline"></nb-icon>
 </button>
-        <app-ticket-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-ticket-type>
+        <!-- <app-ticket-type [type]="state.type" (typeChange)="state.type = $event; state.show = true"></app-ticket-type> -->
         <app-ticket-export [data]="state.array"></app-ticket-export>
     </nb-card-header>
     <nb-card-body class="p-0">
@@ -17,8 +17,8 @@
         </div>
         <div class="main">
             <div class="content" *ngIf="state.filterArray.length > 0">
-                <app-ticket-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-ticket-datatable>
-                <app-ticket-card (useCheck)="useCheck($event)" *ngIf="state.type === 'card'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-ticket-card>
+                <!-- <app-ticket-datatable (useCheck)="useCheck($event)" *ngIf="state.type === 'datatable'" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-ticket-datatable> -->
+                <app-ticket-card (useCheck)="useCheck($event)" [state]="state" [sort]="sort" (useSortState)="state.sortBy = $event; useSort()"></app-ticket-card>
             </div>
             <app-support-page-count *ngIf="state.filterArray.length > 0 && checkList.length === 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'tickets'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
             <app-ticket-solve-check *ngIf="state.filterArray.length > 0 && checkList.length > 0" [checkList]="checkList"></app-ticket-solve-check>

@@ -11,14 +11,13 @@
     <nb-card-body *ngIf="show">
         <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}} (Name)</b><br>
         <b><nb-icon icon="bar-chart-2-outline"></nb-icon> {{campaign.type}} (Type)</b><br>
-        <b class="text-capitalize"><nb-icon icon="flag-outline"></nb-icon> {{campaign.status}} (Status)</b><br>
         <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateStart | date: 'hh:mm dd/MM/yyyy'}} (Start)</b><br>
         <b><nb-icon icon="clock-outline"></nb-icon> {{campaign.dateEnd | date: 'hh:mm dd/MM/yyyy'}} (End)</b><br><br>
         <nb-form-field class="w-100">
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="campaign.description ? campaign.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdate">
         <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
         <nb-icon icon="edit-2-outline"></nb-icon>
       </button>

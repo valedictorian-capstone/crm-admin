@@ -52,24 +52,28 @@ export class CampaignDatatableArea implements OnDestroy {
     }
     this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }
-  async useRemove(id: string) {
-    const rs = await swal.fire({
-      title: 'Remove an campaign?',
-      text: 'When you click OK button, an campaign will be remove out of system and can not backup',
-      showCancelButton: true,
-    });
-    if (rs.isConfirmed) {
-      const subscription = this.service.remove(id)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Remove campaign successful', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Remove campaign fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          })
-        ).subscribe(console.log);
-      this.subscriptions.push(subscription);
+  async useRemove(id: string, status: string) {
+    if (status === 'planning') {
+      const rs = await swal.fire({
+        title: 'Remove an campaign?',
+        text: 'When you click OK button, an campaign will be remove out of system and can not backup',
+        showCancelButton: true,
+      });
+      if (rs.isConfirmed) {
+        const subscription = this.service.remove(id)
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Remove campaign successful', { duration: 3000 });
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Remove campaign fail! ' + err.message, { duration: 3000 });
+              return of(undefined);
+            })
+          ).subscribe(console.log);
+        this.subscriptions.push(subscription);
+      }
+    } else {
+      swal.fire('You can not remove this campaign because it is started or ended', '', 'error');
     }
   }
   ngOnDestroy() {

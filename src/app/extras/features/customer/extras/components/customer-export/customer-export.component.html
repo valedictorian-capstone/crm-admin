@@ -17,7 +17,7 @@
             <th>twitter</th>
             <th>totalDeal</th>
             <th>totalSpending</th>
-            <th>frequency</th>
+            <th>totalDealWon</th>
             <th>group</th>
         </tr>
     </thead>
@@ -36,7 +36,7 @@
             <th>{{ item.twitter }}</th>
             <th>{{ item.totalDeal }}</th>
             <th>{{ item.totalSpending }}</th>
-            <th>{{ item.frequency }}</th>
+            <th>{{ (item.frequency * 365).toFixed(0) }}</th>
         </tr>
     </tbody>
 </table>

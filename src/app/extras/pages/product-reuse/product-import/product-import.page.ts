@@ -14,7 +14,7 @@ interface IProductImportPageState {
   config: AngularEditorConfig;
 }
 @Component({
-  selector: 'app-product-import',
+  selector: 'app-product-r-import',
   templateUrl: './product-import.page.html',
   styleUrls: ['./product-import.page.scss']
 })

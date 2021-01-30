@@ -41,3 +41,17 @@
         </div>
     </nb-card-body>
 </nb-card>
+<nb-card class="w-100" *ngIf="totalStart">
+    <nb-card-header>
+        <span class="h-100 display-flex align-items-center float-left">
+    <b>Statistical Deal's Start In Campaign</b>
+    </span>
+        <button class="float-right ml-1" (click)="showTotalStart = !showTotalStart" outline nbButton size="small">
+    <nb-icon [icon]="showTotalStart ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+    </button>
+    </nb-card-header>
+    <nb-card-body *ngIf="showTotalStart">
+        <div echarts [options]="totalStart" class="chart">
+        </div>
+    </nb-card-body>
+</nb-card>

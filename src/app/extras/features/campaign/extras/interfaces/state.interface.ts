@@ -19,6 +19,7 @@ export interface ICampaignMainState {
 
 export interface ICampaignDetailState {
   id: string;
+  canUpdate?: boolean;
   main: CampaignVM;
   you?: AccountVM;
 }

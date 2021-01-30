@@ -52,9 +52,10 @@ export class ProductMainContainer implements OnInit {
         .pipe(
           tap((profile) => {
             if (profile) {
-              this.state.canAdd = profile.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = profile.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canAdd = profile.roles.filter((role) => role.canCreateProduct).length > 0;
+              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateProduct).length > 0;
+              this.state.canRemove = profile.roles.filter((role) => role.canRemoveProduct).length > 0;
+              this.state.canImport = profile.roles.filter((role) => role.canImportProduct).length > 0;
             }
           })
         )

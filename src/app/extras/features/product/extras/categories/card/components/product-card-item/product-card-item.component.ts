@@ -36,6 +36,9 @@ export class ProductCardItemComponent {
     protected readonly router: Router,
   ) {
   }
+  useView() {
+    this.router.navigate(['core/product/' + this.product.id]);
+  }
   useEdit() {
     this.globalService.triggerView$.next({ type: 'product', payload: { product: this.product} });
   }

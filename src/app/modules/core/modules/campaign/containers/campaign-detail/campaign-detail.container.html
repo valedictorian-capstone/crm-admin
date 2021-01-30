@@ -8,9 +8,10 @@
     <nb-card-body class="p-0">
         <div class="w-100" nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
-                <app-campaign-information *ngIf="state.main" [campaign]='state.main'></app-campaign-information>
-                <app-campaign-process *ngIf="state.main" [campaign]='state.main'></app-campaign-process>
-                <app-campaign-group *ngIf="state.main" [campaign]='state.main' [cGroups]="state.main.campaignGroups"></app-campaign-group>
+                <app-campaign-information [canUpdate]="state.canUpdate" *ngIf="state.main" [campaign]='state.main'></app-campaign-information>
+                <app-campaign-status [canUpdate]="state.canUpdate" *ngIf="state.main" [campaign]='state.main'></app-campaign-status>
+                <app-campaign-process [canUpdate]="state.canUpdate" *ngIf="state.main" [campaign]='state.main'></app-campaign-process>
+                <app-campaign-group [canUpdate]="state.canUpdate" *ngIf="state.main" [campaign]='state.main' [cGroups]="state.main.campaignGroups"></app-campaign-group>
                 <app-campaign-statistical *ngIf="state.main" [campaign]='state.main'></app-campaign-statistical>
             </div>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="16" [nzXl]="16" [nzXXl]="16">

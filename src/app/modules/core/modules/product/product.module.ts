@@ -11,7 +11,7 @@ import {
 } from './pages';
 import {
   ProductMainContainer,
-  // ProductDetailContainer
+  ProductDetailContainer
 } from './containers';
 // import { } from './directives';
 // import { } from './pipes';
@@ -21,7 +21,7 @@ const COMPONENTS = [
   ProductRestoreComponent,
   ProductSearchComponent
 ];
-const CONTAINERS = [ProductMainContainer];
+const CONTAINERS = [ProductMainContainer, ProductDetailContainer];
 const PAGES = [
   ProductMainPage,
   ProductDetailPage

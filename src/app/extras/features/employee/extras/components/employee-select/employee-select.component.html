@@ -22,22 +22,22 @@
                     <input (click)="useSelectItem(item)" [status]="control?.value?.id === item.id || model?.id === item.id ? 'success' : 'info'" [value]="item.fullname + (state.you?.id === item.id ? ' (You)' : '')" nbInput fullWidth readonly />
                 </nb-form-field>
             </nb-card-header>
-            <nb-card-footer style="height: 3rem;">
-                <span class="float-left h-100 display-flex align-items-center" *ngIf="item['canGetAssignDeal']">
-                <b class="text-success mr-2">W: {{item['won'] | separator}}</b>
-                <b>-</b>
-                <b class="text-danger mx-2">L: {{item['lost'] | separator}}</b>
-                <b>-</b>
-                <b class="text-danger mx-2">L: {{item['expired'] | separator}}</b>
-                <b>-</b>
-                <b class="text-primary mx-2">P: {{item['processing'] | separator}}</b>
-                <b>-</b>
-                <b class="text-default ml-2">T: {{item.deals.length | separator}}</b>
+            <nb-card-footer style="height: 3rem;" *ngIf="item['canGetAssignDeal']">
+                <span class="float-left h-100 display-flex align-items-center">
+                <b class="text-success mr-2">Won: {{item['won'] | separator}}</b>
+                <br>
+                <b class="text-danger mx-2">Lost: {{item['lost'] | separator}}</b>
+                <br>
+                <b class="text-danger mx-2">Expried: {{item['expired'] | separator}}</b>
+                <br>
+                <b class="text-primary mx-2">Processing: {{item['processing'] | separator}}</b>
+                <br>
+                <b class="text-default ml-2">Total: {{item.deals.length | separator}}</b>
               </span>
             </nb-card-footer>
         </nb-card>
         <div class="w-100 h-100 display-flex justify-content-center align-items-center" *ngIf="state.filterArray.length === 0">
-            <img width="17rem" src="assets/empty.png" />
+            <img height="auto" width="17rem" src="assets/empty.png" />
         </div>
     </nb-card-body>
 </nb-card>

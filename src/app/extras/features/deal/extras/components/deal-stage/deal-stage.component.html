@@ -25,7 +25,7 @@
       " *ngFor="let stage of selectedPipeline.stages; let i = index" [nbTooltip]="stage.name" [nbTooltipPlacement]="'bottom'"></label>
         </div>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdate && deal.status === 'processing'">
         <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
       Change
     </button>

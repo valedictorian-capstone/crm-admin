@@ -9,6 +9,7 @@ import { CampaignVM } from '@view-models';
 })
 export class DealCampaignComponent {
   @Input() campaign: CampaignVM;
+  @Input() canAccess: boolean;
   show = true;
   constructor(
     protected readonly router: Router,

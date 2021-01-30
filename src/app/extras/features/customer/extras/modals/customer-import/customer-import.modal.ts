@@ -1,20 +1,14 @@
-import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { Store } from '@ngrx/store';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { CustomerService } from '@services';
-import { CustomerAction } from '@store/actions';
-import { authSelector } from '@store/selectors';
-import { State } from '@store/states';
-import { AccountVM, CustomerVM } from '@view-models';
+import { CustomerVM } from '@view-models';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { of, Subscription } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
-import * as XLSX from 'xlsx';
 import swal from 'sweetalert2';
-import { NzUploadFile } from 'ng-zorro-antd/upload';
+import * as XLSX from 'xlsx';
 
 interface ICustomerSavePageState {
   min: Date;
@@ -199,6 +193,7 @@ export class CustomerImportModal implements OnDestroy {
           this.useCheckValid(element.extra.position, 'email');
           this.useCheckValid(element.extra.position, 'phone');
         }
+        this.useHideSpinner();
       }
     } else {
       swal.fire('Invalid', 'Some customers invalid! Please check valid again!', 'error');

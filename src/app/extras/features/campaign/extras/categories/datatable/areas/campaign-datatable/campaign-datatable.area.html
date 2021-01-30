@@ -1,4 +1,4 @@
 <app-campaign-datatable-item (useItemCheck)="useItemCheck(true)" [control]="headerCheck" [isHeader]="true" [isMain]="isMain" [sort]="sort" (useSortable)="useSort($event)"></app-campaign-datatable-item>
 <div class="body" [class.un-main]="!isMain">
-    <app-campaign-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [isMain]="isMain" [campaign]="data.campaign" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.campaign.id)"></app-campaign-datatable-item>
+    <app-campaign-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [isMain]="isMain" [campaign]="data.campaign" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.campaign.id, data.campaign.status)"></app-campaign-datatable-item>
 </div>

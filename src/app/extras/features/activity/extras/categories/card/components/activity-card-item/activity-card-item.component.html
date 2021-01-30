@@ -21,10 +21,10 @@
         </nb-form-field>
     </nb-card-body>
     <nb-card-footer *ngIf="show">
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+        <button [disabled]="!canRemove" (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
         <nb-icon icon="trash-2-outline"></nb-icon>
       </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <button [disabled]="!canUpdate" (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
         <nb-icon icon="edit-2-outline"></nb-icon>
       </button>
     </nb-card-footer>

@@ -16,8 +16,8 @@
             <th>{{ item.id }}</th>
             <th>{{ item.type }}</th>
             <th>{{ item.status }}</th>
-            <th>{{ item.customer.fullname }}</th>
-            <th>{{ item.assignee?.fullname }}</th>
+            <th>{{ item.customer ? item.customer.fullname : 'Guest' }}</th>
+            <th>{{ item.assignee ? item.assignee.fullname : 'None' }}</th>
         </tr>
     </tbody>
 </table>

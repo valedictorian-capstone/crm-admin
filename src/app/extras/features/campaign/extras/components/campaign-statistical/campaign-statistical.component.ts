@@ -14,7 +14,9 @@ export class CampaignStatisticalComponent {
   total;
   totalValue = () => 0;
   totalGroupValues;
+  totalStart;
   showTotal = true;
+  showTotalStart = true;
   showTotalValue = true;
   showTotalGroupsValues = true;
   constructor(
@@ -23,13 +25,13 @@ export class CampaignStatisticalComponent {
   ) {
 
   }
-  ngOnInit() {
-    console.log('statistical');
+  ngOnChanges() {
     this.service.statistical(this.campaign.id)
       .pipe(
         tap((data) => {
           console.log(data);
           this.totalValue = () => data.totalValue;
+          this.totalGroupValues = undefined;
           this.totalGroupValues = {
             tooltip: {
               trigger: 'axis',
@@ -66,6 +68,38 @@ export class CampaignStatisticalComponent {
               }
             ]
           }
+          this.total = undefined;
+          this.totalStart = undefined;
+          this.totalStart = {
+            tooltip: {
+              trigger: 'item'
+            },
+            legend: {
+              orient: 'vertical',
+              left: 'left',
+            },
+            series: [
+              {
+                name: 'Start',
+                type: 'pie',
+                radius: '50%',
+                data: [
+                  { value: data.totalStart[0].length, name: 'One' },
+                  { value: data.totalStart[1].length, name: 'Two' },
+                  { value: data.totalStart[2].length, name: 'Three' },
+                  { value: data.totalStart[3].length, name: 'Four' },
+                  { value: data.totalStart[4].length, name: 'Five' },
+                ],
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ],
+          };
           this.total = {
             tooltip: {
               trigger: 'item'
@@ -96,7 +130,6 @@ export class CampaignStatisticalComponent {
             ],
             color: ['#17a2b8', '#28a745', '#dc3545', '#dc3545'],
           };
-          console.log('total:', this.total)
         })
       )
       .subscribe();

@@ -58,9 +58,7 @@ export class TicketMainContainer implements OnInit {
         .pipe(
           tap((profile) => {
             if (profile) {
-              this.state.canAdd = profile.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = profile.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.you = profile;
             }
           })
         )
@@ -74,6 +72,37 @@ export class TicketMainContainer implements OnInit {
           tap((data) => {
             const firstLoad = data.firstLoad;
             let rs = (data.ids as string[]).map((id) => data.entities[id]);
+            if (this.state.you) {
+              console.log(this.state.you);
+              const canGetAllTicket = this.state.you.roles.filter((role) => role.canGetAllTicket).length > 0;
+              console.log('canGetAllTicket', canGetAllTicket);
+              if (!canGetAllTicket) {
+                const canGetDealTicket = this.state.you.roles.filter((role) => role.canGetDealTicket).length > 0;
+                const canGetSupportTicket = this.state.you.roles.filter((role) => role.canGetSupportTicket).length > 0;
+                const canGetFeedbackTicket = this.state.you.roles.filter((role) => role.canGetFeedbackTicket).length > 0;
+                console.log('canGetDealTicket', canGetDealTicket);
+                console.log('canGetSupportTicket', canGetSupportTicket);
+                console.log('canGetFeedbackTicket', canGetFeedbackTicket);
+                if (canGetDealTicket || canGetSupportTicket) {
+                  if (canGetDealTicket) {
+                    if (canGetFeedbackTicket) {
+                      rs = rs.filter((e) => (e.status === 'resolve' && (e.feedbackAssignee ? (e.feedbackAssignee?.id === this.state.you.id) : true) || (e.type === 'deal' && (e.assignee ? (e.assignee?.id === this.state.you.id) : true))));
+                    } else {
+                      rs = rs.filter((e) => e.type === 'deal' && (e.assignee ? (e.assignee?.id === this.state.you.id) : true));
+                    }
+                  }
+                  if (canGetSupportTicket) {
+                    if (canGetFeedbackTicket) {
+                      rs = rs.filter((e) => (e.status === 'resolve' && (e.feedbackAssignee ? (e.feedbackAssignee?.id ===  this.state.you.id) : true) || (e.type === 'other' && (e.assignee ? (e.assignee?.id ===  this.state.you.id) : true))));
+                    } else {
+                      rs = rs.filter((e) => e.type === 'other' && (e.assignee ? (e.assignee?.id ===  this.state.you.id) : true));
+                    }
+                  }
+                } else {
+                  rs = [];
+                }
+              }
+            }
             if (firstLoad) {
               this.state.array = rs;
               this.useFilter();

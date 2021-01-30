@@ -7,5 +7,6 @@ export * from './campaign-information/campaign-information.component';
 export * from './campaign-group/campaign-group.component';
 export * from './campaign-process/campaign-process.component';
 export * from './campaign-following/campaign-following.component';
+export * from './campaign-status/campaign-status.component';
 export * from './campaign-statistical/campaign-statistical.component';
 export * from './campaign-solve-check/campaign-solve-check.component';

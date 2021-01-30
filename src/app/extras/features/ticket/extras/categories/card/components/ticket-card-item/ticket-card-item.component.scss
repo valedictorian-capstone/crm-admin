@@ -2,4 +2,15 @@ nb-card {
     b {
         font-family: monospace, sans-serif;
     }
+    .content {
+        height: auto;
+        min-height: 8rem;
+        max-height: 8rem;
+        overflow: auto;
+        padding: 1rem;
+        width: 100%;
+        background: #ffe498;
+        font: 600 14px/16px monospace, sans-serif;
+        display: flex;
+    }
 }

@@ -1,0 +1,133 @@
+<nb-card style="position: relative;">
+    <ngx-spinner [name]="'product-import'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false">
+        <b>Check {{state.formArray.length}} products...</b>
+    </ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5; text-transform: capitalize;">
+        Import Product
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+<nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body>
+        <button *ngIf="state.formArray.length > 0" (click)="useReset()" class="mb-1 mr-1" nbButton size="small" status="info" outline>
+      Change
+    </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('all')" class="mb-1 mr-1" nbButton size="small" status="default" outline>
+      All: {{state.formArray.length}}
+    </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('error')" class="mb-1 mr-1" nbButton size="small" status="danger" outline>
+      Error: {{useCheck().error}}
+    </button>
+        <button *ngIf="state.formArray.length > 0" (click)="useFilter('success')" class="mb-1" nbButton size="small" status="success" outline>
+      Success: {{useCheck().success}}
+    </button>
+        <nz-upload *ngIf="state.formArray.length === 0" nzType="drag" [nzBeforeUpload]="useChange" nzListType="picture" [nzMultiple]="false">
+            <p class="ant-upload-drag-icon">
+                <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibit from uploading company data or other band datas
+            </p>
+        </nz-upload>
+
+        <div *ngIf="state.formArray.length > 0" style="width: fit-content; max-width: 100%; overflow-x: auto;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Status</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of state.paginationArray;">
+                        <th>
+                            <div class="display-flex justify-content-center align-items-center" style="height: 5rem; width: 100%;">
+                                <b>{{item.extra.position + 1}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="display-flex justify-content-center align-items-center" style="height: 5rem; width: 100%;">
+                                <nb-icon [status]="state.formArray[item.extra.position].data.valid ? 'success' : 'danger'" [icon]="state.formArray[item.extra.position].data.valid ? 'checkmark-outline' : 'close-outline'"></nb-icon>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Name" [formControl]="state.formArray[item.extra.position].data.get('name')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('name').invalid">{{(state.formArray[item.extra.position].data.get('name').valid ? '' : 'Must Required')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Code" [formControl]="state.formArray[item.extra.position].data.get('code')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('code').invalid || item.extra.code.error">{{item.extra.code.error ? item.extra.code.error : (state.formArray[item.extra.position].data.get('code').valid ? '': 'Must Required')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input nbInput style="height: 3rem;" fullWidth placeholder="Category" nz-dropdown [nzDropdownMenu]="categoryRef" placeholder="Category" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.formArray[item.extra.position].data.get('category').value?.name"
+                                    />
+                                </nb-form-field>
+                                <nz-dropdown-menu #categoryRef="nzDropdownMenu">
+                                    <app-category-select #categoryPlus [control]="state.formArray[item.extra.position].data.get('category')"></app-category-select>
+                                </nz-dropdown-menu>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('category').invalid">{{(state.formArray[item.extra.position].data.get('category').valid ? '' : 'Must Required')}}</b>
+                            </div>
+                        </th>
+                        <th>
+                            <div style="width: 20rem;">
+                                <nb-form-field class="w-100">
+                                    <input type="number" nbInput style="height: 3rem;" fullWidth placeholder="Price" [formControl]="state.formArray[item.extra.position].data.get('price')" />
+                                </nb-form-field>
+                                <b [class.text-danger]="state.formArray[item.extra.position].data.get('price').invalid">{{(state.formArray[item.extra.position].data.get('price').valid ? '' : 'Must Required and Equal than 0')}}</b>
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="state.maxCount.length > 0" class="display-flex justify-content-center align-items-center w-100 mt-2" style="height: fit-content;">
+            <div>
+                <button class="mx-1 mb-1" *ngFor="let item of state.maxCount" (click)="useIndex(item)" nbButton size="small" status="info" outline>
+            {{item}}
+          </button>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="useCheck().error > 0 || state.formArray.length === 0" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="primary" nbButton size="small" (click)="useSubmit(ref)">Save and hide</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes
+        </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right;" status="default" nbButton size="small" (click)="ref.close(); useClose.emit();">Hide modal</button>
+            <button style="float: right; margin-right: 0.5rem;" status="default" nbButton size="small" (click)="ref.close()">Continue editing</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
