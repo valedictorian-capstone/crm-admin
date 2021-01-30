@@ -63,7 +63,7 @@ export class CampaignFollowingComponent {
   ) {
     this.useLoadMine();
   }
-  ngOnInit() {
+  ngOnChanges() {
     this.state.array = this.campaign.followers;
     this.useFilter();
   }

@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
 })
 export class CampaignProcessComponent {
   @Input() campaign: CampaignVM;
+  @Input() canUpdate: boolean;
   control = new FormControl(undefined, [Validators.required]);
   show = true;
   showChange = false;

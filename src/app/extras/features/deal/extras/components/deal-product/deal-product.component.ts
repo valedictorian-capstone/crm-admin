@@ -14,6 +14,7 @@ import { of } from 'rxjs';
 })
 export class DealProductComponent implements OnChanges{
   @Input() deal: DealVM;
+  @Input() canUpdate: boolean;
   details: FormArray = new FormArray([]);
   show = true;
   showChange = false;

@@ -54,15 +54,34 @@ export class DealDetailContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
-              this.state.canGetAssign = this.state.you.roles.filter((role) => role.canGetAssignDeal).length > 0;
-              this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
+              this.useCheckPermission();
             }
           })
         )
         .subscribe()
     );
+  }
+  useCheckPermission() {
+    if (this.state.you) {
+      this.state.canGetAll = this.state.you.roles.filter((role) => role.canGetAllDeal).length > 0;
+      this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+      this.state.canAccessCampaign = this.state.you.roles.filter((role) => role.canAccessCampaign).length > 0;
+      if (this.state.main) {
+        if (this.state.canGetAll) {
+          this.state.canUpdateFeedback = true;
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+          this.state.canGetFeedback = this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0;
+        } else {
+          this.state.canUpdateFeedback = this.state.main.feedbackAssignee?.id === this.state.you.id;
+          this.state.canUpdate = this.state.main.assignee?.id === this.state.you.id;
+          this.state.canGetFeedback = this.state.main.feedbackAssignee?.id === this.state.you.id || (this.state.you.roles.filter((role) => role.canGetFeedbackDeal).length > 0 && !this.state.main.feedbackAssignee);
+        }
+      } else {
+        this.state.canUpdate = false;
+        this.state.canGetFeedback = false;
+      }
+
+    }
   }
   useDispatch() {
     this.subscriptions.push(
@@ -74,6 +93,7 @@ export class DealDetailContainer implements OnInit, OnDestroy {
               this.useReload();
             } else {
               this.state.main = dataFind;
+              this.useCheckPermission();
             }
           })
         ).subscribe()

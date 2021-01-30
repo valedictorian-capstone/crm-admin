@@ -63,6 +63,29 @@ export class ActivityMainContainer implements OnInit, OnDestroy {
   ngOnInit() {
     this.useDispatch();
   }
+  ngOnChanges() {
+    this.useCheckPermission();
+  }
+  useCheckPermission() {
+    if (this.state.you) {
+      if (this.deal || this.campaign) {
+        if (this.deal) {
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0 && this.deal.status === 'processing';
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+        }
+        if (this.campaign) {
+          this.state.canAdd = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0 && this.campaign.status === 'active';
+          this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0;
+          this.state.canRemove = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0;
+        }
+      } else {
+        this.state.canAdd = true;
+        this.state.canUpdate = true;
+        this.state.canRemove = true;
+      }
+    }
+  }
   useLoadMine() {
     this.subscriptions.push(
       this.store.select(authSelector.profile)
@@ -70,9 +93,7 @@ export class ActivityMainContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.useCheckPermission();
             }
           })
         )
@@ -89,8 +110,11 @@ export class ActivityMainContainer implements OnInit, OnDestroy {
             if (this.query) {
               rs = rs.filter((e) => e[this.query.key] && e[this.query.key].id === this.query.id);
             }
-            console.log(firstLoad);
-            console.log(rs);
+            if (!this.deal && !this.campaign) {
+              if (this.state.you.roles.filter(role => role.canGetAllActivity).length === 0) {
+                rs = rs.filter((e) => e.assignee.id === this.state.you.id || !e.assignee);
+              }
+            }
             if (firstLoad || this.state.firstLoad) {
               this.state.array = rs.map((e) => ({
                 id: e.id,

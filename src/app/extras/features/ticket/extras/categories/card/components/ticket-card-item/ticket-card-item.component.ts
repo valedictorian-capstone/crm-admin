@@ -4,9 +4,10 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { TicketService, GlobalService } from '@services';
-import { TicketVM } from '@view-models';
+import { TicketVM, AccountVM } from '@view-models';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ticket-card-item',
@@ -18,14 +19,21 @@ export class TicketCardItemComponent {
   @Output() useSortable: EventEmitter<any> = new EventEmitter<any>();
   @Output() useRemove: EventEmitter<any> = new EventEmitter<any>();
   @Output() useItemCheck: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useAssign: EventEmitter<any> = new EventEmitter<any>();
+  @Output() useAssignFeedback: EventEmitter<any> = new EventEmitter<any>();
   @Input() control: FormControl;
   @Input() ticket: TicketVM;
-  @Input() canUpdate = false;
-  @Input() canRemove = false;
+  @Input() you: AccountVM;
   @Input() sort = {
     key: '',
     stage: 'up'
   };
+  canRemove = false;
+  canUpdate = false;
+  canGetAll = false;
+  canGetDeal = false;
+  canGetSupport = false;
+  canGetFeedback = false;
   show = true;
   subscriptions: Subscription[] = [];
   constructor(
@@ -37,20 +45,19 @@ export class TicketCardItemComponent {
     protected readonly router: Router,
   ) {
   }
+  ngOnInit() {
+    this.canGetAll = this.you.roles.filter((role) => role.canGetAllTicket).length > 0;
+    this.canGetDeal = this.you.roles.filter((role) => role.canGetDealTicket).length > 0;
+    this.canGetSupport = this.you.roles.filter((role) => role.canGetSupportTicket).length > 0;
+    this.canGetFeedback = this.you.roles.filter((role) => role.canGetFeedbackTicket).length > 0;
+    this.canUpdate = this.you.roles.filter((role) => role.canUpdateTicket).length > 0;
+    this.canRemove = this.you.roles.filter((role) => role.canRemoveTicket).length > 0;
+  }
   useEdit() {
-    this.globalService.triggerView$.next({ type: 'ticket', payload: { ticket: this.ticket} });
+    this.globalService.triggerView$.next({ type: 'ticket', payload: { ticket: this.ticket } });
   }
-  useCopy(data: string) {
-    this.clipboard.copy(data);
-    this.toastrService.show('', 'Copy successful', { position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'success' });
-  }
-  useSort(key: string) {
-    if (this.sort.key === key) {
-      this.sort.stage = this.sort.stage === 'up' ? 'down' : 'up';
-    } else {
-      this.sort.key = key;
-    }
-    this.useSortable.emit(this.sort);
+  useFeedback() {
+    this.globalService.triggerView$.next({ type: 'ticket-feedback', payload: { ticket: this.ticket } });
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

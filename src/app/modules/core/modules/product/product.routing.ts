@@ -1,9 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
 import { ProductDetailPage, ProductMainPage } from './pages';
-import { ProductMainContainer } from './containers';
+import { ProductMainContainer, ProductDetailContainer } from './containers';
 
 const routes: Routes = [
-  { path: ':id', component: ProductDetailPage },
+  { path: ':id', component: ProductDetailContainer },
   { path: '', component: ProductMainContainer },
 ];
 

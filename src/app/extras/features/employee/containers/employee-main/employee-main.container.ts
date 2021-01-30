@@ -30,6 +30,9 @@ export class EmployeeMainContainer implements OnInit, OnDestroy {
     pageCount: 20,
     show: true,
     type: 'datatable',
+    canAdd: true,
+    canUpdate: true,
+    canRemove: true,
   }
   search: IEmployeeSearch = {
     value: '',
@@ -57,9 +60,6 @@ export class EmployeeMainContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
             }
           })
         )

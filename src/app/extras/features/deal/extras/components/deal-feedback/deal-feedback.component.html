@@ -15,7 +15,7 @@
         <bar-rating [formControl]="feedbackAssigneeRating" [rate]="feedbackAssigneeRating.value" [readOnly]="!showChange" [max]="5" [theme]="'stars'"></bar-rating>
         <textarea [formControl]="feedbackMessage" [readOnly]="!showChange" fullWidth nbInput rows="6" status="primary" placeholder="Customer message"></textarea>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdateFeedback">
         <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
 Change
 </button>

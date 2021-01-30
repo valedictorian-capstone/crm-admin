@@ -1,3 +1,47 @@
-<p>
-  ticket-save works!
-</p>
+<nb-card style="position: relative; margin: 0;">
+    <ngx-spinner [name]="'ticket-save'" bdColor="#e5e5e5" [style.opacity]="'0.8'" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="background: #f7f7f7; border-bottom: 1px solid #e5e5e5;">
+        Edit Feedback Ticket
+        <button (click)="useClose.emit()" style="float:right" nbButton size="tiny">
+  <nb-icon icon="close"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body>
+        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Note about conversation</span>
+        <angular-editor [formControl]="state.form.get('note')" [config]="state.config"></angular-editor>
+        <span *ngIf="payload.ticket.type === 'deal'" style="display: block; margin: 0.5rem 0 0.5rem 0; font-weight: 600;">Ability to become deal ({{state.form.get('ability').value}}%)</span>
+        <nz-slider *ngIf="payload.ticket.type === 'deal'" [formControl]="state.form.get('ability')"></nz-slider>
+    </nb-card-body>
+    <nb-card-footer>
+        <button style="float: right;" status="default" nbButton size="small" (click)="useDialog(cancelRef)">Cancel</button>
+        <button style="float: right; margin-right: 0.5rem;" [disabled]="state.form.invalid" status="primary" (click)="useDialog(submitRef)" nbButton size="small">Save</button>
+    </nb-card-footer>
+</nb-card>
+<ng-template #submitRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Saved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to save and hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="primary" nbButton size="small" (click)="useSubmit(ref)">
+Save and hide
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+<ng-template #cancelRef let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>You have unsaved changes </nb-card-header>
+        <nb-card-body>Are you sure you wish to hide modal?</nb-card-body>
+        <nb-card-footer class="p-2">
+            <button style="float: right" status="default" nbButton size="small" (click)="ref.close(); useClose.emit()">
+Hide modal
+</button>
+            <button style="float: right; margin-right: 0.5rem" status="default" nbButton size="small" (click)="ref.close()">
+Continue editing
+</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

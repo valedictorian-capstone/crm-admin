@@ -150,10 +150,8 @@ export class PipelineSaveModal implements OnInit {
     }));
   }
   useDialog(template: TemplateRef<any>, index: number, stage?: StageVM) {
-    console.log(stage);
     if (stage) {
       if (stage.id) {
-        console.log(stage);
         this.dialogService.open(template, {
           context: {
             index,
@@ -169,7 +167,7 @@ export class PipelineSaveModal implements OnInit {
   }
   useRemove = (index: number, stage: StageVM, ref?: NbDialogRef<any>) => {
     ref.close();
-    if (stage) {
+    if (stage && this.payload.pipeline) {
       this.spinner.show('pipeline-save');
       this.subscriptions.push(
         this.stageService.remove(stage.id)

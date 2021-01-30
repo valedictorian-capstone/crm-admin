@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { IRoleMainState, IRoleSearch } from '@extras/features/role';
 import { ISort } from '@extras/interfaces';
 import { Store } from '@ngrx/store';
-import { authSelector } from '@selectors';
 import { RoleService } from '@services';
 import { State } from '@states';
 import { RoleAction } from '@store/actions';
@@ -41,25 +40,9 @@ export class RoleMainContainer implements OnInit {
     protected readonly spinner: NgxSpinnerService,
     protected readonly store: Store<State>
   ) {
-    this.useLoadMine();
   }
   ngOnInit() {
     this.useDispatch();
-  }
-  useLoadMine() {
-    this.subscriptions.push(
-      this.store.select(authSelector.profile)
-        .pipe(
-          tap((profile) => {
-            if (profile) {
-              this.state.canAdd = profile.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = profile.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = profile.roles.filter((role) => role.canRemoveDeal).length > 0;
-            }
-          })
-        )
-        .subscribe()
-    );
   }
   useDispatch() {
     this.subscriptions.push(

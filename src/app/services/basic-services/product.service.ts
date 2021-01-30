@@ -27,7 +27,9 @@ export class ProductService {
   public readonly findById = (id: string): Observable<ProductVM> => {
     return this.httpClient.get<ProductVM>(`${environment.apiEndpont}${environment.api.basic.product.getById}${id}`);
   }
-
+  public readonly valid = (data: {code: string, position: number}[]): Observable<{code: string, position: number}[]> => {
+    return this.httpClient.post<{code: string, position: number}[]>(`${environment.apiEndpont}${environment.api.basic.product.main}/multiple-validate`, data);
+  }
   public readonly insert = (data: ProductCM): Observable<ProductVM> => {
     return this.httpClient.post<ProductVM>(`${environment.apiEndpont}${environment.api.basic.product.main}`, data);
   }

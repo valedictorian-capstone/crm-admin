@@ -1,5 +1,5 @@
 <div class="w-100 body" [class.un-main]="!isMain" nz-row>
     <div nz-col class="mb-2" *ngFor="let data of checkList" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzLg]="12" [nzXl]="12" [nzXXl]="8">
-        <app-campaign-card-item [isMain]="isMain" (useItemCheck)="useItemCheck()" [campaign]="data.campaign" [control]="data.formControl" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.campaign.id)"></app-campaign-card-item>
+        <app-campaign-card-item [isMain]="isMain" (useItemCheck)="useItemCheck()" [campaign]="data.campaign" [control]="data.formControl" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.campaign.id, data.campaign.status)"></app-campaign-card-item>
     </div>
 </div>

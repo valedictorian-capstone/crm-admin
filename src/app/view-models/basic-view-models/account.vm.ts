@@ -7,10 +7,9 @@ export interface AccountVM {
   phone: string;
   fullname: string;
   avatar: string;
-  assignActivitys: ActivityVM[];
-  ownerActivitys: ActivityVM[];
-  assignTickets: TicketVM[];
-  feedbackAssignTickets: TicketVM[];
+  activitys: ActivityVM[];
+  tickets: TicketVM[];
+  feedbackTickets: TicketVM[];
   deals: DealVM[];
   notifications: NotificationVM[];
   roles: RoleVM[];

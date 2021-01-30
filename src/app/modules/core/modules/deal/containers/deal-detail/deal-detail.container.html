@@ -8,14 +8,14 @@
     <nb-card-body class="p-0">
         <div class="w-100" nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
-                <app-deal-information *ngIf="state.main" [deal]='state.main'></app-deal-information>
-                <app-deal-stage *ngIf="state.main" [deal]='state.main' [selectedStage]="state.main.stage" [selectedPipeline]="state.main.stage.pipeline"></app-deal-stage>
-                <app-deal-product *ngIf="state.main" [deal]='state.main'></app-deal-product>
+                <app-deal-information [canUpdate]="state.canUpdate" *ngIf="state.main" [deal]='state.main'></app-deal-information>
+                <app-deal-stage [canUpdate]="state.canUpdate" *ngIf="state.main" [deal]='state.main' [selectedStage]="state.main.stage" [selectedPipeline]="state.main.stage.pipeline"></app-deal-stage>
+                <app-deal-product [canUpdate]="state.canUpdate" *ngIf="state.main" [deal]='state.main'></app-deal-product>
                 <app-deal-assignee [canAssign]="state.canAssign" [you]="state.you" [canGetAssign]="state.canGetAssign" *ngIf="state.main" [deal]='state.main'></app-deal-assignee>
                 <app-deal-feedback-assignee [canAssign]="state.canAssign" [you]="state.you" [canGetFeedback]="state.canGetFeedback" *ngIf="state.main" [deal]='state.main'></app-deal-feedback-assignee>
-                <app-deal-feedback *ngIf="state.main && state.main.status !== 'processing'" [deal]='state.main'></app-deal-feedback>
-                <app-deal-customer *ngIf="state.main" [deal]='state.main'></app-deal-customer>
-                <app-deal-campaign *ngIf="state.main && state.main.campaign" [campaign]='state.main.campaign'></app-deal-campaign>
+                <app-deal-feedback [canUpdateFeedback]="state.canUpdateFeedback" *ngIf="state.main && state.main.status !== 'processing'" [deal]='state.main'></app-deal-feedback>
+                <app-deal-customer [canUpdate]="state.canUpdate" *ngIf="state.main" [deal]='state.main'></app-deal-customer>
+                <app-deal-campaign *ngIf="state.main && state.main.campaign" [canAccess]="state.canAccessCampaign" [campaign]='state.main.campaign'></app-deal-campaign>
             </div>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="16" [nzXl]="16" [nzXXl]="16">
                 <app-activity-main [query]="{key: 'deal', id: state.id}" [for]="'deal'" [deal]="state.main"></app-activity-main>

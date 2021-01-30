@@ -19,18 +19,27 @@ export class TicketEffect {
       switchMap(action =>
         this.service.triggerSocket().pipe(
           map(trigger => {
+            // if (trigger.type === 'create') {
+            //   if (this.checkCreate(action.requester, trigger.data as TicketVM)) {
+            //     return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
+            //   }
+            // } else if (trigger.type === 'update') {
+            //   if (this.check(action.requester, trigger.data as TicketVM)) {
+            //     return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
+            //   } else {
+            //     return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
+            //   }
+            // } else if (trigger.type === 'remove') {
+            //   return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
+            // }
             if (trigger.type === 'create') {
-              if (this.checkCreate(action.requester, trigger.data as TicketVM)) {
-                return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
-              }
+              return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
             } else if (trigger.type === 'update') {
-              if (this.check(action.requester, trigger.data as TicketVM)) {
-                return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
-              } else {
-                return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
-              }
+              return TicketAction.SaveSuccessAction({ res: trigger.data as TicketVM });
             } else if (trigger.type === 'remove') {
               return TicketAction.RemoveSuccessAction({ id: (trigger.data as TicketVM).id });
+            } else if (trigger.type === 'list') {
+              return TicketAction.ListAction({ res: trigger.data as TicketVM[] });
             }
             return TicketAction.ListAction({ res: [] });
           }),

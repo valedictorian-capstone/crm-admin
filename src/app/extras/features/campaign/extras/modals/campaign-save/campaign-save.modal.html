@@ -38,21 +38,13 @@
                 <nb-option value="Others">Others</nb-option>
             </nb-select>
         </nb-form-field>
-        <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Status</span>
-        <nb-form-field style="max-width: 100%; margin-bottom: 1rem;">
-            <nb-icon nbPrefix icon="loader-outline"></nb-icon>
-            <nb-select style="width: 100%;" fullWidth placeholder="Select Status" [formControl]="state.form.get('status')">
-                <nb-option value="planning">Planning</nb-option>
-                <nb-option value="active">Active</nb-option>
-                <nb-option value="inactive">Inactive</nb-option>
-                <nb-option value="complete">Complete</nb-option>
-            </nb-select>
-        </nb-form-field>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty)">Start Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
             <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-            <input fullWidth [status]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateStart').value | date: 'HH:mm dd/MM/yyyy'" (focus)="state.showDateStartPicker = true"
-                [nzVisible]="state.showDateStartPicker" placeholder="Campaign Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input *ngIf="!payload.campaign || useCheckStart()" fullWidth [status]="state.form.get('dateStart').invalid && (state.form.get('dateStart').touched || state.form.get('dateStart').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateStart').value | date: 'HH:mm dd/MM/yyyy'"
+                (focus)="state.showDateStartPicker = true" [nzVisible]="state.showDateStartPicker" placeholder="Campaign Start Time" nz-dropdown [nzDropdownMenu]="dateStartRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput
+            />
+            <input *ngIf="payload.campaign && !useCheckStart()" disabled fullWidth [value]="state.form.get('dateStart').value | date: 'HH:mm dd/MM/yyyy'" placeholder="Campaign Start Time" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateStartRef="nzDropdownMenu">
             <app-support-date-time [date]="state.form.get('dateStart').value" [min]="state.minStart" [max]="state.form.get('dateEnd').value" (useChange)="state.form.get('dateStart').setValue($event); useCheckTime(); state.showDateStartPicker = false"></app-support-date-time>
@@ -60,18 +52,21 @@
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)">End Time <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem; float: left;">
             <nb-icon nbPrefix icon="clock-outline"></nb-icon>
-            <input fullWidth [status]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateEnd').value | date: 'HH:mm dd/MM/yyyy'" (focus)="state.showDateEndPicker = true"
-                [nzVisible]="state.showDateEndPicker" placeholder="Campaign End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input *ngIf="!payload.campaign || useCheckEnd()" fullWidth [status]="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty) ? 'danger' : 'basic'" [value]="state.form.get('dateEnd').value | date: 'HH:mm dd/MM/yyyy'"
+                (focus)="state.showDateEndPicker = true" [nzVisible]="state.showDateEndPicker" placeholder="Campaign End Time" nz-dropdown [nzDropdownMenu]="dateEndRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" nbInput />
+            <input *ngIf="payload.campaign && !useCheckEnd()" disabled fullWidth [value]="state.form.get('dateEnd').value | date: 'HH:mm dd/MM/yyyy'" placeholder="Campaign End Time" nbInput />
         </nb-form-field>
         <nz-dropdown-menu #dateEndRef="nzDropdownMenu">
             <app-support-date-time [date]="state.form.get('dateEnd').value" [min]="state.minEnd" [max]="state.max" (useChange)="state.form.get('dateEnd').setValue($event); useCheckTime(); state.showDateEndPicker = false"></app-support-date-time>
         </nz-dropdown-menu>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600;" [class.text-danger]="state.form.get('pipeline').invalid && (state.form.get('pipeline').touched || state.form.get('pipeline').dirty)">Process <span class="text-danger">*</span></span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem;">
-            <nb-icon icon="gift-outline" nbPrefix></nb-icon>
-            <input #pipelineInput fullWidth (blur)="state.form.get('pipeline').markAsTouched()" [status]="state.form.get('pipeline').invalid && (state.form.get('pipeline').touched || state.form.get('pipeline').dirty) ? 'danger' : 'basic'" nz-dropdown [nzDropdownMenu]="pipelineRef"
-                [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('pipeline').value?.name" nbInput size="small" (input)="pipelineSelect.useSearch($event.target.value)" />
-            <nb-icon icon="arrow-down" nbSuffix></nb-icon>
+            <nb-icon icon="browser-outline" nbPrefix></nb-icon>
+            <input *ngIf="!payload.campaign || useCheckStart()" #pipelineInput fullWidth (blur)="state.form.get('pipeline').markAsTouched()" [status]="state.form.get('pipeline').invalid && (state.form.get('pipeline').touched || state.form.get('pipeline').dirty) ? 'danger' : 'basic'"
+                nz-dropdown [nzDropdownMenu]="pipelineRef" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" [value]="state.form.get('pipeline').value?.name" nbInput size="small" (input)="pipelineSelect.useSearch($event.target.value)"
+            />
+            <input disabled *ngIf="payload.campaign && !useCheckStart()" fullWidth [value]="state.form.get('pipeline').value?.name" placeholder="Process" nbInput />
+            <nb-icon *ngIf="!payload.campaign || useCheckStart()" icon="arrow-down" nbSuffix></nb-icon>
         </nb-form-field>
         <span *ngIf="state.form.get('pipeline').invalid && (state.form.get('pipeline').touched || state.form.get('pipeline').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select pipeline</span>
         <nz-dropdown-menu #pipelineRef="nzDropdownMenu">
@@ -79,9 +74,10 @@
         </nz-dropdown-menu>
         <span *ngIf="state.form.get('dateEnd').invalid && (state.form.get('dateEnd').touched || state.form.get('dateEnd').dirty)" class="text-danger mb-3 display-block font-weight-bold">Please select End Date greater than Start Date!</span>
         <span style="display: block; margin-bottom: 0.5rem; font-weight: 600">Auto Create Deal</span>
-        <nb-checkbox class="mb-2" [formControl]="state.form.get('autoCreateDeal')"></nb-checkbox>
+        <nb-checkbox class="mb-2" [disabled]="payload.campaign && !useCheckStart()" [formControl]="state.form.get('autoCreateDeal')"></nb-checkbox>
         <span class="mt-2" style="display: block; margin-bottom: 0.5rem; font-weight: 600">Email Template</span>
-        <angular-editor [formControl]="state.form.get('emailTemplate')" [config]="state.config"></angular-editor>
+        <angular-editor *ngIf="!payload.campaign || payload.campaign.status === 'planning'" [formControl]="state.form.get('emailTemplate')" [config]="state.config"></angular-editor>
+        <div class="content" *ngIf="payload.campaign && payload.campaign.status !== 'planning'" [innerHTML]="payload.campaign.emailTemplate ? payload.campaign.emailTemplate : 'None'"></div>
         <span class="mt-2" style="display: block; margin-bottom: 0.5rem; font-weight: 600">Description</span>
         <nb-form-field style="width: 100%; margin-bottom: 1rem">
             <textarea #area placeholder="Description" fullWidth [formControl]="state.form.get('description')" (focus)="area.rows = 5" rows="1" (blur)="area.rows = 1" nbInput></textarea>

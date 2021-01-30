@@ -26,7 +26,7 @@ export class DealFeedbackAssigneeComponent {
   ) { }
   log = (v) => console.log(v);
   useChange(account: AccountVM) {
-    if (account && account.id !== this.deal.assignee.id) {
+    if (account && account.id !== this.deal.feedbackAssignee.id) {
       this.useShowSpinner();
       this.service.update({ id: this.deal.id, feedbackAssignee: { id: account.id } } as any)
         .pipe(

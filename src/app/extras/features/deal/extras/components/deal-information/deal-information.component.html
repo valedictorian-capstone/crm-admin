@@ -16,7 +16,7 @@
             <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="deal.description ? deal.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
         </nb-form-field>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdate">
         <button (click)="useEdit()" class="float-right ml-1" size="small" outline nbButton status="info">
       <nb-icon icon="edit-2-outline"></nb-icon>
     </button>

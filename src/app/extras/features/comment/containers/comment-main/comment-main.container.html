@@ -1,0 +1,32 @@
+<nb-card class="position-relative">
+    <ngx-spinner [name]="'comment-main'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="display-flex align-items-center float-left h-100">
+  <nb-icon icon="sms" pack="font-awesome" class="mr-2"></nb-icon>
+  <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Comment</b>
+</span>
+        <button class="float-right ml-1" (click)="state.show = !state.show" outline nbButton size="small">
+  <nb-icon [icon]="state.show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+        <button class="float-right" (click)="useReload()" outline nbButton size="small">
+  <nb-icon icon="sync-outline"></nb-icon>
+  </button>
+    </nb-card-header>
+    <nb-card-body class="p-0" *ngIf="state.show">
+        <!-- <div class="query">
+        <app-comment-query [isMain]="isMain" [search]="search" (useSearch)="useSearch($event)"></app-comment-query>
+    </div> -->
+        <div class="main">
+            <div class="content" *ngIf="state.filterArray.length > 0">
+                <app-comment-card *ngIf="state.type === 'card'" [state]="state" (useSortState)="state.sortBy = $event; useSort()"></app-comment-card>
+            </div>
+            <app-support-page-count *ngIf="state.filterArray.length > 0" [pageCount]="state.pageCount" [active]="state.active.value" [variable]="'comments'" [length]="state.filterArray.length" (useSelectPageCount)="state.pageCount = $event;useFilter()"></app-support-page-count>
+            <div class="empty un-main" *ngIf="state.filterArray.length === 0">
+                <img src="assets/empty.png" />
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="state.show">
+        <app-support-pagination (useChange)="usePagination()" [max]="state.max" [active]="state.active"></app-support-pagination>
+    </nb-card-footer>
+</nb-card>

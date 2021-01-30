@@ -19,6 +19,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class CampaignGroupComponent {
   @Input() campaign: CampaignVM;
+  @Input() canUpdate: boolean;
   @Input() cGroups: CampaignGroupVM[] = [];
   campaignGroups: FormArray = new FormArray([]);
   groups: GroupVM[] = [];

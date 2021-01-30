@@ -1,0 +1,33 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'product-category'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+<b>Category</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-icon icon="compass-outline" nbPrefix></nb-icon>
+            <input fullWidth nz-dropdown [nzDropdownMenu]="categoryRef" [value]="control.value?.name" [nzPlacement]="'bottomCenter'" [nzBackdrop]="false" [nzTrigger]="'click'" placeholder="Select category" readonly nbInput size="small" *ngIf="showChange" />
+            <input fullWidth nz-dropdown [value]="product.category.name" placeholder="Select category" readonly nbInput size="small" *ngIf="!showChange" />
+            <nb-icon *ngIf="showChange" icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+        <nz-dropdown-menu #categoryRef="nzDropdownMenu">
+            <app-category-select [control]="control"></app-category-select>
+        </nz-dropdown-menu>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show && canUpdate">
+        <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+  Change
+</button>
+        <button *ngIf="showChange" (click)="showChange = false; control.setValue(undefined)" class="float-right ml-1" size="small" outline nbButton status="basic">
+  Cancel
+</button>
+        <button *ngIf="showChange" (click)="useChange()" [disabled]="control.invalid" class="float-right" size="small" outline nbButton status="info">
+  Submit Change
+</button>
+    </nb-card-footer>
+</nb-card>

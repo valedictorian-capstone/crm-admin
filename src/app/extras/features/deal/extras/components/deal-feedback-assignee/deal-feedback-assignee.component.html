@@ -44,7 +44,7 @@
             </nz-dropdown-menu>
         </div>
     </nb-card-body>
-    <nb-card-footer *ngIf="show && canAssign">
+    <nb-card-footer *ngIf="show && canAssign && deal.feedbackStatus === 'resolve'">
         <button *ngIf="!showChange && deal.feedbackAssignee" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
   Change
 </button>
@@ -56,7 +56,7 @@
 </button>
 
     </nb-card-footer>
-    <nb-card-footer *ngIf="show && !canAssign && !deal.feedbackAssignee">
+    <nb-card-footer *ngIf="show && !canAssign && canGetFeedback">
         <button (click)="useChange(you)" class="float-right" size="small" outline nbButton status="info">
 Assgin Me
 </button>

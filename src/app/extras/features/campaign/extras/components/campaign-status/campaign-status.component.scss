@@ -1,0 +1,16 @@
+nb-card {
+    b {
+        font-family: monospace, sans-serif;
+    }
+}
+
+nb-select {
+     ::ng-deep {
+        button {
+            height: 100% !important;
+            width: 100% !important;
+            min-width: 80px !important;
+            padding: 0 1rem !important;
+        }
+    }
+}

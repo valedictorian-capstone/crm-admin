@@ -12,6 +12,7 @@ export interface ITicketMainState {
   pageCount: number;
   firstLoad?: boolean;
   canAdd?: boolean;
+  you?: AccountVM;
   canUpdate?: boolean;
   canRemove?: boolean;
 }

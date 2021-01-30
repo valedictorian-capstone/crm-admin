@@ -13,6 +13,7 @@ import swal from 'sweetalert2';
 })
 export class DealStageComponent {
   @Input() deal: DealVM;
+  @Input() canUpdate: boolean;
   @Input() selectedStage: StageVM;
   @Input() selectedPipeline: PipelineVM;
   show = true;

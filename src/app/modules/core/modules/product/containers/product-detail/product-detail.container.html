@@ -1,0 +1,19 @@
+<nb-card class="h-100 w-100 position-relative">
+    <nb-card-header style="padding: 1rem 1rem">
+        <span class="display-flex align-items-center float-left h-100">
+      <nb-icon icon="shopping-cart-outline" class="mr-2"></nb-icon>
+      <b style="font: 600 17px/16px monospace, sans-serif; color: #747678">Product</b>
+    </span>
+    </nb-card-header>
+    <nb-card-body class="p-0">
+        <div class="w-100" nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="8" [nzXl]="8" [nzXXl]="8">
+                <app-product-information [canUpdate]="state.canUpdate" *ngIf="state.main" [product]='state.main'></app-product-information>
+                <app-product-cate [canUpdate]="state.canUpdate" *ngIf="state.main" [product]='state.main'></app-product-cate>
+            </div>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="16" [nzXl]="16" [nzXXl]="16">
+                <app-comment-main [id]="state.id"></app-comment-main>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

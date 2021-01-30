@@ -38,24 +38,29 @@ export class PipelineDatatableArea implements OnDestroy {
   useSort = (sort: { key: string, stage: 'down' | 'up' }) => {
     this.useSortState.emit(sort);
   }
-  async useRemove(id: string) {
-    const rs = await swal.fire({
-      title: 'Remove an process?',
-      text: 'When you click OK button, an process will be remove out of system and can not backup',
-      showCancelButton: true,
-    });
-    if (rs.isConfirmed) {
-      const subscription = this.service.remove(id)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Remove process successful', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Remove process fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          })
-        ).subscribe(console.log);
-      this.subscriptions.push(subscription);
+  async useRemove(id: string, length: number) {
+    console.log(length);
+    if (length === 0) {
+      const rs = await swal.fire({
+        title: 'Remove an process?',
+        text: 'When you click OK button, an process will be remove out of system and can not backup',
+        showCancelButton: true,
+      });
+      if (rs.isConfirmed) {
+        const subscription = this.service.remove(id)
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Remove process successful', { duration: 3000 });
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Remove process fail! ' + err.message, { duration: 3000 });
+              return of(undefined);
+            })
+          ).subscribe(console.log);
+        this.subscriptions.push(subscription);
+      }
+    } else {
+      swal.fire('Can not remove this process', '', 'error');
     }
   }
   useItemCheck(isHeader: boolean) {

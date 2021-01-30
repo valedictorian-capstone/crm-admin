@@ -10,7 +10,7 @@
     <nb-card-body *ngIf="show">
         <b><nb-icon icon="gift-outline"></nb-icon> {{campaign.name}}</b><br>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canAccess">
         <button (click)="useView()" class="float-right" size="small" outline nbButton status="info">
 <nb-icon icon="eye-outline"></nb-icon>
 </button>

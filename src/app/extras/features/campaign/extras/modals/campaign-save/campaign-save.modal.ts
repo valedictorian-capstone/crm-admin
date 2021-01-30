@@ -15,7 +15,6 @@ interface ICampaignSavePageState {
   form: FormGroup;
   showDateEndPicker: boolean;
   showDateStartPicker: boolean;
-  min: Date;
   minStart: Date;
   minEnd: Date;
   max: Date;
@@ -37,9 +36,8 @@ export class CampaignSaveModal implements OnInit, OnDestroy {
     form: undefined,
     showDateEndPicker: false,
     showDateStartPicker: false,
-    min: new Date(),
     minStart: new Date(new Date().setDate(new Date().getDate() - 1)),
-    minEnd: new Date(),
+    minEnd: new Date(new Date().setDate(new Date().getDate() - 1)),
     max: new Date(new Date().setMonth(new Date().getMonth() + 6)),
     config: {
       editable: true,
@@ -117,7 +115,7 @@ export class CampaignSaveModal implements OnInit, OnDestroy {
       emailTemplate: new FormControl(''),
       autoCreateDeal: new FormControl(true),
       type: new FormControl(undefined, [Validators.required]),
-      status: new FormControl('planning', [Validators.required]),
+      status: new FormControl('planning'),
       pipeline: new FormControl(undefined, [Validators.required]),
       dateStart: new FormControl(new Date(), [Validators.required]),
       dateEnd: new FormControl(new Date(new Date().getTime() + (86400000 * 30)), [Validators.required]),
@@ -152,8 +150,7 @@ export class CampaignSaveModal implements OnInit, OnDestroy {
     }
   }
   useCheckTime = () => {
-    this.state.min = new Date(this.state.form.get('dateStart').value);
-    this.state.minEnd = new Date(this.state.form.get('dateStart').value);
+    this.state.minEnd = new Date(new Date(this.state.form.get('dateStart').value).setDate(new Date(this.state.form.get('dateStart').value).getDate() - 1));
   }
   useDialog = (template: TemplateRef<any>) => {
     this.dialogService.open(template, { closeOnBackdropClick: false });
@@ -162,6 +159,12 @@ export class CampaignSaveModal implements OnInit, OnDestroy {
     setTimeout(() => {
       this.spinner.hide('campaign-save');
     }, 1000);
+  }
+  useCheckStart() {
+    return this.payload.campaign.status === 'planning';
+  }
+  useCheckEnd() {
+    return this.payload.campaign.status === 'planning' || this.payload.campaign.status === 'active';
   }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());

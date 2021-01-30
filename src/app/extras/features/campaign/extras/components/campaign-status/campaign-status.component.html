@@ -1,0 +1,37 @@
+<nb-card class="w-100 position-relative">
+    <ngx-spinner [name]="'campaign-status'" bdColor="#e5e5e5" [style.opacity]="0.8" [zIndex]="999" size="medium" color="#3de2ab" type="ball-clip-rotate-multiple" [fullScreen]="false"></ngx-spinner>
+    <nb-card-header style="padding: 1rem 1rem; height: 4rem;">
+        <span class="h-100 display-flex align-items-center float-left">
+<b>Status</b>
+</span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+<nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <nb-form-field style="width: 100%; margin-bottom: 1rem">
+            <nb-select *ngIf="showChange" [status]="
+        control.invalid &&
+        (control.touched || control.dirty) ? 'danger' : 'basic'
+      " style="width: 100%; height: 3rem;" fullWidth placeholder="Select Status" [formControl]="control">
+                <nb-option *ngIf="useCheckPlanning()" value="planning">Planning</nb-option>
+                <nb-option *ngIf="useCheckActive()" value="active">Active</nb-option>
+                <nb-option *ngIf="useCheckInactive()" value="inactive">Inactive</nb-option>
+            </nb-select>
+            <input fullWidth nz-dropdown [value]="campaign.status[0].toUpperCase() +
+          campaign.status.slice(1)" placeholder="Status" readonly nbInput size="small" *ngIf="!showChange" />
+            <nb-icon *ngIf="showChange" icon="arrow-down" nbSuffix></nb-icon>
+        </nb-form-field>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show && useCheckChange() && canUpdate">
+        <button *ngIf="!showChange" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
+  Change
+</button>
+        <button *ngIf="showChange" (click)="showChange = false; control.setValue(undefined)" class="float-right ml-1" size="small" outline nbButton status="basic">
+  Cancel
+</button>
+        <button *ngIf="showChange" (click)="useChange()" [disabled]="control.invalid" class="float-right" size="small" outline nbButton status="info">
+  Submit Change
+</button>
+    </nb-card-footer>
+</nb-card>

@@ -52,24 +52,28 @@ export class EmployeeDatatableArea implements OnDestroy {
     }
     this.useCheck.emit(this.checkList.filter((e) => e.formControl.value));
   }
-  async useRemove(id: string) {
-    const rs = await swal.fire({
-      title: 'Remove an employee?',
-      text: 'When you click OK button, an employee will be remove out of system and can not backup',
-      showCancelButton: true,
-    });
-    if (rs.isConfirmed) {
-      const subscription = this.service.remove(id)
-        .pipe(
-          tap((data) => {
-            this.toastrService.success('', 'Remove employee successful', { duration: 3000 });
-          }),
-          catchError((err) => {
-            this.toastrService.danger('', 'Remove employee fail! ' + err.message, { duration: 3000 });
-            return of(undefined);
-          })
-        ).subscribe(console.log);
-      this.subscriptions.push(subscription);
+  async useRemove(id: string, length: number) {
+    if (length === 0) {
+      const rs = await swal.fire({
+        title: 'Remove an employee?',
+        text: 'When you click OK button, an employee will be remove out of system and can not backup',
+        showCancelButton: true,
+      });
+      if (rs.isConfirmed) {
+        const subscription = this.service.remove(id)
+          .pipe(
+            tap((data) => {
+              this.toastrService.success('', 'Remove employee successful', { duration: 3000 });
+            }),
+            catchError((err) => {
+              this.toastrService.danger('', 'Remove employee fail! ' + err.message, { duration: 3000 });
+              return of(undefined);
+            })
+          ).subscribe(console.log);
+        this.subscriptions.push(subscription);
+      }
+    } else {
+      swal.fire('Can not remove this employee', '', 'error');
     }
   }
   ngOnDestroy() {

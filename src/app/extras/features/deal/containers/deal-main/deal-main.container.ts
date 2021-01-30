@@ -58,6 +58,9 @@ export class DealMainContainer implements OnInit {
   ngOnInit() {
     this.useDispatch();
   }
+  ngOnChanges() {
+    this.useCheckPermission();
+  }
   useLoadMine() {
     this.subscriptions.push(
       this.store.select(authSelector.profile)
@@ -65,14 +68,26 @@ export class DealMainContainer implements OnInit {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.useCheckPermission();
             }
           })
         )
         .subscribe()
     );
+  }
+  useCheckPermission() {
+    if (this.state.you) {
+      this.state.canAssign = this.state.you.roles.filter((role) => role.canAssignDeal).length > 0;
+      if (this.campaign) {
+        this.state.canAdd = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0 && this.campaign.status === 'active';
+        this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0 || this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+        this.state.canRemove = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0 || this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+      } else {
+        this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
+        this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
+        this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+      }
+    }
   }
   useDispatch() {
     this.subscriptions.push(
@@ -83,6 +98,16 @@ export class DealMainContainer implements OnInit {
             let rs = (data.ids as string[]).map((id) => data.entities[id]);
             if (this.query) {
               rs = rs.filter((e) => e[this.query.key] && e[this.query.key].id === this.query.id);
+            }
+            if (!this.campaign) {
+              if (this.state.you.roles.filter(role => role.canGetAllDeal).length === 0) {
+                if (this.state.you.roles.filter(role => role.canGetAssignDeal).length > 0) {
+                  rs = rs.filter((e) => e.assignee.id === this.state.you.id || !e.assignee);
+                }
+                if (this.state.you.roles.filter(role => role.canGetFeedbackDeal).length > 0) {
+                  rs = rs.filter((e) => e.feedbackAssignee.id === this.state.you.id || e.feedbackAssignee);
+                }
+              }
             }
             if (firstLoad || this.state.firstLoad) {
               this.state.array = rs;
@@ -152,7 +177,7 @@ export class DealMainContainer implements OnInit {
     this.usePagination();
 
   }
-  useCheck(checkList: {formControl: FormControl, deal: DealVM}[]) {
+  useCheck(checkList: { formControl: FormControl, deal: DealVM }[]) {
     this.checkList = checkList;
   }
   useShowSpinner = () => {

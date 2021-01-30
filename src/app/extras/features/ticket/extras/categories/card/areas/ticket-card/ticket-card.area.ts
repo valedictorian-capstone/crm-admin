@@ -58,6 +58,32 @@ export class TicketCardArea implements OnDestroy {
       this.subscriptions.push(subscription);
     }
   }
+  useAssign(id: string) {
+    this.service.update({ id: id, assignee: { id: this.state.you.id } } as any)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Assign ticket successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Assign ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
+  useAssignFeedback(id: string) {
+    this.service.update({ id: id, feedbackAssignee: { id: this.state.you.id } } as any)
+      .pipe(
+        tap((data) => {
+          this.toastrService.success('', 'Assign ticket successful', { duration: 3000 });
+        }),
+        catchError((err) => {
+          this.toastrService.danger('', 'Assign ticket fail! ' + err.message, { duration: 3000 });
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
   ngOnDestroy() {
     this.subscriptions.forEach((subscription$) => subscription$.unsubscribe());
   }

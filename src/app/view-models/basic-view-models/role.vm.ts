@@ -26,6 +26,7 @@ export interface RoleVM {
   canImportCustomer: boolean;
   canAssignActivity: boolean;
   canGetAllActivity: boolean;
+  canGetAllTicket: boolean;
   canAccessTicket: boolean;
   canGetDealTicket: boolean;
   canGetSupportTicket: boolean;
@@ -43,7 +44,7 @@ export interface RoleVM {
   canUpdateCampaign: boolean;
   canRemoveCampaign: boolean;
   description: string;
-  accounts: AccountVM[];
+  employees: AccountVM[];
   isDelete: boolean;
   createdBy: string;
   updatedBy: string;

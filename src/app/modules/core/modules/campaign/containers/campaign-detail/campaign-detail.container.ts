@@ -54,9 +54,7 @@ export class CampaignDetailContainer implements OnInit, OnDestroy {
           tap((profile) => {
             if (profile) {
               this.state.you = profile;
-              // this.state.canAdd = this.state.you.roles.filter((role) => role.canCreateDeal).length > 0;
-              // this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateDeal).length > 0;
-              // this.state.canRemove = this.state.you.roles.filter((role) => role.canRemoveDeal).length > 0;
+              this.state.canUpdate = this.state.you.roles.filter((role) => role.canUpdateCampaign).length > 0;
             }
           })
         )

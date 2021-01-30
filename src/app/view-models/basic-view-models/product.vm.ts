@@ -1,3 +1,4 @@
+import { DealDetailVM } from '../deal-view-models';
 import { CategoryVM } from './category.vm';
 
 export interface ProductVM {
@@ -7,6 +8,7 @@ export interface ProductVM {
   image: string;
   category: CategoryVM;
   price: number;
+  dealDetails: DealDetailVM[];
   unit: string;
   description: string;
   parameters: {label: string, value: string}[];

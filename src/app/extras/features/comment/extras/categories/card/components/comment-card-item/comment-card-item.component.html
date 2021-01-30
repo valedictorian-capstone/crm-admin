@@ -1,0 +1,18 @@
+<nb-card class="w-per-95 m-auto">
+    <nb-card-header>
+        <span class="display-flex justify-content-center h-100 float-left">
+      <b>{{comment.customer.fullname}}</b>
+    </span>
+        <button class="float-right ml-1" (click)="show = !show" outline nbButton size="small">
+  <nb-icon [icon]="show ? 'arrow-down'  : 'arrow-left' + '-outline'"></nb-icon>
+</button>
+    </nb-card-header>
+    <nb-card-body *ngIf="show">
+        <b>{{comment.message}}</b>
+    </nb-card-body>
+    <nb-card-footer *ngIf="show" style="height: 3rem;">
+        <span class="display-flex justify-content-center h-100 float-left">
+        <b>{{comment.updatedAt | time}}</b>
+      </span>
+    </nb-card-footer>
+</nb-card>

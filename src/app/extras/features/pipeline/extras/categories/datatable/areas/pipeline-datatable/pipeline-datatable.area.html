@@ -1,4 +1,4 @@
 <app-pipeline-datatable-item [isHeader]="true" [sort]="sort" (useSortable)="useSort($event)" [control]="headerCheck" (useItemCheck)="useItemCheck(true)"></app-pipeline-datatable-item>
 <div class="body">
-    <app-pipeline-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [pipeline]="data.pipeline" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.pipeline.id)"></app-pipeline-datatable-item>
+    <app-pipeline-datatable-item *ngFor="let data of checkList" (useItemCheck)="useItemCheck(false)" [control]="data.formControl" [pipeline]="data.pipeline" [canUpdate]="state.canUpdate" [canRemove]="state.canRemove" (useRemove)="useRemove(data.pipeline.id, data.pipeline.stages.length)"></app-pipeline-datatable-item>
 </div>

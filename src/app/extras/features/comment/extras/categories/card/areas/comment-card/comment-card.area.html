@@ -1,0 +1,5 @@
+<div class="w-100 body un-main" nz-row>
+    <div nz-col class="mb-2" *ngFor="let comment of state.paginationArray" [nzSm]="24" [nzXs]="24" [nzMd]="24" [nzLg]="24" [nzXl]="24" [nzXXl]="24">
+        <app-comment-card-item [comment]="comment"></app-comment-card-item>
+    </div>
+</div>

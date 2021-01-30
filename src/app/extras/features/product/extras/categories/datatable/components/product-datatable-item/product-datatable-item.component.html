@@ -37,7 +37,7 @@
         </nb-form-field>
     </div>
     <div class="action">
-        <button (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+        <button [disabled]="!canUpdate" (click)="useEdit()" *ngIf="!isHeader" nbButton status="info" outline size="small">
     <nb-icon [icon]="'edit-2-outline'"></nb-icon>
 </button>
         <div class="field">
@@ -47,7 +47,17 @@
         </div>
     </div>
     <div class="action">
-        <button (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
+        <button (click)="useView()" *ngIf="!isHeader" nbButton status="info" outline size="small">
+    <nb-icon [icon]="'eye-outline'"></nb-icon>
+</button>
+        <div class="field">
+            <nb-form-field>
+                <input nbInput fullWidth readonly />
+            </nb-form-field>
+        </div>
+    </div>
+    <div class="action">
+        <button [disabled]="!canRemove" (click)="useRemove.emit()" *ngIf="!isHeader" nbButton status="danger" outline size="small">
   <nb-icon [icon]="'trash-2-outline'"></nb-icon>
 </button>
         <div class="field">

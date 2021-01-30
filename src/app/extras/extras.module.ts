@@ -67,6 +67,7 @@ import {
   TicketQueryComponent,
   TicketTypeComponent,
   TicketSaveModal,
+  TicketFeedbackModal,
   TicketSolveCheckComponent,
 } from './features/ticket';
 import {
@@ -134,6 +135,7 @@ import {
   LogSolveCheckComponent,} from './features/log';
 import {
   CampaignAddComponent,
+  CampaignStatusComponent,
   CampaignCardArea,
   CampaignCardItemComponent,
   CampaignDatatableArea,
@@ -205,7 +207,10 @@ import {
   ProductMainContainer,
   ProductQueryComponent,
   ProductTypeComponent,
+  ProductInformationComponent,
+  ProductCateComponent,
   ProductSaveModal,
+  ProductImportModal,
   ProductImportComponent,
   ProductSelect1Component,
   ProductSolveCheckComponent,
@@ -242,6 +247,12 @@ import {
   EmployeeRoleComponent,
   EmployeeInformationComponent
 } from './features/employee';
+import {
+  CommentCardArea,
+  CommentCardItemComponent,
+  CommentMainContainer,
+  CommentQueryComponent
+} from './features/comment';
 import { LengthPipe, ShortPipe, TimePipe, MoneyPipe, TotalMoneyPipe, MaskPipe, SeparatorPipe, KeyPipe } from './pipes';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -274,11 +285,19 @@ export const FEATURES = [
   ProductMainContainer,
   ProductQueryComponent,
   ProductTypeComponent,
+  ProductInformationComponent,
+  ProductCateComponent,
   ProductSaveModal,
+  ProductImportModal,
   ProductImportComponent,
   ProductSelect1Component,
   ProductSolveCheckComponent,
   ProductCategoryComponent,
+
+  CommentCardArea,
+  CommentCardItemComponent,
+  CommentMainContainer,
+  CommentQueryComponent,
 
   CategoryAddComponent,
   CategoryCardArea,
@@ -359,6 +378,7 @@ export const FEATURES = [
   NoteSolveCheckComponent,
 
   CampaignAddComponent,
+  CampaignStatusComponent,
   CampaignCardArea,
   CampaignCardItemComponent,
   CampaignDatatableArea,
@@ -451,6 +471,7 @@ export const FEATURES = [
   TicketQueryComponent,
   TicketTypeComponent,
   TicketSaveModal,
+  TicketFeedbackModal,
   TicketSolveCheckComponent,
 
   SupportPaginationComponent,

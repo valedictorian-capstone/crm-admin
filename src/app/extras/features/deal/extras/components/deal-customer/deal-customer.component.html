@@ -40,7 +40,7 @@
             </nz-dropdown-menu>
         </div>
     </nb-card-body>
-    <nb-card-footer *ngIf="show">
+    <nb-card-footer *ngIf="show && canUpdate && deal.status === 'processing'">
         <button *ngIf="!showChange && deal.customer" (click)="showChange = true" class="float-right" size="small" outline nbButton status="info">
         Change
       </button>

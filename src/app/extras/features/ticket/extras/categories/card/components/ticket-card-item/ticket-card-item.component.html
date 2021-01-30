@@ -6,21 +6,33 @@
 </button>
     </nb-card-header>
     <nb-card-body *ngIf="show">
-        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.customer.fullname}} (Customer)</b><br>
-        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.assignee.fullname}} (Assignee)</b><br>
-        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.feedbackAssignee.fullname}} (Feedback Assignee)</b><br>
-        <b class="text-capitalize"><nb-icon icon="person-outline"></nb-icon> {{ticket.type}} (Type)</b><br>
-        <b class="text-capitalize"><nb-icon icon="person-outline"></nb-icon> {{ticket.status}} (Status)</b><br>
-        <nb-form-field class="w-100">
-            <textarea style="background: #ffe498; font-family: monospace, sans-serif;" [value]="ticket.description ? ticket.description : 'None'" rows="7" readonly nbInput status="info" fullWidth></textarea>
-        </nb-form-field>
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.customer ? ticket.customer.fullname : 'Guest'}} (Customer)</b><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.assignee ? ticket.assignee.fullname : 'None'}} (Assignee)</b><br>
+
+        <b class="collapse-capitalize"><nb-icon icon="person-outline"></nb-icon> {{ticket.type}} (Type)</b><br>
+        <b class="text-capitalize"><nb-icon icon="bulb-outline"></nb-icon> {{ticket.status}} (Status)</b><br><br>
+        <b><nb-icon icon="person-outline"></nb-icon> {{ticket.status === 'resolve' ? (ticket.feedbackAssignee ? ticket.feedbackAssignee.fullname : 'None') : 'Not yet'}} (Feedback Assignee)</b><br>
+        <b class="text-capitalize"><nb-icon icon="bulb-outline"></nb-icon> {{ticket.status === 'resolve' ? ticket.feedbackStatus : 'Not yet'}} (Feedback Status)</b><br>
+        <b class="text-capitalize"><nb-icon icon="bulb-outline"></nb-icon> {{ticket.status === 'resolve' ? ticket.feedbackRating : 'Not yet'}} (Feedback Rating)</b><br>
+        <b class="text-capitalize"><nb-icon icon="bulb-outline"></nb-icon> {{ticket.status === 'resolve' ? ticket.feedbackAssigneeRating : 'Not yet'}} (Feedback Assignee Rating)</b><br>
+        <br>
+        <div class="content" [innerHTML]="ticket.description ? ticket.description : 'None'"></div>
     </nb-card-body>
     <nb-card-footer *ngIf="show">
-        <button (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
+        <button *ngIf="ticket.assignee?.id === you.id || canGetAll" (click)="useRemove.emit()" class="float-right ml-1" size="small" outline nbButton status="danger">
 <nb-icon icon="trash-2-outline"></nb-icon>
 </button>
-        <button (click)="useEdit()" class="float-right" size="small" outline nbButton status="info">
+        <button *ngIf="ticket.assignee?.id === you.id || canGetAll" (click)="useEdit()" class="float-right ml-1" size="small" outline nbButton status="info">
 <nb-icon icon="edit-2-outline"></nb-icon>
 </button>
+        <button *ngIf="ticket.status === 'resolve' && ticket.feedbackAssignee?.id === you.id" (click)="useFeedback()" class="float-right ml-1" size="small" outline nbButton status="info">
+  <nb-icon icon="star-outline"></nb-icon>
+  </button>
+        <button *ngIf="ticket.status === 'resolve' && canGetFeedback && !ticket.feedbackAssignee && ticket.assignee?.id !== you.id " (click)="useAssignFeedback.emit()" class="float-right ml-1" size="small" outline nbButton status="info">
+    Assigne me feedback
+    </button>
+        <button *ngIf="!ticket.assignee && (ticket.type === 'deal' ? canGetDeal : canGetSupport)" (click)="useAssign.emit()" class="float-right ml-1" size="small" outline nbButton status="info">
+      Assigne me
+      </button>
     </nb-card-footer>
 </nb-card>

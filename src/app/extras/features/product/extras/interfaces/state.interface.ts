@@ -14,10 +14,12 @@ export interface IProductMainState {
   canAdd?: boolean;
   canUpdate?: boolean;
   canRemove?: boolean;
+  canImport?: boolean;
 }
 
 export interface IProductDetailState {
   id: string;
+  canUpdate?: boolean;
   main: ProductVM;
   you?: AccountVM;
 }
